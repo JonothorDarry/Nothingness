@@ -2,23 +2,39 @@
 </head>
 
 <body>
-  <div id="Primez">
-    
+  <math xmlns = "http://www.w3.org/1998/Math/MathML">
+  <div id="Theory">
+    Let's say I have q queries (q&lt;1000000) whether given number a<sub>i</sub> (a<sub>i</sub>&lt;1000000) is prime. To answer these problems, first let's define prime number: a number k&#x2208;N<sup>+</sup> is prime, if and only if<br>
+    k&#x2208;P &#x21D4; &#x2203;&#x0021;<sub>x&#x2208;N<sup>+</sup>\{1}</sub> k&#x2261;0 mod x<br>
+    where N<sup>+</sup> is set of natural numbers excluding 0, P is set of primes. In other words, k needs to have exactly 1 natural divisor different than one. For example, 2, 3, 5, 31 are prime numbers. The first solution that can be discussed is absolute brute force
+  </div><br>
+  <div id="sol1">We can check for number given in i-th query, whether it's prime by checking whether any number x&#x2208;&lt;2;a<sub>i</sub>-1&gt; is it's divisor: if it is, then we know it's not prime this solution works in O(q*max(a<sub>i</sub>), which is obvious if all numbers given in queries are prime - we have to check n numbers whether they have divisor, and we check it in O(a<sub>i</sub>).
+  </div><br>
+  
+  <div id="sol2">We can notice, that if k is not prime and a is it's divisor&gt;1 and &lt;k, then either a or k/a are &lt;=<msqrt>k</msqrt>; proof by contradiction is trivial: let's assume, that a&#x2224;k; then, there exists such natural b, that b*a=k; if a&gt;<msqrt>k</msqrt> and m&gt;<msqrt>k</msqrt>, then a*b&gt;<msqrt>k</msqrt>*<msqrt>k</msqrt>=k; if one of them is equal to <msqrt>k</msqrt>, then, by definition, second must be equal to <msqrt>k</msqrt> too, which finishes the proof. <br> And so, we need to check only <msqrt>a<sub>i</sub></msqrt> values to check whether a<sub>i</sub> is prime. That makes the algorithm run in O(q*<msqrt>max(a<sub>i</sub>)</msqrt>)
+  </div><br>
+
+  <div id="sol3">However, we can solve problem offline: one can just create array p[1000000], take subsequent prime numbers starting from 2 and mark all numbers divisible by it as non-primes; then go to the next prime number (3), repeat procedure, and so on
   </div>
+  
+  <div id="Primez"></div>
+  <div id="Comprehend"></div>
   
   <div id="Inputter">
     <form>
-      <input type="number" id="Erasto" name="Erasto">
+      <input type="number" id="Erasto" name="Erasto" value="99">
     </form>
     <button id="Sender">
       Begin
+    </button>
+    <button id="Prever">
+      Previous Move
     </button>
     <button id="Nexter">
       Next Move
     </button>
   </div>
-  <div id="debug">
   
-  </div>
-  
+  <div id="debug"></div>
+  </math>
 </body>
