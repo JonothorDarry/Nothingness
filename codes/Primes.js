@@ -1,23 +1,25 @@
 alldict={};
 
 class Sieve{
-	constructor(len){
+	constructor(len, location, beg, prev, next, comp, inp){
   	this.lees=[];
     this.createMarked(len);
+    this.place=location;
+    this.wisdom=comp;
+    this.input=inp;
     
     var butt;
-    for (var i=0;i<100;i++){
+    for (var i=0;i<len;i++){
       /*Button Stylization*/ 
       butt = this.buttCreator(i);
       //document.getElementById('Primez').innerHTML=i;
-      document.getElementById('Primez').appendChild(butt);
+      this.place.appendChild(butt);
     }
-
+    
     //Beginning button & sequence
-    var inbut=document.getElementById('Sender');
-    var nextbut=document.getElementById('Nexter');
-    var prevbut=document.getElementById('Prever');
-    var primeplace=document.getElementById('Primez');
+    var inbut=beg;
+    var nextbut=next;
+    var prevbut=prev;
 		
     alldict[inbut.id]=this;
     alldict[nextbut.id]=this;
@@ -26,13 +28,13 @@ class Sieve{
     inbut.addEventListener('click', function(){
     	var zis=alldict[this.id];
       zis.lees=[];
-      var fas=document.getElementById('Erasto').value;
-      document.getElementById("Primez").textContent='';
+      var fas=zis.input.value;
+      zis.place.textContent='';
 
       zis.createMarked(fas);
       for (var i=0;i<=fas;i++){
         var butt = zis.buttCreator(i);
-        document.getElementById("Primez").appendChild(butt);
+        zis.place.appendChild(butt);
       }
       zis.lees.push([1, fas, 0]);
       zis.StateMaker();
@@ -42,7 +44,6 @@ class Sieve{
   });
   
     //Next value
-    var nextbut=document.getElementById('Nexter');
     nextbut.addEventListener('click', function(){
     	var zis=alldict[this.id];
       zis.StateMaker();
@@ -51,7 +52,6 @@ class Sieve{
     });
 
     //Previous value
-    var prevbut=document.getElementById('Prever');
     prevbut.addEventListener('click', function(){
     	var zis=alldict[this.id];
       zis.StateUnmaker();
@@ -62,7 +62,7 @@ class Sieve{
   //Marked=1 - not prime
   //This function creates array of elements marked as primes
   createMarked(len){
-  	this.marked=Array.apply(null, Array(len)).map(function (x, i) { return 0; });
+  	this.marked=[];
     for (var i=0;i<=len;i++) this.marked[i]=0;
     this.marked[0]=-1;
     this.marked[1]=-1;
@@ -83,31 +83,34 @@ class Sieve{
     if (this.marked[value]==divisor) this.marked[value]=0;
   }
   
+  //Mark number depending on values defined in sieve
   MarkNormally(v){
+  	var bt=this.place.getElementsByTagName("button")[v];
     if (this.PrimeCheck(v)==1){
-      document.getElementById("Primez").getElementsByTagName("button")[v].style.backgroundColor='#440000';
-      document.getElementById("Primez").getElementsByTagName("button")[v].style.color='#FFFFFF';
+      bt.style.backgroundColor='#440000';
+      bt.style.color='#FFFFFF';
     }
     if (this.PrimeCheck(v)==0){
-      document.getElementById("Primez").getElementsByTagName("button")[v].style.backgroundColor='#FFFFFF';
-      document.getElementById("Primez").getElementsByTagName("button")[v].style.color='#888888';
+      bt.style.backgroundColor='#FFFFFF';
+      bt.style.color='#888888';
     }
   }
 
-  //Color processed number
+  //Color processed slaying number
   Darken(v){
-    document.getElementById("Primez").getElementsByTagName("button")[v].style.backgroundColor='#000000';
+    this.place.getElementsByTagName("button")[v].style.backgroundColor='#000000';
   }
 
-  //Color processed slain by prime
+  //Color processed just slain by prime
   PrimeColor(v1, v2){
-    document.getElementById("Primez").getElementsByTagName("button")[v1].style.backgroundColor='#FFFF00';
-    document.getElementById("Primez").getElementsByTagName("button")[v1].style.color='#888888';
+  	var bt=this.place.getElementsByTagName("button")[v1];
+    bt.style.backgroundColor='#FFFF00';
+    bt.style.color='#888888';
     this.Darken(v2);
   }
 
   ChangeStatement(){
-    var p=this.StatementComprehension(), l=document.getElementById("Comprehend");
+    var p=this.StatementComprehension(), l=this.wisdom;
     l.innerHTML=p;
   }
 
@@ -141,7 +144,7 @@ class Sieve{
 
     else if (s[0]==1){
       if (s[2]*s[2]>lim) 			this.lees.push([100]);
-      else if (this.marked[s[2]]==0) 		this.lees.push([0, lim, s[2]*s[2], s[2]]);
+      else if (this.PrimeCheck(s[2])==1) 		this.lees.push([0, lim, s[2]*s[2], s[2]]);
       else this.lees.push([1, lim, s[2]+1]);
     }
   }
@@ -191,11 +194,63 @@ class Sieve{
     butt.style.border="None";
     //butt.appendChild(sub);
     return butt;
-  }  
+  }
+}
+
+class ExtendedSieve extends Sieve{
+	
+  MarkNormally(v){
+  	var bt=this.place.getElementsByTagName("button")[v];
+    if (this.PrimeCheck(v)==1){
+      bt.style.backgroundColor='#440000';
+      bt.style.color='#FFFFFF';
+    }
+    if (this.PrimeCheck(v)==0){
+      bt.style.backgroundColor='#FFFFFF';
+      bt.style.color='#888888';
+    }
+    bt.getElementsByTagName("sub")[0].innerHTML=this.marked[v];
+  }
+  
+  //Color prime and change subscript note
+  PrimeColor(v1, v2){
+  	var bt=this.place.getElementsByTagName("button")[v1];
+    bt.style.backgroundColor='#FFFF00';
+    bt.style.color='#888888';
+    this.Darken(v2);
+    bt.getElementsByTagName("sub")[0].innerHTML=this.marked[v1];
+  }
+
+	//Create Button
+  buttCreator(v){
+		var sub= document.createElement("SUB");
+    if (v>1)	sub.innerHTML=0;
+    else sub.innerHTML=-1;
+    sub.style.fontSize="10px";
+    
+    var butt = document.createElement("BUTTON");
+    butt.innerHTML=v;
+    butt.style.backgroundColor="#440000"
+    butt.style.color="#FFFFFF"
+    butt.style.width="40px";
+    butt.style.height="40px";
+    butt.style.border="None";
+    butt.appendChild(sub);
+   	//butt.appendChild(sub);
+    return butt;
+  }
 }
 
 
-sk=new Sieve(200);
+var sk=new Sieve(100, document.getElementById('Primez'), 
+		document.getElementById('Sender'), document.getElementById('Prever'), document.getElementById('Nexter'), 
+    document.getElementById('Comprehend'), document.getElementById('Erasto'));
+
+var sk2=new ExtendedSieve(100, document.getElementById('Primez2'), 
+		document.getElementById('Sender2'), document.getElementById('Prever2'), document.getElementById('Nexter2'), 
+    document.getElementById('Comprehend2'), document.getElementById('Erasto2'));
+
+
 
 //x.value="Jonasz";
 //var butt = document.createButton(1);
