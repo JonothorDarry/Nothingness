@@ -1,4 +1,6 @@
-alldict={};
+//lees=[];
+//Marked=1 - not prime
+//marked=-1;
 
 class Sieve{
 	constructor(len){
@@ -18,49 +20,47 @@ class Sieve{
     var nextbut=document.getElementById('Nexter');
     var prevbut=document.getElementById('Prever');
     var primeplace=document.getElementById('Primez');
-		
-    alldict[inbut.id]=this;
-    alldict[nextbut.id]=this;
-    alldict[prevbut.id]=this;
-    
-    inbut.addEventListener('click', function(){
-    	var zis=alldict[this.id];
-      zis.lees=[];
-      var fas=document.getElementById('Erasto').value;
-      document.getElementById("Primez").textContent='';
 
-      zis.createMarked(fas);
-      for (var i=0;i<=fas;i++){
-        var butt = zis.buttCreator(i);
-        document.getElementById("Primez").appendChild(butt);
-      }
-      zis.lees.push([1, fas, 0]);
-      zis.StateMaker();
-      zis.lees.push([1, fas, 1]);
-      zis.StateMaker();
-      zis.NextState();
-  });
-  
+    inbut.addEventListener('click', this.beginProcess);
     //Next value
     var nextbut=document.getElementById('Nexter');
-    nextbut.addEventListener('click', function(){
-    	var zis=alldict[this.id];
-      zis.StateMaker();
-      zis.NextState();
-      zis.ChangeStatement();
-    });
+    nextbut.addEventListener('click', this.nextProcess);
 
     //Previous value
     var prevbut=document.getElementById('Prever');
-    prevbut.addEventListener('click', function(){
-    	var zis=alldict[this.id];
-      zis.StateUnmaker();
-    	zis.ChangeStatement();
-    });
+    prevbut.addEventListener('click', this.prevProcess);
   }
   
-  //Marked=1 - not prime
-  //This function creates array of elements marked as primes
+  beginProcess(){
+  	document.getElementById('debug').innerHTML="Benissus";
+    this.lees=[];
+    var fas=document.getElementById('Erasto').value;
+    document.getElementById("Primez").textContent='';
+    document.getElementById('debug').innerHTML=this;
+    this.MarkedCreator(fas);
+    for (var i=0;i<=fas;i++){
+      butt = this.buttCreator(i);
+      document.getElementById("Primez").appendChild(butt);
+    }
+
+    this.lees.push([1, fas, 0]);
+    this.StateMaker();
+    this.lees.push([1, fas, 1]);
+    this.StateMaker();
+    this.NextState();
+  }
+  
+  nextProcess(){
+  	this.StateMaker();
+    this.NextState();
+    this.ChangeStatement();
+  }
+  
+  prevProcess(){
+  	this.StateUnmaker();
+    this.ChangeStatement();
+  }
+  
   createMarked(len){
   	this.marked=Array.apply(null, Array(len)).map(function (x, i) { return 0; });
     for (var i=0;i<=len;i++) this.marked[i]=0;
@@ -151,6 +151,7 @@ class Sieve{
     var l=this.lees.length;
     var s=this.lees[l-1];
     var lim=s[1];
+
     if (s[0]==0) {
       this.DestroyPrime(s[2], s[3]);
       this.PrimeColor(s[2], s[3]);
@@ -173,14 +174,22 @@ class Sieve{
     this.MarkNormally(s[2]);  
 
     if (l>1){
-      s=this.lees[l-2];
+      s=lees[l-2];
       if (s[0]==1)	this.Darken(s[2]);
       if (s[0]==0)  this.PrimeColor(s[2], s[3]);
     }
   }
 
   //Create Button
-  buttCreator(v){
+  buttCreator(v){  
+  /*
+    var sub = document.createElement("SUB");
+    sub.innerHTML=0;
+    sub.style.fontSize="8px";
+    sub.style.position="relative";
+    sub.style.float="right";
+    sub.style.top="0px";
+    */
 
     var butt = document.createElement("BUTTON");
     butt.innerHTML=v;
