@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<head>
+	<meta charset = "UTF-8">
+	<style src="Primes.css"></style>
+	<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Primes.css')}}>
+</head>
+
+<body>
+	<div id="Theory">
+		Let's say I have q queries (q&lt;1000000) whether given number a<sub>i</sub> (a<sub>i</sub>&lt;1000000) is prime. To answer these problems, first let's define prime number: a number k&#x2208;N<sup>+</sup> is prime, if and only if<br><br>
+		<center>k&#x2208;P &#x21D4; &#x2203;&#x0021;<sub>x&#x2208;N<sup>+</sup>\{1}</sub> k&#x2261;0 mod x<br><br></center>
+		where N<sup>+</sup> is set of natural numbers excluding 0, P is set of primes. In other words, k needs to have exactly 1 natural divisor different than one - itself. A number k is divisible by m, if and only if:<br><br>
+		<center>m|k &#x21D4; &#x2203;<sub>x&#x2208;N<sup>+</sup></sub> m*x=k<br><br></center>
+
+		For example, 2, 3, 5, 31 are prime numbers. The first solution that can be discussed is absolute brute force
+	</div><br>
+		<div id="sol1">We can check for number given in i-th query, whether it's prime by checking whether any number x&#x2208;&lt;2;a<sub>i</sub>-1&gt; is it's divisor: if it is, then we know it's not prime this solution works in O(q*max(a<sub>i</sub>), which is obvious if all numbers given in queries are prime - we have to check n numbers whether they have divisor, and we check it in O(a<sub>i</sub>).
+	</div><br>
+
+	<div id="sol2">
+		We can notice, that if k is not prime and a is it's divisor&gt;1 and &lt;k, then either a or k/a are &lt;=<math><msqrt><mi>k</mi></msqrt></math>; proof by contradiction is trivial: let's assume, that a|k; then, there exists such natural b, that b*a=k; if a&gt;<math><msqrt>k</msqrt></math> and m&gt;<math><msqrt>k</msqrt></math>, then a*b&gt;<math><msqrt>k</msqrt></math>*<math><msqrt>k</msqrt></math>=k; if one of them is equal to <math><msqrt>k</msqrt></math>, then, by definition, second must be equal to <math><msqrt>k</msqrt></math> too, which finishes the proof. <br> And so, we need to check only <math><msqrt>a<sub>i</sub></msqrt></math> values to check whether a<sub>i</sub> is prime. That makes the algorithm run in O(q*<math><msqrt>max(a<sub>i</sub>)</msqrt></math>)
+	</div><br>
+
+	<div id="sol3">However, we can solve problem offline: one can just create array p[1000000], take subsequent prime numbers starting from 2 and mark all numbers divisible by it as non-primes; then go to the next prime number (3), repeat procedure, and so on, as on animation:
+	</div>
+
+	<div id="Primez"></div>
+	<div id="Comprehend" class="Comprehend"></div>
+
+	<div id="Inputter">
+		<form>
+			<input type="number" id="Erasto" name="Erasto" value="99">
+		</form>
+		<button id="Sender">Begin</button>
+		<button id="Prever">Previous Move</button>
+		<button id="Nexter">Next Move</button>
+	</div>
+
+	<div id="Anime-Descr">
+	Begin starts the sieve with a given limit. Next move moves forward current sieve, Previous move moves backward. This sieve has 2 optimizations: first, if a number is marked as non-prime, then we don't have to mark numbers divisible by it, because they were already marked by it's divisor. Proof:<br><br>
+	<center>a|b &#x2227; b|c &#x21D2; &#x2203;<sub>k, l &#x2208;N</sub> k*a=b &#x2227; l*b=l*k*a=c &#x21D2; a|c</center><br><br>
+
+	Secondly, for given x, No composite number lower than x*x has lowest divisor d&gt;1 greater or equal to x, which was shown in 2nd solution to this problem. 
+	</div>
+	<div id="Complexity">
+		It can be easily proven, that sieve, even without any optimizations works in O(n*log(n)): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marking numbers. Marking numbers works in O(n*log(n)), because it's sum of iterations on the table with difference 2: when sieve marks numbers divisible by 2, it makes <math><mfrac><mi>n</mi><mi>2</mi></mfrac></math> iterations; when it marks numbers divisible by 3, it makes <math><mfrac><mi>n</mi><mi>3</mi></mfrac></math> iterations, etc. So, algorith makes:
+		<br>
+		<center>
+
+			<math>
+			{% for i in [2, 3, 5, 7, 11, 13] %}
+				<mfrac><mi>n</mi><mi>{{i}}</mi></mfrac><mo>+</mo>
+			{% endfor %}
+			...+<mfrac><mi>n</mi><mi>mp</mi></mfrac><mo>≤</mo>
+			{% for i in range(2, 8) %}	
+				{% if i==2 or i==4 %}
+					<munder><mrow>
+				{% endif %}
+				<mfrac><mi>n</mi><mi>{{i}}</mi></mfrac>
+				{% if i==3 or i==7 %}
+					</mrow><mo> &#x23DF; <!--BOTTOM CURLY BRACKET--> </mo></munder>
+				{% endif %}
+				<mo>+</mo>
+			{% endfor %}
+			...+<mfrac><mi>n</mi><mi>n</mi></mfrac><mo>≤</mo>
+
+			{% for i in range(1, 4) %}
+				<munder><mrow>
+				{% set s=jipow(2, i) %}
+				{% for j in range(s) %}
+					<mfrac><mi>n</mi><mi>{{s}}</mi></mfrac>
+					{% if (j!=s-1) %}
+						<mo>+</mo>
+					{% endif %}
+				{% endfor %}
+				</mrow><mo> &#x23DF; <!--BOTTOM CURLY BRACKET--> </mo></munder>
+				<mo>+</mo>
+			{% endfor %}
+			...+<mfrac><mi>n</mi><mi>n</mi></mfrac><mo>≤</mo>
+
+			{% for i in range(1, 4) %}
+				{% set s=jipow(2, i) %}
+				<mi>{{s}}</mi><mo>*</mo><mfrac><mi>n</mi><mi>{{s}}</mi></mfrac>
+				<mo>+</mo>
+			{% endfor %}
+			...+<msup><mi>2</mi><mi>&#x230A;<msub><mi>log</mi><mi>2</mi></msub>(n)+1&#x230B;</mi></msup>
+			<mo>*</mo><mfrac>
+				<mrow><mi>n</mi></mrow>
+				<mrow>
+					<msup>
+						<mi>2</mi>
+						<mn>&#x230A;
+							<msub>
+								<mi>log</mi>
+							<mn>2</mn></msub>(n)+1&#x230B;
+						</mn>
+					</msup>
+
+				</mrow>
+			</mfrac>
+			<mo>=</mo>
+
+			<math display='inline'>
+			  <munderover>
+			    <mo>&Sum;</mo>
+			    <mrow>
+				<mi>i</mi>
+				<mo>=</mo>
+				<mn>1</mn>
+			    </mrow>
+			    <mi>log2(n)+1</mi>
+			  </munderover>
+			  <mfenced separators=''>
+				<msup><mi>2</mi><mi>i</mi></msup><mo>*</mo>
+				<mfrac>
+					<mrow><mi>n</mi></mrow>
+					<mrow>
+						<msup>
+							<mi>2</mi>
+							<mn>i</mn>
+						</msup>
+					</mrow>
+			    	</mfrac>
+			  </mfenced>
+			</math>
+			<mo>=</mo>
+
+			<math display='inline'>
+				<mi>n*</mi>
+			  <munderover>
+			    <mo>&Sum;</mo>
+			    <mrow>
+				<mi>i</mi>
+				<mo>=</mo>
+				<mn>1</mn>
+			    </mrow>
+			    <mi>log2(n)+1</mi>
+			  </munderover>
+			  <mfenced separators=''>
+			  	1
+			  </mfenced>
+			</math>
+			<mo>=</mo>
+			<mi>n*(log2(n)+1)</mi>
+			<mo>=</mo>
+			<mi>O(n*log(n))</mi>
+			</math>
+		</center>
+
+	</div>
+
+	<div id="Primez2"></div>
+	<div id="Comprehend2" class="Comprehend"></div>
+
+	<div id="Inputter2">
+		<form>
+			<input type="number" id="Erasto2" name="Erasto2" value="99">
+		</form>
+		<button id="Sender2">Begin</button>
+		<button id="Prever2">Previous Move</button>
+		<button id="Nexter2">Next Move</button>
+	</div>
+
+	<div id="debug"></div>
+	<script src={{url_for('static', filename='Primes.js')}}></script>
+</body>
