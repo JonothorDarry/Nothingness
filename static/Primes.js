@@ -1,10 +1,10 @@
 alldict={};
 
 class Sieve{
-	constructor(len, location, beg, prev, next, comp, inp){
+	constructor(len, locatio, beg, prev, next, comp, inp){
 		this.lees=[];
 		this.createMarked(len);
-		this.place=location;
+		this.place=locatio;
 		this.wisdom=comp;
 		this.input=inp;
 	    
@@ -40,22 +40,24 @@ class Sieve{
 			zis.StateMaker();
 			zis.lees.push([1, fas, 1]);
 			zis.StateMaker();
-			zis.NextState();
+			zis.ChangeStatement();
 		});
 
 		//Next value
 		nextbut.addEventListener('click', function(){
 			var zis=alldict[this.id];
-			zis.StateMaker();
 			zis.NextState();
+			zis.StateMaker();
 			zis.ChangeStatement();
 		});
 
 		//Previous value
 		prevbut.addEventListener('click', function(){
 			var zis=alldict[this.id];
-			zis.StateUnmaker();
-			zis.ChangeStatement();
+			if (zis.lees.length>1){
+				zis.StateUnmaker();
+				zis.ChangeStatement();
+			}
 		});
 	}
   
@@ -118,15 +120,20 @@ class Sieve{
 	//Statement printed on the output
 	StatementComprehension(){
 		var l=this.lees.length;
-		var prev=this.lees[l-3], last=this.lees[l-2];
+		if (l==1) return `This is just before the beginning of the sieve - I mark 0 as non-prime, by definition`;
+		if (l==2) return `This is just before the beginning of the sieve - I mark 0 and 1 as non-prime, by definition`;
+
+
+		var prev=this.lees[l-2], last=this.lees[l-1];
 		var strr=``;
-		if (prev[0]==0 && last[0]==1) strr=`I've already marked all integers lower than limit divisible by ${prev[3]}, so I search for next primes, starting from last prime I've found +1 - ${prev[3]+1}. `;
+		if (prev[0]==0 && last[0]==1) strr=`I've already marked all integers lower or equal to limit divisible by ${prev[3]}, so I search for next primes, starting from last prime I've found +1 - ${prev[3]+1}. `;
 		if (prev[0]==1 && last[0]==1) strr=`Last number I checked (${prev[2]}) was not a prime, so I search further. `;
 		if (prev[0]==0 && last[0]==0) strr=`I mark the next number (${last[2]-last[3]}+${last[3]}=${last[2]}) as divisible by ${last[3]}. `;
-		if (prev[0]==1 && last[0]==0) strr=`I found a prime (${last[3]}), so I start finding numbers divisible by it, starting from ${last[3]}*${last[3]}=${last[2]}, because it is the lowest number divisible by it - read proof above. `;
+		if (prev[0]==1 && last[0]==0) strr=`I found a prime (${last[3]}), so I start finding numbers divisible by it, starting from ${last[3]}*${last[3]}=${last[2]}, because every lower number divisible by ${last[3]} is already marked - read proof(2) above. `;
 
-		if (last[0]==0) strr=strr+`This number's lowest divisor >1 is ${this.marked[last[2]]!=last[3]?`not ${last[3]}, but ${this.marked[last[2]]} - so it was already marked.`:`${last[3]} - so it's marked just from now.`} `
-		if (last[0]==1) strr=strr+`This number is ${this.PrimeCheck(last[2])?`a prime - so I'll start marking perhaps-primes as divisible by it.`:`not a prime - so I have to search further.`}`
+		if (last[0]==0) strr+=`This number's lowest divisor >1 is ${this.marked[last[2]]!=last[3]?`not ${last[3]}, but ${this.marked[last[2]]} - so it was already marked.`:`${last[3]} - so it's marked just from now.`} `;
+		if (last[0]==1) strr+=`This number is ${this.PrimeCheck(last[2])?`a prime - so I'll start marking perhaps-primes as divisible by it.`:`not a prime - so I have to search further.`}`;
+		if (last[0]==100) strr=`${prev[2]}*${prev[2]} > ${prev[1]} (given limit) - and so, all prime numbers up to the given limit were found, sieve ends.`;
 		return strr;
 	}
 
@@ -171,17 +178,17 @@ class Sieve{
 
 	//Unmake last move in list of states
 	StateUnmaker(){
-		this.lees.pop();
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 		if (s[0]==0)	this.MakePrime(s[2], s[3]);
-		this.MarkNormally(s[2]);
+		if (s[0]!=100)	this.MarkNormally(s[2]);
 
 		if (l>1){
 			s=this.lees[l-2];
 			if (s[0]==1)	this.Darken(s[2]);
 			if (s[0]==0)	this.PrimeColor(s[2], s[3]);
 		}
+		this.lees.pop();
 	}
 
 	//Create Button
