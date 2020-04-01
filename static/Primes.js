@@ -157,13 +157,17 @@ class Sieve extends Algorithm{
 	}
 
 
+	EscapeCondition(v, lim){
+		if (v*v>lim) return 1;
+		return 0;
+	}
+
 	//Go to the next state of the algorithm
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 		var lim=s[1];
 		//Debug line
-		//document.getElementById('debug').innerHTML=lees;
 		if (s[0]==0){
 			if (s[2]+s[3]<=lim)	this.lees.push([0, lim, s[2]+s[3], s[3]]);
 			else if (s[3]<=lim)	this.lees.push([1, lim, s[3]+1]);
@@ -171,8 +175,8 @@ class Sieve extends Algorithm{
 		}
 
 		else if (s[0]==1){
-			if (s[2]*s[2]>lim) 			this.lees.push([100]);
-			else if (this.PrimeCheck(s[2])==1) 		this.lees.push([0, lim, s[2]*s[2], s[2]]);
+			if (this.EscapeCondition(s[2], s[1])==1) 		this.lees.push([100]);
+			else if (this.PrimeCheck(s[2])==1 && s[2]*s[2]<=s[1])	this.lees.push([0, lim, s[2]*s[2], s[2]]);
 			else this.lees.push([1, lim, s[2]+1]);
 		}
 	}
@@ -224,6 +228,10 @@ class Sieve extends Algorithm{
 	}
 }
 
+
+
+
+
 class ExtendedSieve extends Sieve{
 	//Unmake last move in list of states
 	StateUnmaker(){
@@ -231,6 +239,11 @@ class ExtendedSieve extends Sieve{
 		var s=this.lees[l-2];
 		if (s[0]==1 && this.marked[s[2]]==s[2])	this.marked[s[2]]=0;
 		super.StateUnmaker();
+	}
+	
+	EscapeCondition(v, lim){
+		if (v>lim) return 1;
+		return 0;
 	}
 	
 	Darken(v){
@@ -270,6 +283,17 @@ class ExtendedSieve extends Sieve{
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
 class Querier extends Algorithm{
 	constructor(value, block, assocSieve){
 		super(block)
@@ -307,27 +331,30 @@ class Querier extends Algorithm{
 	
 	//Go to the next state of the algorithm
 	StateMaker(){
-		document.getElementById('debug').innerHTML=this.lees.length;
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 		if (s[0]==0){
-			document.getElementById('debug').innerHTML=this.lees.length;
 			this.place.textContent+=this.sieve.marked[s[1]];
 			if (this.sieve.marked[s[1]]!=s[1]){
 				this.place.textContent+="*";
 			}
-			document.getElementById('debug').innerHTML=this.lees;
 		}
 
 		//Debug line
-		//document.getElementById('debug').innerHTML=lees;
+		//document.getElementById('debug').innerHTML=this.lees;
 	}
 
 	//Make the last state in list of states
 	StateUnmaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
-
+		var tex=this.place.textContent;
+		var tlen=tex.length;
+		var i;
+		for (i=tlen-2;i>=0;i--){
+			if (tex[i]==':' || tex[i]=='*' || tex[i]=='\n') break;
+		}
+		this.place.textContent=tex.slice(0, i+1);
 		this.lees.pop();
 	}
 
