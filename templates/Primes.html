@@ -148,6 +148,59 @@
 			<mi>O(n*log(n))</mi>
 			</math>
 		</center>
+		<br>
+		<div>
+		But there is also simpler proof with assumtion, that we only mark numbers after we stumble upon a prime number (e.g., after marking 4, we don't start marking 8, 12, 16, 20, etc.). How many times one number can be marked using that optimization? It will be marked by all it's prime components only once: so, 16=2*2*2*2 will be marked once, because it has one distinct prime component(2).  On the other hand, 4800=2*2*2*2*2*2*3*5*5 will be marked at most thrice, because it has three distinct prime divisors (2, 3, 5). Ultimately, a number x cannot be marked more times than log2(x). So, if max(a<sub>i</sub>)≤K, then complexity of this sieve is O(n*s), where s is maximal number of distinct prime divisors of a number ≤K. What can be said about number containing s distinct prime divisors?:
+		<center>(I) If x can be shown as 
+
+			{% macro paritial(value) -%}
+				<msub><mi>p</mi><mi>{{value}}</mi></msub>
+			{% endmacro %}
+
+			{% macro supasub(value) -%}
+				<msup>
+					<mrow>
+						<msub><mi>p</mi><mi>{{value}}</mi></msub>
+					</mrow>
+					<mrow>	
+						<msub><mi>a</mi><mi>{{value}}</mi></msub>
+					</mrow>
+				</msup>
+			{%- endmacro %}
+				
+			
+
+			<math>
+				<mi>x</mi><mo>=</mo>
+				{% for j in range(2) %}
+					{{supasub(j)}}<mo>*</mo>
+				{% endfor %}
+				...<mo>*</mo>{{supasub("n")}}
+			</math>
+			then there is y≤K that can be shown as 
+			
+			<math>
+				<mi>y</mi><mo>=</mo>
+				{% for j in range(2) %}
+					{{paritial(j)}}<mo>*</mo>
+				{% endfor %}
+				...<mo>*</mo>{{paritial("n")}}
+			</math>
+			having same number of distinct prime divisors.
+		</center>
+
+		<center>(II) If there if such prime number v such that <mi>v</mi>&lt;p<sub>i</sub>, then there exists such z that
+			<math>
+				<mi>z</mi>=<mfrac>
+					<mrow>y</mrow>
+					<mrow><msub><mi>p</mi><mi>i</mi></msub></mrow>
+				</mfrac>
+				<mo>*</mo>v<mo>≤</mo>K
+			</math>
+		</center>
+		What follows, one can construct number with highest numbers of prime divisors and lower or equal to K by multiplying subsequent prime numbers, starting from lowest: 2*3*5*...*p<sub>m</sub>; m≤log2(n), and the proof is finished.
+
+		</div>	
 
 	</div>
 	
