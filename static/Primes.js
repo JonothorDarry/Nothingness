@@ -236,13 +236,14 @@ class ExtendedSieve extends Sieve{
 	//Unmake last move in list of states
 	StateUnmaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-2];
+		var s=this.lees[l-1];
 		if (s[0]==1 && this.marked[s[2]]==s[2])	this.marked[s[2]]=0;
 		super.StateUnmaker();
 	}
 	
+	//When is algorithm ending?
 	EscapeCondition(v, lim){
-		if (v>lim) return 1;
+		if (v+1>lim) return 1;
 		return 0;
 	}
 	
@@ -302,8 +303,15 @@ class Querier extends Algorithm{
 		this.lees=[];
 		this.inbut.addEventListener('click', function(){
 			var zis=alldict[this.id];
+			for (var j=0;j<zis.lees.length;j++){
+				if (zis.lees[j][0]==0) zis.sieve.MarkNormally(zis.lees[j][1]);
+			}
+
 			zis.lees=[];
 			var fas=zis.input.value;
+			var ts=zis.sieve.lees;
+			
+			if (ts[ts.length-1][0]!=100 || ts[ts.length-2][1]<parseInt(fas)) return;
 			zis.place.textContent=fas+" : ";
 
 			zis.lees.push([0, fas]);
@@ -333,12 +341,17 @@ class Querier extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
-		if (s[0]==0){
+		var prv=this.lees[l-2]
+
+		if (s[0]==0 && s[1]!=1){
 			this.place.textContent+=this.sieve.marked[s[1]];
 			if (this.sieve.marked[s[1]]!=s[1]){
 				this.place.textContent+="*";
 			}
 		}
+		if (s[0]!=100)	this.sieve.place.getElementsByTagName("button")[s[1]].style.backgroundColor='#0000FF';
+		this.sieve.place.getElementsByTagName("button")[prv[1]].style.backgroundColor='#444400';
+
 
 		//Debug line
 		//document.getElementById('debug').innerHTML=this.lees;
@@ -347,14 +360,20 @@ class Querier extends Algorithm{
 	//Make the last state in list of states
 	StateUnmaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1];
+		var s=this.lees[l-1], prv=this.lees[l-2];
 		var tex=this.place.textContent;
 		var tlen=tex.length;
 		var i;
-		for (i=tlen-2;i>=0;i--){
-			if (tex[i]==':' || tex[i]=='*' || tex[i]=='\n') break;
+		if (s[0]!=100)	this.sieve.MarkNormally(s[1]);
+		if (s[0]!=100 && s[1]!=1) {
+			for (i=tlen-2;i>=0;i--){
+				if (tex[i]==':' || tex[i]=='*' || tex[i]=='\n') break;
+			}
+			this.place.textContent=tex.slice(0, i+1);
 		}
-		this.place.textContent=tex.slice(0, i+1);
+
+		this.sieve.place.getElementsByTagName("button")[prv[1]].style.backgroundColor='#0000FF';
+		
 		this.lees.pop();
 	}
 
@@ -364,10 +383,10 @@ class Querier extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 		if (s[0]==0){
-			if (s[1]==1)	this.lees.append([100]);
+			if (s[1]==1)	this.lees.push([100]);
 			else{
 				var sv=Math.floor(s[1]/this.sieve.marked[s[1]]);
-				if (sv!=1)	this.lees.push([0, sv]);
+				if (s[1]!=1)	this.lees.push([0, sv]);
 				else this.lees.push([100]);
 			}
 		}
