@@ -1,4 +1,16 @@
-.Comprehend{
-  position: relative;
-  height:80px;
+.comprehend{
+        position: relative;
+        height:80px;
 }
+.sender, .previous, .next, .finish{
+        background-color: #000000;
+        color: #FFFFFF;
+        border:None;
+        width:120px;
+        height:25px;
+}
+
+.sender:hover, .previous:hover, .next:hover{
+	background-color: #333333;
+}
+

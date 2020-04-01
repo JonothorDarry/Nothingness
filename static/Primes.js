@@ -1,13 +1,28 @@
 alldict={};
 
-class Sieve{
-	constructor(len, locatio, beg, prev, next, comp, inp){
+class Algorithm{
+	constructor(block){	
+		this.place=block.primePlace;
+		this.wisdom=block.output;
+		this.input=block.input;
+		this.inbut=block.sendButton;
+		this.nextbut=block.nextButton;
+		this.prevbut=block.prevButton;
+		this.finitbut=block.finitButton;
+
+		alldict[this.inbut.id]=this;
+		alldict[this.nextbut.id]=this;
+		alldict[this.prevbut.id]=this;
+		alldict[this.finitbut.id]=this;
+	}
+}
+
+class Sieve extends Algorithm{
+	constructor(len, block){
+		super(block);
 		this.lees=[];
-		this.createMarked(len);
-		this.place=locatio;
-		this.wisdom=comp;
-		this.input=inp;
-	    
+		this.createMarked(len);	
+
 		var butt;
 		for (var i=0;i<len;i++){
 			/*Button Stylization*/ 
@@ -17,15 +32,7 @@ class Sieve{
 		}
 	    
 		//Beginning button & sequence
-		var inbut=beg;
-		var nextbut=next;
-		var prevbut=prev;
-
-		alldict[inbut.id]=this;
-		alldict[nextbut.id]=this;
-		alldict[prevbut.id]=this;
-
-		inbut.addEventListener('click', function(){
+		this.inbut.addEventListener('click', function(){
 			var zis=alldict[this.id];
 			zis.lees=[];
 			var fas=zis.input.value;
@@ -44,7 +51,7 @@ class Sieve{
 		});
 
 		//Next value
-		nextbut.addEventListener('click', function(){
+		this.nextbut.addEventListener('click', function(){
 			var zis=alldict[this.id];
 			zis.NextState();
 			zis.StateMaker();
@@ -52,10 +59,22 @@ class Sieve{
 		});
 
 		//Previous value
-		prevbut.addEventListener('click', function(){
+		this.prevbut.addEventListener('click', function(){
 			var zis=alldict[this.id];
 			if (zis.lees.length>1){
 				zis.StateUnmaker();
+				zis.ChangeStatement();
+			}
+		});
+		
+		//Previous value
+		
+		this.finitbut.addEventListener('click', function(){
+			var zis=alldict[this.id];
+
+			while (zis.lees[zis.lees.length-1][0]!=100){
+				zis.NextState();
+				zis.StateMaker();
 				zis.ChangeStatement();
 			}
 		});
@@ -251,14 +270,106 @@ class ExtendedSieve extends Sieve{
 }
 
 
-var sk=new Sieve(100, document.getElementById('Primez'), 
-		document.getElementById('Sender'), document.getElementById('Prever'), document.getElementById('Nexter'), 
-		document.getElementById('Comprehend'), document.getElementById('Erasto'));
+class Querier extends Algorithm{
+	constructor(value, block, assocSieve){
+		super(block)
 
-var sk2=new ExtendedSieve(100, document.getElementById('Primez2'), 
-		document.getElementById('Sender2'), document.getElementById('Prever2'), document.getElementById('Nexter2'), 
-		document.getElementById('Comprehend2'), document.getElementById('Erasto2'));
+		this.sieve=assocSieve;
+		this.lees=[];
+		this.inbut.addEventListener('click', function(){
+			var zis=alldict[this.id];
+			zis.lees=[];
+			var fas=zis.input.value;
+			zis.place.textContent=fas+" : ";
 
+			zis.lees.push([0, fas]);
+			zis.StateMaker();
+			//zis.ChangeStatement();
+		});
+
+		//Next value
+		this.nextbut.addEventListener('click', function(){
+			var zis=alldict[this.id];
+			zis.NextState();
+			zis.StateMaker();
+			//zis.ChangeStatement();
+		});
+
+		//Previous value
+		this.prevbut.addEventListener('click', function(){
+			var zis=alldict[this.id];
+			if (zis.lees.length>1){
+				zis.StateUnmaker();
+				//zis.ChangeStatement();
+			}
+		});
+	}
+	
+	//Go to the next state of the algorithm
+	StateMaker(){
+		document.getElementById('debug').innerHTML=this.lees.length;
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		if (s[0]==0){
+			document.getElementById('debug').innerHTML=this.lees.length;
+			this.place.textContent+=this.sieve.marked[s[1]];
+			if (this.sieve.marked[s[1]]!=s[1]){
+				this.place.textContent+="*";
+			}
+			document.getElementById('debug').innerHTML=this.lees;
+		}
+
+		//Debug line
+		//document.getElementById('debug').innerHTML=lees;
+	}
+
+	//Make the last state in list of states
+	StateUnmaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+		this.lees.pop();
+	}
+
+
+	//Unmake last move in list of states
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		if (s[0]==0){
+			if (s[1]==1)	this.lees.append([100]);
+			else{
+				var sv=Math.floor(s[1]/this.sieve.marked[s[1]]);
+				if (sv!=1)	this.lees.push([0, sv]);
+				else this.lees.push([100]);
+			}
+		}
+	}
+}
+
+
+function ObjectParser(v){
+	dick={
+		'primePlace':v.getElementsByClassName('primez')[0],
+		'sendButton':v.getElementsByClassName('sender')[0],
+		'prevButton':v.getElementsByClassName('previous')[0],
+		'nextButton':v.getElementsByClassName('next')[0],
+		'input':v.getElementsByClassName('inputter')[0],
+		'output':v.getElementsByClassName('comprehend')[0],
+		'finitButton':v.getElementsByClassName('finish')[0]
+	}
+	return dick;
+}
+
+var feral=ObjectParser(document.getElementById('Algo1'));
+var sk=new Sieve(100, feral);
+
+var feral2=ObjectParser(document.getElementById('Algo2'));
+var sk2=new ExtendedSieve(100, feral2);
+
+
+var foul=ObjectParser(document.getElementById('querySection'));
+var sk3=new Querier(132, foul, sk2)
 
 
 //x.value="Jonasz";

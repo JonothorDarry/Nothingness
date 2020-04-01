@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <head>
 	<meta charset = "UTF-8">
-	<style src="Primes.css"></style>
 	<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Primes.css')}}>
 </head>
 
@@ -18,22 +17,25 @@
 	</div><br>
 
 	<div id="sol2">
-		We can notice, that if k is not prime and a is it's divisor&gt;1 and &lt;k, then either a or k/a are &lt;=<math><msqrt><mi>k</mi></msqrt></math>; proof by contradiction is trivial: let's assume, that a|k; then, there exists such natural b, that b*a=k; if a&gt;<math><msqrt>k</msqrt></math> and m&gt;<math><msqrt>k</msqrt></math>, then a*b&gt;<math><msqrt>k</msqrt></math>*<math><msqrt>k</msqrt></math>=k; if one of them is equal to <math><msqrt>k</msqrt></math>, then, by definition, second must be equal to <math><msqrt>k</msqrt></math> too, which finishes the proof. <br> And so, we need to check only <math><msqrt>a<sub>i</sub></msqrt></math> values to check whether a<sub>i</sub> is prime. That makes the algorithm run in O(q*<math><msqrt>max(a<sub>i</sub>)</msqrt></math>)
+		We can notice, that if k is not prime and a is it's divisor&gt;1 and &lt;k, then either a or k/a are &lt;=<math><msqrt><mi>k</mi></msqrt></math>; proof by contradiction is trivial: let's assume, that a|k; then, there exists such natural b, that b*a=k; if a&gt;<math><msqrt>k</msqrt></math> and m&gt;<math><msqrt>k</msqrt></math>, then a*b&gt;<math><msqrt>k</msqrt></math>*<math><msqrt>k</msqrt></math>=k; if one of them is equal to <math><msqrt>k</msqrt></math>, then, by definition, second must be equal to <math><msqrt>k</msqrt></math> too, which finishes the proof. <br> And so, we need to check only <math><msqrt><msub><mi>a</mi><mi>i</mi></msub></msqrt></math> values to check whether a<sub>i</sub> is prime. That makes the algorithm run in O(q*<math><msqrt>max(<msub><mi>a</mi><mi>i</mi></msub>)</msqrt></math>)
 	</div><br>
 
 	<div id="sol3">However, we can solve problem offline: one can just create array p[1000000], take subsequent prime numbers starting from 2 and mark all numbers divisible by it as non-primes; then go to the next prime number (3), repeat procedure, and so on, as on animation:
 	</div>
+	
+	<div id="Algo1">
+		<div id="Primez" class="primez"></div>
+		<div id="Comprehend" class="comprehend"></div>
 
-	<div id="Primez"></div>
-	<div id="Comprehend" class="Comprehend"></div>
-
-	<div id="Inputter">
-		<form>
-			<input type="number" id="Erasto" name="Erasto" value="99">
-		</form>
-		<button id="Sender">Begin</button>
-		<button id="Prever">Previous Move</button>
-		<button id="Nexter">Next Move</button>
+		<div id="Inputter">
+			<form>
+				<input type="number" class="inputter" id="Erasto" name="Erasto" value="99">
+			</form>
+			<button id="Sender" class="sender">Begin</button>
+			<button id="Prever" class="previous">Previous Move</button>
+			<button id="Nexter" class="next">Next Move</button>
+			<button id="Finisher" class="finish">Finish</button>
+		</div>
 	</div>
 
 	<div id="Anime-Descr">
@@ -125,21 +127,21 @@
 			</math>
 			<mo>=</mo>
 
-			<math display='inline'>
-				<mi>n*</mi>
-			  <munderover>
-			    <mo>&Sum;</mo>
-			    <mrow>
-				<mi>i</mi>
-				<mo>=</mo>
-				<mn>1</mn>
-			    </mrow>
-			    <mi>log2(n)+1</mi>
-			  </munderover>
-			  <mfenced separators=''>
+		<math display='inline'>
+			<mi>n*</mi>
+			<munderover>
+				<mo>&Sum;</mo>
+				<mrow>
+					<mi>i</mi>
+					<mo>=</mo>
+					<mn>1</mn>
+				</mrow>
+			    	<mi>log2(n)+1</mi>
+			</munderover>
+			<mfenced separators=''>
 			  	1
-			  </mfenced>
-			</math>
+			</mfenced>
+		</math>
 			<mo>=</mo>
 			<mi>n*(log2(n)+1)</mi>
 			<mo>=</mo>
@@ -148,17 +150,35 @@
 		</center>
 
 	</div>
+	
+	<div id="Algo2">
+		<div id="Primez2" class="primez"></div>
+		<div id="Comprehend2" class="comprehend"></div>
 
-	<div id="Primez2"></div>
-	<div id="Comprehend2" class="Comprehend"></div>
+		<div id="Inputter2">
+			<form>
+				<input type="number" id="Erasto2" class="inputter" name="Erasto2" value="99">
+			</form>
+			<button id="Sender2" class="sender">Begin</button>
+			<button id="Prever2" class="previous">Previous Move</button>
+			<button id="Nexter2" class="next">Next Move</button>
+			<button id="Finisher2" class="finish">Finish</button>
+		</div>
 
-	<div id="Inputter2">
-		<form>
-			<input type="number" id="Erasto2" name="Erasto2" value="99">
-		</form>
-		<button id="Sender2">Begin</button>
-		<button id="Prever2">Previous Move</button>
-		<button id="Nexter2">Next Move</button>
+
+		<div id="querySection">
+			<div class="primez"></div>
+			<form>
+				<input type="number" id="Querier" class="inputter" name="query" value="99">
+			</form>
+			<button id="Sender3" class="sender">Begin</button>
+			<button id="Prever3" class="previous">Previous Move</button>
+			<button id="Nexter3" class="next">Next Move</button>
+			<button id="Finisher3" class="finish">Finish</button>
+			<div id="Query_output" class="comprehend">
+				PenisHahah!
+			</div>
+		</div>
 	</div>
 
 	<div id="debug"></div>
