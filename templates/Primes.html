@@ -1,4 +1,26 @@
 <!DOCTYPE html>
+
+{% macro msub(a, b, math=1) -%}
+	<math>
+		<msub>
+			<mi>{{a}}</mi>
+			<mi>{{b}}</mi>
+		</msub>
+	</math>
+{%- endmacro %}
+
+{% macro msup(a, b, math=1) -%}
+	<math>
+		<msup>
+			<mi>{{a}}</mi>
+			<mi>{{b}}</mi>
+		</msup>
+	</math>
+{%- endmacro %}
+
+
+
+
 <head>
 	<meta charset = "UTF-8">
 	<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Primes.css')}}>
@@ -6,9 +28,9 @@
 
 <body>
 	<div id="Theory">
-		Let's say I have q queries (q&lt;1000000) whether given number a<sub>i</sub> (a<sub>i</sub>&lt;1000000) is prime. To answer these problems, first let's define prime number: a number k&#x2208;N<sup>+</sup> is prime, if and only if<br><br>
-		<center>k&#x2208;P &#x21D4; &#x2203;&#x0021;<sub>x&#x2208;N<sup>+</sup>\{1}</sub> k&#x2261;0 mod x<br><br></center>
-		where N<sup>+</sup> is set of natural numbers excluding 0, P is set of primes. In other words, k needs to have exactly 1 natural divisor different than one - itself. A number k is divisible by m, if and only if:<br><br>
+		Let's say I have q queries <math>(q&lt;1000000)</math> whether given number <math>{{msub("a","i")}} ({{msub("a","i")}}&lt;1000000)</math> is prime. To answer these problems, first let's define prime number: a number <math>k&#x2208;{{msup("N","+")}}</math> is prime, if and only if<br><br>
+		<center><math>k&#x2208;P &#x21D4; <msub><mrow>&#x2203;&#x0021;</mrow><mrow>x&#x2208;<msup><mi>N</mi><mi>+</mi></msup>\{1}</mrow></msub> k&#x2261;0 mod x</math><br><br></center>
+		where {{msup("N","+")}} is set of natural numbers excluding 0, P is set of primes. In other words, k needs to have exactly 1 natural divisor different than one - itself. A number k is divisible by m, if and only if:<br><br>
 		<center>m|k &#x21D4; &#x2203;<sub>x&#x2208;N<sup>+</sup></sub> m*x=k<br><br></center>
 
 		For example, 2, 3, 5, 31 are prime numbers. The first solution that can be discussed is absolute brute force
@@ -198,9 +220,14 @@
 				<mo>*</mo>v<mo>≤</mo>K
 			</math>
 		</center>
-		What follows, one can construct number with highest numbers of prime divisors and lower or equal to K by multiplying subsequent prime numbers, starting from lowest: 2*3*5*...*p<sub>m</sub>; m≤log2(n), and the proof is finished.
+		What follows, one can construct number with highest numbers of prime divisors and lower or equal to K by multiplying subsequent prime numbers, starting from lowest: 2*3*5*...*p<sub>m</sub>; m≤log2(n), and the proof is finished giving better approximation of number of used steps in this algorithm.
 
 		</div>	
+		<br>
+
+		<div id="gutSieve">
+			Query answering can be done in O(q), because for each query {{msub("a","i")}} one only needs to look whether it is marked as prime or not - that can be done in O(1). So total complexity for a given task is at most O(n*log2(n)+q), where n is number, for which we run sieve, that is <math>n≤max({{msub("a","i")}})</math>. However, this sieve can be used to much more sophisticated tasks: let's Say you have same task, but instead of determining whether number is prime, You have to factorize it, i.e. find it's representation as product of prime numbers. Such representation is unique for each number. If you'll mark each number with it's lowest divisor (instead of sole information whether it's prime) then You'll be able to solve this problem in the same way as above, in complexity O(nlog2(n)+qlog2(n)): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)
+		</div>
 
 	</div>
 	
