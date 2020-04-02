@@ -1,7 +1,8 @@
 alldict={};
 
 class Algorithm{
-	constructor(block){	
+	constructor(block){
+		this.lees=[]
 		this.place=block.primePlace;
 		this.wisdom=block.output;
 		this.input=block.input;
@@ -14,6 +15,11 @@ class Algorithm{
 		alldict[this.nextbut.id]=this;
 		alldict[this.prevbut.id]=this;
 		alldict[this.finitbut.id]=this;
+	}
+
+	isFinished(){
+		if (this.lees[this.lees.length-1][0]==100) return true;
+		return false;
 	}
 }
 

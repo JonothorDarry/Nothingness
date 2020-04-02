@@ -10,7 +10,28 @@
         height:25px;
 }
 
-.sender:hover, .previous:hover, .next:hover{
+.sender:hover, .previous:hover, .next:hover, .finish:hover{
 	background-color: #333333;
 }
 
+h2{
+	position: relative;
+	left: 45%;
+}
+
+.breakAlgo{
+	height:2px;
+}
+
+#sieveSection{
+	position: absolute;
+	left: 0;
+	width: 59%;
+}
+
+#querySection{
+	position: absolute;
+	right: 0;
+	width: 39%;
+
+}
