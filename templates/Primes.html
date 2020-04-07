@@ -1,23 +1,62 @@
 <!DOCTYPE html>
 
-{% macro msub(a, b, math=1) -%}
-	<math>
+{% macro msub(math=1, a="a", b="i") -%}
+	{% if(math==1) %}
+		<math>
+	{% endif %}
 		<msub>
-			<mi>{{a}}</mi>
-			<mi>{{b}}</mi>
+			<mrow>{{a}}</mrow>
+			<mrow>{{b}}</mrow>
 		</msub>
-	</math>
+	{% if(math==1) %}
+		</math>
+	{% endif %}
 {%- endmacro %}
 
 {% macro msup(a, b, math=1) -%}
-	<math>
+	{% if(math==1) %}
+		<math>
+	{% endif %}
 		<msup>
-			<mi>{{a}}</mi>
-			<mi>{{b}}</mi>
+			<mrow>{{a}}</mrow>
+			<mrow>{{b}}</mrow>
 		</msup>
-	</math>
+	{% if(math==1) %}
+		</math>
+	{% endif %}
 {%- endmacro %}
 
+{% macro mfrac(a, b, math=1) -%}
+	{% if(math==1) %}
+		<math>
+	{% endif %}
+		<mfrac>
+			<mrow>{{a}}</mrow>
+			<mrow>{{b}}</mrow>
+		</mfrac>
+	{% if(math==1) %}
+		</math>
+	{% endif %}
+{%- endmacro %}
+
+{% macro mt(a) -%}
+	<math>{{a}}</math>
+{%- endmacro %}
+
+{% macro mlog(math=1, base="2", value="n") -%}
+	{% if(math==1) %}
+		<math>
+	{% endif %}
+	<msub>
+		<mrow>log</mrow>
+		<mrow>{{base}}</mrow>
+	</msub>
+	({{value}})
+	{% if(math==1) %}
+		</math>
+	{% endif %}
+	
+{%- endmacro %}
 
 
 
@@ -27,22 +66,27 @@
 </head>
 
 <body>
+	<h1>Sieve of Eratosthenes</h1>
+	<h3>First Problem statement and definitions</h3>
 	<div id="Theory">
-		Let's say I have q queries <math>(q&lt;1000000)</math> whether given number <math>{{msub("a","i")}} ({{msub("a","i")}}&lt;1000000)</math> is prime. To answer these problems, first let's define prime number: a number <math>k&#x2208;{{msup("N","+")}}</math> is prime, if and only if<br><br>
-		<center><math>k&#x2208;P &#x21D4; <msub><mrow>&#x2203;&#x0021;</mrow><mrow>x&#x2208;<msup><mi>N</mi><mi>+</mi></msup>\{1}</mrow></msub> k&#x2261;0 mod x</math><br><br></center>
-		where {{msup("N","+")}} is set of natural numbers excluding 0, P is set of primes. In other words, k needs to have exactly 1 natural divisor different than one - itself. A number k is divisible by m, if and only if:<br><br>
-		<center>m|k &#x21D4; &#x2203;<sub>x&#x2208;N<sup>+</sup></sub> m*x=k<br><br></center>
+		Let's say {{mt("q")}} queries <math>(q&lt;1000000)</math> are given: Is given number <math>{{msub()}} ({{msub()}}&lt;1000000)</math> a prime? To solve this problem, first let's define prime number: a number <math>k&#x2208;{{msup("N","+")}}</math> is prime, if and only if<br><br>
+		<center><math>k&#x2208;P &#x21D4; <msub><mrow>&#x2203;&#x0021;</mrow><mrow>x&#x2208;{{msup("N","+", 0)}}\{1}</mrow></msub> k&#x2261;0 mod x</math><br><br></center>
+		where {{msup("N","+")}} is set of natural numbers excluding 0, P is set of primes. In other words, {{mt("k")}} needs to have exactly 1 natural divisor different than one - itself. A number {{mt("k")}} is divisible by m (or m is a divisor of {{mt("k")}}), if and only if:<br><br>
+		<center><math>m|k &#x21D4; <msub><mrow>&#x2203;</mrow><mrow>x&#x2208;{{msup("N","+", 0)}}</mrow></msub> m*x=k</math></center><br>
 
-		For example, 2, 3, 5, 31 are prime numbers. The first solution that can be discussed is absolute brute force
+		For example, 2, 3, 5, 31 are prime numbers. A number is is composite, if it's neither 1 nor prime number: for example, <math>20=2*2*5</math> is a composite number. The first solution that can be discussed is absolute brute force
 	</div><br>
-		<div id="sol1">We can check for number given in i-th query, whether it's prime by checking whether any number x&#x2208;&lt;2;a<sub>i</sub>-1&gt; is it's divisor: if it is, then we know it's not prime this solution works in O(q*max(a<sub>i</sub>), which is obvious if all numbers given in queries are prime - we have to check n numbers whether they have divisor, and we check it in O(a<sub>i</sub>).
+	<h3>First Solution</h3>
+	<div id="sol1">One can check whether {{msub()}} is prime by checking whether any number <math>x&#x2208;&lt;2;{{msub(0)}}-1&gt;</math> is it's divisor: if it is, then {{msub()}} is not prime. This solution works in <math>O(q*max({{msub(0)}}))</math>, which is obvious if all numbers given in queries are prime - q numbers needs to be checked whether they have third divisor, and single check works in <math>O({{msub()}})</math>.
 	</div><br>
 
+	<h3>Second Solution</h3>
 	<div id="sol2">
-		We can notice, that if k is not prime and a is it's divisor&gt;1 and &lt;k, then either a or k/a are &lt;=<math><msqrt><mi>k</mi></msqrt></math>; proof by contradiction is trivial: let's assume, that a|k; then, there exists such natural b, that b*a=k; if a&gt;<math><msqrt>k</msqrt></math> and m&gt;<math><msqrt>k</msqrt></math>, then a*b&gt;<math><msqrt>k</msqrt></math>*<math><msqrt>k</msqrt></math>=k; if one of them is equal to <math><msqrt>k</msqrt></math>, then, by definition, second must be equal to <math><msqrt>k</msqrt></math> too, which finishes the proof. <br> And so, we need to check only <math><msqrt><msub><mi>a</mi><mi>i</mi></msub></msqrt></math> values to check whether a<sub>i</sub> is prime. That makes the algorithm run in O(q*<math><msqrt>max(<msub><mi>a</mi><mi>i</mi></msub>)</msqrt></math>)
+		If {{msub()}} is not prime and d is it's divisor, <math>d&gt;1</math> and <math>d&lt;{{msub(0)}}</math>, then either <math>d&lt;=<msqrt>{{msub(0)}}</msqrt></math> or {{mfrac(msub(0),"d")}}&lt;=<math><msqrt>{{msub(0)}}</msqrt></math>; proof by contradiction is trivial: if <math>d|{{msub(0)}}</math> then, there exists such natural b, that <math>b*d={{msub(0)}}</math>; if <math>d&gt;<msqrt>{{msub(0)}}</msqrt></math> and <math>b&gt;<msqrt>{{msub(0)}}</msqrt></math>, then <math>d*b&gt;<msqrt>{{msub(0)}}</msqrt>*<msqrt>{{msub(0)}}</msqrt>={{msub(0)}}</math>; if one of them is equal to <math><msqrt>{{msub(0)}}</msqrt></math>, then, by definition, second must be equal to <math><msqrt>{{msub(0)}}</msqrt></math> too, which finishes the proof. <br> And so, we need to check only <math><msqrt><msub><mi>a</mi><mi>i</mi></msub></msqrt></math> values to check whether {{msub()}} is prime. That makes the algorithm run in <math>O(q*<msqrt>max(<msub><mi>a</mi><mi>i</mi></msub>)</msqrt></math>)
 	</div><br>
 
-	<div id="sol3">However, we can solve problem offline: one can just create array p[1000000], take subsequent prime numbers starting from 2 and mark all numbers divisible by it as non-primes; then go to the next prime number (3), repeat procedure, and so on, as on animation:
+	<h3>Third Solution - sieve</h3>
+	<div id="sol3">However, problem can be solved with preprocessing and answering query in O(1) by creating array p[1000000], taking subsequent prime numbers starting from 2 and marking all numbers divisible by it as non-primes; then going to the next prime number (3), repeat procedure, and so on, as on animation:
 	</div>
 	
 	<div id="Algo1">
@@ -68,7 +112,8 @@
 	Secondly, for given x, No composite number lower than x*x has lowest divisor d&gt;1 greater or equal to x, which was shown in 2nd solution to this problem. 
 	</div>
 	<div id="Complexity">
-		It can be easily proven, that sieve, even without any optimizations works in O(n*log(n)): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marking numbers. Marking numbers works in O(n*log(n)), because it's sum of iterations on the table with difference 2: when sieve marks numbers divisible by 2, it makes <math><mfrac><mi>n</mi><mi>2</mi></mfrac></math> iterations; when it marks numbers divisible by 3, it makes <math><mfrac><mi>n</mi><mi>3</mi></mfrac></math> iterations, etc. So, algorith makes:
+		<h3>Complexity proof #1</h3>
+		It can be easily proven, that sieve, even without any optimizations works in O(n*log(n)): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marking numbers. Marking numbers works in O(n*log(n)), because it's sum of iterations on the table with difference equal to some prime: when sieve marks numbers divisible by 2, it passes <math><mfrac><mi>n</mi><mi>2</mi></mfrac></math> numbers; when it marks numbers divisible by 3, it passes <math><mfrac><mi>n</mi><mi>3</mi></mfrac></math> numbers, etc. So, algorith works in:
 		<br>
 		<center>
 
@@ -89,6 +134,7 @@
 			{% endfor %}
 			...+<mfrac><mi>n</mi><mi>n</mi></mfrac><mo>≤</mo>
 
+
 			{% for i in range(1, 4) %}
 				<munder><mrow>
 				{% set s=jipow(2, i) %}
@@ -101,29 +147,31 @@
 				</mrow><mo> &#x23DF; <!--BOTTOM CURLY BRACKET--> </mo></munder>
 				<mo>+</mo>
 			{% endfor %}
-			...+<mfrac><mi>n</mi><mi>n</mi></mfrac><mo>≤</mo>
+			...+{{mfrac("n",msup("2","⌊"+mlog(0)+"⌋",0))}}<mo>≤</mo>
+
 
 			{% for i in range(1, 4) %}
 				{% set s=jipow(2, i) %}
 				<mi>{{s}}</mi><mo>*</mo><mfrac><mi>n</mi><mi>{{s}}</mi></mfrac>
 				<mo>+</mo>
 			{% endfor %}
-			...+<msup><mi>2</mi><mi>&#x230A;<msub><mi>log</mi><mi>2</mi></msub>(n)+1&#x230B;</mi></msup>
-			<mo>*</mo><mfrac>
+			...+<msup><mi>2</mi><mrow>&#x230A;{{mlog(0)}}&#x230B;</mrow></msup>
+			<mo>*</mo>
+			
+			<mfrac>
 				<mrow><mi>n</mi></mrow>
 				<mrow>
 					<msup>
 						<mi>2</mi>
-						<mn>&#x230A;
-							<msub>
-								<mi>log</mi>
-							<mn>2</mn></msub>(n)+1&#x230B;
-						</mn>
+						<mrow>&#x230A;
+							{{mlog(0)}}&#x230B;
+						</mrow>
 					</msup>
 
 				</mrow>
-			</mfrac>
+			</mfrac>	
 			<mo>=</mo>
+
 
 			<math display='inline'>
 			  <munderover>
@@ -133,7 +181,7 @@
 				<mo>=</mo>
 				<mn>1</mn>
 			    </mrow>
-			    <mi>log2(n)+1</mi>
+			    <mrow>&#x230A;{{mlog(0)}}&#x230B;</mrow>
 			  </munderover>
 			  <mfenced separators=''>
 				<msup><mi>2</mi><mi>i</mi></msup><mo>*</mo>
@@ -159,22 +207,23 @@
 					<mo>=</mo>
 					<mn>1</mn>
 				</mrow>
-			    	<mi>log2(n)+1</mi>
+			    	<mrow>&#x230A;{{mlog(0)}}&#x230B;</mrow>
 			</munderover>
 			<mfenced separators=''>
 			  	1
 			</mfenced>
 		</math>
 			<mo>=</mo>
-			<mi>n*(log2(n)+1)</mi>
+			n*{{mlog(0)}}
 			<mo>=</mo>
-			<mi>O(n*log(n))</mi>
+			O(n*log(n))
 			</math>
 		</center>
 		<br>
+		<h3>Complexity proof #2</h3>
 		<div>
-		But there is also simpler proof with assumtion, that we only mark numbers after we stumble upon a prime number (e.g., after marking 4, we don't start marking 8, 12, 16, 20, etc.). How many times one number can be marked using that optimization? It will be marked by all it's prime components only once: so, 16=2*2*2*2 will be marked once, because it has one distinct prime component(2).  On the other hand, 4800=2*2*2*2*2*2*3*5*5 will be marked at most thrice, because it has three distinct prime divisors (2, 3, 5). Ultimately, a number x cannot be marked more times than log2(x). So, if max(a<sub>i</sub>)≤K, then complexity of this sieve is O(n*s), where s is maximal number of distinct prime divisors of a number ≤K. What can be said about number containing s distinct prime divisors?:
-		<center>(I) If x can be shown as 
+			But there is also simpler proof with assumtion, that we only mark numbers after we stumble upon a prime number (e.g., after marking 4, we don't start marking 8, 12, 16, 20, etc.). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, <math>16=2*2*2*2</math> will be marked once, because it has one distinct prime component(2).  On the other hand, <math>4800=2*2*2*2*2*2*3*5*5</math> will be marked at most thrice, because it has three distinct prime divisors (2, 3, 5). Ultimately, a number <math>x</math> cannot be marked more times than <math>{{msub(0, "log",2)}}(x)</math>. So, if <math>max({{msub(0)}})≤K</math>, then complexity of this sieve is <math>O(n*s)</math>, where s is maximal number of distinct prime divisors of a number <math>x≤K</math>. What can be said about number containing <math>s</math> distinct prime divisors?:
+			<center>(I) If <math>x</math> can be shown as 
 
 			{% macro paritial(value) -%}
 				<msub><mi>p</mi><mi>{{value}}</mi></msub>
@@ -212,28 +261,35 @@
 			having same number of distinct prime divisors.
 		</center>
 
-		<center>(II) If there if such prime number v such that <mi>v</mi>&lt;p<sub>i</sub>, then there exists such z that
+		<center>(II) If there is such prime number <math><mi>v</mi></math> such that <math><mi>v</mi>&lt;{{msub(0,"p","i")}}</math> and <math><msub><mrow>!&#x2203;</mrow><mrow>{{msub(0,"p","i")}}</mrow></msub><mi>v</mi><mo>=</mo>{{msub(0,"p","i")}}</math>, then there exists such <math>z</math> that
 			<math>
 				<mi>z</mi>=<mfrac>
 					<mrow>y</mrow>
 					<mrow><msub><mi>p</mi><mi>i</mi></msub></mrow>
 				</mfrac>
-				<mo>*</mo>v<mo>≤</mo>K
+				<mo>*</mo><mi>v</mi><mo>≤</mo>K
 			</math>
 		</center>
-		What follows, one can construct number with highest numbers of prime divisors and lower or equal to K by multiplying subsequent prime numbers, starting from lowest: 2*3*5*...*p<sub>m</sub>; m≤log2(n), and the proof is finished giving better approximation of number of used steps in this algorithm.
+		What follows, one can construct number with highest numbers of prime divisors and lower or equal to K by multiplying subsequent prime numbers, starting from lowest: <math>2*3*5*...*{{msub(0,"p","m")}}; m≤{{msub(0,"log",2)}}(n)</math>, and the proof is finished giving better approximation of number of used steps in this algorithm.
 
 		</div>	
+	</div>
 		<br>
 
 		<div id="gutSieve">
-			Query answering can be done in O(q), because for each query {{msub("a","i")}} one only needs to look whether it is marked as prime or not - that can be done in O(1). So total complexity for a given task is at most O(n*log2(n)+q), where n is number, for which we run sieve, that is <math>n≤max({{msub("a","i")}})</math>. However, this sieve can be used to much more sophisticated tasks: let's Say you have same task, but instead of determining whether number is prime, You have to factorize it, i.e. find it's representation as product of prime numbers. Such representation is unique for each number. If you'll mark each number with it's lowest divisor (instead of sole information whether it's prime) then You'll be able to solve this problem in the same way as above, in complexity O(nlog2(n)+qlog2(n)): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)
+			Query answering can be done in <math>O(q)</math>, because for each query {{msub()}} one only needs to look whether it is marked as prime or not - that can be done in <math>O(1)</math>. So total complexity for a given task is at most <math>O(n*log(n)+q)</math>, where n is number, for which we run sieve, that is <math>n≤max({{msub()}})</math>. 
 		</div>
+			
+			
+			
+		<h3>Second problem</h3>
+		<div id="ZwieteProbleme">
+			This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of n (n&lt;1000000) numbers <math>{{msub()}} ({{msub()}}&lt;1000000)</math>, i.e. find it's representation as product of prime numbers. For example, <math>2852=2*2*23*31</math>. Such representation is unique for each number. If you'll mark each number with it's lowest divisor (instead of sole information whether it's prime) then You'll be able to solve this problem in the same way as above, in complexity <math>O(nlog(n)+qlog(n))</math>: below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)
 
 	</div>
 	
 	<br><br>
-	<div id="Algo2">
+	<div id="Algo2" style="position:sticky">
 		<div id="sieveSection">
 			<h2 style="left:35%;">Enchanced Sieve</h2>
 			<div id="Inputter2">
@@ -265,10 +321,13 @@
 			<div class="breakAlgo"></div>
 			<div class="primez"></div>
 			<div id="Query_output" class="comprehend">
-				PenisHahah!
+				In order to start query You need to finish the sieve
 			</div>
 		</div>
 	</div>
+<div id="Summary" style="width:100%;position:relative">
+	Sieves allow solving multitude of problems, including also finding Euler totient function or applying includion/exclusion principle on greatest common divisors (GCD). Example problems regarding sieves from codeforces: <a href="https://codeforces.com/contest/300/problem/E">Empire Strikes Back</a>, <a href="https://codeforces.com/problemset/problem/73/E">Morrowindows</a>, <a href="https://codeforces.com/problemset/problem/839/D">Winter is Here</a>
+</div>
 
 	<div id="debug"></div>
 	<script src={{url_for('static', filename='Primes.js')}}></script>

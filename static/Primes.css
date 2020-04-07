@@ -24,14 +24,16 @@ h2{
 }
 
 #sieveSection{
-	position: absolute;
+	position: relative;
+	display:inline-block;
 	left: 0;
 	width: 59%;
 }
 
 #querySection{
-	position: absolute;
+	position: relative;
+	display:inline-block;
+	vertical-align:top;
 	right: 0;
 	width: 39%;
-
 }
