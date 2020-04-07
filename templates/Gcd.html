@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% macro mt(a) -%}
+	<math><mi>{{a}}</mi></math>
+{%- endmacro %}
+
+{% macro msub(math=1, a="a", b="i") -%}
+	{% if(math==1) %}
+		<math>
+	{% endif %}
+		<msub>
+			<mrow>{{a}}</mrow>
+			<mrow>{{b}}</mrow>
+		</msub>
+	{% if(math==1) %}
+		</math>
+	{% endif %}
+{%- endmacro %}
+
+<head>
+</head>
+<body>
+	<h1>Greatest Common Divisor</h1>
+	<h3>First problem statement and definitions</h1>
+	<div>
+		Let's say <math>q (q&lt;1000000)</math> queries are given: what is the greatest common divisor of numbers {{msub(1)}} and {{msub(1,"b")}} where <math>{{msub(0)}}, {{msub(0,"b")}}&lt;1000.000.000</math>? To answer this question, let's define greatest common divisor (gcd): A number {{mt("x")}} is gcd of numbers {{msub()}}, {{msub(1,"b","i")}} if and only if:<br>
+		<center>
+			<math>x=gcd({{msub(0)}},{{msub(0,"b")}}) ⇔ x|{{msub(0)}} ∧ x|{{msub(0,"b")}} ∧ {{msub(0,"!∃","y")}}(y|{{msub(0)}} ∧ y|{{msub(0,"b")}} ∧ y>x)</math>
+		</center><br>
+		In other words, if <math>x=gcd({{msub(0)}}, {{msub(0,"b", "i")}})</math>, then {{mt("x")}} divides {{msub(1)}} and {{msub(1,"b")}}, and there is no greater number {{mt("y")}} that divides both {{msub()}} and {{msub(1,"b")}}. First solution not being absolute brute force (checking all numbers <math>x∈&lt;2;min({{msub(0)}},{{msub(0,"b")}})&gt;</math> whether they're gcd - works in <math>O(q*min(max({{msub()}}),max({{msub(0,"b")}})</math>) is discussed below:
+	</div>
+	<h3>First solution</h3>
+	<div>
+		
+	</div>
+	<h3>Second Solution</h3>
+	<div>
+		
+	</div>
+	<div id="Algo1">
+		<h2>Euclidean algorithm</h2>
+		<div id="Inputter">
+			<form>
+				<input class="inputter" id="Erasto" name="Erasto" value="84 35">
+			</form>
+			<button id="Sender" class="sender">Begin</button>
+			<button id="Prever" class="previous">Previous Move</button>
+			<button id="Nexter" class="next">Next Move</button>
+			<button id="Finisher" class="finish">Finish</button>
+		</div>
+		<div class="breakAlgo"></div>
+		<div id="Primez" class="primez"></div>
+		<div id="Comprehend" class="comprehend"></div>
+	</div>
+	<div id="debug"></div>
+	
+	<script src={{url_for('static', filename='Gcd.js')}}></script>
+</body>
