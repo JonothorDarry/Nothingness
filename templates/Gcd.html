@@ -16,6 +16,19 @@
 	{% endif %}
 {%- endmacro %}
 
+{% macro msup(a, b, math=1) -%}
+	{% if(math==1) %}
+		<math>
+	{% endif %}
+		<msup>
+			<mrow>{{a}}</mrow>
+			<mrow>{{b}}</mrow>
+		</msup>
+	{% if(math==1) %}
+		</math>
+	{% endif %}
+{%- endmacro %}
+
 {% macro mopera(math, a, op, b) -%}
 	{% if(math==1) %}
 		<math>
@@ -27,6 +40,19 @@
 		</math>
 	{% endif %}
 	
+{%- endmacro %}
+
+{% macro mfrac(a, b, math=1) -%}
+	{% if(math==1) %}
+		<math>
+	{% endif %}
+		<mfrac>
+			<mrow>{{a}}</mrow>
+			<mrow>{{b}}</mrow>
+		</mfrac>
+	{% if(math==1) %}
+		</math>
+	{% endif %}
 {%- endmacro %}
 
 <head>
@@ -73,7 +99,21 @@
 	</div>
 	<h3>Correctness proof</h3>
 	<div>
+		What can be said about any divisor {{mt("g")}} dividing both {{mt("x")}} and {{mt("y")}}? If {{mt("x")}} is shown as <math>{{mopera(0,"s","*","y")}}<mo>+</mo><mi>x</mi></math>, where {{mt("s")}}∈{{mt("N")}}, then:
+		<math><br><center>x=g*k, y=g*l, x=s*y+m</center><br>
+		<center>g*k=s*g*l+m</center><br>
+		<center>g*k-s*g*l=g*(k-s*l)=m</center><br>
+		</math>
+		and so, any common divisor g dividing both x, y has to divide modulus x%y - and so, gcd(x, y)=gcd(x%y, y). If either x or y becomes equal to 0, then any number divides 0, and so any number that is divisor of both x and y must divide second number. The only thing left to do is finding greatest divisor of a number z&gt;0 - which is equal to z, which finishes the proof.
 
+	</div>
+	<h3>Complexity proof</h3>
+	<div>
+		It can be assumed without loss of generality, that x&gt;y - it is true after first iteration. Furthermore, 
+		<br><center><math>y+x%y&lt;y+y=2*y</math></center><br>
+		To prove that sum x'+y' is at most 2/3*(x+y), where x, y comes from iteration before, let's consider two cases: first, when x⩾2*y, second, when 2*y&gt;x⩾y.
+		<br><center>(1) <math>{{mfrac("x+y","x'+y'",0)}}={{mfrac("x+y","x%y+y",0)}}&gt;={{mfrac("x+y","2*y",0)}}&gt;={{mfrac("2*y+y","2*y",0)}}={{mfrac("3*y","2*y",0)}}={{mfrac("3","2",0)}}</math></center>
+		<br><center>(2) <math>{{mfrac("x+y","x'+y'",0)}}={{mfrac("x+y","x%y+y",0)}}={{mfrac("x+y","x-y+y",0)}}={{mfrac("x+y","x",0)}}=1+{{mfrac("y","x",0)}}&gt;=1+{{mfrac("y","2*y",0)}}={{mfrac("3","2",0)}}</math></center><br>
 	</div>
 	
 	<script src={{url_for('static', filename='Gcd.js')}}></script>

@@ -54,6 +54,15 @@ class Algorithm{
 		if (this.lees[this.lees.length-1][0]==100) return true;
 		return false;
 	}
+
+	FinishingSequence(){
+		while (this.lees[this.lees.length-1][0]!=100){
+			this.NextState();
+			this.StateMaker();
+			this.ChangeStatement();
+		}
+	}
+  
 	
 	//Printing statement on the output
 	ChangeStatement(){
@@ -94,14 +103,6 @@ class Sieve extends Algorithm{
 		this.lees.push([1, fas, 1]);
 	}
 
-	FinishingSequence(){
-		while (this.lees[this.lees.length-1][0]!=100){
-			this.NextState();
-			this.StateMaker();
-			this.ChangeStatement();
-		}
-	}
-  
 	//Marked=1 - not prime
 	//This function creates array of elements marked as primes
 	createMarked(len){
@@ -360,14 +361,6 @@ class Querier extends Algorithm{
 		this.sieve=assocSieve;
 	}
 
-	FinishingSequence(){
-		while (this.lees[this.lees.length-1][0]!=100){
-			this.NextState();
-			this.StateMaker();
-			this.ChangeStatement();
-		}
-	}
-
 	BeginningExecutor(){
 		for (var j=0;j<this.lees.length;j++){
 			if (this.lees[j][0]==0) this.sieve.MarkNormally(this.lees[j][1]);
@@ -483,9 +476,10 @@ var sk2=new ExtendedSieve(100, feral2);
 
 
 var foul=ObjectParser(document.getElementById('querySection'));
-var sk3=new Querier(132, foul, sk2)
+var sk3=new Querier(132, foul, sk2);
 
 
 //x.value="Jonasz";
 //var butt = document.createButton(1);
 //x.appendChild(butt);
+//export Algorithm;
