@@ -74,6 +74,14 @@ class Algorithm{
 		var l=this.wisdom;
 		l.innerHTML=p;
 	}
+	
+	FinishingSequence(){
+		while (this.lees[this.lees.length-1][0]!=100){
+			this.NextState();
+			this.StateMaker();
+			this.ChangeStatement();
+		}
+	}
 }
 
 class EuclidGcd extends Algorithm{
@@ -85,7 +93,7 @@ class EuclidGcd extends Algorithm{
 		if (s[0]==100) return;
 		var a=s[1], b=s[2], i=0;
 
-		if (s[0]==1) this.lees.push([2, a%b, b]);
+		if (s[0]==1 || s[0]==0) this.lees.push([2, a%b, b]);
 		if (s[0]==2) this.lees.push([3, b, a]);
 		if (s[0]==3 && b>0)	this.lees.push([1, a, b]);
 		if (s[0]==3 && b==0)	this.lees.push([100]);
@@ -98,9 +106,7 @@ class EuclidGcd extends Algorithm{
 		if (s[0]==100) return;
 		var a=s[1], b=s[2], i=0;
 
-
-
-		if (s[0]==0 || s[0]==1){
+		if (s[0]==0){
 			for (i=0;i<2;i++) this.divs[i].innerHTML='';
 			var butt;
 			for (i=0;i<a;i++){
@@ -131,15 +137,42 @@ class EuclidGcd extends Algorithm{
 
 		else if (s[0]==2){
 			var dp=this.lees[l-2][1];
-			for (i=dp;i>a;i--) {
-				this.divs[0].getElementsByTagName("button")[0].outerHTML="";
-			}
+			for (i=dp;i>a;i--) 	this.divs[0].getElementsByTagName("button")[0].outerHTML="";
 		}
 		document.getElementById("debug").innerHTML=this.lees;
 	}
-	StateUnmaker(){}
+
+	StateUnmaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], col;
+
+		var a=s[1], b=s[2], i=0;
+		
+		if (s[0]==3){
+			var tmp=this.divs[0].innerHTML;
+			this.divs[0].innerHTML=this.divs[1].innerHTML;
+			this.divs[1].innerHTML=tmp;
+		}
+
+		else if (s[0]==2){
+			var dp=this.lees[l-2][1], bt;
+			for (i=a;i<dp;i++){
+				if ((i-a)%b==0) col=this.colorGenerator();
+				bt=this.buttCreator(col);
+				this.divs[0].prepend(bt);
+			}
+		}
+		
+		else if (s[0]==1){
+			col=this.colorGenerator();
+			for (i=0;i<a;i++) this.divs[0].getElementsByTagName("button")[i].style.backgroundColor=col;
+		}
+
+		if (s[0]!=0)	this.lees.pop();
+	}
 
 	BeginningExecutor(){
+		this.lees=[]
 		this.place.innerHTML='';
 		var fas=this.input.value;
 		var a=0, b=0, x, i=0;
@@ -156,12 +189,10 @@ class EuclidGcd extends Algorithm{
 			if (x<58 && x>=48) b=b*10+x-48;
 			else break;
 		}
-		this.lees.push([1, a, b])
+		this.lees.push([0, a, b])
 		this.divs=this.divsCreator();
-
 		//document.createElement("BUTTON");
 	}
-	FinishingSequence(){}
 
 
 	colorGenerator(){

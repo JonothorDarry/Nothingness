@@ -2,6 +2,10 @@ from flask import Flask, render_template
 
 app=Flask(__name__)
 
+@app.route('/gcd')
+def EuclidAlgo():
+    return render_template('Gcd.html')
+
 @app.route('/')
 def ErastotenesSieve():
     return render_template('Primes.html')

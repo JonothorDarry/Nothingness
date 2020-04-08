@@ -7,13 +7,26 @@
 	{% if(math==1) %}
 		<math>
 	{% endif %}
-		<msub>
-			<mrow>{{a}}</mrow>
-			<mrow>{{b}}</mrow>
-		</msub>
+	<msub>
+		<mrow>{{a}}</mrow>
+		<mrow>{{b}}</mrow>
+	</msub>
 	{% if(math==1) %}
 		</math>
 	{% endif %}
+{%- endmacro %}
+
+{% macro mopera(math, a, op, b) -%}
+	{% if(math==1) %}
+		<math>
+	{% endif %}
+	<mi>{{a}}</mi>
+	<mo>{{op}}</mo>
+	<mi>{{b}}</mi>
+	{% if(math==1) %}
+		</math>
+	{% endif %}
+	
 {%- endmacro %}
 
 <head>
@@ -52,6 +65,16 @@
 		<div id="Comprehend" class="comprehend"></div>
 	</div>
 	<div id="debug"></div>
+
+	<h2>Proofs</h2>
+	<h3>Finiteness proof</h3>
+	<div>
+		In each move, {{mt("y")}} becomes previous {{mopera(1,"x","%","y")}}, but <math>{{mopera(0,"x","%","y")}}&lt;<mi>y</mi></math> by definition - and so, in each iteration {{mt("y")}} becomes lower, but in each iteration it's greater than 0 or algorithm ends - so number of steps must be lower or equal to {{mt("y")}} at the beginning of the algorithm.
+	</div>
+	<h3>Correctness proof</h3>
+	<div>
+
+	</div>
 	
 	<script src={{url_for('static', filename='Gcd.js')}}></script>
 </body>
