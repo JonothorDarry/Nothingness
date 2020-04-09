@@ -86,7 +86,7 @@ class Algorithm{
 
 class EuclidGcd extends Algorithm{
 	
-	StatementComprehension(){	
+	StatementComprehension(){
 		var l=this.lees.length;
 
 		var prev=this.lees[l-2], last=this.lees[l-1];
@@ -276,19 +276,96 @@ class EuclidGcd extends Algorithm{
 }
 
 class ExtendedEuclidGcd extends EuclidGcd{
-	constructor(){
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], col;
 
+		if (s[0]==100) return;
+		var a=s[1], b=s[2], i=0;
+
+		if (s[0]==0){
+			for (i=0;i<2;i++) this.divs[i].innerHTML='';
+			var butt;
+			this.varp=[1, 0];
+			this.varq=[0, 1];
+
+			this.div3Creator();
+			this.div3Appendor("-", s[1], 0);
+			this.div3Appendor(s[1], s[2], 1);
+			for (i=0;i<a;i++){
+				if (i%b==0 && a-i>=b) col=this.colorGenerator(192);
+				else if (i%b==0) col='#440000';
+				butt=this.buttCreator(col);
+				this.divs[0].appendChild(butt);
+			}
+			col=this.colorGenerator();
+
+			for (i=0;i<b;i++){
+				butt=this.buttCreator();
+				this.divs[1].appendChild(butt);
+			}
+		}
+		else super.StateMaker();
 	}
-	div3Appendor(a, b){
+
+	div3Creator(){
+		var col='#000000';
+		var butt=this.buttCreator(col, "a");
+		this.divs[2].appendChild(butt);
+		butt=this.buttCreator(col, "b");
+		this.divs[2].appendChild(butt);
+
+		var butt=this.buttCreator(col, "p");
+		this.divs[2].appendChild(butt);
+		butt=this.buttCreator(col, "q");
+		this.divs[2].appendChild(butt);
+
+		this.divs[2].appendChild(document.createElement("BR"));
+		
+	}
+
+	div3Appendor(a, b, ind=null){
+		var p, q, z, ln=this.varp.length;
+
+		if (ind==null){
+			var s=this.lees[this.lees.length-3];
+			z=Math.floor(s[1]/s[2]);
+			p=this.varp[ln-2]-this.varp[ln-1]*z;
+			q=this.varq[ln-2]-this.varq[ln-1]*z;
+			this.varp.push(p);
+			this.varq.push(q);
+		}
+
+		else{
+			p=this.varp[ind];
+			q=this.varq[ind];
+		}
+
 		var butt=this.buttCreator('#440000', a);
 		this.divs[2].appendChild(butt);
-		butt=this.buttCreator('#440000', b);	
+		butt=this.buttCreator('#440000', b);
 		this.divs[2].appendChild(butt);
+
+		var butt=this.buttCreator('#440000', p);
+		this.divs[2].appendChild(butt);
+		butt=this.buttCreator('#440000', q);
+		this.divs[2].appendChild(butt);
+
 		this.divs[2].appendChild(document.createElement("BR"));
 	}
 	
 	div3Exterminator(){
-		for (var i=0;i<3;i++) this.divs[2].lastElementChild.outerHTML='';
+		for (var i=0;i<5;i++) this.divs[2].lastElementChild.outerHTML='';
+	}
+	
+	StatementComprehension(){
+		var l=this.lees.length, strr=super.StatementComprehension(), ln=this.varp.length;
+
+		var prev=this.lees[l-2], last=this.lees[l-1];
+		if (last[0]==1 || last[0]==0) strr+=`. Result of dividing a by b is z=a/b=${last[1]}/${last[2]}=${Math.floor(last[1]/last[2])} - it will be used to calculate next p and q`;
+		if (last[0]==3) strr+=`. I also change p[i]=p[i-2]-z*p[i-1], q=q[i-2]-z*q[i-1], so that p[i]*u+q[i]*v are equal to current b=${last[2]} in the algorithm`;
+		if (last[0]==100) strr+=`. Numbers x, y such that u*x+v*y=gcd(u,v) are x=p[i-1]=${this.varp[ln-2]}, y=q[i-1]=${this.varq[ln-2]}: u*x+v*y=${this.lees[0][1]}*${this.varp[ln-2]}+${this.lees[0][2]}*${this.varq[ln-2]}=${this.lees[0][1]*this.varp[ln-2]+this.lees[0][2]*this.varq[ln-2]}`;
+		return strr;
 	}
 }
 

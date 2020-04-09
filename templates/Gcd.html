@@ -120,7 +120,7 @@
 	</div>
 	<h3>Second Problem</h3>
 	<div>
-		Let's say that sole gcd(a,b) is not enough: You want to find such numbers x, y, such that a*x+b*y=gcd(a,b). One can use same mechanism to solve this problem, but calculate also arrays p, q, such that p[i]*a+q[i]*b=c, where c is y in i-th iteration. p[0]=1, q[0]=0 because a*p[0]+b*q[0]=a, also p[1]=0, q[1]=1 because a*p[1]+b*q[1]=b. Then, if z=floor(a'/b'), then nextb'=a'-b'*z=(p[i-2]+q[i-2])-z*(p[i-1]+q[i-1]). And so, p[i]=p[i-2]-p[i-1]*z, q[i]=q[i-2]-z*q[i-1]. Animation shows, what is unseen.
+		Let's say that sole gcd(u,v) is not enough: You want to find such numbers x, y, such that u*x+v*y=gcd(u,v). One can use same mechanism to solve this problem, but calculate also arrays p, q, such that p[i]*u+q[i]*v=c, where c is b in i-th iteration. p[0]=1, q[0]=0 because u*p[0]+v*q[0]=u, also p[1]=0, q[1]=1 because u*p[1]+v*q[1]=b. Then, if z=floor(a/b), then {{msub(1,"b","i")}}={{msub(1,"a","i-1")}}-b'*z=(p[i-2]+q[i-2])-z*(p[i-1]+q[i-1]). And so, p[i]=p[i-2]-p[i-1]*z, q[i]=q[i-2]-z*q[i-1]. Animation shows, what is unseen.
 	</div>
 
 	<div id="Algo2">
