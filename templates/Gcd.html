@@ -56,6 +56,8 @@
 {%- endmacro %}
 
 <head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Primes.css')}}>
 </head>
 <body>
 	<h1>Greatest Common Divisor</h1>
@@ -65,15 +67,15 @@
 		<center>
 			<math>x=gcd({{msub(0)}},{{msub(0,"b")}}) ⇔ x|{{msub(0)}} ∧ x|{{msub(0,"b")}} ∧ {{msub(0,"!∃","y")}}(y|{{msub(0)}} ∧ y|{{msub(0,"b")}} ∧ y>x)</math>
 		</center><br>
-		In other words, if <math>x=gcd({{msub(0)}}, {{msub(0,"b", "i")}})</math>, then {{mt("x")}} divides {{msub(1)}} and {{msub(1,"b")}}, and there is no greater number {{mt("y")}} that divides both {{msub()}} and {{msub(1,"b")}}. First solution not being absolute brute force (checking all numbers <math>x∈&lt;2;min({{msub(0)}},{{msub(0,"b")}})&gt;</math> whether they're gcd - works in <math>O(q*min(max({{msub()}}),max({{msub(0,"b")}})</math>) is discussed below:
+		In other words, if <math>x=gcd({{msub(0)}}, {{msub(0,"b", "i")}})</math>, then {{mt("x")}} divides {{msub(1)}} and {{msub(1,"b")}}, and there is no greater number {{mt("y")}} that divides both {{msub()}} and {{msub(1,"b")}}. First solution not being absolute brute force (checking all numbers <math>x∈&lt;2;min({{msub(0)}},{{msub(0,"b")}})&gt;</math> whether they're gcd - works in <math>O(q*min({{msub()}},{{msub(0,"b")}})</math>) is discussed below:
 	</div>
 	<h3>First solution</h3>
 	<div>
-		
+		One can check al divisors of lower number from ai, bi whether it divides both of them, and take largest divisor of both. To find all divisors of a smaller number, one can check all numbers x up to sqrt(bi) if they divide both of them, and their counterparts - bi/x - this will work in O(q*sqrt(min(ai, bi))).
 	</div>
 	<h3>Second Solution</h3>
 	<div>
-		
+		To solve this problem, one can take a modulus from dividing {{mt("a")}} by {{mt("b")}}, then swap them and continue until b is not equal to 0 - then, a is gcd, like on the animation.	
 	</div>
 	<div id="Algo1">
 		<h2>Euclidean algorithm</h2>
@@ -114,6 +116,27 @@
 		To prove that sum x'+y' is at most 2/3*(x+y), where x, y comes from iteration before, let's consider two cases: first, when x⩾2*y, second, when 2*y&gt;x⩾y.
 		<br><center>(1) <math>{{mfrac("x+y","x'+y'",0)}}={{mfrac("x+y","x%y+y",0)}}&gt;={{mfrac("x+y","2*y",0)}}&gt;={{mfrac("2*y+y","2*y",0)}}={{mfrac("3*y","2*y",0)}}={{mfrac("3","2",0)}}</math></center>
 		<br><center>(2) <math>{{mfrac("x+y","x'+y'",0)}}={{mfrac("x+y","x%y+y",0)}}={{mfrac("x+y","x-y+y",0)}}={{mfrac("x+y","x",0)}}=1+{{mfrac("y","x",0)}}&gt;=1+{{mfrac("y","2*y",0)}}={{mfrac("3","2",0)}}</math></center><br>
+		And so, maximum number of operations can be bounded by O(q*log(min(ai, bi))), because sum x+y is always greater than 0, and after kth iteration it becomes lower at least {{msup("("+mfrac(3,2,0)+")","k",1)}} times.
+	</div>
+	<h3>Second Problem</h3>
+	<div>
+		Let's say that sole gcd(a,b) is not enough: You want to find such numbers x, y, such that a*x+b*y=gcd(a,b). One can use same mechanism to solve this problem, but calculate also arrays p, q, such that p[i]*a+q[i]*b=c, where c is y in i-th iteration. p[0]=1, q[0]=0 because a*p[0]+b*q[0]=a, also p[1]=0, q[1]=1 because a*p[1]+b*q[1]=b. Then, if z=floor(a'/b'), then nextb'=a'-b'*z=(p[i-2]+q[i-2])-z*(p[i-1]+q[i-1]). And so, p[i]=p[i-2]-p[i-1]*z, q[i]=q[i-2]-z*q[i-1]. Animation shows, what is unseen.
+	</div>
+
+	<div id="Algo2">
+		<h2>Extended Euclidean Algorithm</h2>
+		<div id="Inputter2">
+			<form>
+				<input class="inputter" id="Erasto2" name="Erasto" value="84 35">
+			</form>
+			<button id="Sender2" class="sender">Begin</button>
+			<button id="Prever2" class="previous">Previous Move</button>
+			<button id="Nexter2" class="next">Next Move</button>
+			<button id="Finisher2" class="finish">Finish</button>
+		</div>
+		<div class="breakAlgo"></div>
+		<div id="Primez2" class="primez"></div>
+		<div id="Comprehend2" class="comprehend"></div>
 	</div>
 	
 	<script src={{url_for('static', filename='Gcd.js')}}></script>

@@ -239,6 +239,7 @@ class Sieve extends Algorithm{
 		butt.style.color="#FFFFFF"
 		butt.style.width="40px";
 		butt.style.height="40px";
+		butt.style.padding="0";
 		butt.style.border="None";
 		butt.classList.add("sieveBut");
 		//butt.appendChild(sub);
