@@ -85,6 +85,25 @@ class Algorithm{
 }
 
 class EuclidGcd extends Algorithm{
+	constructor(block, a=-1, b=-1){
+		super(block);
+		if (a!=-1 && b!=-1){
+			this.divs=this.divsCreator();
+
+			var butt, col='#440000', i=0;
+			this.div3Appendor(a, b);
+			for (i=0;i<a;i++){	
+				butt=this.buttCreator(col);
+				this.divs[0].appendChild(butt);
+			}
+			col=this.colorGenerator();
+
+			for (i=0;i<b;i++){
+				butt=this.buttCreator();
+				this.divs[1].appendChild(butt);
+			}
+		}
+	}
 	
 	StatementComprehension(){
 		var l=this.lees.length;
@@ -129,7 +148,6 @@ class EuclidGcd extends Algorithm{
 				butt=this.buttCreator(col);
 				this.divs[0].appendChild(butt);
 			}
-			col=this.colorGenerator();
 
 			for (i=0;i<b;i++){
 				butt=this.buttCreator();
@@ -276,6 +294,28 @@ class EuclidGcd extends Algorithm{
 }
 
 class ExtendedEuclidGcd extends EuclidGcd{
+	constructor(block, a, b){
+		super(block, -1, -1);
+		this.varp=[1, 0];
+		this.varq=[0, 1];
+
+		var butt, col='#440000', i=0;
+		this.divs=this.divsCreator();
+		this.div3Creator();
+		this.div3Appendor("-", a, 0);
+		this.div3Appendor(a, b, 1);
+
+		for (i=0;i<a;i++){	
+			butt=this.buttCreator(col);
+			this.divs[0].appendChild(butt);
+		}
+		col=this.colorGenerator();
+
+		for (i=0;i<b;i++){
+			butt=this.buttCreator();
+			this.divs[1].appendChild(butt);
+		}
+	}
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], col;
@@ -320,8 +360,7 @@ class ExtendedEuclidGcd extends EuclidGcd{
 		butt=this.buttCreator(col, "q");
 		this.divs[2].appendChild(butt);
 
-		this.divs[2].appendChild(document.createElement("BR"));
-		
+		this.divs[2].appendChild(document.createElement("BR"));	
 	}
 
 	div3Appendor(a, b, ind=null){
@@ -370,7 +409,7 @@ class ExtendedEuclidGcd extends EuclidGcd{
 }
 
 var feral=ObjectParser(document.getElementById('Algo1'));
-var eg1=new EuclidGcd(feral);
+var eg1=new EuclidGcd(feral, 84, 35);
 document.getElementById("Comprehend").innerHTML="AHHASHPenis";
 var feral2=ObjectParser(document.getElementById('Algo2'));
-var eg2=new ExtendedEuclidGcd(feral2);
+var eg2=new ExtendedEuclidGcd(feral2, 84, 35);

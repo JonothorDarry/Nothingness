@@ -68,19 +68,19 @@
 	<h1>Greatest Common Divisor</h1>
 	<h3>First problem statement and definitions</h1>
 	<div>
-		Let's say <math>q (q&lt;1000000)</math> queries are given: what is the greatest common divisor of numbers {{mt("u")}} and {{mt("v")}} where <math>{{mt("u")}}, {{mt("v")}}&lt;1000.000.000</math>? To answer this question, let's define greatest common divisor (gcd): A number {{mt("g")}} is gcd of numbers {{mt("u")}}, {{mt("v")}} if and only if:<br>
+		Let's say <math>q (q&lt;1000000)</math> queries are given: what is the greatest common divisor of numbers {{mt("w")}} and {{mt("v")}} where <math>{{mt("w")}}, {{mt("v")}}&lt;1000.000.000</math>? To answer this question, let's define greatest common divisor (gcd): A number {{mt("g")}} is gcd of numbers {{mt("w")}}, {{mt("v")}} if and only if:<br>
 		<center>
-			<math>{{mt("g")}}=gcd({{mt("u")}},{{mt("v")}}) ⇔ {{mt("g")}}|{{mt("u")}} ∧ {{mt("g")}}|{{mt("v")}} ∧ {{msub(0,"!∃","h")}}({{mt("h")}}|{{mt("u")}} ∧ {{mt("h")}}|{{mt("v")}} ∧ {{mopera(0,"h",">","g")}})</math>
+			<math>{{mt("g")}}=gcd({{mt("w")}},{{mt("v")}}) ⇔ {{mt("g")}}|{{mt("w")}} ∧ {{mt("g")}}|{{mt("v")}} ∧ {{msub(0,"!∃","h")}}({{mt("h")}}|{{mt("w")}} ∧ {{mt("h")}}|{{mt("v")}} ∧ {{mopera(0,"h",">","g")}})</math>
 		</center><br>
-		In other words, if <math>{{mt("g")}}=gcd({{mt("u")}}, {{mt("v")}})</math>, then {{mt("g")}} divides {{mt("u")}} and {{mt("v")}}, and there is no greater number {{mt("h")}} that divides both {{mt("u")}} and {{mt("v")}}. First solution not being absolute brute force (checking all numbers <math>x∈&lt;2;min({{mt("u")}},{{mt("v")}})&gt;</math> whether they're gcd - works in <math>O(q*min({{mt("u")}},{{mt("v")}})</math>) is discussed below:
+		In other words, if <math>{{mt("g")}}=gcd({{mt("w")}}, {{mt("v")}})</math>, then {{mt("g")}} divides {{mt("w")}} and {{mt("v")}}, and there is no greater number {{mt("h")}} that divides both {{mt("w")}} and {{mt("v")}}. First solution not being absolute brute force (checking all numbers <math>x∈&lt;2;min({{mt("w")}},{{mt("v")}})&gt;</math> whether they're gcd - works in <math>O(q*min({{mt("w")}},{{mt("v")}})</math>) is discussed below:
 	</div>
 	<h3>First solution</h3>
 	<div>
-		Without loss of generality, let's assume that {{mopera(1,"u","<","v")}}. One can check all positive natural numbers {{mopera(1,"k","<","u")}} whether {{mopera(1,"k","|","u")}} and {{mopera(1,"k","|","v")}}, and take largest such number. To find all divisors of {{mt("u")}}, one can check all numbers {{mt("k")}} lower than <math><msqrt><mi>u</mi></msqrt></math> if they divide both of them, and their counterparts - {{mfrac("u","k")}} - this will work in O(<math><mi>q</mi>*<msqrt><mi>u</mi></msqrt></math>).
+		Without loss of generality, let's assume that {{mopera(1,"w","<","v")}}. One can check all positive natural numbers {{mopera(1,"k","<","w")}} whether {{mopera(1,"k","|","w")}} and {{mopera(1,"k","|","v")}}, and take largest such number. To find all divisors of {{mt("w")}}, one can check all numbers {{mt("k")}} lower than <math><msqrt><mi>w</mi></msqrt></math> if they divide both of them, and their counterparts - {{mfrac("w","k")}} - this will work in O(<math><mi>q</mi>*<msqrt><mi>w</mi></msqrt></math>).
 	</div>
 	<h3>Second Solution</h3>
 	<div>
-		Let's create arrays {{msub(1)}} and {{msub(1,"b")}} such that {{mopera(1,msub(1,"a",0), "=", "u")}}, {{mopera(1,msub(1,"b",0), "=", "v")}}. One can define these arrays for {{mopera(1,"i",">",0)}} as {{mopera(1,msub(1,"a","i"),"=",msub(1,"b","i-1"))}} and {{mopera(1,msub(1,"b","i"),"=",mopera(1, msub(1,"a","i-1"), "mod", msub(1,"b","i-1")))}}. When {{mopera(1,msub(1,"b","i"),"=",0)}} then {{msub(1,"a","i")}} is the solution.
+		Let's create arrays {{msub(1)}} and {{msub(1,"b")}} such that {{mopera(1,msub(1,"a",0), "=", "w")}}, {{mopera(1,msub(1,"b",0), "=", "v")}}. One can define these arrays for {{mopera(1,"i",">",0)}} as {{mopera(1,msub(1,"a","i"),"=",msub(1,"b","i-1"))}} and {{mopera(1,msub(1,"b","i"),"=",mopera(1, msub(1,"a","i-1"), "mod", msub(1,"b","i-1")))}}. When {{mopera(1,msub(1,"b","i"),"=",0)}} then {{msub(1,"a","i")}} is the solution.
 
 	</div>
 	<div id="Algo1">
@@ -107,14 +107,14 @@
 	</div>
 	<h3>Correctness proof</h3>
 	<div>
-		Thesis: for each {{mt("i")}}, gcd({{msub(1,"a","i")}}, {{msub(1,"b","i")}}) is equal to gcd({{mt("u")}}, {{mt("v")}}).<br>
-		Proof by induction: For {{mopera(1,"i","=",0)}} gcd({{msub(1,"a",0)}}, {{msub(1,"b",0)}})=gcd({{mt("u")}}, {{mt("v")}}), because {{msub(1,"a",0)}}={{mt("u")}}, {{msub(1,"b",0)}}={{mt("v")}}. So: {{msub(1,"∃","i")}} gcd({{msub(1,"a","i")}}, {{msub(1,"b","i")}})=gcd({{mt("u")}}, {{mt("v")}}). To finish proof is to show that for any {{mt("i")}} either gcd({{msub(1,"a","i")}}, {{msub(1,"b","i")}})=gcd({{msub(1,"a","i+1")}}, {{msub(1,"b","i+1")}}) or {{mopera(1,msub(1,"b","i+1"),"=",0)}}<br>	
+		Thesis: for each {{mt("i")}}, gcd({{msub(1,"a","i")}}, {{msub(1,"b","i")}}) is equal to gcd({{mt("w")}}, {{mt("v")}}).<br>
+		Proof by induction: For {{mopera(1,"i","=",0)}} gcd({{msub(1,"a",0)}}, {{msub(1,"b",0)}})=gcd({{mt("w")}}, {{mt("v")}}), because {{msub(1,"a",0)}}={{mt("w")}}, {{msub(1,"b",0)}}={{mt("v")}}. So: {{msub(1,"∃","i")}} gcd({{msub(1,"a","i")}}, {{msub(1,"b","i")}})=gcd({{mt("w")}}, {{mt("v")}}). To finish proof is to show that for any {{mt("i")}} either gcd({{msub(1,"a","i")}}, {{msub(1,"b","i")}})=gcd({{msub(1,"a","i+1")}}, {{msub(1,"b","i+1")}}) or {{mopera(1,msub(1,"b","i+1"),"=",0)}}<br>	
 		What can be said about any divisor {{mt("g")}} dividing both {{msub(1,"a","i")}} and {{msub(1,"b","i")}}? If {{msub(1,"a","i")}} is shown as {{mopera(1,"s","*",msub(1,"b","i"),"+","m")}}, where {{mt("s")}}∈{{mt("N")}}, then:
 		
 		<br><center>{{mopera(1,msub(1,"a","i"),"=","g","*","k")}}, {{mopera(1,msub(1,"b","i"),"=","g","*","l")}}, {{mopera(1,msub(1,"a","i"),"=","s","*",msub(1,"b","i"),"+","m")}}</center><br>
 		<center>{{mopera(1,"g","*","k","=","s","*","g","*","l","+","m")}}</center><br>
 		<center>{{mopera(1,"g","*","k","-","s","*","g","*","l","=","g","*(","k","-","s","*","l",")=","m")}}</center><br>
-		and so, any common divisor {{mt("g")}} dividing both {{msub(1,"a","i")}}, {{msub(1,"b","i")}} has to divide {{mopera(1,msub(1,"a","i"),"mod",msub(1,"b","i"))}} - and so, gcd({{msub(1,"a","i")}}, {{msub(1,"b","i")}})=gcd({{mopera(1,msub(1,"a","i"),"mod",msub(1,"b","i"))}}, {{msub(1,"b","i")}})=gcd({{msub(1,"b","i")}}, {{mopera(1,msub(1,"a","i"),"mod",msub(1,"b","i"))}})=gcd({{msub(1,"a","i+1")}}, {{msub(1,"b","i+1")}}). If {{msub(1,"b","i")}} becomes equal to 0, then any number divides 0, and so any number that is divisor of both {{mt("u")}} and {{mt("v")}} must divide {{msub(1,"a","i")}}. The only thing left to do is finding greatest divisor of a number {{mopera(1,msub(1,"a","i"),">",0)}} - which is equal to {{msub(1,"a","i")}}, which finishes the proof.
+		and so, any common divisor {{mt("g")}} dividing both {{msub(1,"a","i")}}, {{msub(1,"b","i")}} has to divide {{mopera(1,msub(1,"a","i"),"mod",msub(1,"b","i"))}} - and so, gcd({{msub(1,"a","i")}}, {{msub(1,"b","i")}})=gcd({{mopera(1,msub(1,"a","i"),"mod",msub(1,"b","i"))}}, {{msub(1,"b","i")}})=gcd({{msub(1,"b","i")}}, {{mopera(1,msub(1,"a","i"),"mod",msub(1,"b","i"))}})=gcd({{msub(1,"a","i+1")}}, {{msub(1,"b","i+1")}}). If {{msub(1,"b","i")}} becomes equal to 0, then any number divides 0, and so any number that is divisor of both {{mt("w")}} and {{mt("v")}} must divide {{msub(1,"a","i")}}. The only thing left to do is finding greatest divisor of a number {{mopera(1,msub(1,"a","i"),">",0)}} - which is equal to {{msub(1,"a","i")}}, which finishes the proof. Moreover, proof shows, that gcd({{mt("w")}}, {{mt("v")}}) has to be natural number.
 
 	</div>
 	<h3>Complexity proof</h3>
@@ -131,17 +131,17 @@
 		={{mopera(1,1,"+",mfrac(msub(1,"b"),msub(1),1))}}
 		&ge;{{mopera(1,1,"+",mfrac(msub(1,"b"),mopera(1,2,"*",msub(1,"b")),1))}}
 		={{mfrac("3","2",0)}}</math></center><br>
-	And so, maximum number of operations can be bounded by O(q*log(min({{mt("u")}}, {{mt("v")}}))), because sum {{mopera(1,msub(1),"+",msub(1,"b"))}} is always greater than 0, and after k iterations it becomes lower at least {{msup("("+mfrac(3,2,0)+")","k",1)}} times.
+	And so, maximum number of operations can be bounded by O(q*log(min({{mt("w")}}, {{mt("v")}}))), because sum {{mopera(1,msub(1),"+",msub(1,"b"))}} is always greater than 0, and after k iterations it becomes lower at least {{msup("("+mfrac(3,2,0)+")","k",1)}} times.
 	</div>
 	<h3>Second Problem</h3>
 	<div>
-		Let's say that sole gcd({{mt("u")}},{{mt("v")}}) is not enough: You want to find such numbers {{mt("x")}}, {{mt("y")}} such that: {{mopera(1,"u","*","x","+","v","*","y","=")}}gcd({{mt("u")}},{{mt("v")}}). One can use same mechanism to solve this problem, but calculate also arrays p, q, such that for each {{mt("i")}} following stands:
-		<br><center>{{mopera(1,msub(1,"p","i"),"*","u","+",msub(1,"q","i"),"*","v","=",msub(1,"b"))}}<br>
-			{{mopera(1,msub(1,"p",1),"=",0)}}, {{mopera(1,msub(1,"q",1),"=",1)}} <math><mo>&#8658;</mo></math> {{mopera(1,"u","*",msub(1,"p",1),"+","v","*",msub(1,"q",1),"=","v","=",msub(1,"b",1))}}<br>
+		Let's say that sole gcd({{mt("w")}},{{mt("v")}}) is not enough: You want to find such numbers {{mt("x")}}, {{mt("y")}} such that: {{mopera(1,"w","*","x","+","v","*","y","=")}}gcd({{mt("w")}},{{mt("v")}}). One can use same mechanism to solve this problem, but calculate also arrays p, q, such that for each {{mt("i")}} following stands:
+		<br><center>{{mopera(1,msub(1,"p","i"),"*","w","+",msub(1,"q","i"),"*","v","=",msub(1,"b"))}}<br>
+			{{mopera(1,msub(1,"p",1),"=",0)}}, {{mopera(1,msub(1,"q",1),"=",1)}} <math><mo>&#8658;</mo></math> {{mopera(1,"w","*",msub(1,"p",1),"+","v","*",msub(1,"q",1),"=","v","=",msub(1,"b",1))}}<br>
 			for {{mopera(1,mt("i"),">",1)}} following stands: {{mopera(1,msub(1,"b"),"=",msub(1,"a","i-1"),"mod",msub(1,"b","i-1"),"=",msub(1,"a","i-1"),"-","⌊"+mfrac(msub(0,"a","i-1"),msub(0,"b","i-1"),1)+"⌋","*",msub(1,"b","i-1"))}}<br></center>
-		It is possble to show {{msub(1,"b","i-1")}} as {{mopera(1,msub(1,"b","i-1"),"=",msub(1,"p","i-1"),"*","u","+",msub(1,"q","i-1"),"*","v")}}. But what with {{msub(1,"a","i-1")}}? It's equal to {{msub(1,"b","i-2")}}, except when {{mopera(1,"i","=",2)}}... unless {{mopera(1,msub(1,"b",0),"=","u")}}. Let also, for simplicity, {{mopera(1,"z","=","⌊"+mfrac(msub(0,"a","i"),msub(0,"b","i"),1)+"⌋")}}. Then: <br>
-		<center>{{mopera(1,msub(1,"p",0),"=",1)}}, {{mopera(1,msub(1,"q",0),"=",0)}} <math><mo>&#8658;</mo></math> {{mopera(1,"u","*",msub(1,"p",0),"+","v","*",msub(1,"q",0),"=","u","=",msub(1,"b",0))}}<br>
-			{{mopera(1, msub(1,"b","i+1"), "=", msub(1,"a","i"), "-", "⌊"+mfrac(msub(0,"a","i"),msub(0,"b","i"),1)+"⌋", "*", msub(1,"b","i"), "=", msub(1,"p","i-1"), "*", "u", "+", msub(1,"q","i-1"), "*", "v", "-", "z", "(", msub(1,"p"), "*", "u", "+", msub(1,"q"), "*", "v", ")=", "u", "(", msub(1,"p","i-1"), "-", "z", "*", msub(1,"p"), ")+", "v", "(", msub(1,"q","i-1"), "-", "z", "*", msub(1,"q","i"), ")")}}</center>
+		It is possble to show {{msub(1,"b","i-1")}} as {{mopera(1,msub(1,"b","i-1"),"=",msub(1,"p","i-1"),"*","w","+",msub(1,"q","i-1"),"*","v")}}. But what with {{msub(1,"a","i-1")}}? It's equal to {{msub(1,"b","i-2")}}, except when {{mopera(1,"i","=",2)}}... unless {{mopera(1,msub(1,"b",0),"=","w")}}. Let also, for simplicity, {{mopera(1,"z","=","⌊"+mfrac(msub(0,"a","i"),msub(0,"b","i"),1)+"⌋")}}. Then: <br>
+		<center>{{mopera(1,msub(1,"p",0),"=",1)}}, {{mopera(1,msub(1,"q",0),"=",0)}} <math><mo>&#8658;</mo></math> {{mopera(1,"w","*",msub(1,"p",0),"+","v","*",msub(1,"q",0),"=","w","=",msub(1,"b",0))}}<br>
+			{{mopera(1, msub(1,"b","i+1"), "=", msub(1,"a","i"), "-", "⌊"+mfrac(msub(0,"a","i"),msub(0,"b","i"),1)+"⌋", "*", msub(1,"b","i"), "=", msub(1,"p","i-1"), "*", "w", "+", msub(1,"q","i-1"), "*", "v", "-", "z", "(", msub(1,"p"), "*", "w", "+", msub(1,"q"), "*", "v", ")=", "w", "(", msub(1,"p","i-1"), "-", "z", "*", msub(1,"p"), ")+", "v", "(", msub(1,"q","i-1"), "-", "z", "*", msub(1,"q","i"), ")")}}</center>
 		And so, {{mopera(1, msub(1,"p","i+1"), "=", msub(1,"p","i-1"), "-", "z", "*", msub(1,"p"))}} and {{mopera(1, msub(1,"q","i+1"), "=", msub(1,"q","i-1"), "-", "z", "*", msub(1,"q"))}}
 
 	</div>
@@ -163,13 +163,40 @@
 	</div>
 
 	<div id="FinishingTouches">
-		There are two important questions concerning extended gcd: firstly, if is there any positive natural <math>{{mopera(0, "h", "<")}}gcd({{mt("u")}}, {{mt("v")}})<mo>=</mo><mi>g</mi></math> such that there exist integers {{mt("x")}}, {{mt("y")}} such that {{mopera(1, "u", "*", "x", "+", "v", "*", "y", "=", "h")}}? I'll prove opposite by contradiction: <br>
+		<h3>First proof - Solution with different g</h3>
+		There are two important questions concerning extended gcd: firstly, whether is there any positive natural <math>{{mopera(0, "h", "<")}}gcd({{mt("w")}}, {{mt("v")}})<mo>=</mo><mi>g</mi></math> such that there exist integers {{mt("x")}}, {{mt("y")}} such that {{mopera(1, "w", "*", "x", "+", "v", "*", "y", "=", "h")}}? I'll prove opposite by contradiction: <br>
 		<center>
-			{{mopera(1, "u", "*", "x", "+", "v", "*", "y", "=", "h")}}<br>
+			{{mopera(1, "w", "*", "x", "+", "v", "*", "y", "=", "h")}}<br>
 			{{mopera(1, "g", "*", "k", "*", "x", "+", "g", "*", "l", "*", "y", "=", "h")}}<br>
 			{{mopera(1, "g", "(", "k", "*", "x", "+", "l", "*", "y", ")=", "h")}}<br>
 		</center>
-		So, {{mt("h")}} must simultaneously fulfill: {{mopera(1, "g", "|", "h")}} and {{mopera(1, "g", ">", "h", ">", 0)}}. It is impossible, which finishes the proof.
+		So, {{mt("h")}} must simultaneously fulfill: {{mopera(1, "g", "|", "h")}} and {{mopera(1, "g", ">", "h", ">", 0)}}. It is impossible, which finishes the proof.<br>
+		<h3>Second proof - different x, y</h3>
+		Secondly, how many there are solutions {{mt("x")}}, {{mt("y")}}, fulfilling equation {{mopera(1, "w", "*", "x", "+", "v", "*", "y", "=", "g")}}?
+		<center>
+			{{mopera(1, "w", "*", "x", "+", "v", "*", "y", "=", "g")}}<br>
+			{{mopera(1, "w", "(", "x", "+", msub(1, "r", 1), ")+", "v", "(", "y", "+", msub(1, "r", 2), ")=", "g")}}<br>
+			{{mopera(1, "w", "*", "x", "+", "w", "*", msub(1, "r", 1), "+", "v", "*", "y", "+", "v", "*", msub(1, "r", 2), "=", "g")}}<br>
+			{{mopera(1, "w", "*", msub(1, "r", 1), "+", "v", "*", msub(1, "r", 2), "=", "0")}}<br>					
+			{{mopera(1, "w", "*", msub(1, "r", 1), "=-", "v", "*", msub(1, "r", 2))}}<br>	
+		</center>
+		And so, there is infinite amount of possible solutions; it is obvious, if {{mopera(1, msub(1, "r", 2), "=", "k", "*", "w")}}, {{mopera(1, msub(1, "r", 1), "=", "k", "*", "v")}}. But how to attain minimal next solution, i.e. {{mopera(1, "s", "=|", msub(1,"r",1), "w", "|")}} is minimal for given {{msub(1,"r",1)}}? Certainly:
+		<br><center>
+			{{mopera(1, "s", "|", "w")}}, {{mopera(1, "s", "|", "v")}} - it comes from last equation and fact, that {{msub(1, "r", 1)}} has to be integer - because by definition {{mopera(1, "x", "+", msub(1,"r",1))}} is integer.<br>
+			{{mopera(1, "s", ">", 0)}} - otherwise {{mopera(1, msub(1,"r",1), "=", 0)}} and so, next solution is still unknown.
+			{{mt("s")}} is minimal.
+		</center>
+		In other words, {{mt("s")}} is least common multiple of {{mt("w")}} and {{mt("v")}} - or {{mopera(1, "s", "=")}}lcm({{mt("u")}}, {{mt("v")}}). What can be said about {{mt("c")}}, if {{mt("s")}} is shown as {{mopera(1, "s", "=", mfrac(mopera(1, "w", "*", "v"), "c", 1))}}?
+		<br><center>
+			{{mopera(1, "w", "|", "s", "⇒", "w", "|", "w", "*", mfrac("v", "c", 1), "⇒", "c", "|", "v")}}<br>
+			{{mopera(1, "v", "|", "s", "⇒", "v", "|", "v", "*", mfrac("w", "c", 1), "⇒", "c", "|", "w")}}<br>
+			In order to minimize {{mopera(1, "s", "=", mfrac(mopera(1, "w", "*", "v"), "c", 1))}}, {{mt("c")}} has to be maximal possible.
+		</center>
+		And maximal number {{mt("c")}} dividing both {{mt("w")}} and {{mt("v")}} is {{mopera(1, "c", "=")}}gcd({{mt("w")}}, {{mt("v")}}). So, {{mopera(1, "s", "=|", msub(1,"r",1), "w", "|", "=", mfrac(mopera(1,"w","*","v"), "gcd("+mt("w")+", "+mt("v")+")", 1))}}. What follows, {{mopera(1, "", "|", msub(1,"r",1), "|", "=", mfrac("v", "gcd("+mt("w")+", "+mt("v")+")", 1))}} and {{mopera(1, "", "|", msub(1,"r",2), "|", "=", mfrac("w", "gcd("+mt("w")+", "+mt("v")+")", 1))}}.<br><br>
+		Problems concerning GCD rely on finding multiplicative inverse, and so on. Example problems involving gcds are: <br>
+		<a href="https://codeforces.com/problemset/problem/200/E">Tractor College</a>, 
+		<a href="https://codeforces.com/problemset/problem/919/E">Congruence Equation</a>
+
 
 
 	</div>
