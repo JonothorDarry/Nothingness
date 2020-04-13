@@ -325,6 +325,8 @@ class ExtendedEuclidGcd extends EuclidGcd{
 	
 	div3Exterminator(){
 		for (var i=0;i<5;i++) this.divs[2].lastElementChild.outerHTML='';
+		this.varp.pop();
+		this.varq.pop();
 	}
 	
 	StatementComprehension(){
