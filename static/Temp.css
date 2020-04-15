@@ -16,7 +16,8 @@
 
 h2{
 	position: relative;
-	left: 45%;
+	width: 100%;
+	text-align: center;
 }
 
 .breakAlgo{

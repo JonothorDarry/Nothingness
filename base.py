@@ -10,6 +10,9 @@ def EuclidAlgo():
 def ErastotenesSieve():
     return render_template('Primes.html')
 
+@app.route('/crt')
+def ChineseTheorem():
+    return render_template('Crt.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def Wisdom():
@@ -20,6 +23,8 @@ def Wisdom():
             return redirect(url_for('ErastotenesSieve'))
         if (s=='gcd'):
             return redirect(url_for('EuclidAlgo'))
+        if (s=='crt'):
+            return redirect(url_for('ChineseTheorem'))
 
     else:
         return render_template('index.html')

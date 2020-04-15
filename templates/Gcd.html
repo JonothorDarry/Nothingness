@@ -65,7 +65,8 @@
 		<title>Greatest Common Divisor</title>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Temp.css')}}>
-	    <script src={{url_for('static', filename='Temp.js')}}></script>
+		<script src={{url_for('static', filename='Temp.js')}}></script>
+		<!--<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
 	</head>
 	<body>
 		<header>
@@ -73,6 +74,7 @@
 		</header>
 		<h3>First problem statement and definitions</h3>
 		<p>
+		<!--\(\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}\)-->
 			Let's say <math>q (q&lt;1000000)</math> queries are given: what is the greatest common divisor of numbers {{mt("w")}} and {{mt("v")}} where <math>{{mt("w")}}, {{mt("v")}}&lt;1000.000.000</math>? To answer this question, let's define greatest common divisor (gcd): A number {{mt("g")}} is gcd of numbers {{mt("w")}}, {{mt("v")}} if and only if:<br>
 			<span class="central">
 				<math>{{mt("g")}}=gcd({{mt("w")}},{{mt("v")}}) ⇔ {{mt("g")}}|{{mt("w")}} ∧ {{mt("g")}}|{{mt("v")}} ∧ {{msub(0,"!∃","h")}}({{mt("h")}}|{{mt("w")}} ∧ {{mt("h")}}|{{mt("v")}} ∧ {{mopera(0,"h",">","g")}})</math>
@@ -203,9 +205,6 @@
 			Problems concerning GCD rely on finding multiplicative inverse, and so on. Example problems involving gcds are: <br>
 			<a href="https://codeforces.com/problemset/problem/200/E">Tractor College</a>, 
 			<a href="https://codeforces.com/problemset/problem/919/E">Congruence Equation</a>
-
-
-
 		</p>
 		
 		<script src={{url_for('static', filename='Gcd.js')}}></script>

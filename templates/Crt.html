@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+
+
+<html>
+	<head>
+		<title>Chinese Remainder Theorem</title>
+		<meta charset="UTF8">
+		<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Temp.css')}}>
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+	</head>
+
+	<body>
+		<header>
+			<h1>Chinese Remainder Theorem</h1>
+		</header>
+		<h3>Problem statement and definitions</h3>
+		<p id="Theory">
+			Suppose \(m\) equalities are given in form: <br>
+			<span class="central">
+			\(
+			m\text{ equations}
+			\begin{cases}
+			{% for x in [1,2] %}
+				x \equiv c_{{x}}\ (mod\ s_{{x}}) \\
+			{% endfor %}
+				... \\
+				x \equiv c_m\ (mod\ s_m) \\
+			\end{cases}
+			\)
+			</span>
+			The problem is: find \(x\) satisfying these equations
+		</p>
+		<h3>The first thesis</h3>
+		<p id="Solution">
+			If it is possible to show equivalent equation for two different equations, then one can reduce number of equations by one:<br>
+			<span class="central">\(x \equiv c_{1,2}\ (mod\ s_{1,2}) \iff 
+				\begin{cases}
+				x \equiv c_1\ (mod\ s_1) \\
+				x \equiv c_2\ (mod\ s_2)\\
+				\end{cases}
+			\)
+			</span>
+			And, after reduction:<br><br>
+			<span class="central">
+			\(
+			m-1\text{ equations}
+			\begin{cases}
+				x \equiv c_{1,2}\ (mod\ s_{1,2}) \\
+				x \equiv c_3\ (mod\ s_3) \\
+				... \\
+				x \equiv c_m\ (mod\ s_m) \\
+			\end{cases}
+			\)
+			</span>
+			What follows, if one can solve pair of equations in \(O(w)\), then one can solve whole problem in \(O(w*s)\)
+		</p>
+
+
+	</body>
+
+
+
+</html>
