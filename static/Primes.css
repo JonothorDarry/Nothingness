@@ -1,28 +1,3 @@
-.comprehend{
-        position: relative;
-        height:80px;
-}
-.sender, .previous, .next, .finish{
-        background-color: #000000;
-        color: #FFFFFF;
-        border:None;
-        width:120px;
-        height:25px;
-}
-
-.sender:hover, .previous:hover, .next:hover, .finish:hover{
-	background-color: #333333;
-}
-
-h2{
-	position: relative;
-	left: 45%;
-}
-
-.breakAlgo{
-	height:2px;
-}
-
 #sieveSection{
 	position: relative;
 	display:inline-block;

@@ -20,6 +20,7 @@ class EuclidGcd extends Algorithm{
 		if (a!=-1 && b!=-1){
 			this.divs=this.divsCreator();
 
+			this.div3Creator()
 			var butt, col='#440000', i=0;
 			this.div3Appendor(a, b);
 			for (i=0;i<a;i++){	
@@ -71,6 +72,7 @@ class EuclidGcd extends Algorithm{
 		if (s[0]==0){
 			for (i=0;i<2;i++) this.divs[i].innerHTML='';
 			var butt;
+			this.div3Creator()
 			this.div3Appendor(s[1], s[2]);
 			for (i=0;i<a;i++){
 				if (i%b==0 && a-i>=b) col=this.colorGenerator(192);
@@ -194,6 +196,16 @@ class EuclidGcd extends Algorithm{
 			butt.style.fontSize='12px';
 		}
 		return butt;
+	}
+
+	div3Creator(){
+		var col='#000000';
+		var butt=this.buttCreator(col, "a");
+		this.divs[2].appendChild(butt);
+		butt=this.buttCreator(col, "b");
+		this.divs[2].appendChild(butt);
+
+		this.divs[2].appendChild(document.createElement("BR"));	
 	}
 
 	divsCreator(){
