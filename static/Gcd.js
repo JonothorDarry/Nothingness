@@ -157,22 +157,37 @@ class EuclidGcd extends Algorithm{
 		}
 		this.lees.push([0, a, b])
 		this.divs=this.divsCreator();
-		//document.createElement("BUTTON");
 	}
 
-	div3Appendor(a, b){
-		var butt=this.buttCreator('#440000', a);
-		this.divs[2].appendChild(butt);
-		butt=this.buttCreator('#440000', b);	
-		this.divs[2].appendChild(butt);
+	//Appends things from lst in color
+	simpleAppend(lst, color='#440000'){
+		for (var i=0;i<lst.length;i++){
+			var butt=this.buttCreator(color, lst[i]);
+			this.divs[2].appendChild(butt);
+		}
 		this.divs[2].appendChild(document.createElement("BR"));
 	}
+
+	//Appends one verse with numbers to 3rd div
+	div3Appendor(a, b){
+		this.simpleAppend([this.ite, a, b]);
+		this.ite+=1;
+	}
 	
+	//Fills 3rd div in the beginning with certain verse and button names
+	div3Creator(){
+		this.simpleAppend(["i", "a", "b"], "#000000")
+		this.ite=0;
+	}
+	
+	//Dissolves one verse in 3rd div
 	div3Exterminator(){
-		for (var i=0;i<3;i++) this.divs[2].lastElementChild.outerHTML='';
+		for (var i=0;i<4;i++) this.divs[2].lastElementChild.outerHTML='';
+		this.ite-=1;
 	}
 
 
+	//Generates random color
 	colorGenerator(beg=0, end=255){
 		var col="#", s=0;
 		for (var i=0;i<3;i++){
@@ -183,6 +198,7 @@ class EuclidGcd extends Algorithm{
 		return col;
 	}
 
+	//Creates buttons
 	buttCreator(col="#440000", numb=null){
 		var butt=document.createElement("BUTTON");
 		butt.style.width="30px";
@@ -198,16 +214,8 @@ class EuclidGcd extends Algorithm{
 		return butt;
 	}
 
-	div3Creator(){
-		var col='#000000';
-		var butt=this.buttCreator(col, "a");
-		this.divs[2].appendChild(butt);
-		butt=this.buttCreator(col, "b");
-		this.divs[2].appendChild(butt);
 
-		this.divs[2].appendChild(document.createElement("BR"));	
-	}
-
+	//Creates 3 div blocks: one for a, one for b, one for parameters
 	divsCreator(){
 		var d1=document.createElement("DIV");
 		var d2=document.createElement("DIV");
@@ -291,18 +299,8 @@ class ExtendedEuclidGcd extends EuclidGcd{
 	}
 
 	div3Creator(){
-		var col='#000000';
-		var butt=this.buttCreator(col, "a");
-		this.divs[2].appendChild(butt);
-		butt=this.buttCreator(col, "b");
-		this.divs[2].appendChild(butt);
-
-		var butt=this.buttCreator(col, "p");
-		this.divs[2].appendChild(butt);
-		butt=this.buttCreator(col, "q");
-		this.divs[2].appendChild(butt);
-
-		this.divs[2].appendChild(document.createElement("BR"));	
+		this.simpleAppend(["i", "a", "b", "p", "q"], "#000000");
+		this.ite=0;
 	}
 
 	div3Appendor(a, b, ind=null){
@@ -322,23 +320,15 @@ class ExtendedEuclidGcd extends EuclidGcd{
 			q=this.varq[ind];
 		}
 
-		var butt=this.buttCreator('#440000', a);
-		this.divs[2].appendChild(butt);
-		butt=this.buttCreator('#440000', b);
-		this.divs[2].appendChild(butt);
-
-		var butt=this.buttCreator('#440000', p);
-		this.divs[2].appendChild(butt);
-		butt=this.buttCreator('#440000', q);
-		this.divs[2].appendChild(butt);
-
-		this.divs[2].appendChild(document.createElement("BR"));
+		this.simpleAppend([this.ite, a, b, p, q]);
+		this.ite+=1;
 	}
 	
 	div3Exterminator(){
-		for (var i=0;i<5;i++) this.divs[2].lastElementChild.outerHTML='';
+		for (var i=0;i<6;i++) this.divs[2].lastElementChild.outerHTML='';
 		this.varp.pop();
 		this.varq.pop();
+		this.ite-=1;
 	}
 	
 	StatementComprehension(){
