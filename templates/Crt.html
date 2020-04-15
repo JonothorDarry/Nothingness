@@ -53,8 +53,41 @@
 			\end{cases}
 			\)
 			</span>
-			What follows, if one can solve pair of equations in \(O(w)\), then one can solve whole problem in \(O(w*s)\)
+			What follows, if one can solve pair of equations in \(O(w)\), then one can solve whole problem in \(O(w*m)\)
 		</p>
+		<h3>The second Thesis</h3>
+		<p>
+		One can rewrite <br>
+		<span class="central">\(
+			\begin{cases}
+			x \equiv c_1\ (mod\ s_1) \\
+			x \equiv c_2\ (mod\ s_2)\\
+			\end{cases}
+		\)
+		</span>
+		To<br>
+		<span class="central">\(
+			\begin{cases}
+			x = s_1a+c_1 \\
+			x = s_2b+c_2\\
+			\end{cases}
+		\)
+		</span>
+		For certain integers \(a,\ b\). What follows, <br>
+		<span class="central">\(s_1a+c_1 = s_2b+c_2\)</span>
+		<span class="central">\(s_1a-s_1b=c_2-c_1\)</span><br>
+		One can solve equation \(s_1k+s_2l=gcd(s_1, s_2)\) in \(O(log(min(s_1, s_2)))\) using extended euclid; If \(c_2-c_1 \nmid gcd(s_1,s_2)\), Then one can go out and solve different problems, for there are no integer solutions: left side is always divsible by \(gcd(s_1,s_2)\) when \(s_1\) and \(s_2\) are multiplied by integers, \(c2-c1\) isn't. However, if \((c_2-c_1)|gcd(s_1,s_2)\), then:<br>
+		<span class="central">\(s_1k+s_2l = gcd(s_1,s_2)\ \ \ /*\frac{c_2-c_1}{gcd(s_1,s_2)}\)</span>
+		<span class="central">\(s_1k*\frac{c_2-c_1}{gcd(s_1,s_2)}+s_2l*\frac{c_2-c_1}{gcd(s_1,s_2)} = c_2-c_1\)</span><br>
+		And so, \(a=k\frac{c_2-c_1}{gcd(s_1,s_2)},\ b=l\frac{c_2-c_1}{gcd(s_1,s_2)}\). Now,
+		<span class="central">\(x = s_1a+c_1 = s_1k\frac{c_2-c_1}{gcd(s_1,s_2)}+c_1\)</span><br>
+		Which finishes stated subproblem in \(O(log(max(s_i)))\), and whole problem in \(O(m*log(max(s_i)))\)
+
+
+
+
+		</p>
+
 
 
 	</body>
