@@ -33,7 +33,30 @@ header{
 	color:#FFFFFF;
 	background-color:#000044;
 	text-align: center;
+}
 
+.utilsBar{
+	background-color:#000022;
+	height:50px;
+	text-align: left;
+}
+
+.backer{
+	background-color:#000022;
+	display: inline-block;
+	width:10%;
+	position:relative;
+	left:0;
+	height:100%;
+	padding:0;
+	margin:0;
+	border:0;
+	color:#FFFFFF;
+}
+
+.backer:hover{
+	background-color:#000088;	
+	
 }
 /*
 div.returner{
