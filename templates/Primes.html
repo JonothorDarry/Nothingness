@@ -20,7 +20,7 @@
 		<h3>First Problem statement and definitions</h3>
 		<p id="Theory">
 			Let's say \(q\) queries \((q \le 1000000)\) are given: Is given number \(a_i (1 \le a_i \le 1000000)\) a prime? To solve this problem, first let's define prime number: a number \(k \in N^+\) is prime, if and only if<br><br>
-			<span class="central">\(k \in P \iff \exists ! _{x \in N^+} k \equiv 0\ (mod\ m)\)<br><br></span>
+			<span class="central">\(k \in P \iff \exists ! _{x \in N^+\backslash\{1\}} k \equiv 0\ (mod\ x)\)<br><br></span>
 			where \(N^+\) is set of natural numbers excluding \(0\), \(P\) is set of primes. In other words, \(k\) needs to have exactly \(1\) natural divisor different than one - itself. A number \(k\) is divisible by \(m\) (or \(m\) is a divisor of \(k\)), if and only if:<br><br>
 			<span class="central">\(m|k \iff \exists_{x \in N^+} mx=k\)</span><br>
 
@@ -63,7 +63,7 @@
 		</p>
 			<h3>Complexity proof #1</h3>
 		<p id="Complexity">
-			It can be easily proven, that sieve, even without any optimizations works in O(n*log(n)): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marking numbers. Marking numbers works in O(n*log(n)), because it's sum of iterations on the table with difference equal to some prime: when sieve marks numbers divisible by 2, it passes <math><mfrac><mi>n</mi><mi>2</mi></mfrac></math> numbers; when it marks numbers divisible by 3, it passes <math><mfrac><mi>n</mi><mi>3</mi></mfrac></math> numbers, etc. So, algorith works in:
+		It can be easily proven, that sieve, even without any optimizations works in \(O(n*log(n))\): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marks numbers. Marking numbers works in \(O(n*log(n))\), because it's sum of iterations on the table with difference equal to some prime: when sieve marks numbers divisible by \(2\), it passes at most \(\frac{n}{2}\) numbers; when it marks numbers divisible by \(3\), it passes at most \(\frac{n}{3}\) numbers, etc. So, algorith works in:
 			<br>
 			<span class="central">
 				\(
@@ -117,7 +117,7 @@
 		</p>
 			<h3>Complexity proof #2</h3>
 			<p>
-				But there is also simpler proof with assumtion, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of a number \(x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
+				But there is also simpler proof with assumtion, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
 			<br><br>
 			<span class="central">(I) If \(x\) can be shown as 
 				\(
@@ -155,7 +155,7 @@
 					\)
 			</span>
 			<br>
-			What follows, one can construct lowest number with \(m\) distinct prime divisors by multiplying subsequent prime numbers, starting from lowest: \(2*3*5*...*p_m; m \le log_2(n)\), and the proof is finished giving better approximation of number of used steps in this algorithm.
+			What follows, one can construct lowest number with \(s\) distinct prime divisors by multiplying subsequent prime numbers, starting from lowest: \(2*3*5*...*p_m; m \le log_2(n)\), and the proof is finished giving better approximation of number of used steps in this algorithm.
 			</p>	
 			<br>
 			<p id="gutSieve">
@@ -166,7 +166,7 @@
 				
 			<h3>Second problem</h3>
 			<p id="ZwieteProbleme">
-				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(n\ (n\le1000000)\) numbers \(a_i (a_i \le 1000000)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). Such representation is unique for each number. If you'll mark each number with it's lowest divisor (instead of sole information whether it's prime) then You'll be able to solve this problem in the same way as above, in complexity \(O(nlog(n)+qlog(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)
+				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(n\ (n\le1000000)\) numbers \(a_i (1 \le a_i \le 1000000)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). Such representation is unique for each number. If You'll mark each number with it's lowest divisor (instead of sole information whether it's prime) then You'll be able to solve this problem in the same way as above, in complexity \(O(nlog(n)+qlog(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)
 
 		</p>
 		

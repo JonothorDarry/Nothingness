@@ -19,7 +19,7 @@
 		</header>
 		<h3>Problem statement and definitions</h3>
 		<p id="Theory">
-			Suppose \(m\) equalities are given in form: <br>
+			Suppose \(m\) \((m \le 10^6)\) equalities are given in form: <br>
 			<span class="central">
 			\(
 			m\text{ equations}
@@ -32,7 +32,7 @@
 			\end{cases}
 			\)
 			</span>
-			The problem is: find \(x\) satisfying these equations
+			where \(0 \le c_i \lt s_i \le 10^9 \land \prod_{i=1}^{m}s_i \le 10^{18}\) The problem is: find \(x\) satisfying these equations
 		</p>
 		<h3>The first thesis</h3>
 		<p id="Solution">
@@ -56,7 +56,7 @@
 			\end{cases}
 			\)
 			</span>
-			What follows, if one can solve pair of equations in \(O(w)\), then one can solve whole problem in \(O(w*m)\)
+			What follows, if one can solve pair of equations in \(O(\text{whatever})\), then one can solve whole problem in \(O(\text{whatever}*m)\)
 		</p>
 		<h3>The second Thesis</h3>
 		<p>
@@ -68,7 +68,7 @@
 				\end{cases}
 			\)
 			</span>
-			To<br>
+			to<br>
 			<span class="central">\(
 				\begin{cases}
 				x = s_1a+c_1 \\
@@ -76,10 +76,12 @@
 				\end{cases}
 			\)
 			</span>
-			For certain integers \(a,\ b\). What follows, <br>
+			for certain integers \(a,\ b\). What follows, <br>
 			<span class="central">\(s_1a+c_1 = s_2b+c_2\)</span>
 			<span class="central">\(s_1a-s_1b=c_2-c_1\)</span><br>
-			One can solve equation \(s_1k+s_2l=gcd(s_1, s_2)\) in \(O(log(min(s_1, s_2)))\) using extended euclid; If \(gcd(s_1,s_2) \nmid (c_2-c_1)\), Then one can go out and solve different problems, for there are no integer solutions: left side is always divsible by \(gcd(s_1,s_2)\) when \(s_1\) and \(s_2\) are multiplied by integers, \(c2-c1\) isn't. However, if \(gcd(s_1,s_2)|(c_2-c_1)\), then:<br><br>
+			One can solve equation \(s_1k+s_2l=gcd(s_1, s_2)\) in \(O(log(min(s_1, s_2)))\) using extended euclid; If \(gcd(s_1,s_2) \nmid (c_2-c_1)\), Then one can go out and solve different problems, for there are no integer solutions: <br>
+			<span class="central">\(gcd(s_1,s_2)|(s_1a-s_2b),\ gcd(s_1,s_2) \nmid (c2-c1),\ s_1a-s_2b=c_2-c_1\)</span>
+			However, if \(gcd(s_1,s_2)|(c_2-c_1)\), then:<br><br>
 			<span class="central">\(s_1k+s_2l = gcd(s_1,s_2)\ \ \ /*\frac{c_2-c_1}{gcd(s_1,s_2)}\)</span>
 			<span class="central">\(s_1k*\frac{c_2-c_1}{gcd(s_1,s_2)}+s_2l*\frac{c_2-c_1}{gcd(s_1,s_2)} = c_2-c_1\)</span><br>
 			And so, \(a=k\frac{c_2-c_1}{gcd(s_1,s_2)},\ b=-l\frac{c_2-c_1}{gcd(s_1,s_2)}\). Now,

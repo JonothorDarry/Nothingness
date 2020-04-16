@@ -8,6 +8,10 @@
 	border-radius:100%;
 }
 
+.wisdom:hover{
+	background-color: #8888DD;
+}
+
 .algoName{
 	width: 180px;
 	text-align: center;
