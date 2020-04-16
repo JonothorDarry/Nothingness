@@ -1,0 +1,46 @@
+.wisdom{
+	background-color: #6666DD;
+	color: #FFFFFF;
+	width: 180px;
+	height: 180px;
+	border: 0;
+	padding: 0;
+	border-radius:100%;
+}
+
+.algoName{
+	width: 180px;
+	text-align: center;
+}
+
+.btnContainer{
+	display: inline flow-root;
+	position: relative;
+	top: 0;
+	right: 0;
+	vertical-align: top;
+}
+
+.domainContainer{
+	position: relative;
+	top: 0;
+}
+
+h1{
+	position: relative;
+	background-color: #000000;
+	color: #FFFFFF;
+	margin: 0;
+	padding: 0;
+	height:210px;
+	line-height:210px;
+
+	top:0;
+	text-align: center;
+	vertical-align: middle;
+
+}
+body{
+	margin: 0;
+	padding: 0;
+}
