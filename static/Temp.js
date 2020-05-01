@@ -68,4 +68,16 @@ class Algorithm{
 		var l=this.wisdom;
 		l.innerHTML=p;
 	} 
+
+	getInput(beg, str){
+		var a=0, i=0, x;
+		for (i=beg;i<str.length;i++){
+			x=str.charCodeAt(i);
+			if (x<58 && x>=48) a=a*10+x-48;
+			else break;
+		}
+		return [a, i];
+	}
 }
+
+

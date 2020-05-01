@@ -1,19 +1,5 @@
 var alldict={};
 
-function ObjectParser(v){
-	dick={
-		'primePlace':v.getElementsByClassName('primez')[0],
-		'sendButton':v.getElementsByClassName('sender')[0],
-		'prevButton':v.getElementsByClassName('previous')[0],
-		'nextButton':v.getElementsByClassName('next')[0],
-		'input':v.getElementsByClassName('inputter')[0],
-		'output':v.getElementsByClassName('comprehend')[0],
-		'finitButton':v.getElementsByClassName('finish')[0]
-	}
-	return dick;
-}
-
-
 class EuclidGcd extends Algorithm{
 	constructor(block, a=-1, b=-1){
 		super(block);
@@ -141,20 +127,12 @@ class EuclidGcd extends Algorithm{
 		this.lees=[]
 		this.place.innerHTML='';
 		var fas=this.input.value;
-		var a=0, b=0, x, i=0;
+		var a=0, b=0, x, i=0, c;
 		
-		for (i=0;i<fas.length;i++){
-			x=fas.charCodeAt(i);
-			if (x<58 && x>=48) a=a*10+x-48;
-			else break;
-		}
-		i+=1;
+		c=this.getInput(0, fas);
+		a=c[0];
+		b=this.getInput(c[1]+1, fas)[0];
 
-		for (;i<fas.length;i++){
-			x=fas.charCodeAt(i);
-			if (x<58 && x>=48) b=b*10+x-48;
-			else break;
-		}
 		this.lees.push([0, a, b])
 		this.divs=this.divsCreator();
 	}
@@ -223,7 +201,7 @@ class EuclidGcd extends Algorithm{
 		var lees=[d1,d2, d3];
 		for (var i=0;i<3;i++){
 			lees[i].style.position="relative";
-			lees[i].style.display="inline-block";
+			lees[i].style.display="inline flow-root";
 			lees[i].style.verticalAlign="top";
 		}
 		lees[0].style.width="42%";
@@ -340,6 +318,19 @@ class ExtendedEuclidGcd extends EuclidGcd{
 		if (last[0]==100) strr+=`. Numbers x, y such that u*x+v*y=gcd(u,v) are x=p[i-1]=${this.varp[ln-2]}, y=q[i-1]=${this.varq[ln-2]}: u*x+v*y=${this.lees[0][1]}*${this.varp[ln-2]}+${this.lees[0][2]}*${this.varq[ln-2]}=${this.lees[0][1]*this.varp[ln-2]+this.lees[0][2]*this.varq[ln-2]}`;
 		return strr;
 	}
+}
+
+function ObjectParser(v){
+	dick={
+		'primePlace':v.getElementsByClassName('primez')[0],
+		'sendButton':v.getElementsByClassName('sender')[0],
+		'prevButton':v.getElementsByClassName('previous')[0],
+		'nextButton':v.getElementsByClassName('next')[0],
+		'input':v.getElementsByClassName('inputter')[0],
+		'output':v.getElementsByClassName('comprehend')[0],
+		'finitButton':v.getElementsByClassName('finish')[0]
+	}
+	return dick;
 }
 
 var feral=ObjectParser(document.getElementById('Algo1'));

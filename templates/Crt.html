@@ -7,7 +7,19 @@
 		<title>Chinese Remainder Theorem</title>
 		<meta charset="UTF8">
 		<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Temp.css')}}>
-		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+		<script src={{url_for('static', filename='Temp.js')}}></script>
+		<!-- MathJax -->
+		<!--<script type="text/x-mathjax-config">
+			    MathJax.Hub.Config({
+			      tex2jax: {inlineMath: [['\(','\)']], displayMath: [['$$$$$$','$$$$$$']]}
+			    });
+		</script>-->
+	    	<script type="text/javascript" async
+			src="https://assets.codeforces.com/mathjax/MathJax.js?config=TeX-AMS_HTML-full"
+	    	>
+		</script>
+		<!-- /MathJax -->
+
 	</head>
 
 	<body>
@@ -120,7 +132,7 @@
 		<h3>The Theorem-in-itself</h3>
 		<p>
 		Chinese Remainder Theorem states, that if all \(s_i\) are pairwise coprime, then solution exists and is unique \(mod\ \prod_{i=1}^{m}s_i\). The theory relies on lemmas:<br>
-		I) If \(\exists_{g \in N \land g \gt 1} g|s_i\), then \(\forall_{j \neq i} g \nmid s_j\) - because they're coprime, and so \(g\) cannot divide both of them<br>
+		I) If \(\exists_{g \in N \land g \gt 1} g|s_i\), then \(\forall_{j \neq i} g \nmid s_j\) - because \(gcd(s_i,s_j)=1\), and so \(g\) cannot divide both of them<br>
 		II) Euclid's lemma: if prime number \(p \in P\) is given, \(a,b \in N\) and \(p|ab\), then \(p|a\) or \(p|b\). Proof: if \(p \nmid a\) and \(pc=ab\), then:
 		<span class="central"> \(\exists_{x,y \in Z} ax+py=1\), because \(p\) has two divisors: one is \(p \nmid a\), second is one. Equation follows from bezout identity.</span>
 		<span class="central"> \(abx+pby=b\)</span>
@@ -128,7 +140,7 @@
 		<span class="central"> \(p(cx+by)=b \implies p|b\)</span>
 		Analogous proof can be shown for \(p \nmid b\)<br>
 		III) \(p|s_{i_1}s_{i_2}...s_{i_k} \iff p|s_{i_1} \lor p|s_{i_2}s_{i_3}...s_{i_k} \iff ... \iff p|s_{i_1} \lor p|s_{i_2} \lor p|s_{i_3} ... \lor p|s_{i_k}\)<br>
-		IV) If \(p|s_{i_1}s_{i_2}...s_{i_k}\), then \(p \nmid s_{j_1}s_{j_2}...s_{j_l}\), where \(\{i_1, i_2,...,i_k\} \cap \{j_1, j_2,...,j_l\}= \emptyset\) - it follows from the fact, that otherwise \((p|s_{i_1} \lor p|s_{i_2} \lor...\lor p|s_{i_k}) \land (p|s_{j_1} \lor p|s_{j_2}\lor ... \lor s_{j_l})\), and so \(\exists_{w,v \in N} p|s_w \land p|s_v\), which contradicts I).
+		IV) If \(p|s_{i_1}s_{i_2}...s_{i_k}\), then \(p \nmid s_{j_1}s_{j_2}...s_{j_l}\), where \(\{i_1, i_2,...,i_k\} \cap \{j_1, j_2,...,j_l\}= \emptyset\) - it follows from the fact, that otherwise \((p|s_{i_1} \lor p|s_{i_2} \lor...\lor p|s_{i_k}) \land (p|s_{j_1} \lor p|s_{j_2}\lor ... \lor p|s_{j_l})\), and so \(\exists_{w,v \in N} p|s_w \land p|s_v\), which contradicts I).
 		Now, with these lemmas, i'll show, that in each iteration of the algorithm, if by \(f_i\) will be denoted \(lcm(f_{i-1}, s_i)\), \(f_1=s_1\), and \(h_i=gcd(f_{i-1}, s_i)\), then: 
 		<span class="central">I) \(f_i=lcm(f_{i-1}, s_i)=\frac{f_{i-1}s_i}{gcd(f_{i-1}s_i)}=\frac{f_{i-1}s_i}{h_i}\), and so, \(h_i=1 \implies f_i=f_{i-1}s_i\)</span>
 		<span class="central">II) \(f_i=\prod_{j=1}^{i}s_j \implies h_{i+1}=gcd(\prod_{j=1}^{i}s_j, s_{i+1})=1\) as immediate consequence of lemma IV)</span>
@@ -137,8 +149,24 @@
 		</p>
 
 
+		<div id="Algo1">
+			<h2>Chinese Remainder Theorem</h2>
+			<div id="Inputter">
+				<form>
+					<textarea type="number" class="inputter" id="Crt" name="Crt">2&#10;2 3&#10;5 7</textarea>
+				</form>
+				<button id="Sender" class="sender">Begin</button>
+				<button id="Prever" class="previous">Previous Move</button>
+				<button id="Nexter" class="next">Next Move</button>
+				<button id="Finisher" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez" class="primez"></div>
+			<div id="Comprehend" class="comprehend"></div>
+		</div>
 
 		<form id="page" style="display:none"></form>
+		<script src={{url_for('static', filename='Crt.js')}}></script>
 	</body>
 
 </html>
