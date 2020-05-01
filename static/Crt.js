@@ -30,18 +30,42 @@ class CrtSolver extends Algorithm{
 		this.ite=1;
 	}
 
-	buttChanger(a, b){
-		var cl1="#000000", cl2="#004400";
-		if (this.btn1!=null){
-			this.btn1.style.backgroundColor=cl1;
-			this.btn2.style.backgroundColor=cl1;
+	buttChanger(a, b, rev=0){
+		var cl1="#FFFFFF", cl2="#004400", tcol="#666666", wh="#FFFFFF";
+		var toldcol="#FFFFFF", clb="#440000";
+		if (this.btn1){
+			if (rev==0){
+				this.btn1.style.backgroundColor=cl1;
+				this.btn1.style.color=tcol;
+			}
+			else{
+				this.btn1.style.backgroundColor=clb;
+				this.btn1.style.color=toldcol;
+			}
+		}
+		if (this.btn2){
+			if (rev==0){
+				this.btn2.style.backgroundColor=cl1;
+				this.btn2.style.color=tcol;
+			}
+			else{
+				this.btn2.style.backgroundColor=clb;
+				this.btn2.style.color=toldcol;
+			}
 		}
 
 		this.btn1=this.divs[0].getElementsByTagName("button")[a];
 		this.btn2=this.divs[0].getElementsByTagName("button")[b];
 
-		this.btn1.style.backgroundColor=cl2;
-		if (this.btn2) this.btn2.style.backgroundColor=cl2;
+		if (this.btn1){
+			this.btn1.style.backgroundColor=cl2;
+			this.btn1.style.color=wh;
+		}
+
+		if (this.btn2) {
+			this.btn2.style.backgroundColor=cl2;
+			this.btn2.style.color=wh;
+		}
 	}
 	
 	extended_euclid(a, b){
@@ -53,6 +77,49 @@ class CrtSolver extends Algorithm{
 			c=a%b, a=b, b=c;
 		}
 		return [a, p[i-2], q[i-2]];
+	}
+
+	StateUnmaker(){
+		var ln=this.lees.length;
+		var s=this.lees[ln-1], vv=this.solstack[this.solstack.length-1];
+		if (s[0]==0 && this.ite!=1){
+			var s1="s<sub>1</sub>", s2="s<sub>2</sub>", c1="c<sub>1</sub>", c2="c<sub>2</sub>", resp;
+			var sp1=this.lees[ln-2], sp2=this.lees[ln-4];
+			this.divs[1].innerHTML="";
+			vv=this.solstack[this.solstack.length-2];
+
+			this.addSpan(this.divs[1], `${c1}=${vv[0]}, ${s1}=${vv[1]}`);
+			this.addSpan(this.divs[1], `${c2}=${sp2[1][0]}, ${s2}=${sp2[1][1]}`);
+			resp=sp2[2];
+			this.addSpan(this.divs[1], `${resp[1]}*${s1}+${resp[2]}*${s2}=${resp[0]}`);
+
+
+			s2=sp2[1][1], c2=sp2[1][0], s1=vv[1], c1=vv[0];
+			this.addSpan(this.divs[1], `x=${s1}*${resp[1]}*(${c2}-${c1})/gcd(${s1}, ${s2})+${c1}=${s1*resp[1]*Math.floor(((c2-c1)/resp[0]))+c1}`);
+			this.addSpan(this.divs[1], `lcm(${s1}, ${s2})=${Math.floor((s1*s2)/s[2][0])}`);
+
+			var x=sp1[2]%sp1[1], lcm=sp1[1];
+			if (x<0) x+=sp1[1];
+			this.addSpan(this.divs[1], `x &equiv; ${x} (mod ${sp1[1]})`);
+		}
+
+		if (s[0]==1){
+			var vah=this.divs[1].getElementsByTagName("span");
+			this.divs[1].removeChild(vah[vah.length-1]);
+			this.divs[1].removeChild(vah[vah.length-1]);
+		}
+
+		if (s[0]==2){
+			this.ite-=1;
+			if (this.ite>1) this.buttChanger(this.ite*2-1, this.ite*2, 1);
+			else this.buttChanger(2, 0, 1);
+			this.solstack.pop();
+			var btt=this.divs[0].getElementsByTagName("button")[this.ite*2+1];
+			btt.style.display="None";
+			var vah=this.divs[1].getElementsByTagName("span");
+			this.divs[1].removeChild(vah[vah.length-1]);
+		}
+		if (s[0]!=0 || this.ite!=1) this.lees.pop();
 	}
 
 
@@ -86,6 +153,7 @@ class CrtSolver extends Algorithm{
 			this.solstack.push([x, s[1]]);
 
 			this.buttChanger(this.ite*2+1, this.ite*2+2);
+			this.ite+=1;
 		}
 	}
 
@@ -100,11 +168,12 @@ class CrtSolver extends Algorithm{
 			else this.lees.push([2, Math.floor((s1*s2)/s[2][0]), s1*s[2][1]*Math.floor(((c2-c1)/s[2][0]))+c1]);
 		}
 		if (s[0]==2){
-			if (this.ite+1>=this.dt.length) this.lees.push([100]);
-			else this.lees.push([0, this.dt[this.ite+1], this.extended_euclid(this.solstack[this.solstack.length-1][1], this.dt[this.ite+1][1])]);
-			this.ite+=1;
+			if (this.ite>=this.dt.length) this.lees.push([100]);
+			else this.lees.push([0, this.dt[this.ite], this.extended_euclid(this.solstack[this.solstack.length-1][1], this.dt[this.ite][1])]);
 		}
 	}
+
+	ChangeStatement(){}
 	
 	addSpan(place, text){
 		var span=document.createElement("SPAN");
@@ -129,7 +198,8 @@ class CrtSolver extends Algorithm{
 		var butt=document.createElement("BUTTON");
 		butt.style.width="200px";
 		butt.style.height="30px";
-		butt.style.border="1px solid";
+		//butt.style.border="1px solid";
+		butt.style.border="None";
 		butt.style.backgroundColor=col;
 		butt.style.color="#FFFFFF";
 		butt.style.padding='0px';

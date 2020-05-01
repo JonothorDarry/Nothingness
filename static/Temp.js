@@ -49,12 +49,12 @@ class Algorithm{
 	}
 
 	isFinished(){
-		if (this.lees[this.lees.length-1][0]==100) return true;
+		if (this.lees[this.lees.length-1][0]>=100) return true;
 		return false;
 	}
 
 	FinishingSequence(){
-		while (this.lees[this.lees.length-1][0]!=100){
+		while (!this.isFinished()){
 			this.NextState();
 			this.StateMaker();
 			this.ChangeStatement();
