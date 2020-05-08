@@ -1,6 +1,17 @@
 var alldict={};
 
 class CrtSolver extends Algorithm{
+	constructor(block, n=-1, s, c){
+		super(block);
+		if (n!=-1){
+			var i, af=[];
+			this.divs=this.divsCreator();
+
+			for (i=0;i<s.length;i++) af.push([c[i], s[i]]);
+			this.buttMaker(af);
+
+		}
+	}
 	
 	BeginningExecutor(){
 		this.lees=[];
@@ -250,8 +261,8 @@ class CrtSolver extends Algorithm{
 
 		var strr=``;
 		if (last[0]==0) strr=`Now, two equation marked in green are being solved: to find their gcd and coefficients is to solve bezout identity (a${s1}+b${s2}=gcd(${s1}, ${s2}) : solution is ${last[2][1]}*${s1}+${last[2][2]}*${s2}=${last[2][0]}) extended euclidean algorithm is used`;
-		if (last[0]==1) strr=`First solution to given equation is computed as (${c1}-${c2}/gcd(${s1}, ${s2}) : (${vc2}-${vc1})/gcd(${vs1}, ${vs2}): if it's not divisible, there is no solution; also lcm(${s1}, ${s2}) is computed`;
-		if (last[0]==2) strr=`After finding out the solution, the lcm(${s1}, ${s2}) is found, and the base solution is changed to interval <0;lcm(${s1}, ${s2})-1> : <0;${prev[2][0]}>`;
+		if (last[0]==1) strr=`First solution to given equation is computed if (${c1}-${c2}/gcd(${s1}, ${s2}) : (${vc2}-${vc1})/gcd(${vs1}, ${vs2}): if it's not divisible, there is no solution; also lcm(${s1}, ${s2}) is computed`;
+		if (last[0]==2) strr=`After finding out the solution and lcm(${s1}, ${s2}), the base solution is changed to interval <0;lcm(${s1}, ${s2})-1> : <0;${last[1]-1}>`;
 		if (last[0]==100) strr=`All equations were solved, the final solution is x &equiv; ${(prev[2]%prev[1])+((prev[2]%prev[1])<0?prev[1]:0)} (mod ${prev[1]})`;
 		if (last[0]==101) strr=`Solution is impossible to attain, for gcd(${s1}, ${s2}) &nmid; ${c2}-${c1}`;
 		return strr;
@@ -273,4 +284,4 @@ function ObjectParser(v){
 
 
 var feral=ObjectParser(document.getElementById('Algo1'));
-var eg1=new CrtSolver(feral);
+var eg1=new CrtSolver(feral, 3, [2, 5, 8], [3, 7, 33]);
