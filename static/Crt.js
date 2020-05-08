@@ -28,6 +28,12 @@ class CrtSolver extends Algorithm{
 
 		this.buttChanger(0, 2);
 		this.ite=1;
+
+		//String values: c1, c2, s1, s2
+		this.stc1=`c<sub>1</sub>`
+		this.stc2=`c<sub>2</sub>`
+		this.sts1=`s<sub>1</sub>`
+		this.sts2=`s<sub>2</sub>`
 	}
 
 	buttChanger(a, b, rev=0){
@@ -83,7 +89,7 @@ class CrtSolver extends Algorithm{
 		var ln=this.lees.length;
 		var s=this.lees[ln-1], vv=this.solstack[this.solstack.length-1];
 		if (s[0]==0 && this.ite!=1){
-			var s1="s<sub>1</sub>", s2="s<sub>2</sub>", c1="c<sub>1</sub>", c2="c<sub>2</sub>", resp;
+			var s1=this.sts1, s2=this.sts2, c1=this.stc1, c2=this.stc2, resp;
 			var sp1=this.lees[ln-2], sp2=this.lees[ln-4];
 			this.divs[1].innerHTML="";
 			vv=this.solstack[this.solstack.length-2];
@@ -160,7 +166,7 @@ class CrtSolver extends Algorithm{
 	NextState(){
 		var s=this.lees[this.lees.length-1], vv=this.solstack[this.solstack.length-1];
 		if (s[0]==0){
-			this.lees.push([1, s[1], s[2]]);	
+			this.lees.push([1, s[1], s[2]]);
 		}
 		if (s[0]==1){
 			var s2=s[1][1], c2=s[1][0], s1=vv[1], c1=vv[0];
@@ -173,7 +179,6 @@ class CrtSolver extends Algorithm{
 		}
 	}
 
-	ChangeStatement(){}
 	
 	addSpan(place, text){
 		var span=document.createElement("SPAN");
@@ -226,6 +231,30 @@ class CrtSolver extends Algorithm{
 		this.place.appendChild(d2);
 		this.place.appendChild(d3);
 		return lees;
+	}
+
+	StatementComprehension(){
+		var l=this.lees.length, vv=this.solstack[this.solstack.length-1];
+		var s1=this.sts1, s2=this.sts2, c1=this.stc1, c2=this.stc2;
+		var vc1, vc2, vs1, vs2, lc, x, exa, exb;
+
+		var prev=this.lees[l-2], last=this.lees[l-1];
+		vc1=vv[0], vs1=vv[1];
+
+
+		if (last[0]==2) lc=last[1][0], x=last[1][1], vs1=prev[1][1], vs2=prev[1][2];
+		//else if (last[0]==1)
+		else if (last[0]<99) vs2=last[1][1], vc2=last[1][0];
+		else vs2=prev[1][1], vc2=prev[1][0];
+
+
+		var strr=``;
+		if (last[0]==0) strr=`Now, two equation marked in green are being solved: to find their gcd and coefficients is to solve bezout identity (a${s1}+b${s2}=gcd(${s1}, ${s2}) : solution is ${last[2][1]}*${s1}+${last[2][2]}*${s2}=${last[2][0]}) extended euclidean algorithm is used`;
+		if (last[0]==1) strr=`First solution to given equation is computed as (${c1}-${c2}/gcd(${s1}, ${s2}) : (${vc2}-${vc1})/gcd(${vs1}, ${vs2}): if it's not divisible, there is no solution; also lcm(${s1}, ${s2}) is computed`;
+		if (last[0]==2) strr=`After finding out the solution, the lcm(${s1}, ${s2}) is found, and the base solution is changed to interval <0;lcm(${s1}, ${s2})-1> : <0;${prev[2][0]}>`;
+		if (last[0]==100) strr=`All equations were solved, the final solution is x &equiv; ${(prev[2]%prev[1])+((prev[2]%prev[1])<0?prev[1]:0)} (mod ${prev[1]})`;
+		if (last[0]==101) strr=`Solution is impossible to attain, for gcd(${s1}, ${s2}) &nmid; ${c2}-${c1}`;
+		return strr;
 	}
 }
 

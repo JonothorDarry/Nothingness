@@ -8,17 +8,7 @@
 		<meta charset="UTF8">
 		<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Temp.css')}}>
 		<script src={{url_for('static', filename='Temp.js')}}></script>
-		<!-- MathJax -->
-		<!--<script type="text/x-mathjax-config">
-			    MathJax.Hub.Config({
-			      tex2jax: {inlineMath: [['\(','\)']], displayMath: [['$$$$$$','$$$$$$']]}
-			    });
-		</script>-->
-	    	<script type="text/javascript" async
-			src="https://assets.codeforces.com/mathjax/MathJax.js?config=TeX-AMS_HTML-full"
-	    	>
-		</script>
-		<!-- /MathJax -->
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
 	</head>
 
@@ -153,7 +143,7 @@
 			<h2>Chinese Remainder Theorem</h2>
 			<div id="Inputter">
 				<form>
-					<textarea type="number" class="inputter" id="Crt" name="Crt">2&#10;2 3&#10;5 7</textarea>
+					<textarea type="number" class="inputter" id="Crt" name="Crt">3&#10;2 3&#10;5 7&#10;8 33</textarea>
 				</form>
 				<button id="Sender" class="sender">Begin</button>
 				<button id="Prever" class="previous">Previous Move</button>
@@ -167,6 +157,10 @@
 
 		<form id="page" style="display:none"></form>
 		<script src={{url_for('static', filename='Crt.js')}}></script>
+		<div>
+			<h2>Problems</h2>
+			Problems involving linear congruence equation are rare, CRT is more useful as a theorem, to show certain properties of totient function. Example problems are:<br>
+			<a href="https://codeforces.com/problemset/problem/338/D">GCD Table</a>, 
+			<a href="https://codeforces.com/problemset/problem/982/E">Billiard</a>
 	</body>
-
 </html>
