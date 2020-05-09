@@ -22,7 +22,7 @@
 		</p>
 		<h3>Solution</h3>
 		<p>
-		\(a^b\) can be shown as \(a^b=a^{2 \lfloor \frac{b}{2} \rfloor +b\ mod\ 2}=a^{2 \lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2} = (a^2)^{\lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2}\). Value of \(b\ mod\ 2\) is either \(0\) or \(1\) - and so, calculating \(a^{b\ mod\ 2}\) takes \(O(1)\). Calculating \(a^2\) also takes \(O(1)\) time complexity, and repeating calculations recursively until \(b &gt; 0\) takes at most \(log_2(b)\) iterations. Overall complexity of the algorithm is therefore \(O(log(b))\).
+		\(a^b\) can be shown as \(a^b=a^{2 \lfloor \frac{b}{2} \rfloor +b\ mod\ 2}=a^{2 \lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2} = (a^2)^{\lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2}\). Value of \(b\ mod\ 2\) is either \(0\) or \(1\) - and so, calculating \(a^{b\ mod\ 2}\ mod\ m\) takes \(O(1)\). Calculating \(a^2\ mod\ m\) also takes \(O(1)\) time complexity, and repeating calculations recursively until \(b &gt; 0\) takes at most \(log_2(b)\) iterations. Overall complexity of the algorithm is therefore \(O(log(b))\). 
 		</p>
 
 
