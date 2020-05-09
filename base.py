@@ -11,7 +11,7 @@ def comeBackin(place):
     if (place=='crt'):
         return redirect(url_for('ChineseTheorem'))
     if (place=='index'):
-        return render_template('index.html')
+        return redirect(url_for('Wisdom'))
 
 
 @app.route('/gcd', methods=['GET', 'POST'])

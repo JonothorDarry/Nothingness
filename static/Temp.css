@@ -43,7 +43,7 @@ header{
 
 .backer{
 	background-color:#000022;
-	display: inline-block;
+	display: inline flow-root;
 	width:10%;
 	position:relative;
 	left:0;
@@ -61,7 +61,7 @@ header{
 /*
 div.returner{
 	position:relative;
-	display: inline-block;
+	display: inline flow-root;
 	width: 19%;
 	height: 150px;
 	top:0;
@@ -76,7 +76,7 @@ h1{
 	top: 0;
 	padding: 0;
 	margin: 0;
-	display: inline-block;
+	display: inline flow-root;
 	text-align: match-parent;
 	vertical-align: middle;
 }

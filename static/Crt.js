@@ -1,7 +1,7 @@
 var alldict={};
 
 class CrtSolver extends Algorithm{
-	constructor(block, n=-1, s, c){
+	constructor(block, n=-1, c, s){
 		super(block);
 		if (n!=-1){
 			var i, af=[];
@@ -212,7 +212,7 @@ class CrtSolver extends Algorithm{
 
 	buttCreator(col="#440000", numb=null){
 		var butt=document.createElement("BUTTON");
-		butt.style.width="200px";
+		butt.style.width="min(200px, 49%)";
 		butt.style.height="30px";
 		//butt.style.border="1px solid";
 		butt.style.border="None";
