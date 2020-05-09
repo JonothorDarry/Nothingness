@@ -1,64 +1,4 @@
 <!DOCTYPE html>
-{% macro mt(a) -%}
-	<math><mi>{{a}}</mi></math>
-{%- endmacro %}
-
-{% macro msub(math=1, a="a", b="i") -%}
-	{% if(math==1) %}
-		<math>
-	{% endif %}
-	<msub>
-		<mrow>{{a}}</mrow>
-		<mrow>{{b}}</mrow>
-	</msub>
-	{% if(math==1) %}
-		</math>
-	{% endif %}
-{%- endmacro %}
-
-{% macro msup(a, b, math=1) -%}
-	{% if(math==1) %}
-		<math>
-	{% endif %}
-		<msup>
-			<mrow>{{a}}</mrow>
-			<mrow>{{b}}</mrow>
-		</msup>
-	{% if(math==1) %}
-		</math>
-	{% endif %}
-{%- endmacro %}
-
-{% macro mopera(math) -%}
-	{% if(math==1) %}
-		<math>
-	{% endif %}
-	{% for x in varargs %}	
-		{% if(loop.index%2==0 and x!="*") %}
-			<mo>{{x}}</mo>
-		{% elif (x!="*") %}
-			<mi>{{x}}</mi>
-		{% endif %}
-	{% endfor %}
-
-	{% if(math==1) %}
-		</math>
-	{% endif %}
-	
-{%- endmacro %}
-
-{% macro mfrac(a, b, math=1) -%}
-	{% if(math==1) %}
-		<math>
-	{% endif %}
-		<mfrac>
-			<mrow>{{a}}</mrow>
-			<mrow>{{b}}</mrow>
-		</mfrac>
-	{% if(math==1) %}
-		</math>
-	{% endif %}
-{%- endmacro %}
 
 <html>
 	<head>
@@ -113,7 +53,7 @@
 		<h2>Proofs</h2>
 		<h3>Finiteness proof</h3>
 		<p>
-		In each iteration, \(b_i\) becomes \(a_{i-1}\ mod\ b_{i-1}\), but \(a_{i-1} mod b_{i-1} &lt; b_{i-1}\) by definition - and so, in each iteration \(b_i\) becomes lower, but in each iteration it's greater than \(0\) or algorithm ends - so number of steps must be lower or equal to \(b_0\), so it is finite
+		In each iteration, \(b_i\) becomes \(a_{i-1}\ mod\ b_{i-1}\), but \(a_{i-1}\ mod\ b_{i-1} &lt; b_{i-1}\) by definition - and so, in each iteration \(b_i\) becomes lower, but in each iteration it's greater than \(0\) or algorithm ends - so number of steps must be lower or equal to \(b_0\), so it is finite
 		</p>
 		<h3>Correctness proof</h3>
 		<p>

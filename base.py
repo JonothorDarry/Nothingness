@@ -10,6 +10,8 @@ def comeBackin(place):
         return redirect(url_for('EuclidAlgo'))
     if (place=='crt'):
         return redirect(url_for('ChineseTheorem'))
+    if (place=='binex'):
+        return redirect(url_for('BinExpo'))
     if (place=='index'):
         return redirect(url_for('Wisdom'))
 
@@ -38,9 +40,17 @@ def ChineseTheorem():
     if (req.method=='POST'):
         s=req.form['next']
         return comeBackin(s)
-
     else:
         return render_template('Crt.html')
+
+@app.route('/binex', methods=['GET', 'POST'])
+def BinExpo():
+    req=request
+    if (req.method=='POST'):
+        s=req.form['next']
+        return comeBackin(s)
+    else:
+        return render_template('BinaryExpo.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def Wisdom():
@@ -48,7 +58,6 @@ def Wisdom():
     if (req.method=='POST'):
         s=req.form['next']
         return comeBackin(s)
-
     else:
         return render_template('index.html')
     

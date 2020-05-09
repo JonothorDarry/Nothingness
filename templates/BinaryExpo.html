@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Binary Exponentation</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Temp.css')}}>
+		<script src={{url_for('static', filename='Temp.js')}}></script>
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+	</head>
+	<body>
+		<header>
+			<div class="utilsBar">
+				<button class="backer" form="page" type="submit" formmethod="post" name="next" value="index">&lt; To main</button>
+			</div>
+			<h1>Binary Exponentation</h1>
+		</header>
+
+		<h3>First problem statement</h3>
+		<p>
+			Suppose You have three numbers: \(a, b, m\), and are asked to find \(x: a^b \equiv x (mod\ m)\). To solve this problem with algorithm different than brute force (multiply \(a\ b\) times modulo \(m\) - complexity \(O(b)\) - it can be assumed, that multiplication modulo \(m\) works in \(O(1)\)), one can use binary exponentation.
+		</p>
+		<h3>Solution</h3>
+		<p>
+		\(a^b\) can be shown as \(a^b=a^{2 \lfloor \frac{b}{2} \rfloor +b\ mod\ 2}=a^{2 \lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2} = (a^2)^{\lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2}\). Value of \(b\ mod\ 2\) is either \(0\) or \(1\) - and so, calculating \(a^{b\ mod\ 2}\) takes \(O(1)\). Calculating \(a^2\) also takes \(O(1)\) time complexity, and repeating calculations recursively until \(b &gt; 0\) takes at most \(log_2(b)\) iterations. Overall complexity of the algorithm is therefore \(O(log(b))\).
+		</p>
+			
+
+		<form id="page" style="display:none"></form>
+	</body>
+</html>
