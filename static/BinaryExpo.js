@@ -82,15 +82,53 @@ class BinaryExpo extends Algorithm{
 			this.Painter(this.btlist[2][this.reality-1], 1);
 
 			this.btlist[1][this.reality-1].innerHTML=(a*a)%m;
-			this.utilbts[1].innerHTML=(a*a)%m;	
+			this.utilbts[1].innerHTML=(a*a)%m;
 			this.utilbts[2].innerHTML=Math.floor(b/2);			
 			this.reality--;
 		}
 	}
 
+	StateUnmaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], col, vl;
+		if (s[0]<100 && l>1){
+			var s2=this.lees[l-2];
+			var a=s[1], b=s[2], res=s[3], m=s[4], i=0;
+			this.utilbts[0].innerHTML=res;
+			this.utilbts[1].innerHTML=a;
+			this.utilbts[2].innerHTML=b;
+
+			if (s[0]==1){
+				this.reality++;
+
+				this.Painter(this.btlist[0][this.reality], 1);
+				this.Painter(this.btlist[1][this.reality], 1);
+				this.Painter(this.btlist[2][this.reality], 1);
+
+				this.Painter(this.btlist[1][this.reality-1], 3);
+				this.Painter(this.btlist[2][this.reality-1], 0);
+			}
+			if (s[0]==0){
+				this.Painter(this.btlist[0][this.reality], 3);
+			}
+
+		}
+		if (l>1) this.lees.pop();
+	}
 
 
-	StatementComprehension(){}
+
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		var a=s[1], b=s[2], res=s[3], m=s[4];
+
+		var strr=``;
+		if (s[0]==0) strr=`New result is calculated as res*a<sup>b mod 2</sup> mod m=res*a<sup>${b%2}</sup> mod ${m}=${res}*${(b%2==0)?1:a} mod ${m}=${(res*((b%2==0)?1:a))%m}`;
+		if (s[0]==1) strr=`Value of b is divided by 2: b/2=${b}/2=${Math.floor(b/2)}, a is multiplied by itself: a=(a*a)%m=${a}*${a} mod ${m}=${(a*a)%m}`;
+		if (s[0]==100) strr=`Now, b=0: algorithm ends, result is ${a}`;
+		return strr;
+	}
 
 	NextState(){
 		var l=this.lees.length;
@@ -99,7 +137,7 @@ class BinaryExpo extends Algorithm{
 		console.log(b, s[0], b);
 
 		if (s[0]>=100) return;
-		if (s[0]==0 && b==1) this.lees.push([100]);
+		if (s[0]==0 && b==1) this.lees.push([100, (res*(b%2==0?1:a))%m]);
 		else if (s[0]==0) this.lees.push([1, a, b, (res*(b%2==0?1:a))%m, m]);
 		else if (s[0]==1) this.lees.push([0, (a*a)%m, Math.floor(b/2), res, m]); 
 	}
