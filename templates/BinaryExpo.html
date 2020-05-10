@@ -49,16 +49,16 @@
 			<div id="Comprehend" class="comprehend"></div>
 		</div>
 		
-		<p>This animatin shows, why method is called binary exponentation: if \(b\) is shown as \(b=2^{i_1}+2^{i_2}+...+2^{i_k}\), where \(\forall_{w,v} i_w \neq i_v\), then \(res=a^{2^{i_1}}*a^{2^{i_2}}*...*a^{2^{i_k}}\).
+		<p>This animation shows, why method is called binary exponentation: if \(b\) is shown as \(b=2^{i_1}+2^{i_2}+...+2^{i_k}\), where \(\forall_{w,v} i_w \neq i_v\), then \(res=a^{2^{i_1}}*a^{2^{i_2}}*...*a^{2^{i_k}}\).
 		<h3>Further analysis</h3>
 		<p>
-			One can utilize this method to raise matrices to power, because matrix multiplication is associative (i.e \((A*B)*C=A*(B*C)\)). This allows raising square matrices to \(k\)-th power within \(O(n^3log(k))\) time complexity, where \(n\) is matrix size.
+			The method above also allows multiplication modulo \(m\), but \(res=0\) on the beginning - for \(0\) is neutral element of addition. One can utilize this method to raise matrices to power, because matrix multiplication is associative (i.e \((A*B)*C=A*(B*C)\)). This allows raising square matrices to \(k\)-th power within \(O(n^3log(k))\) time complexity, where \(n\) is matrix size.
 		</p>
 		<h3>Finding \(n\)-th value of a recursive sequence</h3>
 		<p>
 			Suppose a recursive sequence is given in form: 
 			<span class="central">\(f_n=c_1f_{n-1}+c_2f_{n-2}+...+c_kf_{n-k}+c_0\)</span>
-			And thine purpose is to find \(f_n\ mod\ m\), \(f_i, c_i, m, n &lt; 10^9, k &lt; 100\)
+			And thine purpose is to find \(f_n\ mod\ m\), \(f_i, c_i, m, n &lt; 10^9, k &lt; 100\), where \(c_i, f_i\) for \(i &le; k\) are given.
 			Standard brute-force dp solution would solve this problem in \(O(nk)\). But, there is certain property of recursive sequences, that can be utilized. Namely:
 			<span class="central">
 			$$
@@ -78,8 +78,8 @@
 			\begin{bmatrix}
 			c_1f_{n-1}+c_2f_{n-2}+..+c_kf_{n-k}+c_0*1 \\
 			1f_{n-1}+0f_{n-2}+...+0f_{n-k}+0*1 \\
+			0f_{n-1}+1f_{n-2}+...+0f_{n-k}+0*1 \\
 			0f_{n-1}+...+1f_{n-3}+...+0f_{n-k}+0*1 \\
-			0f_{n-1}+...+1f_{n-4}+...+0f_{n-k}+0*1 \\
 			\vdots \\
 			0f_{n-1}+...+1f_{n-k+1}+0f_{n-k}+0*1 \\
 			0f_{n-1}+0f_{n-2}+...+0f_{n-k}+1*1\\
@@ -113,7 +113,7 @@
 			\end{bmatrix}
 			$$
 			</span>
-			And so, this allows computing value of a recursive sequence in \(O(k^3log(n))\). Notably, one can use this trick also to solve recurrences using index of a sequence, power of some value, and so on as long as one can find transformation from a vector to next vector of elements; sometimes one can logarithm a sequence to obtain sequence in feasible way.
+			And so, this allows computing value of a recursive sequence in \(O(k^3log(n))\). Notably, one can use this trick also to solve recurrences using index of a sequence, power of some value, and so on as long as one can find transformation matrix from a vector to next vector of elements; sometimes one can logarithm a sequence to obtain feasible sequence.
 		</p>
 
 		<h3>Problems</h3>
