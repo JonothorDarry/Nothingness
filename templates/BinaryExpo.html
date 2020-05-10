@@ -18,11 +18,17 @@
 
 		<h3>First problem statement</h3>
 		<p>
-			Suppose You have three numbers: \(a, b, m\), and are asked to find \(x: a^b \equiv x (mod\ m)\). To solve this problem with algorithm different than brute force (multiply \(a\ b\) times modulo \(m\) - complexity \(O(b)\) - it can be assumed, that multiplication modulo \(m\) works in \(O(1)\)), one can use binary exponentation.
+			Suppose You have three numbers: \(0 &lt; a, b, m &le; 10^9+7\), and are asked to find \(x: a^b \equiv x (mod\ m)\). To solve this problem with algorithm different than brute force (multiply \(a\ b\) times modulo \(m\) - complexity \(O(b)\) - it can be assumed, that multiplication modulo \(m\) works in \(O(1)\)), one can use binary exponentation.
 		</p>
 		<h3>Solution</h3>
 		<p>
-		\(a^b\) can be shown as \(a^b=a^{2 \lfloor \frac{b}{2} \rfloor +b\ mod\ 2}=a^{2 \lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2} = (a^2)^{\lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2}\) - and so, \(a^b\ mod\ m=(((a^2)^{\lfloor \frac{b}{2} \rfloor}\ mod\ m)*(a^{b\ mod\ 2}\ mod\ m))\ mod\ m\). Value of \(b\ mod\ 2\) is either \(0\) or \(1\) - and so, calculating \(a^{b\ mod\ 2}\ mod\ m\) takes \(O(1)\). Calculating \(a^2\ mod\ m\) also takes \(O(1)\) time complexity, and repeating calculations recursively until \(b &gt; 0\) takes at most \(log_2(b)\) iterations. Overall complexity of the algorithm is therefore \(O(log(b))\). One can keep \(res=1\) at the beginning of the algorithm and update it by multiplying it by \(a^{b\ mod\ 2}\) modulo \(m\) in each iteration, also lowering \(b=\lfloor \frac{b}{2} \rfloor\) and \(a=(a*a)\ mod\ m\), until \(b &gt; 0\) - this makes process iterative.
+		\(a^b\) can be shown as: 
+		<span class="central">\(a^b=a^{2 \lfloor \frac{b}{2} \rfloor +b\ mod\ 2}=a^{2 \lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2} = (a^2)^{\lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2}\)</span>
+		And so, \(a^b\ mod\ m=(((a^2)^{\lfloor \frac{b}{2} \rfloor}\ mod\ m)*(a^{b\ mod\ 2}\ mod\ m))\ mod\ m\). Value of \(b\ mod\ 2\) is either \(0\) or \(1\) - and so, calculating \(a^{b\ mod\ 2}\ mod\ m\) takes \(O(1)\). Calculating \(a^2\ mod\ m\) also takes \(O(1)\) time complexity, and repeating calculations recursively until \(b &gt; 0\) takes at most \(log_2(b)\) iterations. Overall complexity of the algorithm is therefore \(O(log(b))\). One can keep result \(res=1\) at the beginning of the algorithm and update values in each iteration:
+		<span class="central">1) \(res=res*a^{b\ mod\ 2}\ mod\ m\)</span>
+		<span class="central">2) \(b=\lfloor \frac{b}{2} \rfloor\)</span>
+		<span class="central">3) \(a=(a*a)\ mod\ m\)</span>
+		Until \(b &gt; 0\) - this makes process iterative.
 		</p>
 
 
@@ -42,7 +48,82 @@
 			<div id="Primez" class="primez"></div>
 			<div id="Comprehend" class="comprehend"></div>
 		</div>
-			
+		
+		<p>This animatin shows, why method is called binary exponentation: if \(b\) is shown as \(b=2^{i_1}+2^{i_2}+...+2^{i_k}\), where \(\forall_{w,v} i_w \neq i_v\), then \(res=a^{2^{i_1}}*a^{2^{i_2}}*...*a^{2^{i_k}}\).
+		<h3>Further analysis</h3>
+		<p>
+			One can utilize this method to raise matrices to power, because matrix multiplication is associative (i.e \((A*B)*C=A*(B*C)\)). This allows raising square matrices to \(k\)-th power within \(O(n^3log(k))\) time complexity, where \(n\) is matrix size.
+		</p>
+		<h3>Finding \(n\)-th value of a recursive sequence</h3>
+		<p>
+			Suppose a recursive sequence is given in form: 
+			<span class="central">\(f_n=c_1f_{n-1}+c_2f_{n-2}+...+c_kf_{n-k}+c_0\)</span>
+			And thine purpose is to find \(f_n\ mod\ m\), \(f_i, c_i, m, n &lt; 10^9, k &lt; 100\)
+			Standard brute-force dp solution would solve this problem in \(O(nk)\). But, there is certain property of recursive sequences, that can be utilized. Namely:
+			<span class="central">
+			$$
+			\begin{bmatrix}
+				c_1 & c_2 & c_3 & \cdots & c_{k-1} & c_k & c_0\\
+				1 & 0 & 0 & \cdots & 0 & 0 & 0\\
+				0 & 1 & 0 & \cdots & 0 & 0 & 0\\
+				0 & 0 & 1 & \cdots & 0 & 0 & 0\\
+				\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots\\
+				0 & 0 & 0 & \cdots & 1 & 0 & 0\\
+				0 & 0 & 0 & \cdots & 0 & 0 & 1\\
+			\end{bmatrix}	
+			\begin{bmatrix}
+			f_{n-1} \\ f_{n-2} \\ f_{n-3} \\ f_{n-4} \\ \vdots \\  f_{n-k} \\ 1\\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			c_1f_{n-1}+c_2f_{n-2}+..+c_kf_{n-k}+c_0*1 \\
+			1f_{n-1}+0f_{n-2}+...+0f_{n-k}+0*1 \\
+			0f_{n-1}+...+1f_{n-3}+...+0f_{n-k}+0*1 \\
+			0f_{n-1}+...+1f_{n-4}+...+0f_{n-k}+0*1 \\
+			\vdots \\
+			0f_{n-1}+...+1f_{n-k+1}+0f_{n-k}+0*1 \\
+			0f_{n-1}+0f_{n-2}+...+0f_{n-k}+1*1\\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			f_n \\
+			f_{n-1} \\ f_{n-2} \\ f_{n-3} \\ \vdots \\  f_{n-k+1} \\ 1\\
+			\end{bmatrix}
+			$$
+			</span>
+			So, such matrix as above transforms vector having \(k\) subsequent elements ending on \(n\) to vector having \(k\) subsequent elements ending on \(n+1\). What follows, multiplying vector by such matrix \(v\) times would result in a vector ending on \(n+v\).
+			<span class="central">
+			$$
+			\begin{bmatrix}
+				c_1 & c_2 & c_3 & \cdots & c_{k-1} & c_k & c_0\\
+				1 & 0 & 0 & \cdots & 0 & 0 & 0\\
+				0 & 1 & 0 & \cdots & 0 & 0 & 0\\
+				0 & 0 & 1 & \cdots & 0 & 0 & 0\\
+				\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots\\
+				0 & 0 & 0 & \cdots & 1 & 0 & 0\\
+				0 & 0 & 0 & \cdots & 0 & 0 & 1\\
+			\end{bmatrix}^v
+			\begin{bmatrix}
+			f_n \\ f_{n-1} \\ f_{n-2} \\ f_{n-3} \\ \vdots \\  f_{n-k+1} \\ 1\\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			f_{n+v} \\
+			f_{n+v-1} \\ f_{n+v-2} \\ f_{n+v-3} \\ \vdots \\  f_{n+v-k+1} \\ 1\\
+			\end{bmatrix}
+			$$
+			</span>
+			And so, this allows computing value of a recursive sequence in \(O(k^3log(n))\). Notably, one can use this trick also to solve recurrences using index of a sequence, power of some value, and so on as long as one can find transformation from a vector to next vector of elements; sometimes one can logarithm a sequence to obtain sequence in feasible way.
+		</p>
+
+		<h3>Problems</h3>
+		<p>Problems involving binary exponentation are found literally everywhere, most interesting ones usually involve sequence trick or number of paths in a graph of certain length.<br>
+		<a href="https://codeforces.com/problemset/problem/226/C">Anniversary</a>, 
+		<a href="https://codeforces.com/problemset/problem/1182/E">Product Oriented Recurrence</a>, 
+		<a href="https://codeforces.com/problemset/problem/551/D">GukiZ and Binary Operations</a>, 
+		
+		</p>
+
 
 		<script src={{url_for('static', filename='BinaryExpo.js')}}></script>
 		<form id="page" style="display:none"></form>
