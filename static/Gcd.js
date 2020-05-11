@@ -335,6 +335,5 @@ function ObjectParser(v){
 
 var feral=ObjectParser(document.getElementById('Algo1'));
 var eg1=new EuclidGcd(feral, 84, 35);
-document.getElementById("Comprehend").innerHTML="AHHASHPenis";
 var feral2=ObjectParser(document.getElementById('Algo2'));
 var eg2=new ExtendedEuclidGcd(feral2, 84, 35);

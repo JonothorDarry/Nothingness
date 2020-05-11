@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 	<head>
 		<title>Binary Exponentation</title>
 		<meta charset="UTF-8">
@@ -24,7 +24,7 @@
 		<p>
 		\(a^b\) can be shown as: 
 		<span class="central">\(a^b=a^{2 \lfloor \frac{b}{2} \rfloor +b\ mod\ 2}=a^{2 \lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2} = (a^2)^{\lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2}\)</span>
-		And so, \(a^b\ mod\ m=(((a^2)^{\lfloor \frac{b}{2} \rfloor}\ mod\ m)*(a^{b\ mod\ 2}\ mod\ m))\ mod\ m\). Value of \(b\ mod\ 2\) is either \(0\) or \(1\) - and so, calculating \(a^{b\ mod\ 2}\ mod\ m\) takes \(O(1)\). Calculating \(a^2\ mod\ m\) also takes \(O(1)\) time complexity, and repeating calculations recursively until \(b &gt; 0\) takes at most \(log_2(b)\) iterations. Overall complexity of the algorithm is therefore \(O(log(b))\). One can keep result \(res=1\) at the beginning of the algorithm and update values in each iteration:
+		And so, \(a^b\ mod\ m=(((a^2)^{\lfloor \frac{b}{2} \rfloor}\ mod\ m)*(a^{b\ mod\ 2}\ mod\ m))\ mod\ m\). Value of \(b\ mod\ 2\) is either \(0\) or \(1\) - and so, calculating \(a^{b\ mod\ 2}\ mod\ m\) takes \(O(1)\) time complexity. Calculating \(a^2\ mod\ m\) also takes \(O(1)\) time complexity, and repeating calculations recursively until \(b &gt; 0\) takes at most \(log_2(b)\) iterations. Overall complexity of the algorithm is therefore \(O(log(b))\). One can keep result \(res=1\) at the beginning of the algorithm and update values in each iteration:
 		<span class="central">1) \(res=res*a^{b\ mod\ 2}\ mod\ m\)</span>
 		<span class="central">2) \(b=\lfloor \frac{b}{2} \rfloor\)</span>
 		<span class="central">3) \(a=(a*a)\ mod\ m\)</span>
@@ -117,7 +117,7 @@
 		</p>
 
 		<h3>Problems</h3>
-		<p>Problems involving binary exponentation are found literally everywhere, most interesting ones usually involve sequence trick or number of paths in a graph of certain length.<br>
+		<p>Problems involving binary exponentation can be found literally everywhere, most interesting ones usually involve sequence trick or number of paths in a graph of certain length.<br>
 		<a href="https://codeforces.com/problemset/problem/226/C">Anniversary</a>, 
 		<a href="https://codeforces.com/problemset/problem/1182/E">Product Oriented Recurrence</a>, 
 		<a href="https://codeforces.com/problemset/problem/551/D">GukiZ and Binary Operations</a>, 
