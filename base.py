@@ -12,6 +12,8 @@ def comeBackin(place):
         return redirect(url_for('ChineseTheorem'))
     if (place=='binex'):
         return redirect(url_for('BinExpo'))
+    if (place=='totient'):
+        return redirect(url_for('Totient'))
     if (place=='index'):
         return redirect(url_for('Wisdom'))
 
@@ -42,6 +44,15 @@ def ChineseTheorem():
         return comeBackin(s)
     else:
         return render_template('Crt.html')
+
+@app.route('/totient', methods=['GET', 'POST'])
+def Totient():
+    req=request
+    if (req.method=='POST'):
+        s=req.form['next']
+        return comeBackin(s)
+    else:
+        return render_template('Totient.html')
 
 @app.route('/binex', methods=['GET', 'POST'])
 def BinExpo():
