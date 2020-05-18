@@ -19,13 +19,13 @@
 		<p>
 			Suppose You are given following problem: For a given number \(m, y (m, y \le 10^{13}\)) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(x \le m\)? 
 		</p>
-		<h3>Special case Solution</h3>
+		<h3>Special case Solution: theory</h3>
 		<p>
 		It is approprite to solve problem for \(y=1\) before proceeding to general case. Let's define function \(\phi(a)\) as number of numbers \(k \le a\) coprime to \(a\): \(\phi(a)=|\{k: gcd(k,a)=1\}|\). What can be said about such a function? <br>
 		I) For prime \(p: \phi(p^k)=p^{k-1}(p-1)\) - because \(gcd(x, p^k) \gt 1 \iff p|x\), and all numbers \(x|p \land x \le p^k\) are: \(p, 2p, 3p, ... (p-1)p\). What follows, \(\phi(p^k)=p^k-p^{k-1}=p^{k-1}(p-1)\) <br><br>
 		II) For coprime \(a, b: \phi(ab)=\phi(a) \phi(b)\) - Proof:<br>
 		
-		1) For each number \(x\) there are unique numbers \(c_1 \lt a,\ c_2 \lt b\) such that:<br>
+		1) For each number \(x\) there are unique numbers \(0 \lt c_1 \lt a,\ 0 \lt c_2 \lt b\) such that:<br>
 		<span class="central">\(
 			\begin{cases}
 			x \equiv c_1\ (mod\ a) \\
@@ -36,9 +36,37 @@
 		from chinese remainder theorem, for coprime \(a, b\) pair \(c_1, c_2\) uniquely determines number \(x \in &lt;0;ab-1&gt;\)<br>
 		2) From Euclid's algorithm \(gcd(w, v)=gcd(w\ mod\ v, v)\). And so, \(gcd(x, a)=gcd(x\ mod\ a, a)=gcd(c_1, a)\), analogously \(gcd(x, b)=gcd(c_2, b)\).<br>
 		3) From Euclid's lemma \(p|ab \implies p|b \lor p|a\). And if there is no \(p: (p|a \land p|x) \lor (p|b \land p|x)\), then there is no \(p: p|ab \land p|x\). And so, if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(gcd(x, ab)=1\)<br>
-		4) If each pair \(c_1, c_2\) uniquely defines \(x \in &lt;0;ab-1&gt;\), then one can prove theorem combinatorically: \(gcd(x, ab)=1 \iff (gcd(c_1, a)=1 \land gcd(c_2, b)=1)\). How many there are numbers \(c_1\), such that \(gcd(a, c_1)=1\) and \(c_1 \lt a\)? \(\phi(a)\). Analogously for \(b\). And so, There are \(\phi(a) \phi(b)\) pairs \(c_1, c_2\) identifying \(x: gcd(x, ab)=1\), which finishes the proof.
-
+		4) If each pair \(c_1, c_2\) uniquely defines \(x \in &lt;0;ab-1&gt;\), then one can prove theorem combinatorically: \(gcd(x, ab)=1 \iff (gcd(c_1, a)=1 \land gcd(c_2, b)=1)\). How many there are numbers \(c_1\), such that \(gcd(a, c_1)=1\) and \(c_1 \lt a\)? \(\phi(a)\). Analogously for \(b\). And so, there are \(\phi(a) \phi(b)\) pairs \(c_1, c_2\) identifying \(x: gcd(x, ab)=1\), which finishes the proof.<br><br>
+		To sum up the proof: each \(x\) identifies one pair \(0 &lt; c_1 &lt; a, 0 &lt; c_2 &lt; b\), and each \(c_1, c_2\) identifies exactly one \(x \in &lt; 0;ab-1 &gt;\). If and only if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(x\) defined by \(c_1, c_2\) is coprime to \(ab\). There are \(\phi (a)\) numbers, such that \(gcd(c_1, x)=1\), and \(\phi (b)\) numbers, such that \(gcd(c_2, x)=1\) - and so, there are \(\phi(a) \phi(b)\) distinct pairs \(c_1, c_2\) such that \(x &lt; ab\) identified by them is coprime to \(ab\), and for any \(ab \gt 1:\ gcd(ab, ab) &gt; 1\).<br>
+		This proof won't work for not coprime \(a, b\) (and it shouldn't - \( \phi(32)=16 \neq \phi(4) \phi(8) = 8 \)), because \(c_1, c_2\) are not mapping uniquely to \( \lt 0;ab-1 \gt\), but to \( \lt 0;lcm(ab)-1 \gt\), and some \(c_1, c_2\) have no solutions: for example, for \(a=4, b=8, x \lt ab\):
+		<span class="central">\(
+			\begin{cases}
+			x \equiv 1\ (mod\ 4)\\
+			x \equiv 3\ (mod\ 8)\\
+			\end{cases} \iff x \in \emptyset
+		\)</span><span class="central">\(
+			\begin{cases}
+			x \equiv 1\ (mod\ 4)\\
+			x \equiv 5\ (mod\ 8)\\
+			\end{cases} \iff x \in \{5, 13, 21, 29\}
+			\)
+		</span>
 		</p>
+		<h3>Special case Solution: factorization</h3>
+		<p>	
+		What follows, if one can factorise \(x=p_1^{q_2} p_1^{q_2} \dots p_n^{q_n}\), then \(\phi (x) = \phi (p_1^{q_1} p_1^{q_1} \dots p_n^{q_n}) = \phi (p_1^{q_1}) \phi(p_2^{q_2} \dots p_n^{q_n})= \dots =\phi (p_1^{q_1}) \phi(p_2^{q_2}) \dots \phi(p_n^{q_n})=(p_1-1)p_1^{q_1-1}(p_2-1)p_2^{q_2-1} \dots (p_n-1)p_n^{q_n-1}=p_1^{q_1}* \frac{p_1-1}{p_1}* p_2^{q_2}* \frac{p_2-1}{p_2}* \dots p_n^{q_n}* \frac{p_n-1}{p_n}=x*\frac{(p_1-1)}{p_1}* \frac{(p_2-1)}{p_2}* \dots \frac{(p_n-1)}{p_n}\).
+		</p>
+		<h3>Full solution</h3>
+		<p>
+			To solve full problem, one can observe, that if \(y|m \land y \gt 0\):
+			<ol>
+				<li>\(gcd(m, x)=y \iff gcd(\frac{m}{y}, \frac{x}{y})=1\)</li>
+				<li>\(x \le m \iff \frac{x}{y} \le \frac{m}{y}\) </li>
+			</ol>
+			And so, \( |\{x:\ gcd(x, m)=y\}|=\phi(\frac{m}{y}) \). One can solve problem by factorizing \(\frac{m}{y}\) and using pattern above: complexity will be \(O(\sqrt{\frac{m}{y}})\).
+		</p>
+		<h3>Consequence #1</h3>
+		<p> It's worth noting, that every number \(x \le m\) has \(gcd(x, m) \in \lt 1;m \gt \). What follows, \(\sum_{d:\ d|m} \phi(\frac{m}{d})=m\)
 
 		<script src={{url_for('static', filename='Totient.js')}}></script>
 		<form id="page" style="display:none"></form>
