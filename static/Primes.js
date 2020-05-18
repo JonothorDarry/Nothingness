@@ -1,6 +1,3 @@
-var alldict={};
-
-
 class Sieve extends Algorithm{
 	constructor(len, block){
 		super(block);
@@ -385,27 +382,14 @@ class Querier extends Algorithm{
 }
 
 
-function ObjectParser(v){
-	dick={
-		'primePlace':v.getElementsByClassName('primez')[0],
-		'sendButton':v.getElementsByClassName('sender')[0],
-		'prevButton':v.getElementsByClassName('previous')[0],
-		'nextButton':v.getElementsByClassName('next')[0],
-		'input':v.getElementsByClassName('inputter')[0],
-		'output':v.getElementsByClassName('comprehend')[0],
-		'finitButton':v.getElementsByClassName('finish')[0]
-	}
-	return dick;
-}
-
-var feral=ObjectParser(document.getElementById('Algo1'));
+var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var sk=new Sieve(100, feral);
 
-var feral2=ObjectParser(document.getElementById('Algo2'));
+var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 var sk2=new ExtendedSieve(100, feral2);
 
 
-var foul=ObjectParser(document.getElementById('querySection'));
+var foul=Algorithm.ObjectParser(document.getElementById('querySection'));
 var sk3=new Querier(132, foul, sk2);
 
 

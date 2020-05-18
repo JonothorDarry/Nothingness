@@ -20,7 +20,7 @@
 		<!--\(\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}\)-->
 			Let's say \(q (q&lt;1000000)\) queries are given: what is the greatest common divisor of numbers \(w\) and \(v\) where \(w, v&lt;1000.000.000\)? To answer this question, let's define greatest common divisor (gcd): A number \(g\) is gcd of numbers \(w, v\) if and only if:<br>
 			<span class="central">
-				\(g=gcd(w, v)=g|w \land g|v \land !\exists_h h|w \land h|v \land h&gt;g\)
+				\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h h|w \land h|v \land h&gt;g\)
 			</span><br>
 			In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all numbers \(x \in &lt;2;min(w,v)&gt;\) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:
 		</p>

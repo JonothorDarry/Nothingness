@@ -1,4 +1,5 @@
 class Algorithm{
+	static alldict={};
 	constructor(block){
 		this.lees=[]
 		this.place=block.primePlace;
@@ -10,15 +11,15 @@ class Algorithm{
 		this.finitbut=block.finitButton;
 
 		//Adding button ids to dictionary alldict
-		alldict[this.inbut.id]=this;
-		alldict[this.nextbut.id]=this;
-		alldict[this.prevbut.id]=this;
-		alldict[this.finitbut.id]=this;
+		Algorithm.alldict[this.inbut.id]=this;
+		Algorithm.alldict[this.nextbut.id]=this;
+		Algorithm.alldict[this.prevbut.id]=this;
+		Algorithm.alldict[this.finitbut.id]=this;
 		
 		
 		//Beginning button & sequence
 		this.inbut.addEventListener('click', function(){
-			var zis=alldict[this.id];
+			var zis=Algorithm.alldict[this.id];
 			zis.BeginningExecutor();
 			zis.StateMaker();
 			zis.ChangeStatement();
@@ -26,7 +27,7 @@ class Algorithm{
 
 		//Next value
 		this.nextbut.addEventListener('click', function(){
-			var zis=alldict[this.id];
+			var zis=Algorithm.alldict[this.id];
 			zis.NextState();
 			zis.StateMaker();
 			zis.ChangeStatement();
@@ -34,7 +35,7 @@ class Algorithm{
 
 		//Previous value
 		this.prevbut.addEventListener('click', function(){
-			var zis=alldict[this.id];
+			var zis=Algorithm.alldict[this.id];
 			if (zis.lees.length>1){
 				zis.StateUnmaker();
 				zis.ChangeStatement();
@@ -43,7 +44,7 @@ class Algorithm{
 		
 		//Finish Algorithm instantly	
 		this.finitbut.addEventListener('click', function(){
-			var zis=alldict[this.id];
+			var zis=Algorithm.alldict[this.id];
 			zis.FinishingSequence();
 		});
 	}
@@ -77,6 +78,19 @@ class Algorithm{
 			else break;
 		}
 		return [a, i];
+	}
+
+	static ObjectParser(v){
+		var dick={
+			'primePlace':v.getElementsByClassName('primez')[0],
+			'sendButton':v.getElementsByClassName('sender')[0],
+			'prevButton':v.getElementsByClassName('previous')[0],
+			'nextButton':v.getElementsByClassName('next')[0],
+			'input':v.getElementsByClassName('inputter')[0],
+			'output':v.getElementsByClassName('comprehend')[0],
+			'finitButton':v.getElementsByClassName('finish')[0]
+		}
+		return dick;
 	}
 }
 

@@ -1,6 +1,16 @@
-var alldict={};
-
 class BinaryExpo extends Algorithm{
+
+	constructor(block, a=17, b=43, m=107){
+		super(block);
+
+		this.btlist=[];
+		this.utilbts=[];
+
+		this.place.innerHTML='';
+		for (var i=0;i<3;i++) this.btlist.push([]);
+		this.Create_reality(a, b);
+	}
+
 	BeginningExecutor(){
 		this.btlist=[];
 		this.utilbts=[];
@@ -49,6 +59,7 @@ class BinaryExpo extends Algorithm{
 		this.reality=z-1;
 	}
 
+	//0: red, 1:green, 2: gray, 3: dead white
 	Painter(btn, col=1){
 		if (col==0 || col==1) btn.style.color="#FFFFFF";
 		else btn.style.backgroundColor="#FFFFFF";
@@ -61,9 +72,9 @@ class BinaryExpo extends Algorithm{
 
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], col, vl;
+		var s=this.lees[l-1], col, vl, lst;
+		if (s[0]>=100) lst=this.lees[l-2];
 
-		if (s[0]>=100) return;
 		var a=s[1], b=s[2], res=s[3], m=s[4], i=0;
 
 		if (s[0]==0){
@@ -86,15 +97,25 @@ class BinaryExpo extends Algorithm{
 			this.utilbts[2].innerHTML=Math.floor(b/2);			
 			this.reality--;
 		}
+
+		else if (s[0]>=100){
+			this.Painter(this.btlist[1][this.reality], 0);
+			this.Painter(this.btlist[2][this.reality], 0);
+
+			this.utilbts[1].innerHTML=(lst[1]*lst[1])%lst[4];
+			this.utilbts[2].innerHTML=0;
+		}
 	}
 
 	StateUnmaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], col, vl;
-		if (s[0]<100 && l>1){
-			var s2=this.lees[l-2];
-			var a=s[1], b=s[2], res=s[3], m=s[4], i=0;
-			this.utilbts[0].innerHTML=res;
+		if (l>1){
+			var s2=this.lees[l-1];
+			if (s[0]>=100) s2=this.lees[l-2];
+
+			var a=s2[1], b=s2[2], res=s2[3], m=s2[4], i=0;
+			if (s[0]<100) 	this.utilbts[0].innerHTML=res;
 			this.utilbts[1].innerHTML=a;
 			this.utilbts[2].innerHTML=b;
 
@@ -110,6 +131,10 @@ class BinaryExpo extends Algorithm{
 			}
 			if (s[0]==0){
 				this.Painter(this.btlist[0][this.reality], 3);
+			}
+			if (s[0]==100){
+				this.Painter(this.btlist[1][this.reality], 1);
+				this.Painter(this.btlist[2][this.reality], 1);
 			}
 
 		}
@@ -134,7 +159,6 @@ class BinaryExpo extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1], col;
 		var a=s[1], b=s[2], res=s[3], m=s[4], i=0;
-		console.log(b, s[0], b);
 
 		if (s[0]>=100) return;
 		if (s[0]==0 && b==1) this.lees.push([100, (res*(b%2==0?1:a))%m]);
@@ -194,25 +218,5 @@ class BinaryExpo extends Algorithm{
 
 
 
-
-
-
-
-
-
-
-function ObjectParser(v){
-	dick={
-		'primePlace':v.getElementsByClassName('primez')[0],
-		'sendButton':v.getElementsByClassName('sender')[0],
-		'prevButton':v.getElementsByClassName('previous')[0],
-		'nextButton':v.getElementsByClassName('next')[0],
-		'input':v.getElementsByClassName('inputter')[0],
-		'output':v.getElementsByClassName('comprehend')[0],
-		'finitButton':v.getElementsByClassName('finish')[0]
-	}
-	return dick;
-}
-
-var feral=ObjectParser(document.getElementById('Algo1'));
-var eg1=new BinaryExpo(feral);
+var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
+var eg1=new BinaryExpo(feral, 17, 43, 107);

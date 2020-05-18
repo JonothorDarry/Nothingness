@@ -1,5 +1,3 @@
-var alldict={};
-
 class CrtSolver extends Algorithm{
 	constructor(block, n=-1, c, s){
 		super(block);
@@ -269,19 +267,6 @@ class CrtSolver extends Algorithm{
 	}
 }
 
-function ObjectParser(v){
-	dick={
-		'primePlace':v.getElementsByClassName('primez')[0],
-		'sendButton':v.getElementsByClassName('sender')[0],
-		'prevButton':v.getElementsByClassName('previous')[0],
-		'nextButton':v.getElementsByClassName('next')[0],
-		'input':v.getElementsByClassName('inputter')[0],
-		'output':v.getElementsByClassName('comprehend')[0],
-		'finitButton':v.getElementsByClassName('finish')[0]
-	}
-	return dick;
-}
 
-
-var feral=ObjectParser(document.getElementById('Algo1'));
+var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new CrtSolver(feral, 3, [2, 5, 8], [3, 7, 33]);

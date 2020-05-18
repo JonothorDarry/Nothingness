@@ -1,5 +1,3 @@
-var alldict={};
-
 class EuclidGcd extends Algorithm{
 	constructor(block, a=-1, b=-1){
 		super(block);
@@ -320,20 +318,7 @@ class ExtendedEuclidGcd extends EuclidGcd{
 	}
 }
 
-function ObjectParser(v){
-	dick={
-		'primePlace':v.getElementsByClassName('primez')[0],
-		'sendButton':v.getElementsByClassName('sender')[0],
-		'prevButton':v.getElementsByClassName('previous')[0],
-		'nextButton':v.getElementsByClassName('next')[0],
-		'input':v.getElementsByClassName('inputter')[0],
-		'output':v.getElementsByClassName('comprehend')[0],
-		'finitButton':v.getElementsByClassName('finish')[0]
-	}
-	return dick;
-}
-
-var feral=ObjectParser(document.getElementById('Algo1'));
+var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new EuclidGcd(feral, 84, 35);
-var feral2=ObjectParser(document.getElementById('Algo2'));
+var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 var eg2=new ExtendedEuclidGcd(feral2, 84, 35);
