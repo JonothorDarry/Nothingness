@@ -66,8 +66,31 @@
 			And so, \( |\{x:\ gcd(x, m)=y\}|=\phi(\frac{m}{y}) \). One can solve problem by factorizing \(\frac{m}{y}\) and using pattern above: complexity will be \(O(\sqrt{\frac{m}{y}})\).
 		</p>
 		<h3>Consequence #1</h3>
-		<p> It's worth noting, that every number \(x \le m\) has \(gcd(x, m) \in \lt 1;m \gt \). What follows, \(\sum_{d:\ d|m} \phi(\frac{m}{d})=m\)
+		<p>It's worth noting, that every number \(x \le m\) has \(gcd(x, m) \in \lt 1;m \gt \). What follows, \(\sum_{d:\ d|m} \phi(\frac{m}{d})=m\)</p>
 
+		<!--<h3>Consequence #2</h3>
+		<p>Furthermore, </p>-->
+
+		<h3>Sieve algoruthm for finding totient</h3>
+		<p>To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients from \(p\), not \(p*p\), as in nomal sieve</p>
+
+		<div id="Algo1">
+			<h2>Totient calculation</h2>
+			<div id="Inputter">
+				<form>
+					<input type="number" class="inputter" id="Erasto" name="Erasto" value="99">
+				</form>
+				<button id="Sender" class="sender">Begin</button>
+				<button id="Prever" class="previous">Previous Move</button>
+				<button id="Nexter" class="next">Next Move</button>
+				<button id="Finisher" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez" class="primez"></div>
+			<div id="Comprehend" class="comprehend"></div>
+		</div>
+
+		<script src={{url_for('static', filename='Sieve.js')}}></script>
 		<script src={{url_for('static', filename='Totient.js')}}></script>
 		<form id="page" style="display:none"></form>
 	</body>
