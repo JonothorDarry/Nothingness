@@ -85,8 +85,7 @@ body{
 	margin: 0;
 	padding: 0;
 }
-p{
-	margin:0px 5%;
+p,ol{
+	margin:0px 3%;
 	line-height: 1.6;
 }
-
