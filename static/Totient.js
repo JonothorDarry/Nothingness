@@ -101,7 +101,7 @@ class TotientSieve extends Sieve{
 		if (prev[0]==1 && last[0]==1) strr=`I search further for primes. `;
 		if (prev[0]==1 && last[0]==0) strr=`I found a prime (${last[3]}), so I start finding numbers divisible by it, starting from ${last[3]}+${last[3]}=${last[2]} and multiplying their totients by ${last[3]-1}/${last[3]}. `;
 		if (last[0]==0) strr+=`Totient of a given number is multiplied by ${last[3]-1}/${last[3]}: temp&#x3d5;(${last[2]})=${Math.floor(this.totient[last[2]]*last[3]/(last[3]-1))}*${last[3]-1}/${last[3]}=${this.totient[last[2]]}`;
-		if (last[0]==1 && super.EscapeCondition(last[2], last[1])==false) strr+=`This number is ${this.PrimeCheck(last[2])?`a prime - so I mark it's totient as &#x3d5;(${last[2]})=${last[2]-1} and start marking perhaps-primes as divisible by it, changing their totient in process.`:`not a prime - so I have to search further.`}`;
+		if (last[0]==1 && last[2]+last[2]<=last[1]) strr+=`This number is ${this.PrimeCheck(last[2])?`a prime - so I mark it's totient as &#x3d5;(${last[2]})=${last[2]-1} and start marking perhaps-primes as divisible by it, changing their totient in process.`:`not a prime - so I have to search further.`}`;
 		else if (last[0]==1) strr+=`This number is ${this.PrimeCheck(last[2])?`a prime and I mark it's totient as &#x3d5;(${last[2]})=${last[2]-1}, but I won't start changing other totients because ${last[2]}+${last[2]}>${last[1]}}`:`not a prime - so I have to search further.`}`;
 		if (last[0]==100) strr=`${prev[2]}+1 > ${prev[1]} (given limit) - and so, all prime numbers up to the given limit were found along with value of their totient, sieve ends.`;
 		return strr;
