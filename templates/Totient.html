@@ -132,6 +132,19 @@
 		And so, lo, behold, function was found, \(f=\phi\): \(\forall_{x: gcd(x, m)=1} x^{\phi(m)} \equiv 1\ (mod\ m)\)		
 		</p>
 		<h3>Generalized Euler's theorem</h3>
+		<p>
+		The question arises: what if \(gcd(a, m) \gt 1\)? one can show, for \(v, w \in N \land p_1p_2...p_n|m \land p_1p_2...p_n|a\) (where \(p_1...p_n\) are only common prime divisors of \(m, a\)), that:
+		<span class="central">\(m=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}v\)</span>
+		<span class="central">\(a=p_1^{r_1}p_2^{r_2} \dots p_n^{r_n}w\)</span>
+		<span class="central">\(a^c=p_1^{cr_1}p_2^{cr_2} \dots p_n^{cr_n}w\)</span>
+		Suppose that \(c\) is such a number, that \(cr_1 \ge q_1, cr_2 \ge q_2 \dots cr_n \ge q_n\). Then, suppose that \(g=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\). Clearly, \(gcd(a^c, m)=g\). Then, for \(n \ge c\):
+
+		<span class="central">\(a^n \bmod m = g(\frac{a^n}{g} \bmod \frac{m}{g}) = g(\frac{a^c}{g}a^{n-c} \bmod \frac{m}{g}) = g(\frac{a^c}{g} a^{n-c\ mod\ \phi (\frac{m}{g})} \bmod \frac{m}{g}) =a^ca^{n-c\ mod\ \phi(\frac{m}{g})} \bmod m\)</span>
+		What follows, if \(n \ge c\), this number is possible to calculate. Furthermore, one does not need \(\phi(\frac{m}{g})\) - for \(\phi(m)=\phi(g) \phi(\frac{m}{g})\), and so, one can use \(\phi(m)\). But what is minimal \(c\) for which above holds? For \(c \ge q_i\), all of the above must hold. And maximal \(q_i \le \lfloor log_2(m) \rfloor\), so minimal \(c \le \lfloor log_2(m) \rfloor\). Also, \( \phi(m) \ge \lfloor log_2(m) \rfloor\). What follows, for \(n \ge \phi(m)\)
+		<span class="central">\(a^n \bmod m = a^{\phi(m)}*a^{n\ mod\ \phi(m)} = a^{\phi(m)+n\ mod\ phi(m)}\)</span>
+		But, for \(c \ge \lfloor log_2(m) \rfloor, a^{c}=a^{\phi(m)+c} \bmod m\). What follows, for \(n \ge \lfloor log_2(m) \rfloor\), the above also holds.
+
+		</p>
 
 
 	</body>
