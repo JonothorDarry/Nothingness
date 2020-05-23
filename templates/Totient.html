@@ -81,7 +81,7 @@
 		<p>Furthermore, </p>-->
 
 		<h3>Sieve algoruthm for finding totient</h3>
-		<p>To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients from \(p\), not \(p*p\), as in normal sieve</p>
+		<p>To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve</p>
 
 		<div id="Algo1">
 			<h2>Totient calculation</h2>
@@ -133,16 +133,32 @@
 		</p>
 		<h3>Generalized Euler's theorem</h3>
 		<p>
-		The question arises: what if \(gcd(a, m) \gt 1\)? one can show, for \(v, w \in N \land p_1p_2...p_n|m \land p_1p_2...p_n|a\) (where \(p_1...p_n\) are only common prime divisors of \(m, a\)), that:
+		The question arises: what if one wants to find \(a^{huge} \bmod m\) with \(gcd(a, m) \gt 1\)? one can represent \(m, a\), for \(v, w \in N \land p_1p_2...p_n|m \land p_1p_2...p_n|a\) (where \(p_1...p_n\) are only common prime divisors of \(m, a\)) in such way:
 		<span class="central">\(m=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}v\)</span>
 		<span class="central">\(a=p_1^{r_1}p_2^{r_2} \dots p_n^{r_n}w\)</span>
 		<span class="central">\(a^c=p_1^{cr_1}p_2^{cr_2} \dots p_n^{cr_n}w\)</span>
-		Suppose that \(c\) is such a number, that \(cr_1 \ge q_1, cr_2 \ge q_2 \dots cr_n \ge q_n\). Then, suppose that \(g=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\). Clearly, \(gcd(a^c, m)=g\). Then, for \(n \ge c\):
+		Suppose that \(c\) is such a number, that \(cr_1 \ge q_1, cr_2 \ge q_2 \dots cr_n \ge q_n\). Then, suppose that \(g=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\). Clearly, \(gcd(a^c, m)= p_1^{min(q_1, cr_1)}p_2^{min(q_2, cr_2)} \dots p_n^{min(q_n, cr_n)} = p_1^{q_1}p_2^{q_2} \dots p_n^{q_n} = g\). It would be wise to show some lemmas before proceeding further:
+		</p>
+		<ol>
+			<li>
+				Theorem: \(ab \bmod am = a(b \bmod m)\)<br>
+				Proof: \(ab \bmod am = ab-k*am=a(b-km)=a(b \bmod m)\)<br>
+				What follows, \(g|x \land g|m \implies g| (x \bmod m)\)<br>
+			</li>
+			<li>
+				Theorem: \(a^x \equiv a^{x+y} \pmod m \implies \forall_{n \in N_+} a^x \equiv a^{nx+y} \pmod m\)<br>
+				Proof: \(a^{nx+y} \equiv a^{(n-1)x}*a^{x+y} \equiv a^{(n-1)x}a^y \equiv a^{(n-1)x+y} \equiv \dots \equiv a^{y} \pmod m\)
+			</li>
+		</ol>
+		<br>
 
-		<span class="central">\(a^n \bmod m = g(\frac{a^n}{g} \bmod \frac{m}{g}) = g(\frac{a^c}{g}a^{n-c} \bmod \frac{m}{g}) = g(\frac{a^c}{g} a^{n-c\ mod\ \phi (\frac{m}{g})} \bmod \frac{m}{g}) =a^ca^{n-c\ mod\ \phi(\frac{m}{g})} \bmod m\)</span>
-		What follows, if \(n \ge c\), this number is possible to calculate. Furthermore, one does not need \(\phi(\frac{m}{g})\) - for \(\phi(m)=\phi(g) \phi(\frac{m}{g})\), and so, one can use \(\phi(m)\). But what is minimal \(c\) for which above holds? For \(c \ge q_i\), all of the above must hold. And maximal \(q_i \le \lfloor log_2(m) \rfloor\), so minimal \(c \le \lfloor log_2(m) \rfloor\). Also, \( \phi(m) \ge \lfloor log_2(m) \rfloor\). What follows, for \(n \ge \phi(m)\)
-		<span class="central">\(a^n \bmod m = a^{\phi(m)}*a^{n\ mod\ \phi(m)} = a^{\phi(m)+n\ mod\ phi(m)}\)</span>
-		But, for \(c \ge \lfloor log_2(m) \rfloor, a^{c}=a^{\phi(m)+c} \bmod m\). What follows, for \(n \ge \lfloor log_2(m) \rfloor\), the above also holds.
+		<p>		
+		Then, for \(z \ge c\), using the first lemma twice to change mod:
+
+		<span class="central">\(a^z \bmod m = g(\frac{a^z}{g} \bmod \frac{m}{g}) = g(\frac{a^c}{g}a^{z-c} \bmod \frac{m}{g}) = g(\frac{a^c}{g} a^{(z-c)\ mod\ \phi (\frac{m}{g})} \bmod \frac{m}{g}) =a^ca^{(z-c)\ mod\ \phi(\frac{m}{g})} \bmod m\)</span>
+		The crucial element of a proof is \(\frac{a^z}{g}=\frac{a^c}{g}a^{z-c}\) - leaving \(a^c\) untouched makes the expression always divisible by \(g\) - otherwise the proof would be invalid, which will be shown later. What follows, if \(z \ge c\), this number is possible to calculate. Furthermore, one does not need \(\phi(\frac{m}{g})\) - for \(\phi(m)=\phi(g) \phi(\frac{m}{g})\), and so, one can use \(\phi(m)\), because by 2nd lemma \(a^{\phi(\frac{m}{g})+x} \equiv a^x \implies a^{k \phi(g) \phi(\frac{m}{g})+x} \equiv a^{k \phi(m) +x} \equiv a^x\). But what is minimal \(c\) for which above holds? For \(c \ge q_i\), all of the above must hold. And maximal \(q_i \le \lfloor log_2(m) \rfloor\), so minimal \(c \le \lfloor log_2(m) \rfloor\). Also, \( \phi(m) \ge \lfloor log_2(m) \rfloor\). What follows, for \(z \ge \phi(m)\)
+		<span class="central">\(a^z \bmod m = a^{\phi(m)}*a^{(z-\phi(m))\ mod\ \phi(m)} = a^{\phi(m)+z\ mod\ \phi(m)}\)</span>
+		But, for \(\phi(m) \gt z \ge \lfloor log_2(m) \rfloor, a^{z} \equiv a^{\phi(m)+z} \equiv a^{\phi(m)+z\ mod\ \phi(m)} \pmod m\). What follows, for all \(z \ge \lfloor log_2(m) \rfloor\) the above holds.
 
 		</p>
 
