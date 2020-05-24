@@ -159,7 +159,29 @@
 		The crucial element of a proof is \(\frac{a^z}{g}=\frac{a^c}{g}a^{z-c}\) - leaving \(a^c\) untouched makes the expression always divisible by \(g\) - otherwise the proof would be invalid, which will be shown later. What follows, if \(z \ge c\), this number is possible to calculate. Furthermore, one does not need \(\phi(\frac{m}{g})\) - for \(\phi(m)=\phi(g) \phi(\frac{m}{g})\), and so, one can use \(\phi(m)\), because by 2nd lemma \(a^{\phi(\frac{m}{g})+x} \equiv a^x \implies a^{k \phi(g) \phi(\frac{m}{g})+x} \equiv a^{k \phi(m) +x} \equiv a^x\). But what is minimal \(c\) for which above holds? For \(c \ge q_i\), all of the above must hold. And maximal \(q_i \le \lfloor log_2(m) \rfloor\), so minimal \(c \le \lfloor log_2(m) \rfloor\). Also, \( \phi(m) \ge \lfloor log_2(m) \rfloor\). What follows, for \(z \ge \phi(m)\)
 		<span class="central">\(a^z \bmod m = a^{\phi(m)}*a^{(z-\phi(m))\ mod\ \phi(m)} = a^{\phi(m)+z\ mod\ \phi(m)}\)</span>
 		But, for \(\phi(m) \gt z \ge \lfloor log_2(m) \rfloor, a^{z} \equiv a^{\phi(m)+z} \equiv a^{\phi(m)+z\ mod\ \phi(m)} \pmod m\). What follows, for all \(z \ge \lfloor log_2(m) \rfloor\) the above holds.
+		</p>
+		<h3>Additional analysis</h3>
+		<p>
+			There are still some unresolved things, however.
+			<ol>
+				<li>
+					For \(a^z, z \lt\) minimal \(c: a^c \equiv a^{c\ mod\ m+\phi(m)} \pmod m\), is there such \(h \gt 0\), such that \(a^z \equiv a^{z+h} \pmod m\)?<br>
+					There isn't: if \(gcd(a^z, m) \neq gcd(a^{z+1}, m)\), but \(\forall_{i \in N_+} gcd(a^i, m) \le gcd(a^{i+1}, m)\) - because \(g|a \implies \forall_{k \in N_+} g|ka\), then there is no such \(h \in N_+\), such that \(gcd(a^{z+h}, m)=gcd(a^z, m)\). But from first lemma in generalized euler, for\(g=gcd(a^{z+h}, m), g|a^{z+h} \land g|m \implies g|(a^{z+h} \bmod m)\). But \(g \nmid a^z\), and \(g|m \land g \nmid x \implies g \nmid x \bmod m\). Proof by contradiction, where \(c=x \bmod m=gc', m=gm'\):
+					<span class="central">\(x-gm'=gc'\)</span>
+					<span class="central">\(x=gc'+gm'=g(c'+m')\)</span>
+					<span class="central">\(g|x\)</span>
+					Which contradicts assumptions. What follows, \(\forall_{h \in N_+} \exists_{g \in N_+} (g|a^{z+h} \bmod m \land g \nmid a^z \bmod m)\). This proves, that \(\forall_{h \in N_+} a^z \bmod m \neq a^{z+h} \bmod m\) for \(z \le \) minimal \(c\).
+				</li>
+				<li>
+					Why \(\phi(m) \ge log_2(m)\)? Proof is somewhat ultramagical:
+					<ol>
+						<li>\(m=p_1^{q_1} \dots p_n^{q_n}, n \le log_2(m)\)</li>
+						<li>\(\phi(m)=m \frac{p_1-1}{p_1} \dots \frac{p_n-1}{p_n} \ge m \frac{1}{2} \frac{2}{3} \frac{3}{4} ... \frac{n}{n+1} = m \frac{1}{n+1} \ge m \frac{1}{log_2(m)+1}\)</li>
+						<li>\(\phi(m)-log_2(m) \ge \frac{m}{log_2(m)+1}-log_2(m)=\frac{1}{log_2(m)+1}(m-log_2^2(m)-log_2(m))\)</li>
+					</ol>
+					If last equation is greater equal 0, the theorem is correct (but not only in those cases). For large numbers, it's obvious, for small ones, You can check it Yourself.
 
+			</ol>
 		</p>
 
 
