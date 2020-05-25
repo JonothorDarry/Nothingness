@@ -218,6 +218,33 @@ class PowerTower extends Algorithm{
 		}
 	}
 
+	StateUnmaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], tot;
+		if (s[0]==1){
+			if (s[1]!=0) this.Painter(this.btnlist[2][s[1]-1], 1);
+			this.Painter(this.btnlist[2][s[1]], 4);
+		}
+
+		if (s[0]==2){
+			if (s[3]==this.n-1) this.Painter(this.btnlist[2][s[3]], 1);
+			else{
+				this.Painter(this.btnlist[3][s[3]+1], 1);
+				this.Painter(this.btnlist[4][s[3]+1], 1);
+			}
+
+			this.Painter(this.btnlist[4][s[3]], 4);
+		}
+
+		if (s[0]==3){
+			this.Painter(this.btnlist[3][s[3]], 4);
+		}
+		if (s[0]==100){
+			this.Painter(this.btnlist[4][0], 1);
+		}
+		this.lees.pop();
+	}
+
 	pow(a, b, m=1000000007){
 		var res=1;
 		for (;b>0;b=Math.floor(b/2)){
@@ -257,7 +284,12 @@ class PowerTower extends Algorithm{
 			else this.lees.push([100]);
 		}
 	}
-	StatementComprehension(){}
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], tot;
+
+	
+	}
 
 	//0: red, 1:green, 2: gray, 3: dead white
 	Painter(btn, col=1){
