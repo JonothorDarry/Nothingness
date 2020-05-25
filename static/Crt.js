@@ -7,7 +7,6 @@ class CrtSolver extends Algorithm{
 
 			for (i=0;i<s.length;i++) af.push([c[i], s[i]]);
 			this.buttMaker(af);
-
 		}
 	}
 	

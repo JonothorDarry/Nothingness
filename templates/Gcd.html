@@ -18,15 +18,15 @@
 		<h3>First problem statement and definitions</h3>
 		<p>
 		<!--\(\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}\)-->
-			Let's say \(q (q&lt;1000000)\) queries are given: what is the greatest common divisor of numbers \(w\) and \(v\) where \(w, v&lt;1000.000.000\)? To answer this question, let's define greatest common divisor (gcd): A number \(g\) is gcd of numbers \(w, v\) if and only if:<br>
+			Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of numbers \(w\) and \(v\) where \(1 \le w, v \le 10^9\)? To answer this question, let's define greatest common divisor (gcd): A number \(g \in N_+\) is gcd of numbers \(w, v\) if and only if:<br>
 			<span class="central">
 				\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h h|w \land h|v \land h&gt;g\)
 			</span><br>
-			In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all numbers \(x \in &lt;2;min(w,v)&gt;\) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:
+			In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all numbers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:
 		</p>
 		<h3>First solution</h3>
 		<p>
-		Without loss of generality, let's assume that \(w &lt; v\). One can check all positive natural numbers \(k &lt; w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors of \(w\), one can check all numbers \(k\) lower than \(\sqrt{w}\) if they divide both of them, and their counterparts - \(\frac{w}{k}\) - this will work in \(O(q*\sqrt{w})\).
+		Without loss of generality, let's assume that \(w \lt v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|u \lor k|u\), and take maximum of those - this will work in \(O(q*\sqrt{w})\).
 		</p>
 		<h3>Second Solution</h3>
 		<p>

@@ -39,6 +39,7 @@ class TotientSieve extends Sieve{
 		this.totient[value]=Math.floor(this.totient[value]*divisor/(divisor-1));
 	}
 	
+	
 	//Go to the next state of the algorithm
 	NextState(){
 		var l=this.lees.length;
@@ -148,6 +149,187 @@ class TotientSieve extends Sieve{
 	}
 }
 
+class PowerTower extends Algorithm{
+	BeginningExecutor(){
+		this.lees=[];
+		this.place.innerHTML='';
+		var fas=this.input.value;
+		var a=0, n, x, i=0, c, dis, j, btn;
+		this.dt=[];
+		this.toth=[];
+
+		this.btnlist=[];
+		for (i=0;i<5;i++) this.btnlist.push([]);
+		
+		c=this.getInput(0, fas);
+		n=c[0];
+		this.n=n;
+
+		c=this.getInput(c[1]+1, fas);
+		this.toth.push(c[0]);
+		dis=c[1];
+
+		for (i=0;i<n;i++){
+			c=this.getInput(dis+1, fas);
+			this.dt.push(c[0]);
+			dis=c[1];
+		}
+		this.lees.push([1, 0]);
+		this.divs=this.divsCreator();
+
+		for (i=0;i<5;i++){
+			for (j=0;j<n;j++){
+				if (i==0) btn=this.buttCreator(j+1);
+				else if (i==1) btn=this.buttCreator(this.dt[j]);
+				else btn=this.buttCreator();
+				this.btnlist[i].push(btn);
+				this.zdivs[i][1].appendChild(btn);
+			}
+		}
+	}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], tot;
+		if (s[0]==1){
+			if (s[1]!=0) this.Painter(this.btnlist[2][s[1]-1], 0);
+			this.Painter(this.btnlist[2][s[1]], 1);
+			tot=this.toth[s[1]];
+			this.btnlist[2][s[1]].innerHTML=tot;
+		}
+
+		if (s[0]==2){
+			if (s[3]==this.n-1) this.Painter(this.btnlist[2][s[3]], 0);
+			else{
+				this.Painter(this.btnlist[3][s[3]+1], 0);
+				this.Painter(this.btnlist[4][s[3]+1], 0);
+			}
+
+			this.Painter(this.btnlist[4][s[3]], 1);
+			this.btnlist[4][s[3]].innerHTML=s[1];
+		}
+
+		if (s[0]==3){
+			this.Painter(this.btnlist[3][s[3]], 1);
+			this.btnlist[3][s[3]].innerHTML=s[2];
+		}
+		if (s[0]==100){
+			this.Painter(this.btnlist[4][0], 0);
+		}
+	}
+
+	pow(a, b, m=1000000007){
+		var res=1;
+		for (;b>0;b=Math.floor(b/2)){
+			if (b%2==1) res=(res*a)%m;
+			a=(a*a)%m;
+		}
+		return res;
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], tot;
+		if (s[0]==1){
+			tot=this.find_totient(this.toth[s[1]]);
+			this.toth.push(tot);
+			if (s[1]<this.n-1) this.lees.push([1, s[1]+1]);
+			else this.lees.push([2, ((this.dt[s[1]]>32)?0:1), 1, s[1]]);
+		}
+
+		if (s[0]==2){
+			var nxt=s[1], res, b;
+			if (s[3]==this.n-1) b=s[2];
+			else b=this.toth[s[3]+1]+s[2];
+
+			if (nxt==0) res=this.pow(this.dt[s[3]], b, this.toth[s[3]]);
+			else res=this.pow(this.dt[s[3]], b);
+			console.log(res, this.dt[s[3]], s[2], this.toth[s[3]]);
+
+			this.lees.push([3, nxt, res, s[3]]);
+		}
+
+		if (s[0]==3){
+			var nxt=1;
+			if (s[1]==0 || s[2]*Math.log(this.dt[s[3]])>5) nxt=0;
+
+			if (s[3]>0) this.lees.push([2, nxt, s[2], s[3]-1]);
+			else this.lees.push([100]);
+		}
+	}
+	StatementComprehension(){}
+
+	//0: red, 1:green, 2: gray, 3: dead white
+	Painter(btn, col=1){
+		if (col==0 || col==1) btn.style.color="#FFFFFF";
+		else btn.style.backgroundColor="#FFFFFF";
+
+		if (col==0) btn.style.backgroundColor="#440000";
+		else if (col==1) btn.style.backgroundColor="#004400";
+		else if (col==2) btn.style.color="#666666";
+		else if (col==3) btn.style.color="#FFFFFF";
+	}
+
+	find_totient(x){
+		var dv=1, i=2, rs=x;
+		for(i=2;i*i<=rs;i++){
+			if (rs%i==0) rs=Math.floor(rs/i), dv*=(i-1);
+			while (rs%i==0) rs=Math.floor(rs/i), dv*=i;
+		}
+		if (rs>1) dv*=(rs-1);
+		return dv;
+	}
+
+	divsCreator(){
+		var divs=[], zdivs=[], i, j;
+		var title_list=["i", "a<sub>i</sub>", "Current &#x03D5;", "Result", "Is low"];
+
+		for (i=0;i<5;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<5;i++){
+			divs[i].style.width="100%";
+			divs[i].style.height="40px";
+			for (j=0;j<2;j++) {
+				zdivs[i].push(document.createElement("DIV"));
+				zdivs[i][j].style.margin="0";
+				zdivs[i][j].style.padding="0";
+				zdivs[i][j].style.display="inline flow-root";
+				divs[i].appendChild(zdivs[i][j]);
+			}
+			zdivs[i][0].innerHTML=title_list[i];
+			zdivs[i][0].style.width="200px";
+
+			this.place.appendChild(divs[i]);
+		}
+		this.divs=divs;
+		this.zdivs=zdivs;
+	}
+	
+	//Creates buttons
+	buttCreator(numb=null, col='#440000'){
+		var butt=document.createElement("BUTTON");
+		butt.style.width="40px";
+		butt.style.height="40px";
+		butt.style.backgroundColor=col;
+		butt.style.border="0";
+		butt.style.padding='0';
+		butt.style.margin='0';
+		
+		if (numb!=null) {
+			butt.innerHTML=numb;
+			butt.style.color='#FFFFFF';
+			butt.style.fontSize='12px';
+		}
+		else {
+			butt.style.backgroundColor="#FFFFFF";
+			butt.style.color="#FFFFFF";
+		}
+		return butt;
+	}
+}
+
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var sk=new TotientSieve(100, feral);
+
+var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+var sk2=new PowerTower(feral2);

@@ -17,18 +17,18 @@
 		</header>
 		<h3>First problem statement and definitions</h3>
 		<p>
-			Suppose You are given following problem: For a given number \(m, y (m, y \le 10^{13}\)) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(x \le m\)? 
+			Suppose You are given following problem: For a given number \(m, y (1 \le m, y \le 10^{13})\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
 		</p>
 		<h3>Special case Solution: theory</h3>
 		<p>
-		It is approprite to solve problem for \(y=1\) before proceeding to general case. Let's define function \(\phi(a)\) as number of numbers \(k \le a\) coprime to \(a\): \(\phi(a)=|\{k: gcd(k,a)=1\}|\). What can be said about such a function? <br>
+		It is approprite to solve problem for \(y=1\) before proceeding to general case. Let's define function \(\phi(a)\) as number of numbers \(1 \le k \le a\) coprime to \(a\): \(\phi(a)=|\{k: 1 \le k \le a \land gcd(k,a)=1\}|\). What can be said about such a function? <br>
 		<ol type="I">
-			<li>For prime \(p: \phi(p^k)=p^{k-1}(p-1)\) - because \(gcd(x, p^k) \gt 1 \iff p|x\), and all numbers \(x|p \land x \le p^k\) are: \(p, 2p, 3p, ... (p-1)p\). What follows, \(\phi(p^k)=p^k-p^{k-1}=p^{k-1}(p-1)\) </li>
+			<li>For prime \(p: \phi(p^k)=p^{k-1}(p-1)\) - because \(gcd(x, p^k) \gt 1 \iff p|x\), and all numbers \(x|p \land x \le p^k\) are: \(p, 2p, 3p, ... p^{k-1}p\). What follows, \(\phi(p^k)=p^k-p^{k-1}=p^{k-1}(p-1)\) </li>
 
 			<li> For coprime \(a, b: \phi(ab)=\phi(a) \phi(b)\) - Proof:<br>
 		
 				<ol>
-					<li> For each number \(x\) there are unique numbers \(0 \lt c_1 \lt a,\ 0 \lt c_2 \lt b\) such that:<br>
+					<li> For each number \(x\) there are unique numbers \(0 \le c_1 \lt a,\ 0 \le c_2 \lt b\) such that:<br>
 		<span class="central">\(
 			\begin{cases}
 			x \equiv c_1\ (mod\ a) \\
@@ -45,7 +45,7 @@
 			</li>
 		</ol>
 		<p>
-		To sum up the proof: each \(x\) identifies one pair \(0 &lt; c_1 &lt; a, 0 &lt; c_2 &lt; b\), and each \(c_1, c_2\) identifies exactly one \(x \in &lt; 0;ab-1 &gt;\). If and only if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(x\) defined by \(c_1, c_2\) is coprime to \(ab\). There are \(\phi (a)\) numbers, such that \(gcd(c_1, x)=1\), and \(\phi (b)\) numbers, such that \(gcd(c_2, x)=1\) - and so, there are \(\phi(a) \phi(b)\) distinct pairs \(c_1, c_2\) such that \(x &lt; ab\) identified by them is coprime to \(ab\), and for any \(ab \gt 1:\ gcd(ab, ab) &gt; 1\).<br>
+		To sum up the proof: each \(x\) identifies one pair \(0 \le c_1 \lt a, 0 \le c_2 \lt b\), and each \(c_1, c_2\) identifies exactly one \(x \in &lt; 0;ab-1 &gt;\). If and only if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(x\) defined by \(c_1, c_2\) is coprime to \(ab\). There are \(\phi (a)\) numbers, such that \(gcd(c_1, x)=1\), and \(\phi (b)\) numbers, such that \(gcd(c_2, x)=1\) - and so, there are \(\phi(a) \phi(b)\) distinct pairs \(c_1, c_2\) such that \(x &lt; ab\) identified by them is coprime to \(ab\), and for any \(ab \ge 1:\ gcd(ab, ab) = gcd(0, ab)\).<br>
 		</p><p>
 		This proof won't work for not coprime \(a, b\) (and it shouldn't - \( \phi(32)=16 \neq \phi(4) \phi(8) = 8 \)), because \(c_1, c_2\) are not mapping uniquely to \( \lt 0;ab-1 \gt\), but to \( \lt 0;lcm(ab)-1 \gt\), and some \(c_1, c_2\) have no solutions: for example, for \(a=4, b=8, x \lt ab\):
 		<span class="central">\(
@@ -80,7 +80,7 @@
 		<!--<h3>Consequence #2</h3>
 		<p>Furthermore, </p>-->
 
-		<h3>Sieve algoruthm for finding totient</h3>
+		<h3>Sieve algorithm for finding totient</h3>
 		<p>To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve</p>
 
 		<div id="Algo1">
@@ -99,10 +99,6 @@
 			<div id="Comprehend" class="comprehend"></div>
 		</div>
 
-		<script src={{url_for('static', filename='Sieve.js')}}></script>
-		<script src={{url_for('static', filename='Totient.js')}}></script>
-		<form id="page" style="display:none"></form>
-
 		<h3>Second problem statement</h3>
 		<p> Suppose You are given numbers \(1 \le a_1, a_2, .. a_n, m \le 10^9+7, n \le 10^5\) and have to find value of such expression:
 		<span class="central" style="font-size:20px;">$$a_1^{ ({a_2} ^{( {a_3} ^ {(\dots a_n)})})} mod\ m$$</span>
@@ -116,7 +112,7 @@
 		</p>
 		<h3>Euler's Theorem</h3>
 		<p>
-		Let \(a_1, a_2, \dots, a_{\phi(m)}\) be a sequence of all numbers \(y:\ gcd(y, m)=1 \land y \le m \lt\), such that \(\forall_{i,j} a_i \neq a_j\). Let \(b=a_i\) for some \(i\). Then:
+		Let \(a_1, a_2, \dots, a_{\phi(m)}\) be a sequence of all numbers \(y:\ gcd(y, m)=1 \land y \le m \), such that \(\forall_{i,j} a_i \neq a_j\). Let \(b=a_i\) for some \(i\). Then:
 		<span class="central">\(a_1, a_2, \dots, a_{\phi(m)}\ \ //*b\)<br>
 			\(ba_1, ba_2, \dots, ba_{\phi(m)} \mod m\)
 		</span>
@@ -173,17 +169,35 @@
 					Which contradicts assumptions. What follows, \(\forall_{h \in N_+} \exists_{g \in N_+} (g|a^{z+h} \bmod m \land g \nmid a^z \bmod m)\). This proves, that \(\forall_{h \in N_+} a^z \bmod m \neq a^{z+h} \bmod m\) for \(z \le \) minimal \(c\).
 				</li>
 				<li>
-					Why \(\phi(m) \ge log_2(m)\)? Proof is somewhat ultramagical:
+					Why \(\phi(m) \ge \lfloor log_2(m) \rfloor \)? Proof is somewhat ultramagical:
 					<ol>
-						<li>\(m=p_1^{q_1} \dots p_n^{q_n}, n \le log_2(m)\)</li>
-						<li>\(\phi(m)=m \frac{p_1-1}{p_1} \dots \frac{p_n-1}{p_n} \ge m \frac{1}{2} \frac{2}{3} \frac{3}{4} ... \frac{n}{n+1} = m \frac{1}{n+1} \ge m \frac{1}{log_2(m)+1}\)</li>
-						<li>\(\phi(m)-log_2(m) \ge \frac{m}{log_2(m)+1}-log_2(m)=\frac{1}{log_2(m)+1}(m-log_2^2(m)-log_2(m))\)</li>
+						<li>\(m=p_1^{q_1} \dots p_n^{q_n}, n \le \lfloor log_2(m) \rfloor\)</li>
+						<li>\(\phi(m)=m \frac{p_1-1}{p_1} \dots \frac{p_n-1}{p_n} \ge m \frac{1}{2} \frac{2}{3} \frac{3}{4} ... \frac{n}{n+1} = m \frac{1}{n+1} \ge m \frac{1}{\lfloor log_2(m) \rfloor +1}\)</li>
+						<li>\(\phi(m)-\lfloor log_2(m) \rfloor \ge \frac{m}{\lfloor log_2(m) \rfloor+1}-\lfloor log_2(m) \rfloor=\frac{1}{\lfloor log_2(m) \rfloor+1}(m-(\lfloor log_2(m) \rfloor)^2-\lfloor log_2(m) \rfloor )\)</li>
 					</ol>
 					If last equation is greater equal 0, the theorem is correct (but not only in those cases). For large numbers, it's obvious, for small ones, You can check it Yourself.
-
 			</ol>
 		</p>
 
+		<div id="Algo2">
+			<h2>Power Tower</h2>
+			<div id="Inputter2">
+				<form>
+					<textarea class="inputter" id="Totient2" name="Totient">6 107&#10;2 7 3 12 43 25</textarea>
+				</form>
+				<button id="Sender2" class="sender">Begin</button>
+				<button id="Prever2" class="previous">Previous Move</button>
+				<button id="Nexter2" class="next">Next Move</button>
+				<button id="Finisher2" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez2" class="primez"></div>
+			<div id="Comprehend2" class="comprehend"></div>
+		</div>
 
+
+		<script src={{url_for('static', filename='Sieve.js')}}></script>
+		<script src={{url_for('static', filename='Totient.js')}}></script>
+		<form id="page" style="display:none"></form>
 	</body>
 </html>
