@@ -100,8 +100,8 @@
 		</div>
 
 		<h3>Second problem statement</h3>
-		<p> Suppose You are given numbers \(2 \le a_1, a_2, .. a_n, m \le 10^9+7, n \le 10^5\) and have to find value of such expression:
-		<span class="central" style="font-size:20px;">$$a_1^{ ({a_2} ^{( {a_3} ^ {(\dots a_n)})})} mod\ m$$</span>
+		<p> Suppose You are given numbers \(2 \le a_0, a_1, .. a_{n-1}, m \le 10^9+7, n \le 10^5\) and have to find value of such expression:
+		<span class="central" style="font-size:20px;">$$a_0^{ ({a_1} ^{( {a_2} ^ {(\dots a_{n-1})})})} mod\ m$$</span>
 		<h3>First observations (possibly useless)</h3>
 		<p>To solve this problem, one may first solve value of exponent, and then evaluate full expression: \(a_1^{c} \equiv x\ (mod\ m)\). Exponent can be calculated in the same way, until end of sequence is reached... but modulo what? It is rather impossible to store whole number as exponent or do any calculations on such arduous numbers. To calculte c, it would be wise to know such a number \(x\), such that \(a^b \equiv a^{b+x}\ (mod\ m)\) - at least for coprime \(a, m\). Such number must exist, because number of possible values of \(a^b\) is finite (equal to \(m\), to be precise), and so, from pigeonhole principle, there exist such \(s_1 \lt s_2\), such that \(a^{s_1} \equiv a^{s_2}\ (mod\ m)\). What follows, \(x=s_2-s_1\) (there must be more solutions, perhaps some are lower). Then, 
 		<span class="central">\( a^b \equiv a^{b+x}\ (mod\ m)\) <br>

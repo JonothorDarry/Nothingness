@@ -179,7 +179,7 @@ class PowerTower extends Algorithm{
 
 		for (i=0;i<5;i++){
 			for (j=0;j<n;j++){
-				if (i==0) btn=this.buttCreator(j+1);
+				if (i==0) btn=this.buttCreator(j);
 				else if (i==1) btn=this.buttCreator(this.dt[j]);
 				else btn=this.buttCreator();
 				this.btnlist[i].push(btn);
@@ -245,15 +245,6 @@ class PowerTower extends Algorithm{
 		this.lees.pop();
 	}
 
-	pow(a, b, m=1000000007){
-		var res=1;
-		for (;b>0;b=Math.floor(b/2)){
-			if (b%2==1) res=(res*a)%m;
-			a=(a*a)%m;
-		}
-		return res;
-	}
-
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], tot;
@@ -266,29 +257,37 @@ class PowerTower extends Algorithm{
 
 		if (s[0]==2){
 			var nxt=s[1], res, b;
-			if (s[3]==this.n-1) b=s[2];
+			if (s[3]==this.n-1 || s[1]==1) b=s[2];
 			else b=this.toth[s[3]+1]+s[2];
 
 			if (nxt==0) res=this.pow(this.dt[s[3]], b, this.toth[s[3]]);
 			else res=this.pow(this.dt[s[3]], b);
-			console.log(res, this.dt[s[3]], s[2], this.toth[s[3]]);
 
 			this.lees.push([3, nxt, res, s[3]]);
 		}
 
 		if (s[0]==3){
 			var nxt=1;
-			if (s[1]==0 || s[2]*Math.log(this.dt[s[3]])>5) nxt=0;
+			if (s[1]==0 || s[2]*Math.log(this.dt[s[3]-1])>5) nxt=0;
 
 			if (s[3]>0) this.lees.push([2, nxt, s[2], s[3]-1]);
 			else this.lees.push([100]);
 		}
 	}
+
 	StatementComprehension(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], tot;
+		var last=this.lees[l-1], prev=this.lees[l-2], tot;
+		
+		if (last[0]==100) return `And so, the end has come: the result is ${prev[2]}`;
+		if (last[0]==1) return `Now, I'm finding totients of last modulus, so that I'll be able to calculate exponent easily. ${((last[1]==0)?(`This is just the beginning of algorithm, so I assign most outer modulus to given m=${this.toth[last[1]]}`):(`&#x03D5;(${this.toth[last[1]-1]})=${this.toth[last[1]]}`))}`;
 
-	
+		if (last[0]==2 && prev[0]==1) return `This is the first exponent, that I will push further, so I treat current exponent as 1. ${((last[2]>32)?`This number is already higher than log<sub>2</sub>(maxmod)<32, so I treat number as high one`:`This number is small, so I treat it as it is, without changing it with modulo operator - ulitmately, purpose of mod is to get rid of huge numbers, not the mod operation itself.`)}`;
+		else if (last[0]==2) return `${(prev[1]==0)?`Exponent res<sub>i+1</sub> is already high, and so is a<sub>i</sub><sup>res<sub>i+1</sub></sup>`:`${(last[1]==1)?`This number is low too, because for x<sup>y</sup>, ylog<sub>2</sub>(x)=${this.dt[last[3]]}log<sub>2</sub>(${last[2]})<=5`:`This number is high, a<sub>i</sub><sup>res<sub>i+1</sub></sup>>32, because res<sub>i+1</sub>log<sub>2</sub>(a<sub>i</sub>)=${last[2]}log<sub>2</sub>(${this.dt[last[3]]})>5`}`}`;
+
+		if (last[0]==3 && last[1]==1) return `Partial result is calculated as a<sub>i</sub><sup>res<sub>i+1</sub></sup>=${this.dt[last[3]]}<sup>${prev[2]}</sup>=${last[2]} -  I keep whole number, because it's small`;
+		else if (last[0]==3) return `Partial result is calculated as a<sub>i</sub><sup>&#x03D5;<sub>i+1</sub>(m) + res<sub>i+1</sub> mod &#x03D5;<sub>i+1</sub>(m)</sup> mod &#x03D5;<sub>i</sub>(m)=${this.dt[last[3]]}<sup>${this.toth[last[3]+1]}+${prev[2]%this.toth[last[3]+1]}</sup> mod ${this.toth[last[3]]}=${last[2]}`;
+
 	}
 
 	//0: red, 1:green, 2: gray, 3: dead white
@@ -310,6 +309,15 @@ class PowerTower extends Algorithm{
 		}
 		if (rs>1) dv*=(rs-1);
 		return dv;
+	}
+
+	pow(a, b, m=1000000007){
+		var res=1;
+		for (;b>0;b=Math.floor(b/2)){
+			if (b%2==1) res=(res*a)%m;
+			a=(a*a)%m;
+		}
+		return res;
 	}
 
 	divsCreator(){
