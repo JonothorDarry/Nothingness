@@ -150,6 +150,23 @@ class TotientSieve extends Sieve{
 }
 
 class PowerTower extends Algorithm{
+	constructor(block, n=-1, m, lees){
+		super(block);
+		if (n==-1) return;
+
+		var i, j, btn;
+		this.divsCreator();
+		for (i=0;i<5;i++){
+			for (j=0;j<n;j++){
+				if (i==0) btn=this.buttCreator(j);
+				else if (i==1) btn=this.buttCreator(lees[j]);
+				else btn=this.buttCreator();
+				console.log(i, j);
+				this.zdivs[i][1].appendChild(btn);
+			}
+		}
+	}
+
 	BeginningExecutor(){
 		this.lees=[];
 		this.place.innerHTML='';
@@ -372,4 +389,4 @@ var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var sk=new TotientSieve(100, feral);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var sk2=new PowerTower(feral2);
+var sk2=new PowerTower(feral2, 6, 107, [2, 7, 3, 12, 43, 25]);
