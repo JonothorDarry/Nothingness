@@ -1,10 +1,20 @@
 class Tree extends Algorithm{
 	constructor(block){
-		super(block)
-		var n=7, i=0, j=0, a, b, width=this.place.offsetWidth, floater, angle;
+		super(block);
+		this.treeConstructor();
+	}
+	BeginningExecutor(){
+		this.place.innerHTML="";
+		this.treeConstructor();
+	}
+
+	treeConstructor(){
+		var n, i=0, j=0, a, b, width=this.place.offsetWidth, floater, angle, cval;
 		var edges=[[1, 2], [3, 4], [2, 4], [3, 5], [3, 6], [3, 7]];
 		var tr=[], widvs=[];
-		
+
+		edges=this.getTreeFromInput();
+		n=this.n;
 
 		for (i=0;i<=n;i++) tr.push([]), widvs.push(0);
 
@@ -31,7 +41,8 @@ class Tree extends Algorithm{
 
 				if (a!=1){
 					dv.style.position="absolute";
-					dv.style.width=`${Math.sqrt(Math.pow(widvs[a]-widvs[par[a]], 2)+75*75)}px`;
+					cval=Math.sqrt(Math.pow(widvs[a]-widvs[par[a]], 2)+75*75);
+					dv.style.width=`${cval}px`;
 					dv.style.top=`${i*75+20}px`;
 
 					dv.style.left=`${100*floater+(20*100)/width}%`;
@@ -40,11 +51,13 @@ class Tree extends Algorithm{
 					dv.style.zIndex="-1";
 
 					if (widvs[a]-widvs[par[a]]==0) angle=-Infinity;
-					else angle=Math.tan(75/(widvs[a]-widvs[par[a]]));
+					else angle=Math.sin(75/cval);
 
-					dv.style.transformOrigin="left";
-					if (angle<0)	dv.style.transform=`rotate(${Math.atan(angle)}rad)`;
-					else dv.style.transform=`rotate(${Math.atan(angle)+Math.PI}rad)`;
+					dv.style.transformOrigin="top left";
+					if (widvs[a]-widvs[par[a]]==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
+					else if (widvs[a]-widvs[par[a]]<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
+					else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
+
 					this.place.appendChild(dv);
 				}
 
@@ -55,8 +68,8 @@ class Tree extends Algorithm{
 				this.place.appendChild(bt);
 			}
 		}
-		
 	}
+
 
 	dfsen(n, tree){
 		var i=1, j=0, a, b;
@@ -91,6 +104,26 @@ class Tree extends Algorithm{
 			}
 		}
 		return [par, sysdep];
+	}
+
+	getTreeFromInput(){
+		var fas=this.input.value;
+		var dis, c=this.getInput(0, fas), a, b, edges=[], n, i=0;
+		n=c[0];
+		console.log(c);
+		this.n=n;
+		dis=c[1];
+
+		for (i=0;i<n;i++){
+			c=this.getInput(dis+1, fas);
+			a=c[0];
+			c=this.getInput(c[1]+1, fas);
+			b=c[0];
+			edges.push([a, b]);
+			dis=c[1];
+		}
+
+		return edges;
 	}
 	
 	
