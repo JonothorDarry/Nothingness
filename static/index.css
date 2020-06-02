@@ -12,6 +12,14 @@
 	background-color: #8888DD;
 }
 
+.treebutton{
+	background-color: #E67300;
+}
+
+.treebutton:hover{
+	background-color: #FF9319;
+}
+
 .algoName{
 	width: 180px;
 	text-align: center;

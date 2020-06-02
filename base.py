@@ -4,74 +4,53 @@ app=Flask(__name__)
 
 
 def comeBackin(place):
-    if (place=='sieve'):
-        return redirect(url_for('ErastotenesSieve'))
-    if (place=='gcd'):
-        return redirect(url_for('EuclidAlgo'))
-    if (place=='crt'):
-        return redirect(url_for('ChineseTheorem'))
-    if (place=='binex'):
-        return redirect(url_for('BinExpo'))
-    if (place=='totient'):
-        return redirect(url_for('Totient'))
-    if (place=='index'):
-        return redirect(url_for('Wisdom'))
+    places={
+            'sieve':'ErastotenesSieve',
+            'gcd':'EuclidAlgo',
+            'crt':'ChineseTheorem',
+            'binex':'BinExpo',
+            'totient':'Totient',
+            'treewalk':'TreeBasic',
+            'index':'Wisdom',
+    }
+    return redirect(url_for(places[place]))
+
+def Router(htmlName):
+    req=request
+    if (req.method=='POST'):
+        s=req.form['next']
+        return comeBackin(s)
+    else:
+        return render_template(htmlName)
 
 
 @app.route('/gcd', methods=['GET', 'POST'])
 def EuclidAlgo():
-    req=request
-    if (req.method=='POST'):
-        s=req.form['next']
-        return comeBackin(s)
-    else:
-        return render_template('Gcd.html')
+    return Router('Gcd.html')
 
 @app.route('/erasto', methods=['GET', 'POST'])
 def ErastotenesSieve():
-    req=request
-    if (req.method=='POST'):
-        s=req.form['next']
-        return comeBackin(s)
-    else:
-        return render_template('Primes.html')
+    return Router('Primes.html')
 
 @app.route('/crt', methods=['GET', 'POST'])
 def ChineseTheorem():
-    req=request
-    if (req.method=='POST'):
-        s=req.form['next']
-        return comeBackin(s)
-    else:
-        return render_template('Crt.html')
+    return Router('Crt.html')
 
 @app.route('/totient', methods=['GET', 'POST'])
 def Totient():
-    req=request
-    if (req.method=='POST'):
-        s=req.form['next']
-        return comeBackin(s)
-    else:
-        return render_template('Totient.html')
+    return Router('Totient.html')
 
 @app.route('/binex', methods=['GET', 'POST'])
 def BinExpo():
-    req=request
-    if (req.method=='POST'):
-        s=req.form['next']
-        return comeBackin(s)
-    else:
-        return render_template('BinaryExpo.html')
+    return Router('BinaryExpo.html')
+
+@app.route('/treewalk', methods=['GET', 'POST'])
+def TreeBasic():
+    return Router('TreeBasics.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def Wisdom():
-    req=request
-    if (req.method=='POST'):
-        s=req.form['next']
-        return comeBackin(s)
-    else:
-        return render_template('index.html')
-    
+    return Router('index.html')
 
 @app.context_processor
 def jinjautils():

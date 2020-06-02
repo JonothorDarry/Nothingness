@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<title>Tree walk</title>
+		<meta charset = "UTF-8">
+		<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Temp.css')}}>
+		<script src={{url_for('static', filename='Temp.js')}}></script>
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+	</head>
+
+	<body>
+		<header class="treeHeader">
+			<div class="utilsBar treeUtils">
+				<button class="backer treeBacker" form="page" type="submit" formmethod="post" name="next" value="index">&lt; To main</button>
+			</div>
+			<h1>Tree Walk</h1>
+		</header>
+		<h3>First Problem statement and definitions</h3>
+
+
+
+
+
+		<div id="Algo1">
+			<h2>Finding Diameter</h2>
+			<div id="Inputter">
+				<form>
+					<textarea class="inputter" id="TreeBasics" name="TreeBasics">8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;</textarea>
+				</form>
+				<button id="Sender" class="sender">Begin</button>
+				<button id="Prever" class="previous">Previous Move</button>
+				<button id="Nexter" class="next">Next Move</button>
+				<button id="Finisher" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez" class="primez"></div>
+			<div id="Comprehend" class="comprehend"></div>
+		</div>
+
+		<script src={{url_for('static', filename='TreeBasics.js')}}></script>
+		<form id="page" style="display:none"></form>
+	</body>
+</html>
