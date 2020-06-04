@@ -17,10 +17,31 @@
 			<h1>Tree Walk</h1>
 		</header>
 		<h3>First Problem statement and definitions</h3>
+		<p>Suppose You want to solve following problem: a tree of \(n\) vertices is given, \(n \le 10^6\), and You have to find the longest simple path in this tree (also called diameter). To solve following problem, some definitions have to be stated:
+		<ol>
+			<li><b>Simple path</b> is a path in a graph that passes through any edge at most once.</li>
+			<li><b>Tree</b> is an undirected graph, such that between each two vertices there is exactly one simple path. This implies that the graph is acyclic (because cycle allows to move from one vertex to another in more than one way) and connected (Because there is a way to move from any vertex to another). It is crucial to show, that such graph have \(n-1\) edges, where \(n\) is number of vertexes. One can consider tree a generalization of a sequence.</li>
+			<li><b>Root</b> is a vertex in the tree, relative to which it's vertexes are described - usually it doesn't matter, which vertex is treated as root, while root allows performing operations on a tree</li>
+			<li><b>Depth</b> is distance in the tree from root to a given vertex</li>
+			<li><b>Parent</b> of vertex \(x\) is a vertex \(y\) with lower depth such that there exists edge \(x-y\). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\) number ot edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son- otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertice have \(n-1\) edges.</li>
+			<li><b>Descendant</b> of vertex \(x\) is any vertex \(y\) with higher depth, such that \(x\) lies on simple path \(y-root\)</li>
+		</ol>
 
-
-
-
+		<h3>Solution idea</h3>
+		<p>One could solve this problem with absolute brute force, by counting longest distance from any point in tree - solution works in \(O(n^2)\). However, one can see, that each path in the tree moves through some vertex with lowest depth - if a path would lead through distinct vertexes \(x, y\) with same depth then path must move through parent of \(x\) (because it must lie on a path \(x-y\)). What follows, one can agggregate longest paths starting from all sons of a vertex \(x\), then one can find longest path whose point with lowest depth is \(x\). Or, in other words: if \(d_0(x), d_1(x)\) are currently 1st and 2nd longest paths starting at \(x\), then after processing son of \(x\), that is, \(y\), \(d_1(x)\) needs to be changed to \(d_0(y)+1\) - longest path starting at \(y\), with addition of additional edge \(x-y\) - if it's lower, and swap \(d_0(x), d_1(x)\) if \(d_1(x) \gt d_0(x)\): then, in vertex \(x\) there will always be two longest paths starting at \(x\). And so, the longest path moving through \(x\) as its vertex with lowest depth is \(d_0(x)+d_1(x)\). Then, \(diameter=min\{x \in V: d_0(x)+d_1(x)\}\). Initially, \(d_0(x)=d_1(x)=0\) for each vertex \(x\).
+		</p>
+		<h3>Depth first search</h3>
+		<p>To penetrate the tree one can:
+		</p>
+		<ol>
+			<li>Start moving through a tree from root.</li>
+			<li>If a vertex \(x\) has any unchecked descendant \(y\), go to it, check it, and mark \(parent[y]=x\).</li>
+			<li>Otherwise, change aggregated data of parent and go back to it.</li>
+		</ol>
+		<p>
+		One can use some queue, to which one will append element if it's an unchecked descendant of the last element and pop element when there are no descendants unpenetrated. This allows aggregating data from the tree, such as longest paths. Such queue is usually called 'stack', and algorithm - 'depth first search'.
+		</p>
+		
 
 		<div id="Algo1">
 			<h2>Finding Diameter</h2>
