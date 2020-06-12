@@ -1,15 +1,22 @@
 class Tree extends Algorithm{
-	constructor(block){
+	constructor(block, wid=100){
 		super(block);
-		this.treeConstructor();
+		this.treeConstructor(wid);
 	}
 	BeginningExecutor(){
 		this.place.innerHTML="";
 		this.treeConstructor();
 	}
 
-	treeConstructor(){
-		var n, i=0, j=0, a, b, width=this.place.offsetWidth, floater, angle, cval;
+	treeConstructor(wid=70){
+		this.place.style.position="relative";
+		this.treeDiv=document.createElement("DIV");
+		this.treeDiv.style.position="relative";
+		this.treeDiv.style.width=`${wid}%`;
+		this.place.appendChild(this.treeDiv);
+
+
+		var n, i=0, j=0, a, b, width=this.treeDiv.offsetWidth, floater, angle, cval;
 		var edges=[[1, 2], [3, 4], [2, 4], [3, 5], [3, 6], [3, 7]];
 		var widvs=[];	
 		this.tr=[];
@@ -34,7 +41,7 @@ class Tree extends Algorithm{
 		var depth=params[1];
 		var par=params[0];
 
-		this.place.style.position="relative";
+
 		for (i=0;i<depth.length;i++){
 			for (j=0;j<depth[i].length;j++){
 				a=depth[i][j];
@@ -66,7 +73,7 @@ class Tree extends Algorithm{
 					else if (widvs[a]-widvs[par[a]]<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
 					else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
 
-					this.place.appendChild(dv);
+					this.treeDiv.appendChild(dv);
 				}
 
 				bt.style.position="absolute";
@@ -74,7 +81,7 @@ class Tree extends Algorithm{
 				bt.style.left=`${100*floater}%`;
 				this.buttData[a]={'left': 100*floater, 'top':i*75}
 
-				this.place.appendChild(bt);
+				this.treeDiv.appendChild(bt);
 			}
 		}
 	}
@@ -120,7 +127,6 @@ class Tree extends Algorithm{
 		var fas=this.input.value;
 		var dis, c=this.getInput(0, fas), a, b, edges=[], n, i=0;
 		n=c[0];
-		console.log(c);
 		this.n=n;
 		dis=c[1];
 
@@ -194,12 +200,12 @@ class DiamFinder extends Tree{
 			valar.style.left=`${x}%`;
 
 			valar2.style.top=`${y}px`;
-			valar2.style.left=`${x+20/(Math.sqrt(2)*this.width)}%`;
+			valar2.style.left=`${x+20/this.width}%`;
 
 			this.dp.push([valar, valar2]);
 			this.dpval.push([0, 0]);
-			this.place.appendChild(valar);
-			this.place.appendChild(valar2);
+			this.treeDiv.appendChild(valar);
+			this.treeDiv.appendChild(valar2);
 		}
 	}
 
@@ -211,6 +217,13 @@ class DiamFinder extends Tree{
 
 		a=s[1];
 		v0=this.ij[a];
+
+		this.Painter(this.dp[a][0], 0);
+		this.Painter(this.dp[a][1], 0);
+		if (a!=1 && s[0]!=3){
+			this.Painter(this.dp[this.par[a]][0], 0);
+			this.Painter(this.dp[this.par[a]][1], 0);
+		}
 		if (s[0]==0 || s[0]==1){
 			this.Painter(this.butts[a], 1);
 			if (a!=1) this.Painter(this.butts[this.par[a]], 5);
@@ -225,8 +238,15 @@ class DiamFinder extends Tree{
 			if (a!=1) {
 				para=this.par[a];
 				this.Painter(this.butts[para], 1);
-				if (this.dpval[para][0]<this.dpval[a][0]+1)		this.dpval[para][1]=this.dpval[para][0], this.dpval[para][0]=this.dpval[a][0]+1;
-				else if (this.dpval[para][1]<this.dpval[a][0]+1)	this.dpval[para][1]=this.dpval[a][0]+1;
+				if (this.dpval[para][0]<this.dpval[a][0]+1){
+					this.dpval[para][1]=this.dpval[para][0];
+					this.dpval[para][0]=this.dpval[a][0]+1;
+					this.Painter(this.dp[para][0], 1);
+				}
+				else if (this.dpval[para][1]<this.dpval[a][0]+1){
+					this.dpval[para][1]=this.dpval[a][0]+1;
+					this.Painter(this.dp[para][1], 1);
+				}
 
 				this.dp[para][0].innerHTML=this.dpval[para][0];
 				this.dp[para][1].innerHTML=this.dpval[para][1];
@@ -235,7 +255,6 @@ class DiamFinder extends Tree{
 				this.butts[a].style.borderColor="#888888";
 			}
 		}
-
 	}
 
 
@@ -252,6 +271,7 @@ class DiamFinder extends Tree{
 		else this.lees.push([1, this.tr[a][v0]]);
 		this.ij[a]+=1;
 	}
+	StatementComprehension(){}
 
 
 	betterButtCreator(numb=null, col='#440000'){
@@ -263,7 +283,32 @@ class DiamFinder extends Tree{
 
 		return butt;
 	}
+
+	divCreator(tree, namez){
+		var divs=[], zdivs=[], i, j;
+		for (i=0;i<3;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<3;i++){
+			divs[i].style.width="100%";
+			divs[i].style.height="40px";
+			for (j=0;j<3;j++) {
+				zdivs[i].push(document.createElement("DIV"));
+				zdivs[i][j].style.margin="0";
+				zdivs[i][j].style.padding="0";
+				zdivs[i][j].style.display="inline flow-root";
+				divs[i].appendChild(zdivs[i][j]);
+			}
+			if (i==0) zdivs[i][0].innerHTML="Current result:";
+			if (i==1) zdivs[i][0].innerHTML="Current a:";
+			if (i==2) zdivs[i][0].innerHTML="Current b:";
+			zdivs[i][0].style.width="200px";
+			zdivs[i][1].style.width="50px";
+
+			this.place.appendChild(divs[i]);
+		}
+		this.divs=divs;
+		this.zdivs=zdivs;
+	}
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var eg1=new DiamFinder(feral);
+var eg1=new DiamFinder(feral, 70);
