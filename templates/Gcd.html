@@ -4,8 +4,8 @@
 	<head>
 		<title>Greatest Common Divisor</title>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" type="text/css" href={{url_for('static', filename='Temp.css')}}>
-		<script src={{url_for('static', filename='Temp.js')}}></script>
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
+		<script src="{{url_for('static', filename='Temp.js')}}"></script>
 		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 	</head>
 	<body>
@@ -70,11 +70,11 @@
 		<p>
 			It can be assumed without loss of generality, that \(a_i &gt; b_i\) - it is true after first iteration. Furthermore, 
 			<br><span class="central">\(b_i + a_i\ mod\ b_i &lt; b_i+b_i=2b_i\)</span><br>
-			To prove that \(\frac{a_i + b_i}{a_{i+1}+b_{i+1}} &ge; \frac{3}{2}\) , let's consider two cases: first, when \(a_i &ge; 2b_i\), second, when \(2b_i &gt; a_i &ge; b_i\).
+			To prove that \(\frac{a_i + b_i}{a_{i+1}+b_{i+1}}" &ge; \frac{3}{2}\) , let's consider two cases: first, when \(a_i &ge; 2b_i\), second, when \(2b_i &gt; a_i &ge; b_i\).
 
-			<br><span class="central">(1) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{a_i\ mod\ b_i +b_i} &ge; \frac{a_i+b_i}{2b_i} &gt; \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span>
+			<br><span class="central">(1) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}}" = \frac{a_i+b_i}{a_i\ mod\ b_i +b_i} &ge; \frac{a_i+b_i}{2b_i} &gt; \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span>
 
-			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{a_i\ mod\ b_i+b_i} = \frac{a_i+b_i}{a_i-b_i+b_i} = \frac{a_i+b_i}{a_i} &gt; 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
+			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}}" = \frac{a_i+b_i}{a_i\ mod\ b_i+b_i} = \frac{a_i+b_i}{a_i-b_i+b_i} = \frac{a_i+b_i}{a_i} &gt; 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
 			And so, maximum number of operations can be bounded by \(O(q*log(min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, and after \(k\) iterations it becomes lower at least \((\frac{3}{2})^{k}\) times.
 		</p>
 		<h3>Second Problem</h3>
@@ -82,7 +82,7 @@
 			Let's say that sole \(gcd(w,v)\) is not enough: You want to find such numbers \(x, y\) such that: \(wx+vy=gcd(w,v)\). One can use same mechanism to solve this problem, but calculate also arrays \(p, q\), such that for each \(i\) following stands:
 			<br><span class="central">\(p_iw+q_iv=b_i\)<br>
 				\(p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1\)<br>
-				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\ mod\ b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}\)<br></span>
+				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\ mod\ b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}"{b_{i-1}}"\rfloor b_{i-1}\)<br></span>
 			It is possble to show \(b_{i-1}\) as \(b_{i-1}=p_{i-1}w+q_{i-1}v\). But what with \(a_{i-1}\)? It's equal to \(b_{i-2}\), except when \(i=2\)... unless \(b_0=a_1=w\). Let also, for simplicity, \(z_i=\lfloor \frac{a_i}{b_i} \rfloor\). Then: <br>
 			<span class="central">\(p_0=1, q_0=0 \implies wp_0+vq_0=w=b_0\)<br>
 				\(b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z(p_iw + q_iv)= w(p_{i-1} - zp_i)+ v(q_{i-1} - zq_i)\)</span>
@@ -142,7 +142,7 @@
 			<a href="https://codeforces.com/problemset/problem/919/E">Congruence Equation</a>
 		</p>
 		
-		<script src={{url_for('static', filename='Gcd.js')}}></script>
+		<script src="{{url_for('static', filename='Gcd.js')}}"></script>
 		<form id="page" style="display:none"></form>
 	</body>
 </html>
