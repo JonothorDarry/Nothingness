@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<title>Signup</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
+	</head>
+
+	<body>	
+		<header>
+			<div class="utilsBar">
+				<button class="backer" form="page" type="submit" formmethod="post" name="next" value="index">&lt; To main</button>
+			</div>
+			<h1>Task Adder</h1>
+		</header>
+		<label>domain<input type="text" form="secrets_of_stars" id="domain" name="domain" required="required"></label>
+
+		<label>name<input type="text" form="secrets_of_stars" id="name" name="name" required="required"></label>
+		<label>link<input type="text" form="secrets_of_stars" id="link" name="link" required="required"></label>
+		<label>difficulty<input type="text" form="secrets_of_stars" id="difficulty" name="difficulty"></label>
+		<label>description<input type="text" form="secrets_of_stars" id="description" name="description"></label>
+
+		<button class="sender" form="secrets_of_stars" type="submit" formmethod="post" name="next" value="polynominal_funeral">Send</button>
+
+		<form id="page" style="display:none"></form>
+		<form id="secrets_of_stars" style="display:none"></form>
+	</body>
+</html>

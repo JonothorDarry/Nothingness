@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 app=Flask(__name__)
 
 
-def comeBackin(place):
+def comeBackin(place, old_place):
     places={
             'sieve':'ErastotenesSieve',
             'gcd':'EuclidAlgo',
@@ -19,7 +19,11 @@ def comeBackin(place):
             'signup':'Signer',
             'unlog':'Wisdom',
             'login':'Login',
+            'taskAdder':'TaskAdder',
     }
+    if (places[place]=='TaskAdder'):
+        return redirect(url_for(places[place], olden=old_place))
+
     return redirect(url_for(places[place]))
 
 
@@ -37,19 +41,54 @@ def modify(name, login="Sebix"):
                 del bt[x]
             bt.string=f"Welcome, {login}"
 
+        bt=strval.find(id="taskButton")
+        if (bt!=None):
+            bt['style']="display:inline-block;"
+
     return strval.prettify()
 
-def Router(htmlName):
+
+def listAdd(name, login):
+    list_problems=engine.execute(f"select name, difficulty, description, link from logging where login='{login}'")
+    with open(f'./templates/{name}') as x_file:
+        document=BeautifulSoup(x_file.read(), 'html.parser')
+        most_outer_div=document.find(id="problems")
+        for x in list_problems:
+            outer_div=soup.new_tag("div")
+            inner_div_above=soup.new_tag("div")
+            inner_div_below=soup.new_tag("div")
+            link=soup.new_tag("a", href=x[3])
+            link.string=x[0]
+            inner_div_below.string=x[2]
+
+            inner_div_above.append(link)
+            outer_div.append(inner_div_above)
+            outer_div.append(inner_div_below)
+
+            
+def input_fill(html, olden):
+    document=BeautifulSoup(html, 'html.parser')
+    vl=document.find(id="domain")
+    vl['value']=olden
+    return document.prettify()
+
+
+def Router(htmlName, olden=None):
     req=request
+    #DEBUGGED
     if 'UserID' in req.cookies:
         print(req.cookies['UserID'])
+
     if (req.method=='POST'):
         s=req.form['next']
-        return comeBackin(s)
+        return comeBackin(s, htmlName)
     else:
         if 'UserID' in  req.cookies:
             if (req.cookies['UserID']!=''):
                 html_full=modify(htmlName, req.cookies['UserID'])
+                if (htmlName=='task_adder.html'):
+                    html_full=input_fill(html_full, olden)
+
                 resp=make_response(render_template_string(html_full))
             else:
                 resp=make_response(render_template(htmlName))
@@ -139,6 +178,18 @@ def Login():
     return Router('login.html')
 
 
+@app.route('/task_adder/<olden>', methods=['GET', 'POST'])
+def TaskAdder(olden="Primez.html"):
+    req=request
+    if (req.method=='POST' and 'link' in req.form):
+        results=engine.execute(f"select * from logging where activated=1 and login='{req.form['login']}' and password='{req.form['pass']}'") 
+
+        if results.rowcount>0:
+            html_file=modify('index.html', req.form['login'])
+            resp=make_response(render_template_string(html_file))
+            resp.set_cookie('UserID', req.form['login'])
+            return resp
+    return Router('task_adder.html', olden=olden)
 
 
 @app.context_processor
@@ -164,6 +215,9 @@ if __name__=='__main__':
 
     #engine.execute("delete from logging")
     #engine.execute("drop table logging")
+
     #engine.execute("create table logging(id int primary key generated always as identity, mail text unique not null, login text unique not null, password text, authValue text, activated int)")
+    #engine.execute("create table vision(id int primary key generated always as identity, login text references logging(login), description text, link text, name text, difficulty int)")
+
     #engine.execute("insert into logging values('Stefan', 'Stannis', 'kappa')")
     app.run()
