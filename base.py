@@ -3,11 +3,11 @@ from sqlalchemy import create_engine
 from bs4 import BeautifulSoup
 import smtplib, ssl
 from email.mime.text import MIMEText
+import re
 
 app=Flask(__name__)
 
-
-def comeBackin(place, old_place):
+class transformation:
     places={
             'sieve':'ErastotenesSieve',
             'gcd':'EuclidAlgo',
@@ -21,8 +21,49 @@ def comeBackin(place, old_place):
             'login':'Login',
             'taskAdder':'TaskAdder',
     }
-    if (places[place]=='TaskAdder'):
-        return redirect(url_for(places[place], olden=old_place))
+
+    place_mapper={
+            'Crt.html':'Chineese_Remainder_Theorem',
+            'BinaryExpo.html':'Binary_Exponentation',
+            'Primes.html':'Erastotenes_Sieve',
+            'Gcd.html':'Greatest_Common_Divisor',
+            'Totient.html':'Totient_function',
+            'TreeBasics.html':'Tree_Walk',
+    }
+
+    inverse_place_mapper={
+            'Chineese Remainder Theorem':'crt',
+            'Binary Exponentation':'binex',
+            'Erastotenes Sieve':'sieve',
+            'Greatest Common Divisor':'gcd',
+            'Totient function':'totient',
+            'Tree Walk':'treewalk',
+            'index':'index',
+    }
+
+    funeral_procession={
+            'Chineese Remainder Theorem':'Crt.html',
+            'Binary Exponentation':'BinaryExpo.html',
+            'Erastotenes Sieve':'Primes.html',
+            'Greatest Common Divisor':'Gcd.html',
+            'Totient function':'Totient.html',
+            'Tree Walk':'TreeBasics.html',
+            
+    }
+
+
+def comeBackin(place, old_place):
+    places=transformation.places
+    place_mapper=transformation.place_mapper
+    inverse_place_mapper=transformation.inverse_place_mapper
+
+
+
+    if (place in places and places[place]=='TaskAdder'):
+        return redirect(url_for(places[place], olden=place_mapper[old_place]))
+
+    if (old_place=='task_adder.html'):
+        return redirect(url_for(places[inverse_place_mapper[place]]))
 
     return redirect(url_for(places[place]))
 
@@ -41,35 +82,45 @@ def modify(name, login="Sebix"):
                 del bt[x]
             bt.string=f"Welcome, {login}"
 
+
         bt=strval.find(id="taskButton")
         if (bt!=None):
             bt['style']="display:inline-block;"
 
+        strval=listAdd(name, login, strval)
+
     return strval.prettify()
 
 
-def listAdd(name, login):
-    list_problems=engine.execute(f"select name, difficulty, description, link from logging where login='{login}'")
-    with open(f'./templates/{name}') as x_file:
-        document=BeautifulSoup(x_file.read(), 'html.parser')
-        most_outer_div=document.find(id="problems")
-        for x in list_problems:
-            outer_div=soup.new_tag("div")
-            inner_div_above=soup.new_tag("div")
-            inner_div_below=soup.new_tag("div")
-            link=soup.new_tag("a", href=x[3])
-            link.string=x[0]
-            inner_div_below.string=x[2]
+def listAdd(name, login, document):
+    list_problems=engine.execute(f"select name, difficulty, description, link from vision where login='{login}' and domain='{name}'")
+    most_outer_div=document.find(id="problems")
+    for x in list_problems:
+        outer_div=document.new_tag("div")
+        inner_div_above=document.new_tag("div")
+        inner_div_below=document.new_tag("div")
+        link=document.new_tag("a", href=x[3])
+        link.string=x[0]
+        inner_div_below.string=x[2]
 
-            inner_div_above.append(link)
-            outer_div.append(inner_div_above)
-            outer_div.append(inner_div_below)
+        inner_div_above.append(link)
+        outer_div.append(inner_div_above)
+        outer_div.append(inner_div_below)
+        most_outer_div.append(outer_div)
+    return document
 
             
 def input_fill(html, olden):
     document=BeautifulSoup(html, 'html.parser')
     vl=document.find(id="domain")
-    vl['value']=olden
+    value="".join([' ' if x=='_' else x for x in olden])
+    for x in transformation.funeral_procession:
+        tag=document.new_tag("option", value=x)
+        if (value==x):
+            tag=document.new_tag("option", value=x, selected=True)
+        tag.string=x
+        vl.append(tag)
+
     return document.prettify()
 
 
@@ -181,14 +232,13 @@ def Login():
 @app.route('/task_adder/<olden>', methods=['GET', 'POST'])
 def TaskAdder(olden="Primez.html"):
     req=request
-    if (req.method=='POST' and 'link' in req.form):
-        results=engine.execute(f"select * from logging where activated=1 and login='{req.form['login']}' and password='{req.form['pass']}'") 
+    if (req.method=='POST' and 'link' in req.form): 
+        funeral=transformation.funeral_procession
+        rf=req.form
+        engine.execute(f"insert into vision(login, domain, description, link, name, difficulty) values('{req.cookies['UserID']}', '{funeral[rf['next']]}', '{rf['description']}', '{rf['link']}', '{rf['name']}', '{rf['description']}')")
 
-        if results.rowcount>0:
-            html_file=modify('index.html', req.form['login'])
-            resp=make_response(render_template_string(html_file))
-            resp.set_cookie('UserID', req.form['login'])
-            return resp
+        return Router('task_adder.html', olden=olden)
+
     return Router('task_adder.html', olden=olden)
 
 
@@ -215,9 +265,10 @@ if __name__=='__main__':
 
     #engine.execute("delete from logging")
     #engine.execute("drop table logging")
+    #engine.execute("drop table vision")
 
     #engine.execute("create table logging(id int primary key generated always as identity, mail text unique not null, login text unique not null, password text, authValue text, activated int)")
-    #engine.execute("create table vision(id int primary key generated always as identity, login text references logging(login), description text, link text, name text, difficulty int)")
+    #engine.execute("create table vision(id int primary key generated always as identity, login text references logging(login), domain text, description text, link text, name text, difficulty text)")
 
     #engine.execute("insert into logging values('Stefan', 'Stannis', 'kappa')")
     app.run()
