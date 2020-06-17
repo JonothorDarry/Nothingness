@@ -4,6 +4,9 @@ from bs4 import BeautifulSoup
 import smtplib, ssl
 from email.mime.text import MIMEText
 import re
+import random
+import string
+import os
 
 app=Flask(__name__)
 
@@ -60,6 +63,10 @@ class transformation:
             'Totient.html':'totiebt',
             'TreeBasics.html':'treewalk', 
     }
+
+
+def get_random_string(N=40):
+    return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
 
 def comeBackin(place, old_place):
@@ -147,19 +154,17 @@ def show_error(name, error):
         strval=BeautifulSoup(x_file.read(), 'html.parser')
         error_div=strval.find(id="error")
         error_div.string=error
-        if (name=='login.html'):
-            login_inp=strval.find(id="login")
-            login_inp['value']=req.form['login']
-            pass_inp=strval.find(id="pass")
-            pass_inp['value']=req.form['pass']
-        if (name=='signup.html'):
-            login_inp=strval.find(id="login")
-            login_inp['value']=req.form['login']
-            pass_inp=strval.find(id="pass")
-            pass_inp['value']=req.form['pass']
-            pass_inp=strval.find(id="email")
-            pass_inp['value']=req.form['email']
+        if name=='login.html':
+            alls=['login', 'pass']
+        elif name=='reset_pass_mail.html':
+            alls=['email']
+        else:
+            alls=['login', 'pass', 'email']
+
+        for x in alls:
+            strval.find(id=x)['value']=req.form[x]
     return strval.prettify()
+
 
 def getBSFileByName(name):
     req=request
@@ -243,7 +248,7 @@ def Signer():
     req=request
     if (req.method=='POST' and 'pass' in req.form):
         login=req.form['login']
-        authValue=login
+        authValue=get_random_string()
         mail=req.form['email']
         try:
             engine.execute(f"insert into logging(mail, login, password, activated, authValue) values('{mail}', '{login}', '{req.form['pass']}', 0, '{authValue}')")
@@ -270,7 +275,7 @@ def Signer():
 
 @app.route('/validat/<auth>', methods=['GET', 'POST'])
 def Palingnesia(auth):
-    engine.execute(f"update logging set activated=1 where authValue='{auth}'")
+    engine.execute(f"update logging set activated=1, authValue='{get_random_string()}' where authValue='{auth}'")
     return Router('Finalized.html')
 
 
@@ -295,7 +300,7 @@ def Login():
         html_file=show_error('login.html', error_string)
 
         resp=make_response(render_template_string(html_file))
-        resp.set_cookie('UserID', req.form['login'])
+        resp.set_cookie('UserID', '')
         return resp
 
     return Router('login.html')
@@ -318,6 +323,12 @@ def PassRecoverer():
     if (req.method=='POST' and 'email' in req.form):
         mail=req.form['email']
         x=engine.execute(f"select authValue from logging where mail='{mail}'")
+        if x.rowcount==0:
+            html_file=show_error('reset_pass_mail.html', "This mail does not have an account associated with it!")
+            resp=make_response(render_template_string(html_file))
+            resp.set_cookie('UserID', '')
+            return resp
+            
         for a in x:
             authValue=a[0]
         
@@ -334,14 +345,26 @@ def PassRecoverer():
 @app.route('/auth_reset/<auth_value>', methods=['GET', 'POST'])
 def AuthReseter(auth_value):
     req=request
-    if (req.method=='POST' and 'email' in req.form):
-        engine.execute(f"update logging set login='{req.form['login']}', password='{req.form['pass']}' where mail='{req.form['email']}'")
+    if req.method=='POST' and 'email' not in req.form:
+        return Router('index.html')
+
+    if req.method=='POST' and 'email' in req.form:
+        try:
+            engine.execute(f"update logging set login='{req.form['login']}', password='{req.form['pass']}' where mail='{req.form['email']}'")
+        except:
+            html_file=show_error('reset_pass_main.html', "This login is already in use!")
+            resp=make_response(render_template_string(html_file))
+            resp.set_cookie('UserID', '')
+            return resp
+
         resp=make_response(redirect('/'))
         resp.set_cookie('UserID', req.form['login'])
         return resp
 
     html_file=getBSFileByName('reset_pass_main.html')
     em_cont=engine.execute(f"select mail from logging where authValue='{auth_value}';")
+    engine.execute(f"update logging set authValue='{get_random_string()}' where authValue='{auth_value}';")
+
     for x in em_cont:
         email=x[0]
     html_file.find(id="email")['value']=email
@@ -369,14 +392,17 @@ def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
 
 if __name__=='__main__':
     #Vulnerable as fuck
-    engine=create_engine("postgres://onvvlkvayxvbpz:7a5152102ba6bd5b56218396dddfd40bef4fb12855877e60d8546c0b7b0b0f72@ec2-35-174-127-63.compute-1.amazonaws.com:5432/d7v74vvpqtnp17")
+    print(os.environ.get("DATABASE_URL"))
+    engine=create_engine(os.environ.get("DATABASE_URL"))
 
+    #engine.execute("delete from vision")
     #engine.execute("delete from logging")
-    #engine.execute("drop table logging")
+
     #engine.execute("drop table vision")
+    #engine.execute("drop table logging")
 
     #engine.execute("create table logging(id int primary key generated always as identity, mail text unique not null, login text unique not null, password text, authValue text, activated int)")
-    #engine.execute("create table vision(id int primary key generated always as identity, login text references logging(login), domain text, description text, link text, name text, difficulty text)")
+    #engine.execute("create table vision(id int primary key generated always as identity, login text references logging(login) on update cascade, domain text, description text, link text, name text, difficulty text)")
 
     #engine.execute("insert into logging values('Stefan', 'Stannis', 'kappa')")
     app.run()
