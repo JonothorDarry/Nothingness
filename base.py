@@ -392,7 +392,8 @@ def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
 
 @app.before_first_request
 def dbCreator():
-    global engine=create_engine(os.environ.get("DATABASE_URL"))
+    global engine
+    engine=create_engine(os.environ.get("DATABASE_URL"))
 
 
 
