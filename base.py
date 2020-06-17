@@ -390,10 +390,16 @@ def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
         server.login(sender, passwd)
         server.sendmail(sender, receiver, text)
 
+@app.before_first_request
+def dbCreator():
+    global engine=create_engine(os.environ.get("DATABASE_URL"))
+
+
+
 if __name__=='__main__':
     #Vulnerable as fuck
-    print(os.environ.get("DATABASE_URL"))
-    engine=create_engine(os.environ.get("DATABASE_URL"))
+    #print(os.environ.get("DATABASE_URL"))
+    #engine=create_engine(os.environ.get("DATABASE_URL"))
 
     #engine.execute("delete from vision")
     #engine.execute("delete from logging")
