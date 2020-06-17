@@ -263,7 +263,7 @@ def Signer():
 
 
         #Vulnerable to change
-        cursite="127.0.0.1:5000"
+        cursite=app.config['SNAME']
 
         wisdom=MIMEText(f"<a href='{cursite}/validat/{authValue}'> {cursite}/validat/{authValue}</a>", 'html')
         wisdom['Subject'] = 'The Rain was waving goodbye'
@@ -332,7 +332,7 @@ def PassRecoverer():
         for a in x:
             authValue=a[0]
         
-        cursite="127.0.0.1:5000"
+        cursite=app.config['SNAME']
         wisdom=MIMEText(f"<a href='{cursite}/auth_reset/{authValue}'> {cursite}/auth_reset/{authValue}</a>", 'html')
         wisdom['Subject'] = 'I awoke from the miasma passing swiftly throug the moor'
         wisdom['From'] = "nothingnessproject@gmail.com"
@@ -381,10 +381,10 @@ def jinjautils():
 
 def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
     port = 465
-    passwd="awaits_you"
+    passwd=os.environ.get("EMAIL_PASSWORD")
     # Create a secure SSL context
     context = ssl.create_default_context()
-    sender="nothingnessproject@gmail.com"
+    sender=os.environ.get("EMAIL_LOGIN")
 
     with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
         server.login(sender, passwd)
@@ -394,11 +394,12 @@ def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
 def dbCreator():
     global engine
     engine=create_engine(os.environ.get("DATABASE_URL"))
+    app.config['SNAME']=os.environ.get("SNAME")
+    #engine=create_engine(os.environ.get("DATABASE_URL"))
 
 
 
 if __name__=='__main__':
-    #Vulnerable as fuck
     #print(os.environ.get("DATABASE_URL"))
     #engine=create_engine(os.environ.get("DATABASE_URL"))
 
