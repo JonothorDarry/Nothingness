@@ -7,6 +7,7 @@ import re
 
 app=Flask(__name__)
 
+#Później: zamienić na graf i przechodzić pomiędzy przestrzeniami funkcją
 class transformation:
     places={
             'sieve':'ErastotenesSieve',
@@ -20,6 +21,7 @@ class transformation:
             'unlog':'Wisdom',
             'login':'Login',
             'taskAdder':'TaskAdder',
+            'forgotten':'PassRecoverer',
     }
 
     place_mapper={
@@ -48,7 +50,15 @@ class transformation:
             'Greatest Common Divisor':'Gcd.html',
             'Totient function':'Totient.html',
             'Tree Walk':'TreeBasics.html',
-            
+    }
+    
+    html_to_place={
+            'Crt.html':'crt',
+            'BinaryExpo.html':'binex',
+            'Primes.html':'sieve',
+            'Gcd.html':'gcd',
+            'Totient.html':'totiebt',
+            'TreeBasics.html':'treewalk', 
     }
 
 
@@ -56,8 +66,6 @@ def comeBackin(place, old_place):
     places=transformation.places
     place_mapper=transformation.place_mapper
     inverse_place_mapper=transformation.inverse_place_mapper
-
-
 
     if (place in places and places[place]=='TaskAdder'):
         return redirect(url_for(places[place], olden=place_mapper[old_place]))
@@ -93,8 +101,11 @@ def modify(name, login="Sebix"):
 
 
 def listAdd(name, login, document):
-    list_problems=engine.execute(f"select name, difficulty, description, link from vision where login='{login}' and domain='{name}'")
+    list_problems=engine.execute(f"select name, difficulty, description, link, id from vision where login='{login}' and domain='{name}'")
     most_outer_div=document.find(id="problems")
+
+    fun=transformation.html_to_place
+
     for x in list_problems:
         outer_div=document.new_tag("div")
         inner_div_above=document.new_tag("div")
@@ -103,9 +114,16 @@ def listAdd(name, login, document):
         link.string=x[0]
         inner_div_below.string=x[2]
 
+        butt=document.new_tag("button", value=x[4], form="page", formmethod="post")
+        butt['name']="remove"
+        butt['type']="submit"
+        butt.string="x"
+
         inner_div_above.append(link)
+        inner_div_above.append(butt)
         outer_div.append(inner_div_above)
         outer_div.append(inner_div_below)
+
         most_outer_div.append(outer_div)
     return document
 
@@ -123,6 +141,33 @@ def input_fill(html, olden):
 
     return document.prettify()
 
+def show_error(name, error):
+    req=request
+    with open(f'./templates/{name}') as x_file:
+        strval=BeautifulSoup(x_file.read(), 'html.parser')
+        error_div=strval.find(id="error")
+        error_div.string=error
+        if (name=='login.html'):
+            login_inp=strval.find(id="login")
+            login_inp['value']=req.form['login']
+            pass_inp=strval.find(id="pass")
+            pass_inp['value']=req.form['pass']
+        if (name=='signup.html'):
+            login_inp=strval.find(id="login")
+            login_inp['value']=req.form['login']
+            pass_inp=strval.find(id="pass")
+            pass_inp['value']=req.form['pass']
+            pass_inp=strval.find(id="email")
+            pass_inp['value']=req.form['email']
+    return strval.prettify()
+
+def getBSFileByName(name):
+    req=request
+    with open(f'./templates/{name}') as x_file:
+        strval=BeautifulSoup(x_file.read(), 'html.parser')
+    return strval
+
+
 
 def Router(htmlName, olden=None):
     req=request
@@ -131,6 +176,9 @@ def Router(htmlName, olden=None):
         print(req.cookies['UserID'])
 
     if (req.method=='POST'):
+        if ('remove' in req.form):
+            engine.execute(f'delete from vision where id={req.form["remove"]}')
+            return comeBackin(transformation.html_to_place[htmlName], htmlName)
         s=req.form['next']
         return comeBackin(s, htmlName)
     else:
@@ -182,6 +230,8 @@ def logChecker(login):
 @app.route('/', methods=['GET', 'POST'])
 def Wisdom():
     req=request
+
+    print(req.method, req.form)
     if (req.method=='POST' and req.form['next']=='unlog'):
         resp=make_response(render_template('index.html'))
         resp.set_cookie('UserID', '')
@@ -191,12 +241,21 @@ def Wisdom():
 @app.route('/signup', methods=['GET', 'POST'])
 def Signer():
     req=request
-    print(req.form)
     if (req.method=='POST' and 'pass' in req.form):
         login=req.form['login']
         authValue=login
         mail=req.form['email']
-        engine.execute(f"insert into logging(mail, login, password, activated, authValue) values('{mail}', '{login}', '{req.form['pass']}', 0, '{authValue}')")
+        try:
+            engine.execute(f"insert into logging(mail, login, password, activated, authValue) values('{mail}', '{login}', '{req.form['pass']}', 0, '{authValue}')")
+        except:
+            l1=engine.execute(f"select mail from logging where mail='{mail}'")
+            error_string="This mail is already in use!" if l1.rowcount>0 else "This login was already taken"
+
+            html_file=show_error('signup.html', error_string)
+            resp=make_response(render_template_string(html_file))
+            resp.set_cookie('UserID', '')
+            return resp
+
 
         #Vulnerable to change
         cursite="127.0.0.1:5000"
@@ -218,14 +277,27 @@ def Palingnesia(auth):
 @app.route('/login', methods=['GET', 'POST'])
 def Login():
     req=request
+    if 'cookies' in dir(req) and 'UserID' in req.cookies:
+        redirect(url_for('Wisdom'))
+        
     if (req.method=='POST' and 'pass' in req.form):
         results=engine.execute(f"select * from logging where activated=1 and login='{req.form['login']}' and password='{req.form['pass']}'") 
 
         if results.rowcount>0:
-            html_file=modify('index.html', req.form['login'])
-            resp=make_response(render_template_string(html_file))
+            #html_file=modify('index.html', req.form['login'])
+            resp=make_response(redirect('/'))
             resp.set_cookie('UserID', req.form['login'])
             return resp
+
+
+        results=engine.execute(f"select * from logging where activated=1 and login='{req.form['login']}'")
+        error_string="Apparently, the password is incorrect" if results.rowcount>0 else "Apparently, either account does not exist or is not activated (this is possible, if You signed up, but did not open link in e-mail from this site)"
+        html_file=show_error('login.html', error_string)
+
+        resp=make_response(render_template_string(html_file))
+        resp.set_cookie('UserID', req.form['login'])
+        return resp
+
     return Router('login.html')
 
 
@@ -238,9 +310,45 @@ def TaskAdder(olden="Primez.html"):
         engine.execute(f"insert into vision(login, domain, description, link, name, difficulty) values('{req.cookies['UserID']}', '{funeral[rf['next']]}', '{rf['description']}', '{rf['link']}', '{rf['name']}', '{rf['description']}')")
 
         return Router('task_adder.html', olden=olden)
-
     return Router('task_adder.html', olden=olden)
 
+@app.route('/recover_password', methods=['GET', 'POST'])
+def PassRecoverer():
+    req=request
+    if (req.method=='POST' and 'email' in req.form):
+        mail=req.form['email']
+        x=engine.execute(f"select authValue from logging where mail='{mail}'")
+        for a in x:
+            authValue=a[0]
+        
+        cursite="127.0.0.1:5000"
+        wisdom=MIMEText(f"<a href='{cursite}/auth_reset/{authValue}'> {cursite}/auth_reset/{authValue}</a>", 'html')
+        wisdom['Subject'] = 'I awoke from the miasma passing swiftly throug the moor'
+        wisdom['From'] = "nothingnessproject@gmail.com"
+        wisdom['To'] = mail
+        sender_of_wisdom(wisdom.as_string(), mail)
+
+    return Router('reset_pass_mail.html')
+
+    
+@app.route('/auth_reset/<auth_value>', methods=['GET', 'POST'])
+def AuthReseter(auth_value):
+    req=request
+    if (req.method=='POST' and 'email' in req.form):
+        engine.execute(f"update logging set login='{req.form['login']}', password='{req.form['pass']}' where mail='{req.form['email']}'")
+        resp=make_response(redirect('/'))
+        resp.set_cookie('UserID', req.form['login'])
+        return resp
+
+    html_file=getBSFileByName('reset_pass_main.html')
+    em_cont=engine.execute(f"select mail from logging where authValue='{auth_value}';")
+    for x in em_cont:
+        email=x[0]
+    html_file.find(id="email")['value']=email
+
+    resp=make_response(render_template_string(html_file.prettify()))
+    resp.set_cookie('UserID', '')
+    return resp
 
 @app.context_processor
 def jinjautils():
