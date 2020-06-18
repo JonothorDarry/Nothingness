@@ -236,7 +236,21 @@ def logChecker(login):
 def Wisdom():
     req=request
 
-    print(req.method, req.form)
+    if (req.method=='POST' and 'search' in req.form):
+        inp=req.form['goto']
+        if inp in transformation.inverse_place_mapper:
+            resp=make_response(redirect(url_for(transformation.places[transformation.inverse_place_mapper[inp]])))
+        else:
+            html_file=getBSFileByName('index.html')
+            html_file.find(id="error").string="There is no such article on this site!"
+            html_file.find(id="themes")['value']=req.form['goto']
+
+
+            resp=make_response(render_template_string(html_file.prettify()))
+
+        resp.set_cookie('UserID', req.cookies['UserID'])
+        return resp
+        
     if (req.method=='POST' and req.form['next']=='unlog'):
         resp=make_response(render_template('index.html'))
         resp.set_cookie('UserID', '')
@@ -379,7 +393,8 @@ def AuthReseter(auth_value):
 def jinjautils():
     def jipow(a, b):
         return pow(a, b)
-    return dict(jipow=jipow)
+    topics=[x for x in transformation.inverse_place_mapper if ord(x[0])<92]
+    return dict(jipow=jipow, topics=topics)
 
 def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
     port = 465

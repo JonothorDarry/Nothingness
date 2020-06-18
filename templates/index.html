@@ -13,14 +13,14 @@
 				<button class="signer" form="page" type="submit" formmethod="post" name="next" id="loginButton" value="login">Log in &gt;</button>
 			</div>
 
-			<input list="brow">
-			<datalist id="brow">
-				<option value="Internet Explorer" style="background-color:#FF0000; color=#00FF00">
-				<option value="Firefox">
-				<option value="Chrome">
-				<option value="Opera">
-				<option value="Safari">
-			</datalist>  
+			<input list="topics" form="sear" name="goto" id="themes">
+			<datalist id="topics">
+				{% for x in topics %}
+					<option value="{{x}}">
+				{% endfor %}
+			</datalist>
+			<button type="submit" formmethod="post" form="sear" name="search" value="go">Search</button>
+			<div id="error" style="color:#FFFFFF;"></div>
 
 		<h1>Wisdom is not lost here</h1>
 		</header>
@@ -135,6 +135,7 @@
 				</div>
 			</div>
 		<form id="page" style="display:none"></form>
+		<form id="sear" style="display:none"></form>
 	</body>
 
 </html>
