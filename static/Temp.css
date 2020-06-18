@@ -41,11 +41,21 @@ header{
 	text-align: left;
 }
 
+
+
 .treeHeader{
 	background-color:#994D00;
 }
+.systemHeader{
+	background-color: #000000;
+}
+
+
 .treeUtils{
 	background-color:#663300;
+}
+.systemUtils{
+	background-color:#000000;
 }
 
 .backer{
@@ -71,6 +81,12 @@ header{
 .treeBacker:hover{
 	background-color:#CC6600;
 }
+.systemBacker{
+	background-color:#000000;
+}
+.systemBacker:hover{
+	background-color:#444444;
+}
 
 h1{
 	position: relative;
@@ -83,6 +99,7 @@ h1{
 	text-align: match-parent;
 	vertical-align: middle;
 }
+
 
 body{
 	margin: 0;

@@ -265,8 +265,8 @@ def Signer():
         #Vulnerable to change
         cursite=app.config['SNAME']
 
-        wisdom=MIMEText(f"<a href='{cursite}/validat/{authValue}'> {cursite}/validat/{authValue}</a>", 'html')
-        wisdom['Subject'] = 'The Rain was waving goodbye'
+        wisdom=MIMEText(f"<p>Hi, {login}, here is the activation link for Your account from Nothingness Project:  <a href='{cursite}/validat/{authValue}'> {cursite}/validat/{authValue}</a></p>", 'html')
+        wisdom['Subject'] = 'Nothingness Project activation link'
         wisdom['From'] = "nothingnessproject@gmail.com"
         wisdom['To'] = mail
         sender_of_wisdom(wisdom.as_string(), mail)
@@ -322,7 +322,7 @@ def PassRecoverer():
     req=request
     if (req.method=='POST' and 'email' in req.form):
         mail=req.form['email']
-        x=engine.execute(f"select authValue from logging where mail='{mail}'")
+        x=engine.execute(f"select authValue, login from logging where mail='{mail}'")
         if x.rowcount==0:
             html_file=show_error('reset_pass_mail.html', "This mail does not have an account associated with it!")
             resp=make_response(render_template_string(html_file))
@@ -331,10 +331,12 @@ def PassRecoverer():
             
         for a in x:
             authValue=a[0]
+            login=a[1]
         
         cursite=app.config['SNAME']
-        wisdom=MIMEText(f"<a href='{cursite}/auth_reset/{authValue}'> {cursite}/auth_reset/{authValue}</a>", 'html')
-        wisdom['Subject'] = 'I awoke from the miasma passing swiftly throug the moor'
+        wisdom=MIMEText(f"<a href='{cursite}/auth_reset/{authValue}'>{cursite}/auth_reset/{authValue}</a>", 'html')
+        wisdom=MIMEText(f"<p>Hi, {login}, here is the link to regain password for Thine account from Nothingness Project:  <a href='{cursite}/auth_reset/{authValue}'>{cursite}/auth_reset/{authValue}</a></p>", 'html')
+        wisdom['Subject'] = 'Nothingness Project password reset'
         wisdom['From'] = "nothingnessproject@gmail.com"
         wisdom['To'] = mail
         sender_of_wisdom(wisdom.as_string(), mail)
