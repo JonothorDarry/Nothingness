@@ -13,11 +13,29 @@
 			<h1>Reset Password</h1>
 		</header>
 
-		<label>e-mail<input type="email" form="secrets_of_stars" id="email" name="email" required="required" readonly></label>
-		<label>login<input type="text" form="secrets_of_stars" id="login" name="login" required="required"></label>
-		<label>password<input type="password" form="secrets_of_stars" id="pass" name="pass" required="required"></label>
-
-		<button class="sender" form="secrets_of_stars" type="submit" formmethod="post" name="next" value="index">Send</button>
+		<div class="formBox">
+			<table class="formLabel">
+				<tbody>
+					<tr>
+						<td><label for="email">e-mail</label></td>
+						<td><input type="email" form="secrets_of_stars" id="email" name="email" required="required" value="sebastian.michon10@protonmail.com" required></td>
+					</tr>
+					<tr>
+						<td><label for="login">login</label></td>
+						<td><input type="text" form="secrets_of_stars" id="login" name="login" required="required"></td>
+					</tr>
+					<tr>
+						<td><label for="pass">password</label></td>
+						<td><input type="password" form="secrets_of_stars" id="pass" name="pass" required="required"></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><button class="sender" form="secrets_of_stars" type="submit" formmethod="post" name="next" value="index">Send</button></td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="error"></div>
+		</div>
 
 		<div id="error"></div>
 		<form id="page" style="display:none"></form>

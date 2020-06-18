@@ -12,17 +12,39 @@
 			</div>
 			<h1>Task Adder</h1>
 		</header>
-		<label>domain
-			<select form="secrets_of_stars" id="domain" name="next" required="required">		
-			</select>
-		</label>
 
-		<label>name<input type="text" form="secrets_of_stars" id="name" name="name" required="required"></label>
-		<label>link<input type="text" form="secrets_of_stars" id="link" name="link" required="required"></label>
-		<label>difficulty<input type="text" form="secrets_of_stars" id="difficulty" name="difficulty"></label>
-		<label>description<input type="text" form="secrets_of_stars" id="description" name="description"></label>
-
-		<button class="sender" form="secrets_of_stars" type="submit" formmethod="post" name="sendo" value="polynominal_funeral">Send</button>
+		<div class="formBox">
+			<table class="formLabel">
+				<tbody>
+					<tr>
+						<td><label for="domain">domain</label></td>
+						<td><select form="secrets_of_stars" id="domain" name="next" required="required"></td>
+					</tr>
+					<tr>
+						<td><label for="name">name</label></td>
+						<td><input type="text" form="secrets_of_stars" id="name" name="name" required="required"></td>
+					</tr>
+					<tr>
+						<td><label for="link">link</label></td>
+						<td><input type="text" form="secrets_of_stars" id="link" name="link" required="required"></td>
+					</tr>
+					<tr>
+						<td><label for="difficulty">difficulty</label></td>
+						<td><input type="text" form="secrets_of_stars" id="difficulty" name="difficulty"></td>
+					</tr>
+					<tr>
+						<td><label for="description">description</label></td>
+						<td><input type="text" form="secrets_of_stars" id="description" name="description"></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><button class="sender" form="secrets_of_stars" type="submit" formmethod="post" name="next" value="index">Send</button></td>
+					</tr>
+				</tbody>
+			</table>
+			<div>After sending data properly, You'll be redirected to the main site, and a message will be send to Your e-mail, with link enabling Thee to activate Your account</div>
+			<div id="error"></div>
+		</div>
 
 		<form id="page" style="display:none"></form>
 		<form id="secrets_of_stars" style="display:none"></form>

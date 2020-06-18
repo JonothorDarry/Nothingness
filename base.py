@@ -97,7 +97,6 @@ def modify(name, login="Sebix"):
                 del bt[x]
             bt.string=f"Welcome, {login}"
 
-
         bt=strval.find(id="taskButton")
         if (bt!=None):
             bt['style']="display:inline-block;"
@@ -154,15 +153,17 @@ def show_error(name, error):
         strval=BeautifulSoup(x_file.read(), 'html.parser')
         error_div=strval.find(id="error")
         error_div.string=error
-        if name=='login.html':
+        if name=='index.html':
+            alls=['themes']
+        elif name=='login.html':
             alls=['login', 'pass']
         elif name=='reset_pass_mail.html':
             alls=['email']
         else:
             alls=['login', 'pass', 'email']
-
         for x in alls:
             strval.find(id=x)['value']=req.form[x]
+
     return strval.prettify()
 
 
@@ -176,9 +177,6 @@ def getBSFileByName(name):
 
 def Router(htmlName, olden=None):
     req=request
-    #DEBUGGED
-    if 'UserID' in req.cookies:
-        print(req.cookies['UserID'])
 
     if (req.method=='POST'):
         if ('remove' in req.form):
@@ -237,16 +235,11 @@ def Wisdom():
     req=request
 
     if (req.method=='POST' and 'search' in req.form):
-        inp=req.form['goto']
+        inp=req.form['themes']
         if inp in transformation.inverse_place_mapper:
             resp=make_response(redirect(url_for(transformation.places[transformation.inverse_place_mapper[inp]])))
         else:
-            html_file=getBSFileByName('index.html')
-            html_file.find(id="error").string="There is no such article on this site!"
-            html_file.find(id="themes")['value']=req.form['goto']
-
-
-            resp=make_response(render_template_string(html_file.prettify()))
+            resp=make_response(render_template_string(show_error('index.html', "There is no such article on this site!")))
 
         resp.set_cookie('UserID', req.cookies['UserID'])
         return resp

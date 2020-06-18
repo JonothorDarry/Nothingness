@@ -101,12 +101,24 @@ h1{
 }
 
 
-body{
+html, body{
 	margin: 0;
 	padding: 0;
+	height:100%;
 }
 
 p,ol{
 	margin:0px 3%;
 	line-height: 1.6;
 }
+
+.formBox{
+	position:relative;
+	top:30%;
+}
+
+.formLabel{
+	position:relative;	
+	left:45%;
+}
+
