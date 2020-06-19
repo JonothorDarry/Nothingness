@@ -2,7 +2,6 @@ class BinaryExpo extends Algorithm{
 
 	constructor(block, a=17, b=43, m=107){
 		super(block);
-
 		this.btlist=[];
 		this.utilbts=[];
 
@@ -45,8 +44,7 @@ class BinaryExpo extends Algorithm{
 				if (j==1 && i==z-1) btn=this.buttCreator(a, '#004400');
 				else if (j==2) btn=this.buttCreator(mylst[z-i-1], i==(z-1)?'#004400':'#440000');
 				else btn=this.buttCreator();
-				this.btlist[j].push(btn);
-				
+				this.btlist[j].push(btn);	
 				this.zdivs[j][2].appendChild(btn);
 			}
 			if (j==1) btn=this.buttCreator(a);
@@ -211,9 +209,7 @@ class BinaryExpo extends Algorithm{
 			butt.style.color="#FFFFFF";
 		}
 		return butt;
-	}
-
-	
+	}	
 }
 
 

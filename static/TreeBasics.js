@@ -13,8 +13,14 @@ class Tree extends Algorithm{
 		this.treeDiv=document.createElement("DIV");
 		this.treeDiv.style.position="relative";
 		this.treeDiv.style.width=`${wid}%`;
+		this.treeDiv.style.display="inline flow-root";
 		this.place.appendChild(this.treeDiv);
 
+		this.tabDiv=document.createElement("DIV");
+		this.tabDiv.style.position="relative";
+		this.tabDiv.style.width=`${99-wid}%`;
+		this.tabDiv.style.display="inline flow-root";
+		this.place.appendChild(this.tabDiv);
 
 		var n, i=0, j=0, a, b, width=this.treeDiv.offsetWidth, floater, angle, cval;
 		var edges=[[1, 2], [3, 4], [2, 4], [3, 5], [3, 6], [3, 7]];
@@ -28,7 +34,15 @@ class Tree extends Algorithm{
 		this.butts=[];
 		this.divis=[];
 		this.buttData=[];
-		for (i=0;i<=n;i++) this.tr.push([]), this.butts.push(0), this.divis.push(0), this.buttData.push(0), widvs.push(0);
+		var namez=['Stack:'];
+		this.btlist=[];
+
+		for (i=0;i<=n;i++) {
+			this.tr.push([]), this.butts.push(0), this.divis.push(0);
+			this.buttData.push(0), widvs.push(0);
+			namez.push(`edges ${i+1}:`)
+			this.btlist.push([])
+		}
 
 		for (i=0;i<edges.length;i++){
 			a=edges[i][0];
@@ -36,14 +50,15 @@ class Tree extends Algorithm{
 
 			this.tr[a].push(b), this.tr[b].push(a);
 		}
-
 		var params=this.dfsen(n, this.tr)
 		var depth=params[1];
 		var par=params[0];
 
 		for (i=0;i<depth.length;i++){
 			if (depth[i].length==0){
-				this.place.style.height=`${i*75+40-75}px`;
+				this.place.style.height=`${Math.max(i*75+40-75, 40*(this.tr.length+1))}px`;
+				this.treeDiv.style.height=`${i*75+40-75}px`;
+				this.divCreator(this.tr, namez, this.tabDiv, i);
 				break;
 			}
 			for (j=0;j<depth[i].length;j++){
@@ -122,7 +137,8 @@ class Tree extends Algorithm{
 				s.push(b);
 			}
 		}
-		this.par=par
+		this.par=par;
+		this.dep=dep;
 		return [par, sysdep];
 	}
 
@@ -180,6 +196,41 @@ class Tree extends Algorithm{
 		else if (col==3) btn.style.color="#FFFFFF";
 		else if (col==5) btn.style.backgroundColor="#000000"
 	}
+
+	divCreator(tree, namez, local, depth){
+		var divs=[], zdivs=[], i, j;
+		var btn;
+		for (i=0;i<tree.length;i++){
+			divs.push(document.createElement("DIV")), zdivs.push([]);
+			divs[i].style.width="100%";
+			divs[i].style.height="40px";
+			for (j=0;j<2;j++) {
+				zdivs[i].push(document.createElement("DIV"));
+				zdivs[i][j].style.margin="0";
+				zdivs[i][j].style.padding="0";
+				zdivs[i][j].style.display="inline flow-root";
+				divs[i].appendChild(zdivs[i][j]);
+			}
+			zdivs[i][0].innerHTML=namez[i];
+			zdivs[i][0].style.width="200px";
+			//zdivs[i][1].style.width="50px";
+
+			local.appendChild(divs[i]);
+
+			for (j=0;j<(i==0?depth:tree[i].length);j++){
+				if (i>0) btn=this.buttCreator(tree[i][j]);
+				else btn=this.buttCreator(0);
+				btn.style.borderRadius="0%";
+				if (i==0) this.Painter(btn, 4);
+				
+				this.btlist[i].push(btn)
+				zdivs[i][1].appendChild(btn)
+			}
+		}
+
+		this.divs=divs;
+		this.zdivs=zdivs;
+	}
 }
 
 class DiamFinder extends Tree{
@@ -228,16 +279,28 @@ class DiamFinder extends Tree{
 			this.Painter(this.dp[this.par[a]][1], 0);
 		}
 		if (s[0]==0 || s[0]==1){
+			if (a!=1) var para=this.par[a];
 			this.Painter(this.butts[a], 1);
-			if (a!=1) this.Painter(this.butts[this.par[a]], 5);
+
+			this.Painter(this.btlist[0][this.dep[a]], 1);
+			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 5);
+			this.btlist[0][this.dep[a]].innerHTML=a;
+
+			this.Painter(this.btlist[a][this.ij[a]], 1);
+			if (a!=1) this.Painter(this.btlist[para][this.ij[para]-1], 2);
+			if (a!=1) this.Painter(this.butts[para], 5);
 		}
 
 		if (s[0]==2){
-
+			this.Painter(this.btlist[a][this.ij[a]-1], 2);
+			if (this.ij[a]<this.tr[a].length) this.Painter(this.btlist[a][this.ij[a]], 1);	
 		}
 
 		if (s[0]==3){
 			this.Painter(this.butts[a], 2);
+			this.Painter(this.btlist[0][this.dep[a]], 4);
+			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 1);
+
 			if (a!=1) {
 				para=this.par[a];
 				this.Painter(this.butts[para], 1);
@@ -258,6 +321,11 @@ class DiamFinder extends Tree{
 				this.butts[a].style.borderColor="#888888";
 			}
 		}
+	}
+
+	StateUnmaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], a, v0, para;
 	}
 
 
@@ -287,30 +355,6 @@ class DiamFinder extends Tree{
 		return butt;
 	}
 
-	divCreator(tree, namez){
-		var divs=[], zdivs=[], i, j;
-		for (i=0;i<3;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<3;i++){
-			divs[i].style.width="100%";
-			divs[i].style.height="40px";
-			for (j=0;j<3;j++) {
-				zdivs[i].push(document.createElement("DIV"));
-				zdivs[i][j].style.margin="0";
-				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline flow-root";
-				divs[i].appendChild(zdivs[i][j]);
-			}
-			if (i==0) zdivs[i][0].innerHTML="Current result:";
-			if (i==1) zdivs[i][0].innerHTML="Current a:";
-			if (i==2) zdivs[i][0].innerHTML="Current b:";
-			zdivs[i][0].style.width="200px";
-			zdivs[i][1].style.width="50px";
-
-			this.place.appendChild(divs[i]);
-		}
-		this.divs=divs;
-		this.zdivs=zdivs;
-	}
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
