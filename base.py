@@ -60,7 +60,7 @@ class transformation:
             'BinaryExpo.html':'binex',
             'Primes.html':'sieve',
             'Gcd.html':'gcd',
-            'Totient.html':'totiebt',
+            'Totient.html':'totient',
             'TreeBasics.html':'treewalk', 
     }
 
@@ -99,7 +99,7 @@ def modify(name, login="Sebix"):
 
         bt=strval.find(id="taskButton")
         if (bt!=None):
-            bt['style']="display:inline-block;"
+            bt['style']="display:inline-block; position: relative; left: 50%;"
 
         strval=listAdd(name, login, strval)
 
@@ -123,16 +123,18 @@ def listAdd(name, login, document):
         outer_div=document.new_tag("div")
         inner_div_above=document.new_tag("div")
         inner_div_below=document.new_tag("div")
-        print(x[1])
+
         diff=x[1] if x[1] in difficulty_to_color else 'Other'
-        print(diff)
         inner_div_above['style']=f"background-color: {difficulty_to_color[diff]};"
+        outer_div['style']=f"border: solid; border-width: 0.5px; border-color: #888888;"
+
         link=document.new_tag("a", href=x[3])
+        link['style']="color: #FFFFFF;"
         link.string=x[0]
         inner_div_below.string=x[2]
 
         butt=document.new_tag("button", value=x[4], form="page", formmethod="post")
-        butt['style']="color:#FFFFFF; background-color:#440000; border: 0;"
+        butt['style']="color:#FFFFFF; background-color:#440000; border: 0; position: absolute; right:0"
         butt['name']="remove"
         butt['type']="submit"
         butt.string="x"

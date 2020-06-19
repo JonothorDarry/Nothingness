@@ -133,3 +133,10 @@ p,ol{
 	text-align: center;
 	color:#000000;
 }
+
+
+#problems{
+	margin-left:5%;
+	margin-right:5%;
+	position: relative;
+}
