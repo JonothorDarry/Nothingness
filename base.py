@@ -110,17 +110,29 @@ def listAdd(name, login, document):
     list_problems=engine.execute(f"select name, difficulty, description, link, id from vision where login='{login}' and domain='{name}'")
     most_outer_div=document.find(id="problems")
 
+    difficulty_to_color={
+            'Easy': '#006600',
+            'Medium': '#444400',
+            'Hard': '#220000',
+            'Other': '#666666',
+    }
+
     fun=transformation.html_to_place
 
     for x in list_problems:
         outer_div=document.new_tag("div")
         inner_div_above=document.new_tag("div")
         inner_div_below=document.new_tag("div")
+        print(x[1])
+        diff=x[1] if x[1] in difficulty_to_color else 'Other'
+        print(diff)
+        inner_div_above['style']=f"background-color: {difficulty_to_color[diff]};"
         link=document.new_tag("a", href=x[3])
         link.string=x[0]
         inner_div_below.string=x[2]
 
         butt=document.new_tag("button", value=x[4], form="page", formmethod="post")
+        butt['style']="color:#FFFFFF; background-color:#440000; border: 0;"
         butt['name']="remove"
         butt['type']="submit"
         butt.string="x"
@@ -319,7 +331,7 @@ def TaskAdder(olden="Primez.html"):
     if (req.method=='POST' and 'link' in req.form): 
         funeral=transformation.funeral_procession
         rf=req.form
-        engine.execute(f"insert into vision(login, domain, description, link, name, difficulty) values('{req.cookies['UserID']}', '{funeral[rf['next']]}', '{rf['description']}', '{rf['link']}', '{rf['name']}', '{rf['description']}')")
+        engine.execute(f"insert into vision(login, domain, description, link, name, difficulty) values('{req.cookies['UserID']}', '{funeral[rf['next']]}', '{rf['description']}', '{rf['link']}', '{rf['name']}', '{rf['difficulty']}')")
 
         return Router('task_adder.html', olden=olden)
     return Router('task_adder.html', olden=olden)
@@ -410,9 +422,6 @@ def dbCreator():
 
 
 if __name__=='__main__':
-    #print(os.environ.get("DATABASE_URL"))
-    #engine=create_engine(os.environ.get("DATABASE_URL"))
-
     #engine.execute("delete from vision")
     #engine.execute("delete from logging")
 

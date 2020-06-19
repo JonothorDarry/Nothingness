@@ -120,5 +120,16 @@ p,ol{
 .formLabel{
 	position:relative;	
 	left:45%;
+	border:solid;
+	border-color:#AAAAAA;
 }
 
+#error{
+	bottom:0;
+	text-align: center;
+	color:#FF0000;
+}
+#informer{
+	text-align: center;
+	color:#000000;
+}

@@ -41,8 +41,11 @@ class Tree extends Algorithm{
 		var depth=params[1];
 		var par=params[0];
 
-
 		for (i=0;i<depth.length;i++){
+			if (depth[i].length==0){
+				this.place.style.height=`${i*75+40-75}px`;
+				break;
+			}
 			for (j=0;j<depth[i].length;j++){
 				a=depth[i][j];
 				var bt=this.buttCreator(a);
