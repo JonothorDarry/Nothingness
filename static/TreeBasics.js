@@ -238,13 +238,16 @@ class DiamFinder extends Tree{
 		super.BeginningExecutor();
 		var dimension, valar, valar2, x, y;
 
-		this.lees.push([0, 1])
-		this.ij=[0]
-		this.dp=[0]
-		this.dpval=[0]
+		this.lees.push([0, 1]);
+		this.ij=[0];
+		this.dp=[0];
+		this.dpval=[0];
+		this.diams=[0];
 
 		for (var i=1;i<=this.n;i++){
-			this.ij.push(0)
+			this.ij.push(0);
+			this.diams.push([[0, 0]]);
+
 			y=this.buttData[i].top-20/Math.sqrt(2);
 			x=this.buttData[i].left+40/(Math.sqrt(2)*this.width);
 
@@ -279,7 +282,6 @@ class DiamFinder extends Tree{
 			this.Painter(this.dp[this.par[a]][1], 0);
 		}
 		if (s[0]==0 || s[0]==1){
-			if (a!=1) var para=this.par[a];
 			this.Painter(this.butts[a], 1);
 
 			this.Painter(this.btlist[0][this.dep[a]], 1);
@@ -287,8 +289,11 @@ class DiamFinder extends Tree{
 			this.btlist[0][this.dep[a]].innerHTML=a;
 
 			this.Painter(this.btlist[a][this.ij[a]], 1);
-			if (a!=1) this.Painter(this.btlist[para][this.ij[para]-1], 2);
-			if (a!=1) this.Painter(this.butts[para], 5);
+			if (a!=1){
+				var para=this.par[a];
+				this.Painter(this.btlist[para][this.ij[para]-1], 2);
+				this.Painter(this.butts[para], 5);
+			}
 		}
 
 		if (s[0]==2){
@@ -313,6 +318,7 @@ class DiamFinder extends Tree{
 					this.dpval[para][1]=this.dpval[a][0]+1;
 					this.Painter(this.dp[para][1], 1);
 				}
+				this.diams[para].push(this.dpval[para].slice());
 
 				this.dp[para][0].innerHTML=this.dpval[para][0];
 				this.dp[para][1].innerHTML=this.dpval[para][1];
@@ -325,7 +331,64 @@ class DiamFinder extends Tree{
 
 	StateUnmaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], a, v0, para;
+		var s=this.lees[l-1], seminal=this.lees[l-2], a, v0, para;
+		a=s[1];
+
+		if (a!=1) var para=this.par[a];
+		if (s[0]==0 || s[0]==1){
+			if (a!=1){
+				this.Painter(this.btlist[para][this.ij[para]-1], 1);
+				this.Painter(this.butts[para], 1);
+			}
+			this.Painter(this.btlist[a][this.ij[a]], 0);
+			this.Painter(this.butts[a], 0);
+
+			this.Painter(this.btlist[0][this.dep[a]], 4);
+			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 1);
+		}
+
+		if (s[0]==2){
+			this.Painter(this.btlist[a][this.ij[a]-1], 1);
+			if (this.ij[a]<this.tr[a].length) this.Painter(this.btlist[a][this.ij[a]], 0);
+		}
+
+		if (s[0]==3){
+			this.Painter(this.butts[a], 1);
+			this.Painter(this.btlist[0][this.dep[a]], 1);
+			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 5);
+
+			if (a!=1) {
+				para=this.par[a];
+				this.Painter(this.butts[para], 5);
+				this.diams[para].pop();
+				console.log(this.diams[para][this.diams[para].length-1], para);
+
+				this.dpval[para]=this.diams[para][this.diams[para].length-1].slice();
+				this.Painter(this.dp[para][0], 0);
+				this.Painter(this.dp[para][1], 0);
+
+				console.log(this.diams[para][this.diams[para].length-1]);
+				console.log(this.dpval[para]);
+
+				this.dp[para][0].innerHTML=this.dpval[para][0];
+				this.dp[para][1].innerHTML=this.dpval[para][1];
+
+				this.butts[a].style.border="0px none";
+			}
+		}
+
+		if (seminal[0]==3){
+			para=this.par[seminal[1]];
+			var old_diam=this.diams[para][this.diams[para].length-2].slice();
+			var new_diam=this.diams[para][this.diams[para].length-1].slice();
+			if (old_diam[0]!=new_diam[0]) this.Painter(this.dp[para][0], 1);
+			else if (old_diam[1]!=new_diam[1]) this.Painter(this.dp[para][1], 1);
+		}
+
+		this.lees.pop();
+		a=seminal[1];
+		if (seminal[0]==3) a=this.par[seminal[1]];
+		this.ij[a]-=1;
 	}
 
 
@@ -354,7 +417,6 @@ class DiamFinder extends Tree{
 
 		return butt;
 	}
-
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
