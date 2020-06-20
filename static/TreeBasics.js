@@ -325,6 +325,9 @@ class DiamFinder extends Tree{
 
 				this.butts[a].style.border="1px solid";
 				this.butts[a].style.borderColor="#888888";
+
+				if (this.ij[para]<this.tr[para].length)
+					this.Painter(this.btlist[para][this.ij[para]], 1);
 			}
 		}
 	}
@@ -335,6 +338,7 @@ class DiamFinder extends Tree{
 		a=s[1];
 
 		if (a!=1) var para=this.par[a];
+
 		if (s[0]==0 || s[0]==1){
 			if (a!=1){
 				this.Painter(this.btlist[para][this.ij[para]-1], 1);
@@ -359,16 +363,15 @@ class DiamFinder extends Tree{
 
 			if (a!=1) {
 				para=this.par[a];
+				if (this.ij[para]<this.tr[para].length)
+					this.Painter(this.btlist[para][this.ij[para]], 0);
+
 				this.Painter(this.butts[para], 5);
 				this.diams[para].pop();
-				console.log(this.diams[para][this.diams[para].length-1], para);
 
 				this.dpval[para]=this.diams[para][this.diams[para].length-1].slice();
 				this.Painter(this.dp[para][0], 0);
 				this.Painter(this.dp[para][1], 0);
-
-				console.log(this.diams[para][this.diams[para].length-1]);
-				console.log(this.dpval[para]);
 
 				this.dp[para][0].innerHTML=this.dpval[para][0];
 				this.dp[para][1].innerHTML=this.dpval[para][1];
@@ -405,7 +408,26 @@ class DiamFinder extends Tree{
 		else this.lees.push([1, this.tr[a][v0]]);
 		this.ij[a]+=1;
 	}
-	StatementComprehension(){}
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		if (l>1) var prev=this.lees[l-2];
+
+		var a=0;
+		if (l==1) a=s[1];
+		else a=prev[1];
+
+		var strr=``;
+		if (s[0]==0) strr=`Firstly, edge list is rewritten to an adjacency list for simplicity. I start searching through tree by processing arbitrary root r=1 and pushing it onto stack.`;
+		else if (s[0]>0) strr=`I get the currently processed vertex as a last vertex on stack.`;
+		if (s[0]<=2) strr+=` In adjacency list of this vertex, next vertex is ${this.tr[a][this.ij[a]-1]}.`
+
+		if (s[0]<=1) strr+=` It wasn't processed yet, so I add this vertex to a stack and move forward iterator of the currently processed vertex.`;
+		if (s[0]==2) strr+=` It's a parent of this vertex, so it's not in a subtree of current vertex - and so, I only move forward iterator of the current vertex.`;
+		//if (s[0]==3) strr+=` This vertex does not have any other not processed descendants. Longest path, whose vertex of lowest depth is this vertex has length ${this.dpval[a][0]+this.dpval[a][1]} - ${this.ans==this.dpval[a][0]+this.dpval[a][1]?`thus, this is the longest path in a tree found up to now`:`therefore, this is not the longest path in a tree`}. `;
+		//if (s[0]==100) strr=`Now, b=0: algorithm ends, result is ${a}`;
+		return strr;
+	}
 
 
 	betterButtCreator(numb=null, col='#440000'){
