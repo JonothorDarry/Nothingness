@@ -121,7 +121,7 @@ class TotientSieve extends Sieve{
 		butt2.innerHTML=v;
 
 		var dv = document.createElement("DIV");
-		dv.style.display="inline flow-root";
+		dv.style.display="inline-block";
 		dv.style.position="relative";
 
 		butt1.style.position="absolute";
@@ -349,7 +349,7 @@ class PowerTower extends Algorithm{
 				zdivs[i].push(document.createElement("DIV"));
 				zdivs[i][j].style.margin="0";
 				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline flow-root";
+				zdivs[i][j].style.display="inline-block";
 				divs[i].appendChild(zdivs[i][j]);
 			}
 			zdivs[i][0].innerHTML=title_list[i];

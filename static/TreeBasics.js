@@ -13,13 +13,13 @@ class Tree extends Algorithm{
 		this.treeDiv=document.createElement("DIV");
 		this.treeDiv.style.position="relative";
 		this.treeDiv.style.width=`${wid}%`;
-		this.treeDiv.style.display="inline flow-root";
+		this.treeDiv.style.display="inline-block";
 		this.place.appendChild(this.treeDiv);
 
 		this.tabDiv=document.createElement("DIV");
 		this.tabDiv.style.position="relative";
 		this.tabDiv.style.width=`${99-wid}%`;
-		this.tabDiv.style.display="inline flow-root";
+		this.tabDiv.style.display="inline-block";
 		this.place.appendChild(this.tabDiv);
 
 		var n, i=0, j=0, a, b, width=this.treeDiv.offsetWidth, floater, angle, cval;
@@ -208,7 +208,7 @@ class Tree extends Algorithm{
 				zdivs[i].push(document.createElement("DIV"));
 				zdivs[i][j].style.margin="0";
 				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline flow-root";
+				zdivs[i][j].style.display="inline-block";
 				divs[i].appendChild(zdivs[i][j]);
 			}
 			zdivs[i][0].innerHTML=namez[i];

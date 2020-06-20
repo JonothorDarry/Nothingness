@@ -26,7 +26,7 @@
 }
 
 .btnContainer{
-	display: inline flow-root;
+	display: inline-block;
 	position: relative;
 	top: 0;
 	right: 0;
@@ -71,7 +71,7 @@ header{
 
 .signer{
 	background-color:#000000;
-	display: inline flow-root;
+	display: inline-block;
 	width:10%;
 	position:relative;
 	left:0;

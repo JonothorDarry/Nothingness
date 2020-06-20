@@ -71,7 +71,7 @@ class ExtendedSieve extends Sieve{
 		else butt2.innerHTML=-1;
 
 		var dv = document.createElement("DIV");
-		dv.style.display="inline flow-root";
+		dv.style.display="inline-block";
 		dv.style.position="relative";
 
 		butt1.style.position="absolute";

@@ -163,7 +163,7 @@ class CrtSolver extends Algorithm{
 			this.addSpan(this.divs[1], `x &equiv; ${x} (mod ${s[1]})`);
 			btt=this.divs[0].getElementsByTagName("button")[this.ite*2+1];
 			btt.innerHTML=`x &equiv; ${x} (mod ${s[1]})`
-			btt.style.display="inline flow-root";
+			btt.style.display="inline-block";
 			this.solstack.push([x, s[1]]);
 
 			this.buttChanger(this.ite*2+1, this.ite*2+2);
@@ -227,7 +227,7 @@ class CrtSolver extends Algorithm{
 		var lees=[d1,d2, d3];
 		for (var i=0;i<3;i++){
 			lees[i].style.position="relative";
-			lees[i].style.display="inline flow-root";
+			lees[i].style.display="inline-block";
 			lees[i].style.verticalAlign="top";
 		}
 		lees[0].style.width="30%";

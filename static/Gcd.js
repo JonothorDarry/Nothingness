@@ -199,7 +199,7 @@ class EuclidGcd extends Algorithm{
 		var lees=[d1,d2, d3];
 		for (var i=0;i<3;i++){
 			lees[i].style.position="relative";
-			lees[i].style.display="inline flow-root";
+			lees[i].style.display="inline-block";
 			lees[i].style.verticalAlign="top";
 		}
 		lees[0].style.width="42%";

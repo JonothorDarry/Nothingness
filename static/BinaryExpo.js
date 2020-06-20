@@ -174,7 +174,7 @@ class BinaryExpo extends Algorithm{
 				zdivs[i].push(document.createElement("DIV"));
 				zdivs[i][j].style.margin="0";
 				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline flow-root";
+				zdivs[i][j].style.display="inline-block";
 				divs[i].appendChild(zdivs[i][j]);
 			}
 			if (i==0) zdivs[i][0].innerHTML="Current result:";

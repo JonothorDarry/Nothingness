@@ -60,7 +60,7 @@ header{
 
 .backer{
 	background-color:#000022;
-	display: inline flow-root;
+	display: inline-block;
 	width:10%;
 	position:relative;
 	left:0;
@@ -95,7 +95,7 @@ h1{
 	top: 0;
 	padding: 0;
 	margin: 0;
-	display: inline flow-root;
+	display: inline-block;
 	text-align: match-parent;
 	vertical-align: middle;
 }
