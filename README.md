@@ -22,14 +22,13 @@ Or You can use Heroku platform: https://algos.herokuapp.com/
 Założenia aplikacji i jej obecny stan:
 1) Aplikacja posiada kilka (6) artykułów razem z wizualizacjami, do których można podać stosowny input opisany powyżej, tak aby rozpocząć animację.
 2) Każda wizualizacja ma 4 przyciski: aby ją rozpocząć, należy kliknąć begin dla poprawnie sformułowanego test case'u (format jest na górze razem z dodatkowymi informacjami). Nie podałem informacji o maksymalnych wartościach, bo nie mają one sensu - zasadniczo aplikacja może przestać odpowiadać po podaniu test case'u, który nakazuje wyrenderowanie zbyt dużej ilości danych.
-3) Wizualizacja drzewa nie będzie renderowana poprawnie, jeśli została już stworzona, a następnie zmieniono rozmiar okna przeglądarki - to wynika z definiowania edge'ów jako divów o określonej długości pod określonym kątem, wyliczonymi m.in na podstawie rozmiaru okna przeglądarki. To nie jest pierwszorzędny problem, bo prawie nikt nie zmienia rozmiaru przeglądarki w trakcie korzystania z tego typu aplikacji - a nawet jeśli, to pewnie kliknie znowu "begin" i zapomni o problemie, natomiast zapewne zostanie to niebawem zmienione.
-4) Niewykluczone, że w aplikacji nadal są błędy teoretyczne albo niejednoznaczności - jednym z najważniejszych problemów aplikacji w przyszłości będzie ich eliminacja.
+3) Wizualizacja drzewa nie będzie renderowana poprawnie, jeśli została już stworzona, a następnie zmieniono rozmiar okna przeglądarki - to wynika z definiowania edge'ów jako divów o określonej długości pod określonym kątem, wyliczonymi m.in na podstawie rozmiaru okna przeglądarki. To nie jest pierwszorzędny problem, bo prawie nikt nie zmienia rozmiaru przeglądarki w trakcie korzystania z tego typu aplikacji - a nawet jeśli, to pewnie kliknie znowu "begin" i zapomni o problemie, natomiast zapewne zostanie to niebawem zmienione. Problemem z każdym możliwym rozwiązaniem tego problemu jest narzut czsowy - szczególnie, jeśli użytkownik będzie przesuwał okno, a dodanie svg na stronie z MathJaxem spowolni ją jeszcze bardziej - tu nie ma jednoznacznie dobrego rozwiązania.
+4) Niewykluczone, że w aplikacji nadal są błędy teoretyczne, niejednoznaczności albo niejasne tłumaczenia - jednym z najważniejszych problemów aplikacji w przyszłości będzie ich eliminacja.
 
-5) Aplikacja pozwala zalogować się, zarejestrować się używając własnego maila, a także zresetować swój login i hasło opcją forgot password - także za pomocą maila.
+5) Aplikacja pozwala zalogować się, zarejestrować się używając własnego maila do aktywacji konta, a także zresetować swój login i hasło opcją forgot password - także za pomocą maila. Nie da się 2 razy wejść na tą samą stronę z kluczem autoryzacji przez maila, ponieważ jest on zmieniany po użyciu - czy to do aktywacji konta, czy resetu hasła. Nie da się zarejestrować na istniejący już w systemie mail, zarejestrować 2 razy ten sam login etc. Aplikacja (jako aplikacja bez dużej liczby wrażliwych danych) stawia na UX ponad bezpieczeństwo - podanie błędnego loginu powoduje komunikat o nieistniejącym loginie, błędnego hasła - o błędnym haśle.
 6) Aplikacja pozwala zalogowanemu użytkownikowi przechowywać listy zadań do danego problemu (są to arbitralne linki - równie dobrze mogą to być inne tutoriale), wybierając dla nich 1 z 3 poziomów trudności, a także opis.
 7) Zadania własne są przechowywane na końcu strony dotyczącej danego problemu w kolorze zależnym od poziomu trudności (można nie podać poprawnego poziomu trudności, wtedy wyświetli się na szaro - być może skala trudności zostanie zmieniona w przyszłości na liczbową, ale to trzeciorzędny drobiazg). Można je usunąć z listy klikając na nich przycisk x. W założeniu użytkownicy na ogół nie przechowują więcej niż 5 problemów z danego działu, więc nie dodawałem (na razie) innych użyteczności dotyczących listy.
 8) Aplikacja ma na stronie głównej SearchBar pozwalający przejść do 1 z obecnie 6 artykułów. Podanie błędnych danych implikuje pojawienie się komunikatu o nieistnieniu danego artykułu.
-
 
 
 
@@ -59,3 +58,7 @@ B) Cele infrastrukturalne:
 	3) Implementacja online-judge'a dla kilku problemów - w ostateczności pewnie wszystkich, ale na początek test case'y z poprawnymi outputami dla 1-2 problemów starczą.
 
 	4) Danie użytkownikom możliwości submitowania kodów i sprawdzania ich na test case'ach, a także usuwania kodów i dostępu z poziomu profilu użytkownika.
+
+C) Cele estetyczne:
+
+	1) Stworzenie skryptu tworzącego drzewo/graf w mathJaxie do rysowania go w buttonie dodając do tego rysunku bajery w zależności od algorytmu
