@@ -13,16 +13,18 @@
 				<button class="signer" form="page" type="submit" formmethod="post" name="next" id="loginButton" value="login">Log in &gt;</button>
 			</div>
 
-			<input list="topics" form="sear" name="themes" id="themes">
-			<datalist id="topics">
-				{% for x in topics %}
-					<option value="{{x}}">
-				{% endfor %}
-			</datalist>
-			<button type="submit" formmethod="post" form="sear" name="search" value="go">Search</button>
-			<div id="error" style="color:#FFFFFF;"></div>
 
-		<h1>Wisdom is not lost here</h1>
+			<h1>Wisdom is not lost here</h1>
+			<div>
+				<input list="topics" form="sear" name="themes" id="themes" style="background-color:#BBBBBB; margin:0; padding:0; border:0;">
+				<datalist id="topics">
+					{% for x in topics %}
+						<option value="{{x}}">
+					{% endfor %}
+				</datalist>
+				<button class="sender" type="submit" formmethod="post" form="sear" name="search" value="go">Search</button>
+				<div id="error" style="color:#FFFFFF;"></div>
+			</div>
 		</header>
 		<h2>Number Theory</h2>
 		<div class="domainContainer">

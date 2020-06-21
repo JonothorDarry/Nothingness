@@ -23,12 +23,13 @@
 			<li><b>Tree</b> is an undirected graph, such that between each two vertices there is exactly one simple path. This implies that the graph is acyclic (because cycle allows to move from one vertex to another in more than one way) and connected (because there is a way to move from any vertex to another). It is crucial to show, that such graph have \(n-1\) edges, where \(n\) is number of vertexes. One can consider tree a generalization of a sequence.</li>
 			<li><b>Root</b> is a vertex in the tree, relative to which it's vertexes are described - usually it doesn't matter, which vertex is treated as root, while describing vertices relatively to some other vertex (called root) allows performing certain operations on a tree (like finding lowest common ancestor of 2 vertices).</li>
 			<li><b>Depth</b> is distance in the tree from root to a given vertex</li>
-			<li><b>Parent</b> of vertex \(x\) is a vertex \(y\) with lower depth such that there exists edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son- otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertice have \(n-1\) edges.</li>
+			<li><b>Parent</b> of vertex \(x\) is a vertex \(y\) with lower depth such that there exists edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son- otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertices have \(n-1\) edges.</li>
 			<li><b>Descendant</b> of vertex \(x\) is any vertex \(y\) with higher depth, such that \(x\) lies on simple path \(y-root\)</li>
+			<li><b>Subtree</b> of vertex \(x\) is a set of all verices that are descendants of vertex \(x\) including \(x\)</li>
 		</ol>
 
 		<h3>Solution idea</h3>
-		<p>One could solve this problem with absolute brute force, by counting longest distance from any point in tree - solution works in \(O(n^2)\). However, one can see, that each path in the tree moves through some vertex with lowest depth - if a path would lead through distinct vertexes \(x, y\) with same depth then path must move through parent of \(x\) (because it must lie on a path \(x-y\)). What follows, one can agggregate longest paths starting from all sons of a vertex \(x\), then one can find longest path whose point with lowest depth is \(x\). Or, in other words: if \(d_0(x), d_1(x)\) are currently 1st and 2nd longest paths starting at \(x\), then after processing son of \(x\), that is, \(y\), \(d_1(x)\) needs to be changed to \(d_0(y)+1\) - longest path starting at \(y\), with addition of additional edge \(x-y\) - if it's lower, and swap \(d_0(x), d_1(x)\) if \(d_1(x) \gt d_0(x)\): then, in vertex \(x\) there will always be two longest paths starting at \(x\). And so, the longest path moving through \(x\) as its vertex with lowest depth is \(d_0(x)+d_1(x)\). Then, \(diameter=min\{x \in V: d_0(x)+d_1(x)\}\). Initially, \(d_0(x)=d_1(x)=0\) for each vertex \(x\).
+		<p>One could solve this problem with absolute brute force, by counting longest distance from any point in tree, for example with standard Breadth First Search - solution works in \(O(n^2)\). However, one can see, that each path in the tree moves through some vertex with lowest depth - if a path would lead through distinct vertexes \(x, y\) with same depth then path must move through parent of \(x\) (because it must lie on a path \(x-y\)). What follows, if one can aggregate longest paths starting from all sons of a vertex \(x\), then one can find longest path whose point with lowest depth is \(x\). Or, in other words: if \(d_0(x), d_1(x)\) are currently 1st and 2nd longest paths starting at \(x\), then after processing son of \(x\), that is, \(y\), \(d_1(x)\) needs to be changed to \(d_0(y)+1\) - longest path starting at \(y\), with addition of additional edge \(x-y\) - if \(d_0(y)+1 \gt d_1(x)\), and swap \(d_0(x), d_1(x)\) if \(d_1(x) \gt d_0(x)\): then, in vertex \(x\) there will always be two longest paths starting at \(x\). And so, the longest path moving through \(x\) as its vertex with lowest depth is \(d_0(x)+d_1(x)\). Then, \(diameter=max\{x \in V: d_0(x)+d_1(x)\}\). Initially, \(d_0(x)=d_1(x)=0\) for each vertex \(x\).
 		</p>
 		<h3>Depth first search</h3>
 		<p>To penetrate the tree one can:
@@ -39,15 +40,21 @@
 			<li>Otherwise, change aggregated data of parent and go back to it.</li>
 		</ol>
 		<p>
-		One can use some queue, to which one will append element if it's an unchecked descendant of the last element and pop element when there are no descendants unpenetrated. This allows aggregating data from the tree, such as longest paths. Such queue is usually called 'stack', and algorithm - 'depth first search'.
+		One can use some queue, to which one will append element if it's an unchecked descendant of the last element and pop element when there are no descendants unpenetrated. This allows aggregating data from the subtree of a vertex, such as longest paths starting in a vertex and going down the tree. Such queue is usually called 'stack', and algorithm - 'depth first search'. This allows constructing algorithm solving problem above in \(O(n)\).
 		</p>
 		
 
 		<div id="Algo1">
 			<h2>Finding Diameter</h2>
+			<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree.<br>
+			\(n\)<br>
+			\(a_1, b_1\)<br>
+			\(\dots\)<br>
+			\(a_{n-1}, b_{n-1}\)
+			</p>
 			<div id="Inputter">
 				<form>
-					<textarea class="inputter" id="TreeBasics" name="TreeBasics">8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;</textarea>
+					<textarea class="inputter" id="TreeBasics" name="TreeBasics" style="height:140px;">8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;</textarea>
 				</form>
 				<button id="Sender" class="sender">Begin</button>
 				<button id="Prever" class="previous">Previous Move</button>

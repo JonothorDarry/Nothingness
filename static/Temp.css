@@ -20,6 +20,10 @@ h2{
 	text-align: center;
 }
 
+textarea{
+	height:100px;
+}
+
 .breakAlgo{
 	height:2px;
 }

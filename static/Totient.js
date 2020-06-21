@@ -377,6 +377,7 @@ class PowerTower extends Algorithm{
 			butt.style.fontSize='12px';
 		}
 		else {
+			butt.innerHTML=0;
 			butt.style.backgroundColor="#FFFFFF";
 			butt.style.color="#FFFFFF";
 		}

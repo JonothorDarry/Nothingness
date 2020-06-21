@@ -85,6 +85,9 @@
 
 		<div id="Algo1">
 			<h2>Totient calculation</h2>
+			<p>Input format: One number \(n\) is the size of the sieve used to find totients.<br>
+			\(n\)
+			</p>
 			<div id="Inputter">
 				<form>
 					<input type="number" class="inputter" id="Erasto" name="Erasto" value="99">
@@ -197,6 +200,10 @@
 		<div id="Algo2">
 			<h2>Power Tower</h2>
 			<div id="Inputter2">
+				<p>Input format: values \(n, m\), and then \(n\) values \(a_i\), such that an expression \(a_1^{(a_2^{(\dots a^n)})} \pmod m\) is evaluated.<br>
+				\(n, m\)<br>
+				\(a_1, \dots, a_n\)
+				</p>
 				<form>
 					<textarea class="inputter" id="Totient2" name="Totient">6 107&#10;2 7 3 12 43 25</textarea>
 				</form>
@@ -219,7 +226,7 @@
 					<ol>
 						<li>If \(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\), then \(\exists_i 2 \nmid p_i \implies 2|\phi(x)\), because \(\phi(x)\) is divisible by \(p_i-1\), and \(2|(p_i-1)\)</li>
 						<li>If \(x=2^{q_1}\), then \(\phi(x)=2^{q_1}*\frac{1}{2}\)</li>
-						<li>What follows, in each move \(\forall_{i \ge 0} (2|\phi_i(x) \lor \phi(x)=1)\), and so, \(\phi_{i+1}(x) \le \phi_i(x)*\frac{1}{2} \lor \phi_{i+1}(x)=1\) (Only in the first totient calculation it does not need to lower itself twice)</li>
+						<li>What follows, in each move \(\forall_{i \ge 1} (2|\phi_i(x) \lor \phi_i(x)=1)\), and so, \(\phi_{i+1}(x) \le \phi_i(x)*\frac{1}{2} \lor \phi_{i+1}(x)=1\) (Only in the first totient calculation it does not need to lower itself twice)</li>
 					</ol>	
 				</li>
 				<li>What follows, only in at most \(\lceil log_2(m) \rceil\) iterations one needs to calculate \(\phi_i(m)\) - and so, maximial complexity goes down to \(O(min(n, log_2(m)) \sqrt{m}+nlog_2(m))\) (second element comes from binary exponentation)</li>

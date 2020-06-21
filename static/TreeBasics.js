@@ -56,7 +56,7 @@ class Tree extends Algorithm{
 
 		for (i=0;i<depth.length;i++){
 			if (depth[i].length==0){
-				this.place.style.height=`${Math.max(i*75+40-75, 40*(this.tr.length+1))}px`;
+				this.place.style.height=`${Math.max(i*75, 40*(this.tr.length+1))}px`;
 				this.treeDiv.style.height=`${i*75+40-75}px`;
 				this.divCreator(this.tr, namez, this.tabDiv, i);
 				break;
@@ -423,18 +423,22 @@ class DiamFinder extends Tree{
 
 		var a=0;
 		if (l==1) a=s[1];
-		else a=prev[1];
+		else {
+			a=prev[1];
+			if (prev[0]==3) a=this.par[a];
+		}
+
 		if (a!=1) var para=this.par[a];
 
 		var strr=``;
 		if (s[0]==0) strr=`Firstly, edge list is rewritten to an adjacency list for simplicity. I start searching through tree by processing arbitrary root r=1 and pushing it onto stack.`;
-		else if (s[0]>0) strr=`I get the currently processed vertex as a last vertex on stack.`;
+		else if (s[0]>0) strr=`I get the currently processed vertex as a last vertex on stack. - ${a}`;
 		if (s[0]<=2 && s[0]>0) strr+=` In adjacency list of this vertex, next vertex is ${this.tr[a][this.ij[a]-1]}.`
 
 		if (s[0]<=1) strr+=` It wasn't processed yet, so I add this vertex to a stack and move forward iterator of the currently processed vertex.`;
 		if (s[0]==2) strr+=` It's a parent of this vertex, so it's not in a subtree of current vertex - and so, I only move forward iterator of the current vertex.`;
-		if (s[0]==3) strr+=` This vertex does not have any other not processed descendants - so it's considered finished, and it's data is passed to it's parent. Longest path, whose vertex of lowest depth is this vertex has length ${this.dpval[a][0]+this.dpval[a][1]}, and the longest found path up to now was ${this.ans_snapshot[this.ans_snapshot.length-2]} - ${this.ans==this.dpval[a][0]+this.dpval[a][1]?`thus, this is the longest path in a tree found up to now`:`therefore, this is not the longest path in a tree`}. Furthermore, the length of longest path starting in this vertex with lenght increased by 1 (because of adding edge going to parent): ${this.dpval[a][0]+1} is passed to a parent of this vertex - ${para}. ${diams[para][diams[para].length-2][1]>=this.dpval[a][0]+1?`Still, it's not greater number than currently 2nd greatest path starting from parent.`:(diams[para][diams[para].length-2][0]<this.dpval[a][0]+1?`This is the longest path starting from parent going onto it's subtree found up to now, so the old longest path is replaced with new longest path, and old 2nd longest path is replaced with old 1st longest path starting from parent`:`This is the 2nd longest path starting from parent going onto it's subtree found up to now, so the old 2nd longest path is replaced with new 2nd longest path`)} Currently, longest paths starting in it have length ${this.dpval[para][0]} and ${this.dpval[para][1]}.`;
-		if (s[0]==100) strr=`Now, b=0: algorithm ends, result is ${this.ans}.`;
+		if (s[0]==3) strr+=` This vertex does not have any other not processed descendants - so it's considered finished, and it's data is passed to it's parent. Longest path, whose vertex of lowest depth is this vertex has length ${this.dpval[a][0]+this.dpval[a][1]}, and the longest found path up to now was ${this.ans_snapshot[this.ans_snapshot.length-2]} - ${this.ans_snapshot[this.ans_snapshot.length-2]==this.dpval[a][0]+this.dpval[a][1]?`thus, this is the longest path in a tree found up to now`:`therefore, this is not the longest path in a tree`}. Furthermore, the length of longest path starting in this vertex with lenght increased by 1 (because of adding edge going to parent): ${this.dpval[a][0]+1} is passed to a parent of this vertex - ${para}. ${diams[para][diams[para].length-2][1]>=this.dpval[a][0]+1?`Still, it's not greater number than currently 2nd greatest path starting from parent.`:(diams[para][diams[para].length-2][0]<this.dpval[a][0]+1?`This is the longest path starting from parent going onto it's subtree found up to now, so the old longest path is replaced with new longest path, and old 2nd longest path is replaced with old 1st longest path starting from parent`:`This is the 2nd longest path starting from parent going onto it's subtree found up to now, so the old 2nd longest path is replaced with new 2nd longest path`)}. Currently, longest paths starting in it have length ${this.dpval[para][0]} and ${this.dpval[para][1]}.`;
+		if (s[0]==100) strr=`Now stack is empty, algorithm ends, result is ${this.ans}.`;
 		return strr;
 	}
 

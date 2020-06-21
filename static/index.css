@@ -52,6 +52,12 @@ h1{
 	vertical-align: middle;
 }
 
+.sender{
+        background-color: #FFFFFF;
+        color: #000000;
+        border:None;
+}
+
 body{
 	margin: 0;
 	padding: 0;
@@ -60,7 +66,7 @@ body{
 header{
 	color:#000000;
 	background-color:#000000;
-	text-align: center;
+	text-align: right;
 }
 
 .utilsBar{

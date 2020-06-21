@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>Signup</title>
+		<title>Task Adder</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
 	</head>
@@ -30,7 +30,13 @@
 					</tr>
 					<tr>
 						<td><label for="difficulty">difficulty</label></td>
-						<td><input type="text" form="secrets_of_stars" id="difficulty" name="difficulty"></td>
+						<td><input list="diffs" type="text" form="secrets_of_stars" id="difficulty" name="difficulty">
+							<datalist id="diffs">
+								<option value="Easy">
+								<option value="Medium">
+								<option value="Hard">
+							</datalist>
+						</td>
 					</tr>
 					<tr>
 						<td><label for="description">description</label></td>
@@ -45,6 +51,7 @@
 			<div id="informer">After sending data, a task will be added to Your list in domain You've chosen</div>
 			<div id="error"></div>
 		</div>
+
 
 		<form id="page" style="display:none"></form>
 		<form id="secrets_of_stars" style="display:none"></form>
