@@ -36,16 +36,26 @@ Założenia aplikacji i jej obecny stan:
 Cele przyszłościowe:
 
 A) Cele merytoryczne
+
 	1) Dokończenie Teorii Liczb - pozostaje Divisors (1), Primitive Root (2), Discrete Root/Logarithm (3), Number Theoretic Transform (w tym samym artykule będzie Fast Fourier Transform) (4) - pewnie w sierpniu skończy się ten dział.
+
 	2) Drzewa - pozostaje wszystko, ale przynajmniej jest rysowanie drzew: obecne cele to LCA, Rzut drzewa na drzewo przedziałowe, small-to-large na 2 sposoby, heavy-light decomposition, centroid decomposition i rzutowanie drzewa na Persistent segment tree - co najmniej 5 artykułów. Do września powinno się zakończyć.
+
 	3) Algorytmy tekstowe - KMP, Suffix table, Trie z Aho-Corasickiem; dalej Suffix automata/tree i (być może) algorytmy palindromowe (Palindrom tree albo Manacher). Być może dojdzie coś jeszcze. Do października może się skończy.
+
 	4) Testowanie na żywych użytkownikach - co jest zrozumiałe, a co nie? Zmiana sformułowań na krótsze i bardziej precyzyjne, jeśli się da.
+
 	5) Przygotowanie dowodów w formacie Teza/Obserwacje/Dowód.
+
 	6) Być może dodanie kodów - nie wiem jeszcze, czy w Ruście, czy C++ i w jakim stylu - to jest cel drugorzędny.
 
 
 B) Cele infrastrukturalne:
+
 	1) Stworzenie profilu użytkownika - na początek tylko z pogrupowanymi problemami. Dostępny ze strony głównej, po kliknięciu na "Welcome, {login}" (jak bodaj w dawnym HackerRanku).
+
 	2) Stworzenie koncepcji użycia kompilatorów, wykonania kodu i użycia online-judge'a
+
 	3) Implementacja online-judge'a dla kilku problemów - w ostateczności pewnie wszystkich, ale na początek test case'y z poprawnymi outputami dla 1-2 problemów starczą.
+
 	4) Danie użytkownikom możliwości submitowania kodów i sprawdzania ich na test case'ach, a także usuwania kodów i dostępu z poziomu profilu użytkownika.
