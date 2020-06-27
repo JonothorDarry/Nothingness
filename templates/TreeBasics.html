@@ -26,6 +26,7 @@
 			<li><b>Parent</b> of vertex \(x\) is a vertex \(y\) with lower depth such that there exists edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son- otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertices have \(n-1\) edges.</li>
 			<li><b>Descendant</b> of vertex \(x\) is any vertex \(y\) with higher depth, such that \(x\) lies on simple path \(y-root\)</li>
 			<li><b>Subtree</b> of vertex \(x\) is a set of all verices that are descendants of vertex \(x\) including \(x\)</li>
+			<li><b>Overtree</b> of vertex \(x\) is a set of all verices in a tree that does not belong to its subtree (name is used in this article only for convenience). </li>
 		</ol>
 
 		<h3>Solution idea</h3>
@@ -72,4 +73,26 @@
 		<script src="{{url_for('static', filename='TreeBasics.js')}}"></script>
 		<form id="page" style="display:none"></form>
 	</body>
+	<h3>Second problem</h3>
+	<p>
+	Suppose, however, that another problem is given. You are given a tree of \(n\) vertices with \(m\) vertices marked (\(1 \le m \le n \le 10^6\)), and Your objective is to find for each vertex maximal distance from it to any marked vertex.
+	</p>
+	<h3>Solution - double tree walk</h3>
+	<p>
+	One can see, that if a vertex with maximal distance from a given vertex \(v\) either:
+	</p>
+	<ol>
+		<li>Lies in subtree of \(v\) - then one can obtain the distance just like diameter in task before, by searching whole subtree and aggregating information from it.</li>
+		<li>Lies in overtree of \(v\) - then one can obtain distance as longest distance to a marked vertex from it's parent plus 1 (for additional edge) - \(m_0(par(v))+1\). However, it's possible that maximal distance from \(par(v)\) is a distance to vertex lying in subtree of \(v\). Therefore, one needs to keep information: where lies the vertex with maximal distance from \(v\) - and if so, take the maximal distance from \(par(v)\) to another subtree or its overtree.</li>
+	</ol>
+	<p>These observations imply algorithm in which a vertex \(v\) will:</p>
+	<ol>
+		<li>Get information from parent about longest path to marked vertex - and so, parent must have an answer before son. What follows, root is the first vertex, that will contain an answer, then its sons, sons of the sons, etc.</li>
+		<li>Get information from its subtree, so that any vertex will have information from subtree, and so root will have full information about maximal distance from it to any marked vertex - for every vertex lies in its subtree.</li>
+	</ol>
+	<p>And so, one can apply identical algorithm as to diameter finding, but after finding answer for root go down through the tree and find answer for subsequent sons as maximal distance from them to marked vertex in subtree and distance from its parent to any marked vertex in subtree not containing \(v\) or overtree. Such algorithm will consist of two walks on a tree - one, in which the distance is aggregated from sons to parents, and second, when answer is populated from parents to sons.</p>
+	<h3>Solution nuance - inverse preorder</h3>
+	<p>One can see, that second dfs is redundant - one can store a sequence of subsequent visited vertexes, starting from root and then update longest distance to marked vertex, updating subsequent elements rom this array - it works, because in dfs parent is always visited before child.
+	</p>
+
 </html>

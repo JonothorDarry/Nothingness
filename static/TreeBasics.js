@@ -25,6 +25,7 @@ class Tree extends Algorithm{
 		var n, i=0, j=0, a, b, width=this.treeDiv.offsetWidth, floater, angle, cval;
 		var edges=[[1, 2], [3, 4], [2, 4], [3, 5], [3, 6], [3, 7]];
 		var widvs=[];	
+		var precise_wid=[];
 		this.tr=[];
 		this.width=width/100;
 
@@ -39,7 +40,7 @@ class Tree extends Algorithm{
 
 		for (i=0;i<=n;i++) {
 			this.tr.push([]), this.butts.push(0), this.divis.push(0);
-			this.buttData.push(0), widvs.push(0);
+			this.buttData.push(0), widvs.push(0), precise_wid.push(0);
 			namez.push(`edges ${i+1}:`)
 			this.btlist.push([])
 		}
@@ -68,6 +69,8 @@ class Tree extends Algorithm{
 
 				floater=(j/depth[i].length+1/(2*depth[i].length));
 				widvs[a]=width*floater;
+				precise_wid[a]=floater;
+
 
 				if (a!=1){
 					var dv=document.createElement("DIV");
@@ -75,7 +78,31 @@ class Tree extends Algorithm{
 
 					dv.style.position="absolute";
 					cval=Math.sqrt(Math.pow(widvs[a]-widvs[par[a]], 2)+75*75);
+					dv.style['--prec_point_zis']=precise_wid[a];
+					dv.style['--prec_point_par']=precise_wid[par[a]];
 					dv.style.width=`${cval}px`;
+					
+					dv.tree_reference=this.treeDiv;
+					window.bound_tree=this;
+					window.addEventListener('resize', function(){
+						var dv_container=this.bound_tree.divis;
+						for (var i=2;i<dv_container.length;i++){
+							var dv=dv_container[i], angle;
+							var width=this.bound_tree.treeDiv.offsetWidth;
+							var th=dv.style['--prec_point_zis']*width, tpar=dv.style['--prec_point_par']*width;
+							var cval=Math.sqrt(Math.pow(th-tpar, 2)+75*75);
+							dv.style.width=`${cval}px`
+
+
+							if (th-tpar==0) angle=-Infinity;
+							else angle=Math.sin(75/cval);
+							if (th-tpar==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
+							else if (th-tpar<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
+							else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
+						}
+					}
+					)
+
 					dv.style.top=`${i*75+20}px`;
 
 					dv.style.left=`${100*floater+(20*100)/width}%`;
@@ -238,8 +265,9 @@ class DiamFinder extends Tree{
 		super.BeginningExecutor();
 		this.ans=0;
 		this.ans_snapshot=[0];
-		var dimension, valar, valar2, x, y;
+		var dimension, valar, valar2, x, y, x2;
 
+		this.lees=[];
 		this.lees.push([0, 1]);
 		this.ij=[0];
 		this.dp=[0];
@@ -251,15 +279,16 @@ class DiamFinder extends Tree{
 			this.diams.push([[0, 0]]);
 
 			y=this.buttData[i].top-20/Math.sqrt(2);
-			x=this.buttData[i].left+40/(Math.sqrt(2)*this.width);
+			x=this.buttData[i].left
+			x2=40/Math.sqrt(2);
 
 			valar=this.betterButtCreator(0);
 			valar2=this.betterButtCreator(0);
 			valar.style.top=`${y}px`;
-			valar.style.left=`${x}%`;
+			valar.style.left=`calc(${x}% + ${x2}px)`;
 
 			valar2.style.top=`${y}px`;
-			valar2.style.left=`${x+20/this.width}%`;
+			valar2.style.left=`calc(${x}% + ${x2+20}px)`;
 
 			this.dp.push([valar, valar2]);
 			this.dpval.push([0, 0]);
@@ -271,14 +300,23 @@ class DiamFinder extends Tree{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], a, v0, para;
-					
-		if (s[0]==100) return;
+
+		if (s[0]>=100){
+			this.Painter(this.btlist[0][0], 4);
+			this.Painter(this.butts[1], 2);
+			this.Painter(this.dp[1][0], 0);
+			this.Painter(this.dp[1][1], 0);
+			this.butts[1].style.border="1px solid";
+			this.butts[1].style.borderColor="#888888";
+			return;
+		}
 
 		a=s[1];
 		v0=this.ij[a];
 
 		this.Painter(this.dp[a][0], 0);
 		this.Painter(this.dp[a][1], 0);
+
 		if (a!=1 && s[0]!=3){
 			this.Painter(this.dp[this.par[a]][0], 0);
 			this.Painter(this.dp[this.par[a]][1], 0);
@@ -344,6 +382,11 @@ class DiamFinder extends Tree{
 
 		if (a!=1) var para=this.par[a];
 
+		if (s[0]>=100) 	{
+			this.Painter(this.btlist[0][0], 1);
+			this.butts[1].style.border="0px none";
+			this.Painter(this.butts[1], 1);
+		}
 		if (s[0]==0 || s[0]==1){
 			if (a!=1){
 				this.Painter(this.btlist[para][this.ij[para]-1], 1);
@@ -364,6 +407,8 @@ class DiamFinder extends Tree{
 		if (s[0]==3){
 			this.Painter(this.butts[a], 1);
 			this.Painter(this.btlist[0][this.dep[a]], 1);
+			this.btlist[0][this.dep[a]].innerHTML=a;
+
 			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 5);
 
 			if (a!=1) {
@@ -405,6 +450,7 @@ class DiamFinder extends Tree{
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], a, v0;
+		if (s[0]==100) return;
 		a=s[1];
 		if (s[0]==3) a=this.par[a];
 		v0=this.ij[a];
