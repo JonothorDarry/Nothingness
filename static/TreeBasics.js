@@ -488,7 +488,6 @@ class DiamFinder extends Tree{
 		return strr;
 	}
 
-
 	betterButtCreator(numb=null, col='#440000'){
 		var butt=this.buttCreator(numb, col);
 		butt.style.width="20px";
@@ -502,3 +501,6 @@ class DiamFinder extends Tree{
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new DiamFinder(feral, 70);
+
+//var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+//var eg2=new DiamFinder(feral2, 70);

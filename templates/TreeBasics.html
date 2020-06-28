@@ -67,32 +67,57 @@
 			<div id="Comprehend" class="comprehend"></div>
 		</div>
 
+		<h3>Second problem</h3>
+		<p>
+		Suppose, however, that another problem is given. You are given a tree of \(n\) vertices with \(m\) vertices marked (\(1 \le m \le n \le 10^6\)), and Your objective is to find for each vertex maximal distance from it to any marked vertex.
+		</p>
+		<h3>Solution - double tree walk</h3>
+		<p>
+		One can see, that if a vertex with maximal distance from a given vertex \(v\) either:
+		</p>
+		<ol>
+			<li>Lies in subtree of \(v\) - then one can obtain the distance just like diameter in task before, by searching whole subtree and aggregating information from it.</li>
+			<li>Lies in overtree of \(v\) - then one can obtain distance as longest distance to a marked vertex from it's parent plus 1 (for additional edge) - \(m_0(par(v))+1\). However, it's possible that maximal distance from \(par(v)\) is a distance to vertex lying in subtree of \(v\). Therefore, one needs to keep information: where lies the vertex with maximal distance from \(v\) - and if so, take the maximal distance from \(par(v)\) to another subtree or its overtree.</li>
+		</ol>
+		<p>These observations imply algorithm in which a vertex \(v\) will:</p>
+		<ol>
+			<li>Get information from parent about longest path to marked vertex - and so, parent must have an answer before son. What follows, root is the first vertex, that will contain an answer, then its sons, sons of the sons, etc.</li>
+			<li>Get information from its subtree, so that any vertex will have information from subtree, and so root will have full information about maximal distance from it to any marked vertex - for every vertex lies in its subtree.</li>
+		</ol>
+		<p>And so, one can apply identical algorithm as to diameter finding, but after finding answer for root go down through the tree and find answer for subsequent sons as maximal distance from them to marked vertex in subtree and distance from its parent to any marked vertex in subtree not containing \(v\) or overtree. Such algorithm will consist of two walks on a tree - one, in which the distance is aggregated from sons to parents, and second, when answer is populated from parents to sons.</p>
+		<h3>Solution nuance - inverse preorder</h3>
+		<p>One can see, that second dfs is redundant - one can store a sequence of subsequent visited vertexes, starting from root and then update longest distance to marked vertex, updating subsequent elements rom this array - it works, because in dfs parent is always visited before child.
+		</p>
+
+		<!--
+		<div id="Algo2">
+			<h2>Finding Diameter</h2>
+			<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree.<br>
+			\(n\)<br>
+			\(a_1, b_1\)<br>
+			\(\dots\)<br>
+			\(a_{n-1}, b_{n-1}\)
+			</p>
+			<div id="Inputter2">
+				<form>
+					<textarea class="inputter" id="TreeBasics2" name="TreeBasics" style="height:140px;">8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;</textarea>
+				</form>
+				<button id="Sender2" class="sender">Begin</button>
+				<button id="Prever2" class="previous">Previous Move</button>
+				<button id="Nexter2" class="next">Next Move</button>
+				<button id="Finisher2" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez2" class="primez"></div>
+			<div id="Comprehend2" class="comprehend"></div>
+		</div>
+		-->
+
 		<div id="problems"></div>
 		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
 
 		<script src="{{url_for('static', filename='TreeBasics.js')}}"></script>
 		<form id="page" style="display:none"></form>
 	</body>
-	<h3>Second problem</h3>
-	<p>
-	Suppose, however, that another problem is given. You are given a tree of \(n\) vertices with \(m\) vertices marked (\(1 \le m \le n \le 10^6\)), and Your objective is to find for each vertex maximal distance from it to any marked vertex.
-	</p>
-	<h3>Solution - double tree walk</h3>
-	<p>
-	One can see, that if a vertex with maximal distance from a given vertex \(v\) either:
-	</p>
-	<ol>
-		<li>Lies in subtree of \(v\) - then one can obtain the distance just like diameter in task before, by searching whole subtree and aggregating information from it.</li>
-		<li>Lies in overtree of \(v\) - then one can obtain distance as longest distance to a marked vertex from it's parent plus 1 (for additional edge) - \(m_0(par(v))+1\). However, it's possible that maximal distance from \(par(v)\) is a distance to vertex lying in subtree of \(v\). Therefore, one needs to keep information: where lies the vertex with maximal distance from \(v\) - and if so, take the maximal distance from \(par(v)\) to another subtree or its overtree.</li>
-	</ol>
-	<p>These observations imply algorithm in which a vertex \(v\) will:</p>
-	<ol>
-		<li>Get information from parent about longest path to marked vertex - and so, parent must have an answer before son. What follows, root is the first vertex, that will contain an answer, then its sons, sons of the sons, etc.</li>
-		<li>Get information from its subtree, so that any vertex will have information from subtree, and so root will have full information about maximal distance from it to any marked vertex - for every vertex lies in its subtree.</li>
-	</ol>
-	<p>And so, one can apply identical algorithm as to diameter finding, but after finding answer for root go down through the tree and find answer for subsequent sons as maximal distance from them to marked vertex in subtree and distance from its parent to any marked vertex in subtree not containing \(v\) or overtree. Such algorithm will consist of two walks on a tree - one, in which the distance is aggregated from sons to parents, and second, when answer is populated from parents to sons.</p>
-	<h3>Solution nuance - inverse preorder</h3>
-	<p>One can see, that second dfs is redundant - one can store a sequence of subsequent visited vertexes, starting from root and then update longest distance to marked vertex, updating subsequent elements rom this array - it works, because in dfs parent is always visited before child.
-	</p>
 
 </html>
