@@ -28,12 +28,12 @@ class transformation:
     }
 
     place_mapper={
-            'Crt.html':'Chineese_Remainder_Theorem',
-            'BinaryExpo.html':'Binary_Exponentation',
-            'Primes.html':'Erastotenes_Sieve',
-            'Gcd.html':'Greatest_Common_Divisor',
-            'Totient.html':'Totient_function',
-            'TreeBasics.html':'Tree_Walk',
+            'NumberTheory/Crt.html':'Chineese_Remainder_Theorem',
+            'NumberTheory/BinaryExpo.html':'Binary_Exponentation',
+            'NumberTheory/Primes.html':'Erastotenes_Sieve',
+            'NumberTheory/Gcd.html':'Greatest_Common_Divisor',
+            'NumberTheory/Totient.html':'Totient_function',
+            'Trees/TreeBasics.html':'Tree_Walk',
     }
 
     inverse_place_mapper={
@@ -47,21 +47,21 @@ class transformation:
     }
 
     funeral_procession={
-            'Chineese Remainder Theorem':'Crt.html',
-            'Binary Exponentation':'BinaryExpo.html',
-            'Erastotenes Sieve':'Primes.html',
-            'Greatest Common Divisor':'Gcd.html',
-            'Totient function':'Totient.html',
-            'Tree Walk':'TreeBasics.html',
+            'Chineese Remainder Theorem':'NumberTheory/Crt.html',
+            'Binary Exponentation':'NumberTheory/BinaryExpo.html',
+            'Erastotenes Sieve':'NumberTheory/Primes.html',
+            'Greatest Common Divisor':'NumberTheory/Gcd.html',
+            'Totient function':'NumberTheory/Totient.html',
+            'Tree Walk':'Trees/TreeBasics.html',
     }
     
     html_to_place={
-            'Crt.html':'crt',
-            'BinaryExpo.html':'binex',
-            'Primes.html':'sieve',
-            'Gcd.html':'gcd',
-            'Totient.html':'totient',
-            'TreeBasics.html':'treewalk', 
+            'NumberTheory/Crt.html':'crt',
+            'NumberTheory/BinaryExpo.html':'binex',
+            'NumberTheory/Primes.html':'sieve',
+            'NumberTheory/Gcd.html':'gcd',
+            'NumberTheory/Totient.html':'totient',
+            'Trees/TreeBasics.html':'treewalk', 
     }
 
 
@@ -77,7 +77,7 @@ def comeBackin(place, old_place):
     if (place in places and places[place]=='TaskAdder'):
         return redirect(url_for(places[place], olden=place_mapper[old_place]))
 
-    if (old_place=='task_adder.html'):
+    if (old_place=='System/task_adder.html'):
         return redirect(url_for(places[inverse_place_mapper[place]]))
 
     return redirect(url_for(places[place]))
@@ -163,7 +163,7 @@ def input_fill(html, olden):
 
 def show_error(name, error):
     req=request
-    with open(f'./templates/{name}') as x_file:
+    with open(f'./templates/System/{name}') as x_file:
         strval=BeautifulSoup(x_file.read(), 'html.parser')
         error_div=strval.find(id="error")
         error_div.string=error
@@ -202,7 +202,7 @@ def Router(htmlName, olden=None):
         if 'UserID' in  req.cookies:
             if (req.cookies['UserID']!=''):
                 html_full=modify(htmlName, req.cookies['UserID'])
-                if (htmlName=='task_adder.html'):
+                if (htmlName=='System/task_adder.html'):
                     html_full=input_fill(html_full, olden)
 
                 resp=make_response(render_template_string(html_full))
@@ -218,31 +218,31 @@ def Router(htmlName, olden=None):
 
 @app.route('/gcd', methods=['GET', 'POST'])
 def EuclidAlgo():
-    return Router('Gcd.html')
+    return Router('NumberTheory/Gcd.html')
 
 @app.route('/erasto', methods=['GET', 'POST'])
 def ErastotenesSieve():
-    return Router('Primes.html')
+    return Router('NumberTheory/Primes.html')
 
 @app.route('/crt', methods=['GET', 'POST'])
 def ChineseTheorem():
-    return Router('Crt.html')
+    return Router('NumberTheory/Crt.html')
 
 @app.route('/totient', methods=['GET', 'POST'])
 def Totient():
-    return Router('Totient.html')
+    return Router('NumberTheory/Totient.html')
 
 @app.route('/binex', methods=['GET', 'POST'])
 def BinExpo():
-    return Router('BinaryExpo.html')
+    return Router('NumberTheory/BinaryExpo.html')
 
 @app.route('/treewalk', methods=['GET', 'POST'])
 def TreeBasic():
-    return Router('TreeBasics.html')
+    return Router('Trees/TreeBasics.html')
 
 @app.route('/logger/<login>')
 def logChecker(login):
-    return Router('index.html')
+    return Router('System/index.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def Wisdom():
@@ -259,10 +259,10 @@ def Wisdom():
         return resp
         
     if (req.method=='POST' and req.form['next']=='unlog'):
-        resp=make_response(render_template('index.html'))
+        resp=make_response(render_template('System/index.html'))
         resp.set_cookie('UserID', '')
         return resp
-    return Router('index.html')
+    return Router('System/index.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def Signer():
@@ -292,7 +292,7 @@ def Signer():
         wisdom['To'] = mail
         sender_of_wisdom(wisdom.as_string(), mail)
         
-    return Router('signup.html')
+    return Router('System/signup.html')
 
 @app.route('/validat/<auth>', methods=['GET', 'POST'])
 def Palingnesia(auth):
@@ -324,7 +324,7 @@ def Login():
         resp.set_cookie('UserID', '')
         return resp
 
-    return Router('login.html')
+    return Router('System/login.html')
 
 
 @app.route('/task_adder/<olden>', methods=['GET', 'POST'])
@@ -335,8 +335,8 @@ def TaskAdder(olden="Primez.html"):
         rf=req.form
         engine.execute(f"insert into vision(login, domain, description, link, name, difficulty) values('{req.cookies['UserID']}', '{funeral[rf['next']]}', '{rf['description']}', '{rf['link']}', '{rf['name']}', '{rf['difficulty']}')")
 
-        return Router('task_adder.html', olden=olden)
-    return Router('task_adder.html', olden=olden)
+        return Router('System/task_adder.html', olden=olden)
+    return Router('System/task_adder.html', olden=olden)
 
 @app.route('/recover_password', methods=['GET', 'POST'])
 def PassRecoverer():
@@ -362,14 +362,14 @@ def PassRecoverer():
         wisdom['To'] = mail
         sender_of_wisdom(wisdom.as_string(), mail)
 
-    return Router('reset_pass_mail.html')
+    return Router('System/reset_pass_mail.html')
 
     
 @app.route('/auth_reset/<auth_value>', methods=['GET', 'POST'])
 def AuthReseter(auth_value):
     req=request
     if req.method=='POST' and 'email' not in req.form:
-        return Router('index.html')
+        return Router('System/index.html')
 
     if req.method=='POST' and 'email' in req.form:
         try:
@@ -384,7 +384,7 @@ def AuthReseter(auth_value):
         resp.set_cookie('UserID', req.form['login'])
         return resp
 
-    html_file=getBSFileByName('reset_pass_main.html')
+    html_file=getBSFileByName('System/reset_pass_main.html')
     em_cont=engine.execute(f"select mail from logging where authValue='{auth_value}';")
     engine.execute(f"update logging set authValue='{get_random_string()}' where authValue='{auth_value}';")
 

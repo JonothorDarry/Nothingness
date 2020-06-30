@@ -1,0 +1,9 @@
+{% macro header(name, type) %}	
+		<header class="{{type}}">
+			<div class="utilsBar {{type}}">
+				<a class="backer {{type}}" href="/">&lt; To Main</a>
+				<!--<button class="backer {{type}}" form="page" type="submit" formmethod="post" name="next" value="index">&lt; To main</button>-->
+			</div>
+			<h1>{{ name }}</h1>
+		</header>
+{% endmacro %}

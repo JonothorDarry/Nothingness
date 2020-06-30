@@ -10,9 +10,7 @@
         height:25px;
 }
 
-.sender:hover, .previous:hover, .next:hover, .finish:hover{
-	background-color: #333333;
-}
+.sender:hover, .previous:hover, .next:hover, .finish:hover{background-color: #333333;}
 
 h2{
 	position: relative;
@@ -20,13 +18,9 @@ h2{
 	text-align: center;
 }
 
-textarea{
-	height:100px;
-}
+textarea{height:100px;}
 
-.breakAlgo{
-	height:2px;
-}
+.breakAlgo{height:2px;}
 
 .central{
 	margin:auto;
@@ -45,52 +39,39 @@ header{
 	text-align: left;
 }
 
-
-
-.treeHeader{
-	background-color:#994D00;
-}
-.systemHeader{
-	background-color: #000000;
-}
-
-
-.treeUtils{
-	background-color:#663300;
-}
-.systemUtils{
-	background-color:#000000;
-}
+header.Trees{background-color:#994D00;}
+header.System{background-color: #000000;}
+.utilsBar.Trees{background-color:#663300;}
+.utilsBar.System{background-color:#000000;}
 
 .backer{
-	background-color:#000022;
 	display: inline-block;
 	width:10%;
+	height:50px;
 	position:relative;
+	top:0;
 	left:0;
-	height:100%;
 	padding:0;
 	margin:0;
 	border:0;
+	text-align:center;
+	font-family:sans-serif;
+	font-size:16px;
+	vertical-align:middle;
+	line-height:50px;
+	background-color:#000022;
 	color:#FFFFFF;
+	text-decoration:none;
 }
 
-.backer:hover{
-	background-color:#000088;	
-}
 
-.treeBacker{
-	background-color:#331100;
-}
-.treeBacker:hover{
-	background-color:#CC6600;
-}
-.systemBacker{
-	background-color:#000000;
-}
-.systemBacker:hover{
-	background-color:#444444;
-}
+.backer:hover{background-color:#000088;}
+
+.backer.Trees{background-color:#331100;}
+.backer.Trees:hover{background-color:#CC6600;}
+
+.backer.System{background-color:#000000;}
+.backer.System:hover{background-color:#444444;}
 
 h1{
 	position: relative;

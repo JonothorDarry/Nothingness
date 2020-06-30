@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+
+<html lang="en">
+	<head>
+		<title>Chinese Remainder Theorem</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
+		<script src="{{url_for('static', filename='Temp.js')}}"></script>
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+	</head>
+
+	<body>
+		{{ headers.header('Chinese Remainder Theorem', 'NumberTheory') }}
+
+		<h3>Problem statement and definitions</h3>
+		<p id="Theory">
+			Suppose \(m\) \((m \le 10^6)\) equalities are given in form: <br>
+			<span class="central">
+			\(
+			m\text{ equations}
+			\begin{cases}
+			{% for x in [1,2] %}
+				x \equiv c_{{x}}\ (mod\ s_{{x}}) \\
+			{% endfor %}
+				... \\
+				x \equiv c_m\ (mod\ s_m) \\
+			\end{cases}
+			\)
+			</span>
+			where \(0 \le c_i \lt s_i \le 10^9 \land \prod_{i=1}^{m}s_i \le 10^{18}\) The problem is: find \(x\) satisfying these equations
+		</p>
+		<h3>The first thesis</h3>
+		<p id="Solution">
+			If it is possible to show equivalent equation for two different equations, then one can reduce number of equations by one:<br>
+			<span class="central">\(x \equiv c_{1,2}\ (mod\ s_{1,2}) \iff 
+				\begin{cases}
+				x \equiv c_1\ (mod\ s_1) \\
+				x \equiv c_2\ (mod\ s_2)\\
+				\end{cases}
+			\)
+			</span>
+			And, after reduction:<br><br>
+			<span class="central">
+			\(
+			m-1\text{ equations}
+			\begin{cases}
+				x \equiv c_{1,2}\ (mod\ s_{1,2}) \\
+				x \equiv c_3\ (mod\ s_3) \\
+				... \\
+				x \equiv c_m\ (mod\ s_m) \\
+			\end{cases}
+			\)
+			</span>
+			What follows, if one can solve pair of equations in \(O(\text{whatever})\), then one can solve whole problem in \(O(\text{whatever}*m)\)
+		</p>
+		<h3>The second Thesis</h3>
+		<p>
+			One can rewrite <br>
+			<span class="central">\(
+				\begin{cases}
+				x \equiv c_1\ (mod\ s_1) \\
+				x \equiv c_2\ (mod\ s_2)\\
+				\end{cases}
+			\)
+			</span>
+			to<br>
+			<span class="central">\(
+				\begin{cases}
+				x = s_1a+c_1 \\
+				x = s_2b+c_2\\
+				\end{cases}
+			\)
+			</span>
+			for certain integers \(a,\ b\). What follows, <br>
+			<span class="central">\(s_1a+c_1 = s_2b+c_2\)</span>
+			<span class="central">\(s_1a-s_2b=c_2-c_1\)</span><br>
+			One can solve equation \(s_1k+s_2l=gcd(s_1, s_2)\) in \(O(log(min(s_1, s_2)))\) using extended euclid; If \(gcd(s_1,s_2) \nmid (c_2-c_1)\), Then one can go out and solve different problems, for there are no integer solutions: <br>
+			<span class="central">\(gcd(s_1,s_2)|(s_1a-s_2b),\ gcd(s_1,s_2) \nmid (c2-c1),\ s_1a-s_2b=c_2-c_1\)</span>
+			However, if \(gcd(s_1,s_2)|(c_2-c_1)\), then:<br><br>
+			<span class="central">\(s_1k+s_2l = gcd(s_1,s_2)\ \ \ /*\frac{c_2-c_1}{gcd(s_1,s_2)}\)</span>
+			<span class="central">\(s_1k*\frac{c_2-c_1}{gcd(s_1,s_2)}+s_2l*\frac{c_2-c_1}{gcd(s_1,s_2)} = c_2-c_1\)</span><br>
+			And so, \(a=k\frac{c_2-c_1}{gcd(s_1,s_2)},\ b=-l\frac{c_2-c_1}{gcd(s_1,s_2)}\). Now,
+			<span class="central">\(x = s_1a+c_1 = s_1k\frac{c_2-c_1}{gcd(s_1,s_2)}+c_1\)</span><br>
+			It answers problem for two equations, but to solve problem for more equations, one needs to find \(c_{1,2}\) and \(s_{1,2}\), such that \(x\) solves both equations if and only if:<br>
+			<span class="central">\(x \equiv c_{1,2}\ (mod\ s_{1,2})\)</span><br>
+		</p>
+		<h3>The third thesis</h3>
+		<p>
+			What can be said about further solution to a system of equations?
+			<span class="central">\(
+				\begin{cases}
+				x \equiv c_1\ (mod\ s_1) \\
+				x \equiv c_2\ (mod\ s_2)\\
+				\end{cases}
+			\)</span><br>
+			Clearly, if by \(x+v\) one denotes next solution (so \(|v|\) is minimal possible), then: 
+			<span class="central">\(
+				\begin{cases}
+					x+v \equiv c_1\ (mod\ s_1) \\
+					x+v \equiv c_2\ (mod\ s_2)\\
+				\end{cases}
+				\implies
+				\begin{cases}
+					v \equiv 0\ (mod\ s_1) \\
+					v \equiv 0\ (mod\ s_2)\\
+				\end{cases}
+				\implies
+				\begin{cases}
+					v|s_1 \\
+					v|s_2 \\
+				\end{cases}
+			\)</span><br>
+		And so, \(|v|=lcm(s_1, s_2)=\frac{s_1s_2}{gcd(s_1,s_2)}\), which finishes problem, if \(s_{1,2}=lcm(s_1,s_2)\) and \(c_{1,2}=s_1k\frac{c_2-c_1}{gcd(s_1,s_2)}+c_1\) from second paragraph. That solves whole problem in \(O(m*log(max(s_i)))\)
+		</p>
+		<h3>The Theorem-in-itself</h3>
+		<p>
+		Chinese Remainder Theorem states, that if all \(s_i\) are pairwise coprime, then solution exists and is unique \(mod\ \prod_{i=1}^{m}s_i\). The theory relies on lemmas:<br>
+		</p>
+		<ol type="I">
+
+			<li> If \(\exists_{g \in N \land g \gt 1} g|s_i\), then \(\forall_{j \neq i} g \nmid s_j\) - because \(gcd(s_i,s_j)=1\), and so \(g\) cannot divide both of them</li>
+			<li> Euclid's lemma: if prime number \(p \in P\) is given, \(a,b \in N\) and \(p|ab\), then \(p|a\) or \(p|b\). Proof: if \(p \nmid a\) and \(pc=ab\), then:
+		<span class="central"> \(\exists_{x,y \in Z} ax+py=1\), because \(p\) has two divisors: one is \(p \nmid a\), second is one. Equation follows from bezout identity.</span>
+		<span class="central"> \(abx+pby=b\)</span>
+		<span class="central"> \(pcx+pby=b\)</span>
+		<span class="central"> \(p(cx+by)=b \implies p|b\)</span>
+		Analogous proof can be shown for \(p \nmid b\)</li>
+			<li> \(p|s_{i_1}s_{i_2}...s_{i_k} \iff p|s_{i_1} \lor p|s_{i_2}s_{i_3}...s_{i_k} \iff ... \iff p|s_{i_1} \lor p|s_{i_2} \lor p|s_{i_3} ... \lor p|s_{i_k}\)</li>
+			<li> If \(p|s_{i_1}s_{i_2}...s_{i_k}\), then \(p \nmid s_{j_1}s_{j_2}...s_{j_l}\), where \(\{i_1, i_2,...,i_k\} \cap \{j_1, j_2,...,j_l\}= \emptyset\) - it follows from the fact, that otherwise \((p|s_{i_1} \lor p|s_{i_2} \lor...\lor p|s_{i_k}) \land (p|s_{j_1} \lor p|s_{j_2}\lor ... \lor p|s_{j_l})\), and so \(\exists_{w,v \in N} p|s_w \land p|s_v\), which contradicts I). </li>
+		</ol>
+		<p>
+		Now, with these lemmas, i'll show, that in each iteration of the algorithm, if by \(f_i\) will be denoted \(lcm(f_{i-1}, s_i)\), \(f_1=s_1\), and \(h_i=gcd(f_{i-1}, s_i)\), then: 
+		<span class="central">I) \(f_i=lcm(f_{i-1}, s_i)=\frac{f_{i-1}s_i}{gcd(f_{i-1}, s_i)}=\frac{f_{i-1}s_i}{h_i}\), and so, \(h_i=1 \implies f_i=f_{i-1}s_i\)</span>
+		<span class="central">II) \(f_i=\prod_{j=1}^{i}s_j \implies h_{i+1}=gcd(\prod_{j=1}^{i}s_j, s_{i+1})=1\) as immediate consequence of lemma IV)</span>
+		What follows, if \(f_1=s_1=\prod_{i=1}^{1}s_i\), then, by induction, \(h_{i+1}=1\) and \(f_{i+1}=f_is_{i+1}=\prod_{j=1}^{i+1}s_i\)<br>
+		If by \(f, h\) a value of \(lcm, gcd\) is shown in each iteration, then solution always exists (for \(gcd\) is always equal to one), and \(lcm\) in each phase (including last) is equal to \(\prod_{i=1}^{n}s_i\)
+		</p>
+
+
+		<div id="Algo1">
+			<h2>Chinese Remainder Theorem</h2>
+			<p>Input format: \(n\) is number of equalities, then follows \(n\) pairs \(c_i, s_i\) such that equation is \(x \equiv c_i \pmod {s_i}\).<br>
+			\(n\)<br>
+			\(c_1, s_1\)<br>
+			\(\dots\)<br>
+			\(c_n, s_n\)
+			</p>
+			<div id="Inputter">
+				<form>
+					<textarea class="inputter" id="Crt" name="Crt">3&#10;2 3&#10;5 7&#10;8 33</textarea>
+				</form>
+				<button id="Sender" class="sender">Begin</button>
+				<button id="Prever" class="previous">Previous Move</button>
+				<button id="Nexter" class="next">Next Move</button>
+				<button id="Finisher" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez" class="primez"></div>
+			<div id="Comprehend" class="comprehend"></div>
+		</div>
+		<div>
+			<h2>Problems</h2>
+			<p>
+				Problems involving linear congruence equation are rare, CRT is more useful as a theorem, to show certain properties of totient function. Example problems are:<br>
+			<a href="https://codeforces.com/problemset/problem/338/D">GCD Table</a>, 
+			<a href="https://codeforces.com/problemset/problem/982/E">Billiard</a>,
+			<a href="https://codeforces.com/problemset/problem/710/D">Two Arithmetic Progressions</a>
+			</p>
+		</div>
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+
+		<form id="page" style="display:none"></form>
+		<script src="{{url_for('static', filename='Crt.js')}}"></script>
+	</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+
+<html>
+	<head>
+		<title>Login</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
+	</head>
+
+	<body class="fromBody">
+		{{ headers.header('Login', 'System') }}
+
+		<div class="formBox">
+			<table class="formLabel">
+				<tbody>
+					<tr>
+						<td><label for="login">login</label></td>
+						<td><input type="text" form="secrets_of_stars" id="login" name="login" required="required"></td>
+					</tr>
+					<tr>
+						<td><label for="pass">password</label></td>
+						<td><input type="password" form="secrets_of_stars" id="pass" name="pass" required="required"></td>
+					</tr>
+					<tr>
+						<td><button class="sender" form="secrets_of_stars" type="submit" formmethod="post" name="next" value="index">Send</button></td>
+						<td><button class="sender" form="gateways_of_bereavement" type="submit" formmethod="post" name="next" value="forgotten" style="width:150px;">Forgot Password</button></td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="error"></div>			
+		</div>
+
+		<form id="page" style="display:none"></form>
+		<form id="secrets_of_stars" style="display:none"></form>
+		<form id="gateways_of_bereavement" style="display:none"></form>
+	</body>
+</html>

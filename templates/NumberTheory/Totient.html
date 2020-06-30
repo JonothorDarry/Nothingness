@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+
+<html lang="en">
+	<head>
+		<title>Totient function</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
+		<script src="{{url_for('static', filename='Temp.js')}}"></script>
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+	</head>
+	<body>
+		{{ headers.header('Totient fucntion', 'NumberTheory') }}
+		<h3>First problem statement and definitions</h3>
+		<p>
+			Suppose You are given following problem: For a given number \(m, y (1 \le m, y \le 10^{13})\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
+		</p>
+		<h3>Special case Solution: theory</h3>
+		<p>
+		It is approprite to solve problem for \(y=1\) before proceeding to general case. Let's define function \(\phi(a)\) as number of numbers \(1 \le k \le a\) coprime to \(a\): \(\phi(a)=|\{k: 1 \le k \le a \land gcd(k,a)=1\}|\). What can be said about such a function? <br>
+		<ol type="I">
+			<li>For prime \(p: \phi(p^k)=p^{k-1}(p-1)\) - because \(gcd(x, p^k) \gt 1 \iff p|x\), and all numbers \(x|p \land x \le p^k\) are: \(p, 2p, 3p, ... p^{k-1}p\). What follows, \(\phi(p^k)=p^k-p^{k-1}=p^{k-1}(p-1)\) </li>
+
+			<li> For coprime \(a, b: \phi(ab)=\phi(a) \phi(b)\) - Proof:<br>
+		
+				<ol>
+					<li> For each number \(x\) there are unique numbers \(0 \le c_1 \lt a,\ 0 \le c_2 \lt b\) such that:<br>
+		<span class="central">\(
+			\begin{cases}
+			x \equiv c_1\ (mod\ a) \\
+			x \equiv c_2\ (mod\ b)\\
+			\end{cases}
+		\)
+		</span>
+		from chinese remainder theorem, for coprime \(a, b\) pair \(c_1, c_2\) uniquely determines number \(x \in &lt;0;ab-1&gt;\)
+					</li>
+					<li> From Euclid's algorithm \(gcd(w, v)=gcd(w\ mod\ v, v)\). And so, \(gcd(x, a)=gcd(x\ mod\ a, a)=gcd(c_1, a)\), analogously \(gcd(x, b)=gcd(c_2, b)\).</li>
+					<li> From Euclid's lemma \(p|ab \implies p|b \lor p|a\). And if there is no \(p: (p|a \land p|x) \lor (p|b \land p|x)\), then there is no \(p: p|ab \land p|x\). And so, if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(gcd(x, ab)=1\) </li>
+					<li> If each pair \(c_1, c_2\) uniquely defines \(x \in &lt;0;ab-1&gt;\), then one can prove theorem combinatorically: \(gcd(x, ab)=1 \iff (gcd(c_1, a)=1 \land gcd(c_2, b)=1)\). How many there are numbers \(c_1\), such that \(gcd(a, c_1)=1\) and \(c_1 \le a\)? \(\phi(a)\). Analogously for \(b\). And so, there are \(\phi(a) \phi(b)\) pairs \(c_1, c_2\) identifying \(x: gcd(x, ab)=1\), which finishes the proof.</li>
+				</ol>
+			</li>
+		</ol>
+		<p>
+		To sum up the proof: each \(x\) identifies one pair \(0 \le c_1 \lt a, 0 \le c_2 \lt b\), and each \(c_1, c_2\) identifies exactly one \(x \in &lt; 0;ab-1 &gt;\). If and only if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(x\) defined by \(c_1, c_2\) is coprime to \(ab\). There are \(\phi (a)\) numbers, such that \(gcd(c_1, x)=1\), and \(\phi (b)\) numbers, such that \(gcd(c_2, x)=1\) - and so, there are \(\phi(a) \phi(b)\) distinct pairs \(c_1, c_2\) such that \(x &lt; ab\) identified by them is coprime to \(ab\), and for any \(ab \ge 1:\ gcd(ab, ab) = gcd(0, ab)\).<br>
+		</p><p>
+		This proof won't work for not coprime \(a, b\) (and it shouldn't - \( \phi(32)=16 \neq \phi(4) \phi(8) = 8 \)), because \(c_1, c_2\) are not mapping uniquely to \( \lt 0;ab-1 \gt\), but to \( \lt 0;lcm(ab)-1 \gt\), and some \(c_1, c_2\) have no solutions: for example, for \(a=4, b=8, x \lt ab\):
+		<span class="central">\(
+			\begin{cases}
+			x \equiv 1\ (mod\ 4)\\
+			x \equiv 3\ (mod\ 8)\\
+			\end{cases} \iff x \in \emptyset
+		\)</span><span class="central">\(
+			\begin{cases}
+			x \equiv 1\ (mod\ 4)\\
+			x \equiv 5\ (mod\ 8)\\
+			\end{cases} \iff x \in \{5, 13, 21, 29\}
+			\)
+		</span>
+		</p>
+		<h3>Special case Solution: factorization</h3>
+		<p>	
+		What follows, if one can factorise \(x=p_1^{q_2} p_1^{q_2} \dots p_n^{q_n}\), then \(\phi (x) = \phi (p_1^{q_1} p_1^{q_1} \dots p_n^{q_n}) = \phi (p_1^{q_1}) \phi(p_2^{q_2} \dots p_n^{q_n})= \dots =\phi (p_1^{q_1}) \phi(p_2^{q_2}) \dots \phi(p_n^{q_n})=(p_1-1)p_1^{q_1-1}(p_2-1)p_2^{q_2-1} \dots (p_n-1)p_n^{q_n-1}=p_1^{q_1}* \frac{p_1-1}{p_1}* p_2^{q_2}* \frac{p_2-1}{p_2}* \dots p_n^{q_n}* \frac{p_n-1}{p_n}=x*\frac{(p_1-1)}{p_1}* \frac{(p_2-1)}{p_2}* \dots \frac{(p_n-1)}{p_n}\).
+		</p>
+		<h3>Full solution</h3>
+		<p>
+			To solve full problem, one can observe, that if \(y|m \land y \gt 0\):
+			<ol>
+				<li>\(gcd(m, x)=y \iff gcd(\frac{m}{y}, \frac{x}{y})=1\)</li>
+				<li>\(x \le m \iff \frac{x}{y} \le \frac{m}{y}\) </li>
+			</ol>
+			And so, \( |\{x:\ gcd(x, m)=y\}|=\phi(\frac{m}{y}) \). One can solve problem by factorizing \(\frac{m}{y}\) and using pattern above: complexity will be \(O(\sqrt{\frac{m}{y}})\).
+		</p>
+		<h3>Consequence #1</h3>
+		<p>It's worth noting, that every number \(x \le m\) has \(gcd(x, m) \in \lt 1;m \gt \). What follows, \(\sum_{d:\ d|m} \phi(\frac{m}{d})=m\)</p>
+
+		<!--<h3>Consequence #2</h3>
+		<p>Furthermore, </p>-->
+
+		<h3>Sieve algorithm for finding totient</h3>
+		<p>To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve</p>
+
+		<div id="Algo1">
+			<h2>Totient calculation</h2>
+			<p>Input format: One number \(n\) is the size of the sieve used to find totients.<br>
+			\(n\)
+			</p>
+			<div id="Inputter">
+				<form>
+					<input type="number" class="inputter" id="Erasto" name="Erasto" value="99">
+				</form>
+				<button id="Sender" class="sender">Begin</button>
+				<button id="Prever" class="previous">Previous Move</button>
+				<button id="Nexter" class="next">Next Move</button>
+				<button id="Finisher" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez" class="primez"></div>
+			<div id="Comprehend" class="comprehend"></div>
+		</div>
+
+		<h3>Second problem statement</h3>
+		<p> Suppose You are given numbers \(2 \le a_0, a_1, .. a_{n-1}, m \le 10^9+7, n \le 10^5\) and have to find value of such expression:
+		<span class="central" style="font-size:20px;">$$a_0^{ ({a_1} ^{( {a_2} ^ {(\dots a_{n-1})})})} mod\ m$$</span>
+		<h3>First observations (possibly useless)</h3>
+		<p>To solve this problem, one may first solve value of exponent, and then evaluate full expression: \(a_0^{c} \equiv x\ (mod\ m)\). Exponent can be calculated in the same way, until end of sequence is reached... but modulo what? It is rather impossible to store whole number as exponent or do any calculations on such arduous numbers. To calculte c, it would be wise to know such a number \(x\), such that \(a^b \equiv a^{b+x}\ (mod\ m)\) - at least for coprime \(a, m\). Such number must exist, because number of possible values of \(a^b\) is finite (equal to \(m\), to be precise), and so, from pigeonhole principle, there exist such \(s_1 \lt s_2\), such that \(a^{s_1} \equiv a^{s_2}\ (mod\ m)\). What follows, \(x=s_2-s_1\) (there must be more solutions, perhaps some are lower). Then, 
+		<span class="central">\( a^b \equiv a^{b+x}\ (mod\ m)\) <br>
+			\( a^b \equiv a^ba^x\ (mod\ m)\ \ \ //*(a^b)^{-1}\) - it exists, because \(gcd(a, m)=1\)<br>
+			\( 1 \equiv a^x\ (mod\ m)\)<br>
+		</span>
+		And so, \(a^c \equiv a^{c\ mod\ x}\ (mod\ m)\). Let's denote \(a\) as \(a_i\), \(x\) as \(x_i\). For all numbers coprime to \(m\): \(a_1, a_2 \dots a_{\phi(n)}\) there is \(x_j\), such  that \(a_j^{x_j} \equiv 1\). Let \(f(m)=lcm(x_1, x_2, \dots, x_{\phi(m)})\). Then, \(\forall_j a_j^{f(m)} \equiv 1\ (mod\ m)\). And so, for any \(m\) there exist function \(f\), such that \(\forall_{x: gcd(x, m)=1} x^{f(m)} \equiv 1\ (mod\ m)\). Now, the problem is: what function can be \(f\)?
+		</p>
+		<h3>Euler's Theorem</h3>
+		<p>
+		Let \(a_1, a_2, \dots, a_{\phi(m)}\) be a sequence of all numbers \(y:\ gcd(y, m)=1 \land y \le m \), such that \(\forall_{i,j} a_i \neq a_j\). Let \(b=a_i\) for some \(i\). Then:
+		<span class="central">\(a_1, a_2, \dots, a_{\phi(m)}\ \ //*b\)<br>
+			\(ba_1, ba_2, \dots, ba_{\phi(m)} \mod m\)
+		</span>
+		Let's take two numbers from second sequence: are they distinct? By contradiction:
+		<span class="central">\(ba_i \equiv ba_j\pmod m\ \ //*b^{-1}\) - modular inverse must exist, for \(gcd(b, m)=1\)<br>
+			\(a_i \equiv a_j\pmod m\)
+		</span>
+		But from definition \(a_i \neq a_j\), both being lower than \(m\), so they are distinct. And so, both sequnces consist only of numbers coprime to \(m\), have distinct elements modulo \(m\), and have same elements: \(\{x:\ gcd(x, m)=1 \land x \le m\}\). What follows, one is permutation of the second. And so, 
+		<span class="central">\(a_1a_2 \dots a_{\phi(m)} \equiv ba_1ba_2 \dots ba_{\phi(m)} \pmod m\)<br>
+			\(a_1a_2 \dots a_{\phi(m)} \equiv b^{\phi(m)}a_1a_2 \dots a_{\phi(m)} \pmod m\ \ //*a_1^{-1}a_2^{-1}...a_{\phi(m)}^{-1}\)  - modular inverse exists, for all numbers are coprime to \(m\)<br>
+			\(1 \equiv b^{\phi(m)} \pmod m\)
+		</span>
+		And so, lo, behold, function was found, \(f=\phi\): \(\forall_{x: gcd(x, m)=1} x^{\phi(m)} \equiv 1\ (mod\ m)\)
+		</p>
+		<h3>Generalized Euler's theorem</h3>
+		<p>
+		The question arises: what if one wants to find \(a^{huge} \bmod m\) with \(gcd(a, m) \gt 1\)? one can represent \(m, a\), for \(v, w \in N \land p_1p_2...p_n|m \land p_1p_2...p_n|a\) (where \(p_1...p_n\) are only common prime divisors of \(m, a\)) in such way:
+		<span class="central">\(m=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}v\)</span>
+		<span class="central">\(a=p_1^{r_1}p_2^{r_2} \dots p_n^{r_n}w\)</span>
+		<span class="central">\(a^c=p_1^{cr_1}p_2^{cr_2} \dots p_n^{cr_n}w\)</span>
+		Suppose that \(c\) is such a number, that \(cr_1 \ge q_1, cr_2 \ge q_2 \dots cr_n \ge q_n\). Then, suppose that \(g=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\). Clearly, \(gcd(a^c, m)= p_1^{min(q_1, cr_1)}p_2^{min(q_2, cr_2)} \dots p_n^{min(q_n, cr_n)} = p_1^{q_1}p_2^{q_2} \dots p_n^{q_n} = g\). It would be wise to show some lemmas before proceeding further:
+		</p>
+		<ol>
+			<li>
+				Theorem: \(ab \bmod am = a(b \bmod m)\)<br>
+				Proof: \(ab \bmod am = ab-k*am=a(b-km)=a(b \bmod m)\)<br>
+				What follows, \(g|x \land g|m \implies g| (x \bmod m)\)<br>
+			</li>
+			<li>
+				Theorem: \(a^x \equiv a^{x+y} \pmod m \implies \forall_{n \in N_+} a^x \equiv a^{nx+y} \pmod m\)<br>
+				Proof: \(a^{nx+y} \equiv a^{(n-1)x}*a^{x+y} \equiv a^{(n-1)x}a^y \equiv a^{(n-1)x+y} \equiv \dots \equiv a^{y} \pmod m\)
+			</li>
+		</ol>
+		<br>
+
+		<p>		
+		Then, for \(z \ge c\), using the first lemma twice to change mod:
+
+		<span class="central">\(a^z \bmod m = g(\frac{a^z}{g} \bmod \frac{m}{g}) = g(\frac{a^c}{g}a^{z-c} \bmod \frac{m}{g}) = g(\frac{a^c}{g} a^{(z-c)\ mod\ \phi (\frac{m}{g})} \bmod \frac{m}{g}) =a^ca^{(z-c)\ mod\ \phi(\frac{m}{g})} \bmod m\)</span>
+		The crucial element of a proof is \(\frac{a^z}{g}=\frac{a^c}{g}a^{z-c}\) - leaving \(a^c\) untouched makes the expression always divisible by \(g\) - otherwise the proof would be invalid, which will be shown later. What follows, if \(z \ge c\), this number is possible to calculate. Furthermore, one does not need \(\phi(\frac{m}{g})\) - for \(\phi(m)=\phi(g) \phi(\frac{m}{g})\), and so, one can use \(\phi(m)\), because by 2nd lemma \(a^{\phi(\frac{m}{g})+x} \equiv a^x \implies a^{k \phi(g) \phi(\frac{m}{g})+x} \equiv a^{k \phi(m) +x} \equiv a^x\). But what is minimal \(c\) for which above holds? For \(c \ge q_i\), all of the above must hold. And maximal \(q_i \le \lfloor log_2(m) \rfloor\), so minimal \(c \le \lfloor log_2(m) \rfloor\). Also, \( \phi(m) \ge \lfloor log_2(m) \rfloor\). What follows, for \(z \ge \phi(m)\)
+		<span class="central">\(a^z \bmod m = a^{\phi(m)}*a^{(z-\phi(m))\ mod\ \phi(m)} = a^{\phi(m)+z\ mod\ \phi(m)}\)</span>
+		But, for \(\phi(m) \gt z \ge \lfloor log_2(m) \rfloor, a^{z} \equiv a^{\phi(m)+z} \equiv a^{\phi(m)+z\ mod\ \phi(m)} \pmod m\). What follows, for all \(z \ge \lfloor log_2(m) \rfloor\) the above holds.
+		</p>
+		<h3>Additional analysis</h3>
+		<p>
+			There are still some unresolved things, however.
+			<ol>
+				<li>
+					For \(a^z, z \lt\) minimal \(c: a^c \equiv a^{c\ mod\ \phi(m)+\phi(m)} \pmod m\), is there such \(h \gt 0\), such that \(a^z \equiv a^{z+h} \pmod m\)?<br>
+					There isn't: if \(gcd(a^z, m) \neq gcd(a^{z+1}, m)\), but \(\forall_{i \in N_+} gcd(a^i, m) \le gcd(a^{i+1}, m)\) - because \(g|a \implies \forall_{k \in N_+} g|ka\), then there is no such \(h \in N_+\), such that \(gcd(a^{z+h}, m)=gcd(a^z, m)\). But from first lemma in generalized euler, for\(g=gcd(a^{z+h}, m), g|a^{z+h} \land g|m \implies g|(a^{z+h} \bmod m)\). But \(g \nmid a^z\), and \(g|m \land g \nmid x \implies g \nmid x \bmod m\). Proof by contradiction, where \(c=x \bmod m=gc', m=gm'\):
+					<span class="central">\(x-gm'=gc'\)</span>
+					<span class="central">\(x=gc'+gm'=g(c'+m')\)</span>
+					<span class="central">\(g|x\)</span>
+					Which contradicts assumptions. What follows, \(\forall_{h \in N_+} \exists_{g \in N_+} (g|a^{z+h} \bmod m \land g \nmid a^z \bmod m)\). This proves, that \(\forall_{h \in N_+} a^z \bmod m \neq a^{z+h} \bmod m\) for \(z \le \) minimal \(c\).
+				</li>
+				<li>
+					Why \(\phi(m) \ge \lfloor log_2(m) \rfloor \)? Proof is somewhat ultramagical:
+					<ol>
+						<li>\(m=p_1^{q_1} \dots p_n^{q_n}, n \le \lfloor log_2(m) \rfloor\)</li>
+						<li>\(\phi(m)=m \frac{p_1-1}{p_1} \dots \frac{p_n-1}{p_n} \ge m \frac{1}{2} \frac{2}{3} \frac{3}{4} ... \frac{n}{n+1} = m \frac{1}{n+1} \ge m \frac{1}{\lfloor log_2(m) \rfloor +1}\)</li>
+						<li>\(\phi(m)-\lfloor log_2(m) \rfloor \ge \frac{m}{\lfloor log_2(m) \rfloor+1}-\lfloor log_2(m) \rfloor=\frac{1}{\lfloor log_2(m) \rfloor+1}(m-(\lfloor log_2(m) \rfloor)^2-\lfloor log_2(m) \rfloor )\)</li>
+					</ol>
+					If last equation is greater equal 0, the theorem is correct (but not only in those cases). For large numbers, it's obvious, for small ones, You can check it Yourself.
+			</ol>
+		</p>
+
+		<h3>Solution to stated problem</h3>
+		<p>
+			So, returning to stated objective:
+			<ol>
+				<li>The purpose is to find \(a_0^c \bmod m\)</li>
+				<li>Problem can be huge \(c\), that cannot fit into any normal type, and so, cannot be calculated in reasonable time \(c=a_1^{ ({a_2} ^{( {a_3} ^ {(\dots a_{n-1})})})}\). For low \(c\), the problem is non-existent, as it can be calculated in normal way.</li>
+				<li>From pigeonhole principle, \(\forall_{m \in N_+} \exists_{c \in N_+, z \in N_+} a_0^c \equiv a_0^{c+z} \pmod m\), because number of possible values of \(a^c \bmod m\) is lower equal \(m\): \(|\{y=a^c \bmod m\}| \le m\). And so, \(a^{nz+c} \equiv a^c \pmod m\)</li>
+				<li>It turns out, that for any \(c \ge \lfloor log_2(m) \rfloor\ :\ a^c \equiv a^{\phi(m)+c\ mod\ \phi(m)} \pmod m\)</li>
+				<li>What follows - one needs to check, whether \(c\) is larger than \(log_2(m)\) - if it's not, then the solution can be found without any nuances described here, with just standard binary exponentation, because it's exponent is lower than \(log_2(10^9+7) \lt 32\). If it's larger - then \(c\) can be calculated as \(c=\phi(m)+a_1^{ ({a_2} ^{( {a_3} ^ {(\dots a_{n-1})})})} \bmod \phi(m)\)</li>
+				<li>Next exponents can be calculated in analogous way, as shown on animation</li>
+				<li>The problem remains: how to check, whether \(x^y \le z\) in an elegant way, without any strange overflows? Well, one can just check, whether \(y \le z\) (if it isn't, then \(x^y \gt z\)) and if it is, whether \(log_2(x^y)=ylog_2(x) \le log_2(z)\)
+
+			</ol>
+		</p>
+
+		<div id="Algo2">
+			<h2>Power Tower</h2>
+			<div id="Inputter2">
+				<p>Input format: values \(n, m\), and then \(n\) values \(a_i\), such that an expression \(a_1^{(a_2^{(\dots a^n)})} \pmod m\) is evaluated.<br>
+				\(n, m\)<br>
+				\(a_1, \dots, a_n\)
+				</p>
+				<form>
+					<textarea class="inputter" id="Totient2" name="Totient">6 107&#10;2 7 3 12 43 25</textarea>
+				</form>
+				<button id="Sender2" class="sender">Begin</button>
+				<button id="Prever2" class="previous">Previous Move</button>
+				<button id="Nexter2" class="next">Next Move</button>
+				<button id="Finisher2" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez2" class="primez"></div>
+			<div id="Comprehend2" class="comprehend"></div>
+		</div>
+
+		<h3>Complexity</h3>
+		<p>
+		By \(\phi_i(x)\) I denoted \(\phi(\phi_{i-1}(x))\), furthermore \(\phi_0(x)\) denotes \(x\).<br>
+			There are some important points in analysing complexity of the algorithm above:
+			<ol type="I">
+				<li>In each move, one has to calculate \(\phi_i(m)\) - it's the only problematic point of the algorithm: one can estimate complexity by \(O(n \sqrt{m})\). But, it's worth noting, that \(\forall_{i \gt 0} \phi_{i+1}(m) \le \frac{\phi_i(m)}{2} \lor \phi_i(m)=1\). Proof:
+					<ol>
+						<li>If \(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\), then \(\exists_i 2 \nmid p_i \implies 2|\phi(x)\), because \(\phi(x)\) is divisible by \(p_i-1\), and \(2|(p_i-1)\)</li>
+						<li>If \(x=2^{q_1}\), then \(\phi(x)=2^{q_1}*\frac{1}{2}\)</li>
+						<li>What follows, in each move \(\forall_{i \ge 1} (2|\phi_i(x) \lor \phi_i(x)=1)\), and so, \(\phi_{i+1}(x) \le \phi_i(x)*\frac{1}{2} \lor \phi_{i+1}(x)=1\) (Only in the first totient calculation it does not need to lower itself twice)</li>
+					</ol>	
+				</li>
+				<li>What follows, only in at most \(\lceil log_2(m) \rceil\) iterations one needs to calculate \(\phi_i(m)\) - and so, maximial complexity goes down to \(O(min(n, log_2(m)) \sqrt{m}+nlog_2(m))\) (second element comes from binary exponentation)</li>
+				<li><!--But one could also use the fact, that \(2*\sqrt{m}+\sqrt{\frac{m}{2}}+ \dots +\sqrt{\frac{m}{2^i}}=\sqrt{m}+\)-->One could also use geometric sum to prove, that in fact complexity will be like, \(O(nlog_2(m)+\sqrt{m})\), because sum \(\sqrt{m}+\sqrt{\frac{m}{2}}+ \dots +\sqrt{\frac{m}{2^i}}=\sqrt{m} \frac{1-(\frac{1}{2^{log_2(m)}})^{log_2{m}}}{1-\frac{1}{\sqrt{2}}} \le \sqrt{m}\frac{1}{\frac{\sqrt{2}-1}{\sqrt{2}}} = \sqrt{m} \frac{\sqrt{2}}{\sqrt{2}-1} \le 4 \sqrt{m}\) - this follows from sum of geometric sequence - and so, finding next totients will work in \(O(\sqrt{m})\)</li>
+				<li>Finally, talking about binary exponentation to the power of 0 is nonsense - one does only need to consider exponentation at most \(\lceil log_2(m) \rceil\) times. So, overall complexity is something like \(O(log_2^2(m)+\sqrt{m}+n)\) - \(n\) is to read the sequence and possibly count \(log_2(a^b)\) - at most \(log_2log_2(m)\) times</li>
+			</ol>
+
+		<h3>Problems</h3>
+		<p>Most problems where Euler's totient function is useful are those, when one needs to find multiplicative inverse of some large prime number, problems involving pure totient are rare. Examples:<br>
+		<a href="https://codeforces.com/problemset/problem/1114/F">Please, another Queries on Array</a>, 
+		<a href="https://codeforces.com/problemset/problem/594/D">REQ</a>,
+		<a href="https://codeforces.com/problemset/problem/1027/G">X-mouse in the Campus</a>
+
+		</p>
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+
+		<script src="{{url_for('static', filename='Sieve.js')}}"></script>
+		<script src="{{url_for('static', filename='Totient.js')}}"></script>
+		<form id="page" style="display:none"></form>
+	</body>
+</html>

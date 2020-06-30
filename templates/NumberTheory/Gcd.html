@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+
+<html lang="en">
+	<head>
+		<title>Greatest Common Divisor</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
+		<script src="{{url_for('static', filename='Temp.js')}}"></script>
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+	</head>
+	<body>
+		{{ headers.header('Greatest Common Divisor', 'NumberTheory') }}
+
+		<h3>First problem statement and definitions</h3>
+		<p>
+		<!--\(\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}\)-->
+			Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of numbers \(w\) and \(v\) where \(1 \le w, v \le 10^9\)? To answer this question, let's define greatest common divisor (gcd): A number \(g \in N_+\) is gcd of numbers \(w, v\) if and only if:<br>
+			<span class="central">
+				\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h h|w \land h|v \land h&gt;g\)
+			</span><br>
+			In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all numbers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:
+		</p>
+		<h3>First solution</h3>
+		<p>
+		Without loss of generality, let's assume that \(w \lt v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|u \lor k|u\), and take maximum of those - this will work in \(O(q*\sqrt{w})\).
+		</p>
+		<h3>Second Solution</h3>
+		<p>
+		Let's create arrays \(a_i\) and \(b_i\) such that \(a_0=w\), \(b_0=v\). One can define these arrays for \(i &gt; 0\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\ mod\ b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
+
+		</p>
+		<div id="Algo1">
+			<h2>Euclidean algorithm</h2>
+			<p>Input format: Two numbers \(a, b\), specifying values, for which \(gcd(a,b)\) has to be calculated.<br>
+			\(a, b\)
+			<div id="Inputter">
+				<form>
+					<input class="inputter" id="Erasto" name="Erasto" value="84 35">
+				</form>
+				<button id="Sender" class="sender">Begin</button>
+				<button id="Prever" class="previous">Previous Move</button>
+				<button id="Nexter" class="next">Next Move</button>
+				<button id="Finisher" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez" class="primez"></div>
+			<div id="Comprehend" class="comprehend"></div>
+		</div>
+
+		<h2>Proofs</h2>
+		<h3>Finiteness proof</h3>
+		<p>
+		In each iteration, \(b_i\) becomes \(a_{i-1}\ mod\ b_{i-1}\), but \(a_{i-1}\ mod\ b_{i-1} &lt; b_{i-1}\) by definition - and so, in each iteration \(b_i\) becomes lower, but in each iteration it's greater than \(0\) or algorithm ends - so number of steps must be lower or equal to \(b_0\), so it is finite
+		</p>
+		<h3>Correctness proof</h3>
+		<p>
+			Thesis: for each \(i,\ gcd(a_i, b_i\) is equal to gcd(\(w\), \(v\)).<br>
+			Proof by induction: For \(i=0\) \(gcd(a_i, b_i)=gcd(w, v)\), because \(a_0=w, b_0=v\). So: \(\exists_i gcd(a_i, b_i)=gcd(w, v)\). To finish proof is to show that for any \(i\) either \(gcd(a_i, b_i)=gcd(a_{i+1}, b_{i+1})\), or \(b_{i+1}=0\)<br>
+			What can be said about any divisor \(g\) dividing both \(a_i\) and \(b_i\)? If \(a_i\) is shown as \(sb_i +m\), where \(s \in N\), then:
+			
+			<br><span class="central">\(a_i = gk, b_i =gl, a_i=sb_i +m\)</span><br>
+			<span class="central">\(gk=sgl+m\)</span><br>
+			<span class="central">\(gk-sgl=g*(k-sl)=m\)</span><br>
+			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\ mod\ b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\ mod\ b_i, b_i)=gcd(b_i, a_i\ mod\ b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any number divides \(0\), and so any number that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of a number \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Moreover, proof shows, that gcd(\(w\), \(v\)) has to be natural number.
+
+		</p>
+		<h3>Complexity proof</h3>
+		<p>
+			It can be assumed without loss of generality, that \(a_i &gt; b_i\) - it is true after first iteration. Furthermore, 
+			<br><span class="central">\(b_i + a_i\ mod\ b_i &lt; b_i+b_i=2b_i\)</span><br>
+			To prove that \(\frac{a_i + b_i}{a_{i+1}+b_{i+1}}" &ge; \frac{3}{2}\) , let's consider two cases: first, when \(a_i &ge; 2b_i\), second, when \(2b_i &gt; a_i &ge; b_i\).
+
+			<br><span class="central">(1) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}}" = \frac{a_i+b_i}{a_i\ mod\ b_i +b_i} &ge; \frac{a_i+b_i}{2b_i} &gt; \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span>
+
+			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}}" = \frac{a_i+b_i}{a_i\ mod\ b_i+b_i} = \frac{a_i+b_i}{a_i-b_i+b_i} = \frac{a_i+b_i}{a_i} &gt; 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
+			And so, maximum number of operations can be bounded by \(O(q*log(min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, and after \(k\) iterations it becomes lower at least \((\frac{3}{2})^{k}\) times.
+		</p>
+		<h3>Second Problem</h3>
+		<p>
+			Let's say that sole \(gcd(w,v)\) is not enough: You want to find such numbers \(x, y\) such that: \(wx+vy=gcd(w,v)\). One can use same mechanism to solve this problem, but calculate also arrays \(p, q\), such that for each \(i\) following stands:
+			<br><span class="central">\(p_iw+q_iv=b_i\)<br>
+				\(p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1\)<br>
+				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\ mod\ b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}"{b_{i-1}}"\rfloor b_{i-1}\)<br></span>
+			It is possble to show \(b_{i-1}\) as \(b_{i-1}=p_{i-1}w+q_{i-1}v\). But what with \(a_{i-1}\)? It's equal to \(b_{i-2}\), except when \(i=2\)... unless \(b_0=a_1=w\). Let also, for simplicity, \(z_i=\lfloor \frac{a_i}{b_i} \rfloor\). Then: <br>
+			<span class="central">\(p_0=1, q_0=0 \implies wp_0+vq_0=w=b_0\)<br>
+				\(b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z(p_iw + q_iv)= w(p_{i-1} - zp_i)+ v(q_{i-1} - zq_i)\)</span>
+			And so, \(p_{i+1}=p_{i-1}-zp_i\) and \(q_{i+1}=q_{i-1}-zq_i\)
+		</p>
+		<div id="Algo2">
+			<h2>Extended Euclidean Algorithm</h2>
+			<p>Input format: Two numbers \(a, b\), specifying values, for which extended euclid algorithm will be run.<br>
+			\(a, b\)
+			</p>
+			<div id="Inputter2">
+				<form>
+					<input class="inputter" id="Erasto2" name="Erasto" value="84 35">
+				</form>
+				<button id="Sender2" class="sender">Begin</button>
+				<button id="Prever2" class="previous">Previous Move</button>
+				<button id="Nexter2" class="next">Next Move</button>
+				<button id="Finisher2" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez2" class="primez"></div>
+			<div id="Comprehend2" class="comprehend"></div>
+		</div>
+
+		<h3>First proof - Solution with different g</h3>
+		<p id="FinishingTouches1">
+			There are two important questions concerning extended gcd: firstly, whether is there any positive natural \(h &lt; gcd(w,v)=g\) such that there exist integers \(x, y\) such that \(wx+vy=h\)? I'll prove opposite by contradiction: <br>
+			<span class="central">
+				\(wx+vy=h\)<br>
+				\(gkx+gly=h\)<br>
+				\(g(kx+ly)=h\)<br>
+			</span>
+			So, \(h\) must simultaneously fulfill: \(g|h\) and \(g &gt; h &gt; 0\). It is impossible, which finishes the proof.<br>
+		</p>
+			<h3>Second proof - different x, y</h3>
+		<p>
+			Secondly, how many there are solutions \(x, y\), fulfilling equation \(wx+vy=g\)?
+			<span class="central">
+				\(wx+vy=g\)<br>
+				\(w(x+r_1)+v(y+r_2)=g\)<br>
+				\(wx+wr_1+vy+vr_2=g\)<br>
+				\(wr_1+vr_2=0\)<br>
+				\(wr_1=-vr_2\)<br>	
+			</span>
+			And so, there is infinite amount of possible solutions; it is obvious, if \(r_2=kw\), \(r_1=kv\). But how to attain minimal next solution, i.e. \(s=|r_1w|\) is minimal for given \(r_1\)? Certainly:
+			<br><span class="central">
+				\(s|w, s|v\) - it comes from last equation and fact, that \(r_1\) has to be integer - because by definition \(x+r_1\) is integer.<br>
+				\(s &gt; 0\) - otherwise \(r_1=0\) and so, next solution is still unknown.<br>
+				\(s\) is minimal.
+			</span>
+			In other words, \(s\) is least common multiple of \(w\) and \(v\) - or \(s=lcm(w, v)\). What can be said about \(c\), if \(s\) is shown as \(s=\frac{wv}{c}\)?
+			<br><span class="central">
+				\(w|s \implies w|w\frac{v}{c} \implies c|v\)<br>
+				\(v|s \implies v|v\frac{w}{c} \implies c|w\)<br>
+				In order to minimize \(s=\frac{wv}{c}\), \(c\) has to be maximal possible.
+			</span>
+			And maximal number \(c\) dividing both \(w\) and \(v\) is \(c=gcd(v, w)\). So, \(s=|rw|=\frac{wv}{gcd(w, v)}\). What follows, \(|r_1|=\frac{v}{gcd(w,v)}\) and \(|r_2|=\frac{w}{gcd(w,v)}\).<br><br>
+			Problems concerning GCD rely on finding multiplicative inverse, and so on. Example problems involving gcds are: <br>
+			<a href="https://codeforces.com/problemset/problem/200/E">Tractor College</a>, 
+			<a href="https://codeforces.com/problemset/problem/919/E">Congruence Equation</a>
+		</p>
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>	
+		<script src="{{url_for('static', filename='Gcd.js')}}"></script>
+		<form id="page" style="display:none"></form>
+	</body>
+</html>
