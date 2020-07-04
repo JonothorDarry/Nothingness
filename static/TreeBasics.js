@@ -3,6 +3,7 @@ class Tree extends Algorithm{
 		super(block);
 		this.treeConstructor(wid);
 	}
+
 	BeginningExecutor(){
 		this.place.innerHTML="";
 		this.treeConstructor();
@@ -83,25 +84,32 @@ class Tree extends Algorithm{
 					dv.style.width=`${cval}px`;
 					
 					dv.tree_reference=this.treeDiv;
-					window.bound_tree=this;
-					window.addEventListener('resize', function(){
-						var dv_container=this.bound_tree.divis;
-						for (var i=2;i<dv_container.length;i++){
-							var dv=dv_container[i], angle;
-							var width=this.bound_tree.treeDiv.offsetWidth;
-							var th=dv.style['--prec_point_zis']*width, tpar=dv.style['--prec_point_par']*width;
-							var cval=Math.sqrt(Math.pow(th-tpar, 2)+75*75);
-							dv.style.width=`${cval}px`
 
 
-							if (th-tpar==0) angle=-Infinity;
-							else angle=Math.sin(75/cval);
-							if (th-tpar==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
-							else if (th-tpar<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
-							else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
+					if (!('bound_tree' in window)){
+						window.bound_tree=[this];
+						window.addEventListener('resize', function(){
+							for (var j=0;j<window.bound_tree.length;j++){
+								var dv_container=this.bound_tree[j].divis;
+								for (var i=2;i<dv_container.length;i++){
+									var dv=dv_container[i], angle;
+									var width=this.bound_tree[j].treeDiv.offsetWidth;
+									var th=dv.style['--prec_point_zis']*width, tpar=dv.style['--prec_point_par']*width;
+									var cval=Math.sqrt(Math.pow(th-tpar, 2)+75*75);
+									dv.style.width=`${cval}px`
+
+
+									if (th-tpar==0) angle=-Infinity;
+									else angle=Math.sin(75/cval);
+									if (th-tpar==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
+									else if (th-tpar<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
+									else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
+								}
+							}
 						}
+						)
 					}
-					)
+					else window.bound_tree.push(this);
 
 					dv.style.top=`${i*75+20}px`;
 
@@ -221,7 +229,7 @@ class Tree extends Algorithm{
 		else if (col==1) btn.style.backgroundColor="#004400";
 		else if (col==2) btn.style.color="#666666";
 		else if (col==3) btn.style.color="#FFFFFF";
-		else if (col==5) btn.style.backgroundColor="#000000"
+		else if (col==5) btn.style.backgroundColor="#000000";
 	}
 
 	divCreator(tree, namez, local, depth){
@@ -254,9 +262,19 @@ class Tree extends Algorithm{
 				zdivs[i][1].appendChild(btn)
 			}
 		}
-
 		this.divs=divs;
 		this.zdivs=zdivs;
+	}
+
+	//Pozycja buttona od lewej jako funkcja miejsca vertexa(perc_left, px_top) i miejsca - góra: +1 -> +Inf, dół: -1 -> -Inf, analogicznie l/p
+	//Założenie: butt dodatkowy jest kwadratem 20x20
+	//Oparte na haxie - xaxis ujemny to 100%-left% okrągłego
+	buttPositioner(butt, perc_left, px_top, xaxis, yaxis){
+		if (xaxis>0)	butt.style.left=`calc(${perc_left}% + ${40/Math.sqrt(2)+20*(xaxis-1)}px)`;
+		else 		butt.style.left=`calc(${perc_left}% + ${-40+40/Math.sqrt(2)-20*(-xaxis-1)}px)`;
+
+		if (yaxis>0)	butt.style.top=`${px_top-20/Math.sqrt(2)-20*(yaxis-1)}px`;
+		else		butt.style.top=`${px_top+20+20/Math.sqrt(2)+20*(-yaxis-1)}px`;
 	}
 }
 
@@ -278,17 +296,23 @@ class DiamFinder extends Tree{
 			this.ij.push(0);
 			this.diams.push([[0, 0]]);
 
-			y=this.buttData[i].top-20/Math.sqrt(2);
+			y=this.buttData[i].top;//-20/Math.sqrt(2);
 			x=this.buttData[i].left
 			x2=40/Math.sqrt(2);
 
 			valar=this.betterButtCreator(0);
 			valar2=this.betterButtCreator(0);
+
+			this.buttPositioner(valar, x, y, -1, -1);
+			this.buttPositioner(valar2, x, y, -2, -1);
+			
+			/*
 			valar.style.top=`${y}px`;
 			valar.style.left=`calc(${x}% + ${x2}px)`;
 
 			valar2.style.top=`${y}px`;
 			valar2.style.left=`calc(${x}% + ${x2+20}px)`;
+			*/
 
 			this.dp.push([valar, valar2]);
 			this.dpval.push([0, 0]);
@@ -499,8 +523,78 @@ class DiamFinder extends Tree{
 	}
 }
 
+class DoubleWalk extends DiamFinder{
+	treeConstructor(wid=70){
+		super.treeConstructor(wid);
+		this.newDivCreator(this.place, this.n, 'Inverse Preorder:');
+	}
+
+	newDivCreator(local, n, name){
+		var inv_pre_full, inv_pre=[], i, j;
+		var btn;
+
+		inv_pre_full=document.createElement("DIV");
+		inv_pre_full.style.width="100%";
+		inv_pre_full.style.height="40px";
+
+		for (j=0;j<2;j++) {
+			inv_pre.push(document.createElement("DIV"));
+			inv_pre[j].style.margin="0";
+			inv_pre[j].style.padding="0";
+			inv_pre[j].style.display="inline-block";
+			inv_pre_full.appendChild(inv_pre[j]);
+		}
+		inv_pre[0].innerHTML=name;
+		inv_pre[0].style.width="200px";
+		local.appendChild(inv_pre_full);
+
+		this.inv_pre_butts=[];
+		for (j=1;j<=n;j++){
+			btn=this.buttCreator(0);
+			btn.style.borderRadius="0%";
+			this.Painter(btn, 4);
+			
+			this.inv_pre_butts.push(btn)
+			inv_pre[1].appendChild(btn)
+		}
+		this.last_inv_pre=0;
+	}
+
+	StateMaker(){
+		super.StateMaker();
+		var l=this.lees.length;
+		var s=this.lees[l-1], seminal=this.lees[l-2], a, v0, para;
+
+		if (this.last_inv_pre>0){
+			this.Painter(this.inv_pre_butts[this.last_inv_pre-1], 0);
+		}
+		if (s[0]>=100) return;
+		a=s[1];
+		if (s[0]==0 || s[0]==1){
+			this.Painter(this.inv_pre_butts[this.last_inv_pre], 1);
+			this.inv_pre_butts[this.last_inv_pre].innerHTML=a;
+			this.last_inv_pre++;
+		}
+	}
+
+	StateUnmaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], seminal=this.lees[l-2], a, v0, para;
+		a=s[1];
+
+		if (s[0]==0 || s[0]==1){
+			this.last_inv_pre--;
+			this.Painter(this.inv_pre_butts[this.last_inv_pre], 4);
+		}
+		if (seminal[0]==0 || seminal[0]==1){
+			this.Painter(this.inv_pre_butts[this.last_inv_pre-1], 1);
+		}
+		super.StateUnmaker();
+	}
+}
+
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new DiamFinder(feral, 70);
 
-//var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-//var eg2=new DiamFinder(feral2, 70);
+var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+var eg2=new DoubleWalk(feral2, 70);

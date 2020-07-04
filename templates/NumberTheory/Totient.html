@@ -7,7 +7,8 @@
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
 		<script src="{{url_for('static', filename='Temp.js')}}"></script>
-		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+		<!--<script src={{url_for('static', filename='mathjax/es5/tex-chtml.js')}} async></script>-->
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 	</head>
 	<body>
 		{{ headers.header('Totient fucntion', 'NumberTheory') }}
