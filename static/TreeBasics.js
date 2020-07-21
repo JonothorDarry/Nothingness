@@ -9,6 +9,9 @@ class Tree extends Algorithm{
 		this.treeConstructor();
 	}
 
+	//Tworzy drzewo o zadanym widthu, obok niego stacks razem z sąsiedztwem
+	//tree_vertex - wierzchołek drzewa
+	//companion data - informacja przy vertexie
 	treeConstructor(wid=70){
 		this.place.style.position="relative";
 		this.treeDiv=document.createElement("DIV");
@@ -33,17 +36,17 @@ class Tree extends Algorithm{
 		edges=this.getTreeFromInput();
 		n=this.n;
 
-		this.butts=[];
+		this.tree_vertex=[];
 		this.divis=[];
 		this.buttData=[];
 		var namez=['Stack:'];
-		this.btlist=[];
+		this.state_data=[];
 
 		for (i=0;i<=n;i++) {
-			this.tr.push([]), this.butts.push(0), this.divis.push(0);
+			this.tr.push([]), this.tree_vertex.push(0), this.divis.push(0);
 			this.buttData.push(0), widvs.push(0), precise_wid.push(0);
 			namez.push(`edges ${i+1}:`)
-			this.btlist.push([])
+			this.state_data.push([])
 		}
 
 		for (i=0;i<edges.length;i++){
@@ -66,7 +69,7 @@ class Tree extends Algorithm{
 			for (j=0;j<depth[i].length;j++){
 				a=depth[i][j];
 				var bt=this.buttCreator(a);
-				this.butts[a]=bt;
+				this.tree_vertex[a]=bt;
 
 				floater=(j/depth[i].length+1/(2*depth[i].length));
 				widvs[a]=width*floater;
@@ -184,7 +187,7 @@ class Tree extends Algorithm{
 		this.n=n;
 		dis=c[1];
 
-		for (i=0;i<n;i++){
+		for (i=1;i<n;i++){
 			c=this.getInput(dis+1, fas);
 			a=c[0];
 			c=this.getInput(c[1]+1, fas);
@@ -258,7 +261,7 @@ class Tree extends Algorithm{
 				btn.style.borderRadius="0%";
 				if (i==0) this.Painter(btn, 4);
 				
-				this.btlist[i].push(btn)
+				this.state_data[i].push(btn)
 				zdivs[i][1].appendChild(btn)
 			}
 		}
@@ -268,7 +271,6 @@ class Tree extends Algorithm{
 
 	//Pozycja buttona od lewej jako funkcja miejsca vertexa(perc_left, px_top) i miejsca - góra: +1 -> +Inf, dół: -1 -> -Inf, analogicznie l/p
 	//Założenie: butt dodatkowy jest kwadratem 20x20
-	//Oparte na haxie - xaxis ujemny to 100%-left% okrągłego
 	buttPositioner(butt, perc_left, px_top, xaxis, yaxis){
 		if (xaxis>0)	butt.style.left=`calc(${perc_left}% + ${40/Math.sqrt(2)+20*(xaxis-1)}px)`;
 		else 		butt.style.left=`calc(${perc_left}% + ${-40+40/Math.sqrt(2)-20*(-xaxis-1)}px)`;
@@ -279,45 +281,72 @@ class Tree extends Algorithm{
 }
 
 class DiamFinder extends Tree{
+	companionize_buttonize(place, x, y){
+		var valar, valar2;
+		valar=this.betterButtCreator(0);
+		valar2=this.betterButtCreator(0);
+		this.buttPositioner(valar, x, y, 1, 1);
+		this.buttPositioner(valar2, x, y, 2, 1);
+		this.companion.push([valar, valar2]);
+		this.companion_value.push([0, 0]);
+		this.treeDiv.appendChild(valar);
+		this.treeDiv.appendChild(valar2);
+	}
+
+	//Add data from son to parent
+	reformulate_parent(a){
+		var para=this.par[a];
+		this.Painter(this.tree_vertex[para], 1);
+		if (this.companion_value[para][0]<this.companion_value[a][0]+1){
+			this.companion_value[para][1]=this.companion_value[para][0];
+			this.companion_value[para][0]=this.companion_value[a][0]+1;
+			this.Painter(this.companion[para][0], 1);
+		}
+		else if (this.companion_value[para][1]<this.companion_value[a][0]+1){
+			this.companion_value[para][1]=this.companion_value[a][0]+1;
+			this.Painter(this.companion[para][1], 1);
+		}
+		this.diams[para].push(this.companion_value[para].slice());
+
+		this.companion[para][0].innerHTML=this.companion_value[para][0];
+		this.companion[para][1].innerHTML=this.companion_value[para][1];
+		if (this.companion_value[para][0]+this.companion_value[para][1]>this.ans)
+			this.ans=this.companion_value[para][0]+this.companion_value[para][1];
+		this.ans_snapshot.push(this.ans);
+
+		this.tree_vertex[a].style.border="1px solid";
+		this.tree_vertex[a].style.borderColor="#888888";
+
+		if (this.ij[para]<this.tr[para].length)
+			this.Painter(this.state_data[para][this.ij[para]], 1);
+	}
+	
+	//No more color
+	decolor_companion(a){
+		this.Painter(this.companion[a][0], 0);
+		this.Painter(this.companion[a][1], 0);
+	}
+
 	BeginningExecutor(){
 		super.BeginningExecutor();
 		this.ans=0;
 		this.ans_snapshot=[0];
-		var dimension, valar, valar2, x, y, x2;
+		var dimension, x, y, x2;
 
 		this.lees=[];
 		this.lees.push([0, 1]);
 		this.ij=[0];
-		this.dp=[0];
-		this.dpval=[0];
+		this.companion=[0];
+		this.companion_value=[0];
 		this.diams=[0];
 
 		for (var i=1;i<=this.n;i++){
 			this.ij.push(0);
 			this.diams.push([[0, 0]]);
 
-			y=this.buttData[i].top;//-20/Math.sqrt(2);
+			y=this.buttData[i].top;
 			x=this.buttData[i].left
-			x2=40/Math.sqrt(2);
-
-			valar=this.betterButtCreator(0);
-			valar2=this.betterButtCreator(0);
-
-			this.buttPositioner(valar, x, y, -1, -1);
-			this.buttPositioner(valar2, x, y, -2, -1);
-			
-			/*
-			valar.style.top=`${y}px`;
-			valar.style.left=`calc(${x}% + ${x2}px)`;
-
-			valar2.style.top=`${y}px`;
-			valar2.style.left=`calc(${x}% + ${x2+20}px)`;
-			*/
-
-			this.dp.push([valar, valar2]);
-			this.dpval.push([0, 0]);
-			this.treeDiv.appendChild(valar);
-			this.treeDiv.appendChild(valar2);
+			this.companionize_buttonize(this.treeDiv, x, y);
 		}
 	}
 
@@ -326,76 +355,44 @@ class DiamFinder extends Tree{
 		var s=this.lees[l-1], a, v0, para;
 
 		if (s[0]>=100){
-			this.Painter(this.btlist[0][0], 4);
-			this.Painter(this.butts[1], 2);
-			this.Painter(this.dp[1][0], 0);
-			this.Painter(this.dp[1][1], 0);
-			this.butts[1].style.border="1px solid";
-			this.butts[1].style.borderColor="#888888";
+			this.Painter(this.state_data[0][0], 4);
+			this.Painter(this.tree_vertex[1], 2);
+			this.decolor_companion(1);
+			this.tree_vertex[1].style.border="1px solid";
+			this.tree_vertex[1].style.borderColor="#888888";
 			return;
 		}
 
 		a=s[1];
 		v0=this.ij[a];
+		this.decolor_companion(a);
+		if (a!=1 && s[0]!=3) this.decolor_companion(this.par[a]);
 
-		this.Painter(this.dp[a][0], 0);
-		this.Painter(this.dp[a][1], 0);
-
-		if (a!=1 && s[0]!=3){
-			this.Painter(this.dp[this.par[a]][0], 0);
-			this.Painter(this.dp[this.par[a]][1], 0);
-		}
 		if (s[0]==0 || s[0]==1){
-			this.Painter(this.butts[a], 1);
+			this.Painter(this.tree_vertex[a], 1);
 
-			this.Painter(this.btlist[0][this.dep[a]], 1);
-			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 5);
-			this.btlist[0][this.dep[a]].innerHTML=a;
+			this.Painter(this.state_data[0][this.dep[a]], 1);
+			if (this.dep[a]>0) this.Painter(this.state_data[0][this.dep[a]-1], 5);
+			this.state_data[0][this.dep[a]].innerHTML=a;
 
-			this.Painter(this.btlist[a][this.ij[a]], 1);
+			this.Painter(this.state_data[a][this.ij[a]], 1);
 			if (a!=1){
 				var para=this.par[a];
-				this.Painter(this.btlist[para][this.ij[para]-1], 2);
-				this.Painter(this.butts[para], 5);
+				this.Painter(this.state_data[para][this.ij[para]-1], 2);
+				this.Painter(this.tree_vertex[para], 5);
 			}
 		}
 
 		if (s[0]==2){
-			this.Painter(this.btlist[a][this.ij[a]-1], 2);
-			if (this.ij[a]<this.tr[a].length) this.Painter(this.btlist[a][this.ij[a]], 1);	
+			this.Painter(this.state_data[a][this.ij[a]-1], 2);
+			if (this.ij[a]<this.tr[a].length) this.Painter(this.state_data[a][this.ij[a]], 1);	
 		}
 
 		if (s[0]==3){
-			this.Painter(this.butts[a], 2);
-			this.Painter(this.btlist[0][this.dep[a]], 4);
-			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 1);
-
-			if (a!=1) {
-				para=this.par[a];
-				this.Painter(this.butts[para], 1);
-				if (this.dpval[para][0]<this.dpval[a][0]+1){
-					this.dpval[para][1]=this.dpval[para][0];
-					this.dpval[para][0]=this.dpval[a][0]+1;
-					this.Painter(this.dp[para][0], 1);
-				}
-				else if (this.dpval[para][1]<this.dpval[a][0]+1){
-					this.dpval[para][1]=this.dpval[a][0]+1;
-					this.Painter(this.dp[para][1], 1);
-				}
-				this.diams[para].push(this.dpval[para].slice());
-
-				this.dp[para][0].innerHTML=this.dpval[para][0];
-				this.dp[para][1].innerHTML=this.dpval[para][1];
-				if (this.dpval[para][0]+this.dpval[para][1]>this.ans)
-					this.ans=this.dpval[para][0]+this.dpval[para][1];
-				this.ans_snapshot.push(this.ans);
-
-				this.butts[a].style.border="1px solid";
-				this.butts[a].style.borderColor="#888888";
-
-				if (this.ij[para]<this.tr[para].length)
-					this.Painter(this.btlist[para][this.ij[para]], 1);
-			}
+			this.Painter(this.tree_vertex[a], 2);
+			this.Painter(this.state_data[0][this.dep[a]], 4);
+			if (this.dep[a]>0) this.Painter(this.state_data[0][this.dep[a]-1], 1);
+			if (a!=1) this.reformulate_parent(a);
 		}
 	}
 
@@ -407,52 +404,52 @@ class DiamFinder extends Tree{
 		if (a!=1) var para=this.par[a];
 
 		if (s[0]>=100) 	{
-			this.Painter(this.btlist[0][0], 1);
-			this.butts[1].style.border="0px none";
-			this.Painter(this.butts[1], 1);
+			this.Painter(this.state_data[0][0], 1);
+			this.tree_vertex[1].style.border="0px none";
+			this.Painter(this.tree_vertex[1], 1);
 		}
 		if (s[0]==0 || s[0]==1){
 			if (a!=1){
-				this.Painter(this.btlist[para][this.ij[para]-1], 1);
-				this.Painter(this.butts[para], 1);
+				this.Painter(this.state_data[para][this.ij[para]-1], 1);
+				this.Painter(this.tree_vertex[para], 1);
 			}
-			this.Painter(this.btlist[a][this.ij[a]], 0);
-			this.Painter(this.butts[a], 0);
+			this.Painter(this.state_data[a][this.ij[a]], 0);
+			this.Painter(this.tree_vertex[a], 0);
 
-			this.Painter(this.btlist[0][this.dep[a]], 4);
-			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 1);
+			this.Painter(this.state_data[0][this.dep[a]], 4);
+			if (this.dep[a]>0) this.Painter(this.state_data[0][this.dep[a]-1], 1);
 		}
 
 		if (s[0]==2){
-			this.Painter(this.btlist[a][this.ij[a]-1], 1);
-			if (this.ij[a]<this.tr[a].length) this.Painter(this.btlist[a][this.ij[a]], 0);
+			this.Painter(this.state_data[a][this.ij[a]-1], 1);
+			if (this.ij[a]<this.tr[a].length) this.Painter(this.state_data[a][this.ij[a]], 0);
 		}
 
 		if (s[0]==3){
-			this.Painter(this.butts[a], 1);
-			this.Painter(this.btlist[0][this.dep[a]], 1);
-			this.btlist[0][this.dep[a]].innerHTML=a;
+			this.Painter(this.tree_vertex[a], 1);
+			this.Painter(this.state_data[0][this.dep[a]], 1);
+			this.state_data[0][this.dep[a]].innerHTML=a;
 
-			if (this.dep[a]>0) this.Painter(this.btlist[0][this.dep[a]-1], 5);
+			if (this.dep[a]>0) this.Painter(this.state_data[0][this.dep[a]-1], 5);
 
 			if (a!=1) {
 				para=this.par[a];
 				if (this.ij[para]<this.tr[para].length)
-					this.Painter(this.btlist[para][this.ij[para]], 0);
+					this.Painter(this.state_data[para][this.ij[para]], 0);
 
-				this.Painter(this.butts[para], 5);
+				this.Painter(this.tree_vertex[para], 5);
 				this.diams[para].pop();
 				this.ans_snapshot.pop();
 				this.ans=this.ans_snapshot[this.ans_snapshot.length-1];
 
-				this.dpval[para]=this.diams[para][this.diams[para].length-1].slice();
-				this.Painter(this.dp[para][0], 0);
-				this.Painter(this.dp[para][1], 0);
+				this.companion_value[para]=this.diams[para][this.diams[para].length-1].slice();
+				this.Painter(this.companion[para][0], 0);
+				this.Painter(this.companion[para][1], 0);
 
-				this.dp[para][0].innerHTML=this.dpval[para][0];
-				this.dp[para][1].innerHTML=this.dpval[para][1];
+				this.companion[para][0].innerHTML=this.companion_value[para][0];
+				this.companion[para][1].innerHTML=this.companion_value[para][1];
 
-				this.butts[a].style.border="0px none";
+				this.tree_vertex[a].style.border="0px none";
 			}
 		}
 
@@ -460,8 +457,8 @@ class DiamFinder extends Tree{
 			para=this.par[seminal[1]];
 			var old_diam=this.diams[para][this.diams[para].length-2].slice();
 			var new_diam=this.diams[para][this.diams[para].length-1].slice();
-			if (old_diam[0]!=new_diam[0]) this.Painter(this.dp[para][0], 1);
-			else if (old_diam[1]!=new_diam[1]) this.Painter(this.dp[para][1], 1);
+			if (old_diam[0]!=new_diam[0]) this.Painter(this.companion[para][0], 1);
+			else if (old_diam[1]!=new_diam[1]) this.Painter(this.companion[para][1], 1);
 		}
 
 		this.lees.pop();
@@ -485,6 +482,7 @@ class DiamFinder extends Tree{
 		else this.lees.push([1, this.tr[a][v0]]);
 		this.ij[a]+=1;
 	}
+
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
@@ -507,7 +505,7 @@ class DiamFinder extends Tree{
 
 		if (s[0]<=1) strr+=` It wasn't processed yet, so I add this vertex to a stack and move forward iterator of the currently processed vertex.`;
 		if (s[0]==2) strr+=` It's a parent of this vertex, so it's not in a subtree of current vertex - and so, I only move forward iterator of the current vertex.`;
-		if (s[0]==3) strr+=` This vertex does not have any other not processed descendants - so it's considered finished, and it's data is passed to it's parent. Longest path, whose vertex of lowest depth is this vertex has length ${this.dpval[a][0]+this.dpval[a][1]}, and the longest found path up to now was ${this.ans_snapshot[this.ans_snapshot.length-2]} - ${this.ans_snapshot[this.ans_snapshot.length-2]==this.dpval[a][0]+this.dpval[a][1]?`thus, this is the longest path in a tree found up to now`:`therefore, this is not the longest path in a tree`}. Furthermore, the length of longest path starting in this vertex with lenght increased by 1 (because of adding edge going to parent): ${this.dpval[a][0]+1} is passed to a parent of this vertex - ${para}. ${diams[para][diams[para].length-2][1]>=this.dpval[a][0]+1?`Still, it's not greater number than currently 2nd greatest path starting from parent.`:(diams[para][diams[para].length-2][0]<this.dpval[a][0]+1?`This is the longest path starting from parent going onto it's subtree found up to now, so the old longest path is replaced with new longest path, and old 2nd longest path is replaced with old 1st longest path starting from parent`:`This is the 2nd longest path starting from parent going onto it's subtree found up to now, so the old 2nd longest path is replaced with new 2nd longest path`)}. Currently, longest paths starting in it have length ${this.dpval[para][0]} and ${this.dpval[para][1]}.`;
+		if (s[0]==3) strr+=` This vertex does not have any other not processed descendants - so it's considered finished, and it's data is passed to it's parent. Longest path, whose vertex of lowest depth is this vertex has length ${this.companion_value[a][0]+this.companion_value[a][1]}, and the longest found path up to now was ${this.ans_snapshot[this.ans_snapshot.length-2]} - ${this.ans_snapshot[this.ans_snapshot.length-2]==this.companion_value[a][0]+this.companion_value[a][1]?`thus, this is the longest path in a tree found up to now`:`therefore, this is not the longest path in a tree`}. Furthermore, the length of longest path starting in this vertex with lenght increased by 1 (because of adding edge going to parent): ${this.companion_value[a][0]+1} is passed to a parent of this vertex - ${para}. ${diams[para][diams[para].length-2][1]>=this.companion_value[a][0]+1?`Still, it's not greater number than currently 2nd greatest path starting from parent.`:(diams[para][diams[para].length-2][0]<this.companion_value[a][0]+1?`This is the longest path starting from parent going onto it's subtree found up to now, so the old longest path is replaced with new longest path, and old 2nd longest path is replaced with old 1st longest path starting from parent`:`This is the 2nd longest path starting from parent going onto it's subtree found up to now, so the old 2nd longest path is replaced with new 2nd longest path`)}. Currently, longest paths starting in it have length ${this.companion_value[para][0]} and ${this.companion_value[para][1]}.`;
 		if (s[0]==100) strr=`Now stack is empty, algorithm ends, result is ${this.ans}.`;
 		return strr;
 	}
@@ -527,6 +525,121 @@ class DoubleWalk extends DiamFinder{
 	treeConstructor(wid=70){
 		super.treeConstructor(wid);
 		this.newDivCreator(this.place, this.n, 'Inverse Preorder:');
+		this.marked=[3, 7, 2, 5];
+	}
+	
+	
+	//Add data from son to parent
+	reformulate_parent(a){
+		var para=this.par[a];
+		this.Painter(this.tree_vertex[para], 1);
+		if (this.companion_value[a][0]>=0){
+			if (this.companion_value[para][0]<this.companion_value[a][0]+1){
+				this.companion_value[para][1]=this.companion_value[para][0];
+				this.companion_value[para][0]=this.companion_value[a][0]+1;
+				this.companion_value[para][2]=a;
+				this.Painter(this.companion[para][0], 1);
+				this.Painter(this.companion[para][2], 1);
+			}
+			else if (this.companion_value[para][1]<this.companion_value[a][0]+1){
+				this.companion_value[para][1]=this.companion_value[a][0]+1;
+				this.Painter(this.companion[para][1], 1);
+			}
+			this.companion[para][0].innerHTML=this.companion_value[para][0];
+			if (this.companion_value[para][1]>=0) this.companion[para][1].innerHTML=this.companion_value[para][1];
+			this.companion[para][2].innerHTML=this.companion_value[para][2];
+		}
+		this.snapshot[para].push(this.companion_value[para].slice());
+
+		this.tree_vertex[a].style.border="1px solid";
+		this.tree_vertex[a].style.borderColor="#888888";
+
+		if (this.ij[para]<this.tr[para].length)
+			this.Painter(this.state_data[para][this.ij[para]], 1);
+	}
+
+	//Add data from son to parent
+	reformulate_son(a){
+		var para=this.par[a];
+		this.Painter(this.tree_vertex[a], 1);
+
+		if (this.companion_value[para][0]>=0){
+			if (this.companion_value[para][2]!=a){
+				this.companion_value[a][1]=this.companion_value[a][0];
+				this.companion_value[a][0]=this.companion_value[para][0]+1;
+				this.companion_value[a][2]=para;
+				this.Painter(this.companion[a][0], 1);
+				this.Painter(this.companion[a][2], 1);
+			}
+			else if (this.companion_value[para][1]+1>this.companion_value[a][0]){
+				this.companion_value[a][1]=this.companion_value[a][0];
+				this.companion_value[a][0]=this.companion_value[para][1]+1;
+				this.companion_value[a][2]=para;
+				this.Painter(this.companion[a][0], 1);
+				this.Painter(this.companion[a][2], 1);
+			}
+			else if (this.companion_value[para][1]+1>this.companion_value[a][1]){
+				this.companion_value[a][1]=this.companion_value[para][1]+1;
+				this.Painter(this.companion[a][1], 1);
+			}
+			this.companion[a][0].innerHTML=this.companion_value[a][0];
+			if (this.companion_value[a][1]>=0) this.companion[a][1].innerHTML=this.companion_value[a][1];
+			this.companion[a][2].innerHTML=this.companion_value[a][2];
+		}
+		this.snapshot[a].push(this.companion_value[a].slice());
+
+		this.tree_vertex[a].style.border="1px solid";
+		this.tree_vertex[a].style.borderColor="#888888";
+
+		if (this.ij[para]<this.tr[para].length)
+			this.Painter(this.state_data[para][this.ij[para]], 1);
+	}
+
+
+	companionize_buttonize(place, x, y){
+		var valar, valar2, valar3;
+		valar=this.betterButtCreator("-&infin;");
+		valar2=this.betterButtCreator("-&infin;");
+		valar3=this.betterButtCreator(-1);
+
+		this.buttPositioner(valar, x, y, 1, 1);
+		this.buttPositioner(valar2, x, y, 2, 1);
+		this.buttPositioner(valar3, x, y, 1, 2);
+
+		this.companion.push([valar, valar2, valar3]);
+		this.companion_value.push([-1000000000, -1000000000, -1]);
+
+		this.treeDiv.appendChild(valar);
+		this.treeDiv.appendChild(valar2);
+		this.treeDiv.appendChild(valar3);
+	}
+
+	decolor_companion(a){
+		this.Painter(this.companion[a][0], 0);
+		this.Painter(this.companion[a][1], 0);
+		this.Painter(this.companion[a][2], 0);
+	}
+
+	BeginningExecutor(){
+		super.BeginningExecutor();
+		this.inverse_preorder=[];
+		this.preorder=[];
+		this.snapshot=[];
+		var a;
+		for (var i=0;i<this.marked.length;i++){
+			this.preorder.push(0);
+			a=this.marked[i];
+			this.companion[a][0].innerHTML=0;
+			this.companion[a][2].innerHTML=a;
+			this.companion_value[a][0]=0;
+			this.companion_value[a][2]=a;
+			this.snapshot.push([]);
+		}
+		for (var i=0; i<=this.n; i++){
+			this.preorder.push(0);
+			this.snapshot.push([]);
+		}
+		this.snapshot.push([]);
 	}
 
 	newDivCreator(local, n, name){
@@ -548,16 +661,29 @@ class DoubleWalk extends DiamFinder{
 		inv_pre[0].style.width="200px";
 		local.appendChild(inv_pre_full);
 
-		this.inv_pre_butts=[];
+		this.inv_pre_tree_vertex=[];
 		for (j=1;j<=n;j++){
 			btn=this.buttCreator(0);
 			btn.style.borderRadius="0%";
 			this.Painter(btn, 4);
 			
-			this.inv_pre_butts.push(btn)
+			this.inv_pre_tree_vertex.push(btn)
 			inv_pre[1].appendChild(btn)
 		}
 		this.last_inv_pre=0;
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], v0, a, para;
+		if (s[0]==100) return;
+
+		a=s[1], para=this.par[a];
+		v0=this.ij[para];
+		if (s[0]==3 && para==1 && v0>=this.tr[para].length) this.lees.push([4, this.inverse_preorder[1]]);
+		else if (s[0]==4 && this.preorder[a]+1 < this.n) this.lees.push([4, this.inverse_preorder[this.preorder[a]+1]]);
+		else if (s[0]==4) this.lees.push([100]);
+		else super.NextState();
 	}
 
 	StateMaker(){
@@ -565,17 +691,31 @@ class DoubleWalk extends DiamFinder{
 		var l=this.lees.length;
 		var s=this.lees[l-1], seminal=this.lees[l-2], a, v0, para;
 
-		if (this.last_inv_pre>0){
-			this.Painter(this.inv_pre_butts[this.last_inv_pre-1], 0);
+		if (this.last_inv_pre>0)
+			this.Painter(this.inv_pre_tree_vertex[this.last_inv_pre-1], 0);
+
+		if (s[0]>=100){
+			this.Painter(this.inv_pre_tree_vertex[this.last_inv_pre-1], 2);
+			return;
 		}
-		if (s[0]>=100) return;
 		a=s[1];
+
 		if (s[0]==0 || s[0]==1){
-			this.Painter(this.inv_pre_butts[this.last_inv_pre], 1);
-			this.inv_pre_butts[this.last_inv_pre].innerHTML=a;
+			this.Painter(this.inv_pre_tree_vertex[this.last_inv_pre], 1);
+			this.inv_pre_tree_vertex[this.last_inv_pre].innerHTML=a;
+			this.inverse_preorder.push(a);
+			this.preorder[a]=this.last_inv_pre;
 			this.last_inv_pre++;
 		}
+
+		if (s[0]==4){
+			this.Painter(this.inv_pre_tree_vertex[this.preorder[a]-1], 2);
+			this.Painter(this.inv_pre_tree_vertex[this.preorder[a]], 1);
+			this.reformulate_son(a);
+		}
 	}
+
+	StatementComprehension(){}
 
 	StateUnmaker(){
 		var l=this.lees.length;
@@ -584,12 +724,23 @@ class DoubleWalk extends DiamFinder{
 
 		if (s[0]==0 || s[0]==1){
 			this.last_inv_pre--;
-			this.Painter(this.inv_pre_butts[this.last_inv_pre], 4);
+			this.Painter(this.inv_pre_tree_vertex[this.last_inv_pre], 4);
 		}
 		if (seminal[0]==0 || seminal[0]==1){
-			this.Painter(this.inv_pre_butts[this.last_inv_pre-1], 1);
+			this.Painter(this.inv_pre_tree_vertex[this.last_inv_pre-1], 1);
 		}
-		super.StateUnmaker();
+
+
+		if (s[0]==4){
+			this.Painter(this.inv_pre_tree_vertex[this.preorder[a]-1], 1);
+			this.Painter(this.inv_pre_tree_vertex[this.preorder[a]], 0);
+			for (var j=0; j<3; j++) {
+				this.companion_value[a][j]=this.snapshot[a][this.snapshot[a].length-1][j];
+				this.companion[a][j].innerHTML=this.companion_value[a][j];
+			}
+		}
+
+		super.StateUnmaker(false);
 	}
 }
 
