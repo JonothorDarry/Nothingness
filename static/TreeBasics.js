@@ -33,9 +33,8 @@ class Tree extends Algorithm{
 		this.tr=[];
 		this.width=width/100;
 
-		edges=this.getTreeFromInput();
-		//this.dissolved_input=this.dissolve_input(this.input.value);
-		//edges=this.get_tree_from_input(this.dissolved_input);
+		this.dissolved_input=this.dissolve_input(this.input.value);
+		edges=this.get_tree_from_input(this.dissolved_input);
 		n=this.n;
 
 		this.tree_vertex=[];
@@ -182,28 +181,10 @@ class Tree extends Algorithm{
 		return [par, sysdep];
 	}
 
-	getTreeFromInput(){
-		var fas=this.input.value;
-		var dis, c=this.getInput(0, fas), a, b, edges=[], n, i=0;
-		n=c[0];
-		this.n=n;
-		dis=c[1];
-
-		for (i=1;i<n;i++){
-			c=this.getInput(dis+1, fas);
-			a=c[0];
-			c=this.getInput(c[1]+1, fas);
-			b=c[0];
-			edges.push([a, b]);
-			dis=c[1];
-		}
-		return edges;
-	}
-
 	get_tree_from_input(){
-		var str=this.dissolved_input;
+		var str=this.dissolved_input, edges=[];
 		var n=str.get_next();
-		console.log(n);
+		this.n=n;
 		for (var i=1; i<n; i++){
 			edges.push([str.get_next(), str.get_next()]);
 		}
@@ -415,7 +396,6 @@ class DiamFinder extends Tree{
 
 
 	StateUnmaker(){
-		//console.log(this.ij[1]);
 		var l=this.lees.length;
 		var s=this.lees[l-1], seminal=this.lees[l-2], a, para;
 		a=s[1];
@@ -482,14 +462,12 @@ class DiamFinder extends Tree{
 		a=seminal[1];
 		if (seminal[0]==3) a=this.par[seminal[1]];
 		if (seminal[0]!=4) this.ij[a]-=1;
-		//console.log("Form ", a, seminal[0]);
 	}
 
 
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], a, v0;
-		//console.log("Holocaust ", this.ij[1], s[0]);
 		if (s[0]==100) return;
 		a=s[1];
 		if (s[0]==3) a=this.par[a];
@@ -544,7 +522,10 @@ class DoubleWalk extends DiamFinder{
 	treeConstructor(wid=70){
 		super.treeConstructor(wid);
 		this.newDivCreator(this.place, this.n, 'Inverse Preorder:');
-		this.marked=[3, 7, 2, 5];
+		var m=this.dissolved_input.get_next();
+		this.marked=[];
+		for (var i=0; i<m; i++) this.marked.push(this.dissolved_input.get_next());
+		//this.marked=[3, 7, 2, 5];
 	}
 	
 	

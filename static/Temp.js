@@ -80,6 +80,23 @@ class Algorithm{
 		return [a, i];
 	}
 
+	dissolve_input(str){
+		var lst=[], j=0, i=0, x, a=0;
+		lst.iter=-1;
+		lst.get_next=function(){this.iter+=1; return this[this.iter];}
+		while (j<str.length){
+			for (;i<str.length;i++){
+				x=str.charCodeAt(i);
+				if (x<58 && x>=48) a=a*10+x-48;
+				else break;
+			}
+			if (j!=i) lst.push(a);
+			else i++;
+			j=i, a=0;
+		}
+		return lst;	
+	}
+
 	static ObjectParser(v){
 		var dick={
 			'primePlace':v.getElementsByClassName('primez')[0],
