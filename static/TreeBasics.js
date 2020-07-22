@@ -34,6 +34,8 @@ class Tree extends Algorithm{
 		this.width=width/100;
 
 		edges=this.getTreeFromInput();
+		//this.dissolved_input=this.dissolve_input(this.input.value);
+		//edges=this.get_tree_from_input(this.dissolved_input);
 		n=this.n;
 
 		this.tree_vertex=[];
@@ -195,9 +197,19 @@ class Tree extends Algorithm{
 			edges.push([a, b]);
 			dis=c[1];
 		}
-
 		return edges;
 	}
+
+	get_tree_from_input(){
+		var str=this.dissolved_input;
+		var n=str.get_next();
+		console.log(n);
+		for (var i=1; i<n; i++){
+			edges.push([str.get_next(), str.get_next()]);
+		}
+		return edges;
+
+	};
 	
 	
 	//Creates buttons
@@ -235,6 +247,7 @@ class Tree extends Algorithm{
 		else if (col==5) btn.style.backgroundColor="#000000";
 	}
 
+	//Tworzenie jakiegoś zestawu (jak binaryExpo) po prawej
 	divCreator(tree, namez, local, depth){
 		var divs=[], zdivs=[], i, j;
 		var btn;
@@ -255,14 +268,15 @@ class Tree extends Algorithm{
 
 			local.appendChild(divs[i]);
 
+			//Tworzenie buttonów z prawej: 0 - stos, 1-n: ijs
 			for (j=0;j<(i==0?depth:tree[i].length);j++){
 				if (i>0) btn=this.buttCreator(tree[i][j]);
 				else btn=this.buttCreator(0);
 				btn.style.borderRadius="0%";
 				if (i==0) this.Painter(btn, 4);
 				
-				this.state_data[i].push(btn)
-				zdivs[i][1].appendChild(btn)
+				this.state_data[i].push(btn);
+				zdivs[i][1].appendChild(btn);
 			}
 		}
 		this.divs=divs;
@@ -289,10 +303,16 @@ class DiamFinder extends Tree{
 		this.buttPositioner(valar2, x, y, 2, 1);
 		this.companion.push([valar, valar2]);
 		this.companion_value.push([0, 0]);
+		this.snapshot.push([[0, 0]]);
+
 		this.treeDiv.appendChild(valar);
 		this.treeDiv.appendChild(valar2);
 	}
 
+	//Just change companion according to current values
+	reformulate_companion(a){
+		for (var j=0;j<2;j++) this.companion[a][j].innerHTML=this.companion_value[a][j];
+	}
 	//Add data from son to parent
 	reformulate_parent(a){
 		var para=this.par[a];
@@ -306,10 +326,9 @@ class DiamFinder extends Tree{
 			this.companion_value[para][1]=this.companion_value[a][0]+1;
 			this.Painter(this.companion[para][1], 1);
 		}
-		this.diams[para].push(this.companion_value[para].slice());
+		this.snapshot[para].push(this.companion_value[para].slice());
+		this.reformulate_companion(para);
 
-		this.companion[para][0].innerHTML=this.companion_value[para][0];
-		this.companion[para][1].innerHTML=this.companion_value[para][1];
 		if (this.companion_value[para][0]+this.companion_value[para][1]>this.ans)
 			this.ans=this.companion_value[para][0]+this.companion_value[para][1];
 		this.ans_snapshot.push(this.ans);
@@ -338,11 +357,10 @@ class DiamFinder extends Tree{
 		this.ij=[0];
 		this.companion=[0];
 		this.companion_value=[0];
-		this.diams=[0];
+		this.snapshot=[0];
 
 		for (var i=1;i<=this.n;i++){
 			this.ij.push(0);
-			this.diams.push([[0, 0]]);
 
 			y=this.buttData[i].top;
 			x=this.buttData[i].left
@@ -352,7 +370,7 @@ class DiamFinder extends Tree{
 
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], a, v0, para;
+		var s=this.lees[l-1], a, para;
 
 		if (s[0]>=100){
 			this.Painter(this.state_data[0][0], 4);
@@ -364,7 +382,6 @@ class DiamFinder extends Tree{
 		}
 
 		a=s[1];
-		v0=this.ij[a];
 		this.decolor_companion(a);
 		if (a!=1 && s[0]!=3) this.decolor_companion(this.par[a]);
 
@@ -396,9 +413,11 @@ class DiamFinder extends Tree{
 		}
 	}
 
+
 	StateUnmaker(){
+		//console.log(this.ij[1]);
 		var l=this.lees.length;
-		var s=this.lees[l-1], seminal=this.lees[l-2], a, v0, para;
+		var s=this.lees[l-1], seminal=this.lees[l-2], a, para;
 		a=s[1];
 
 		if (a!=1) var para=this.par[a];
@@ -438,25 +457,23 @@ class DiamFinder extends Tree{
 					this.Painter(this.state_data[para][this.ij[para]], 0);
 
 				this.Painter(this.tree_vertex[para], 5);
-				this.diams[para].pop();
+				this.snapshot[para].pop();
 				this.ans_snapshot.pop();
 				this.ans=this.ans_snapshot[this.ans_snapshot.length-1];
 
-				this.companion_value[para]=this.diams[para][this.diams[para].length-1].slice();
+				this.companion_value[para]=this.snapshot[para][this.snapshot[para].length-1].slice();
 				this.Painter(this.companion[para][0], 0);
 				this.Painter(this.companion[para][1], 0);
 
-				this.companion[para][0].innerHTML=this.companion_value[para][0];
-				this.companion[para][1].innerHTML=this.companion_value[para][1];
-
+				this.reformulate_companion(para);
 				this.tree_vertex[a].style.border="0px none";
 			}
 		}
 
 		if (seminal[0]==3){
 			para=this.par[seminal[1]];
-			var old_diam=this.diams[para][this.diams[para].length-2].slice();
-			var new_diam=this.diams[para][this.diams[para].length-1].slice();
+			var old_diam=this.snapshot[para][this.snapshot[para].length-2].slice();
+			var new_diam=this.snapshot[para][this.snapshot[para].length-1].slice();
 			if (old_diam[0]!=new_diam[0]) this.Painter(this.companion[para][0], 1);
 			else if (old_diam[1]!=new_diam[1]) this.Painter(this.companion[para][1], 1);
 		}
@@ -464,13 +481,15 @@ class DiamFinder extends Tree{
 		this.lees.pop();
 		a=seminal[1];
 		if (seminal[0]==3) a=this.par[seminal[1]];
-		this.ij[a]-=1;
+		if (seminal[0]!=4) this.ij[a]-=1;
+		//console.log("Form ", a, seminal[0]);
 	}
 
 
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], a, v0;
+		//console.log("Holocaust ", this.ij[1], s[0]);
 		if (s[0]==100) return;
 		a=s[1];
 		if (s[0]==3) a=this.par[a];
@@ -486,7 +505,7 @@ class DiamFinder extends Tree{
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
-		var diams=this.diams;
+		var snapshot=this.snapshot;
 		if (l>1) var prev=this.lees[l-2];
 
 		var a=0;
@@ -505,7 +524,7 @@ class DiamFinder extends Tree{
 
 		if (s[0]<=1) strr+=` It wasn't processed yet, so I add this vertex to a stack and move forward iterator of the currently processed vertex.`;
 		if (s[0]==2) strr+=` It's a parent of this vertex, so it's not in a subtree of current vertex - and so, I only move forward iterator of the current vertex.`;
-		if (s[0]==3) strr+=` This vertex does not have any other not processed descendants - so it's considered finished, and it's data is passed to it's parent. Longest path, whose vertex of lowest depth is this vertex has length ${this.companion_value[a][0]+this.companion_value[a][1]}, and the longest found path up to now was ${this.ans_snapshot[this.ans_snapshot.length-2]} - ${this.ans_snapshot[this.ans_snapshot.length-2]==this.companion_value[a][0]+this.companion_value[a][1]?`thus, this is the longest path in a tree found up to now`:`therefore, this is not the longest path in a tree`}. Furthermore, the length of longest path starting in this vertex with lenght increased by 1 (because of adding edge going to parent): ${this.companion_value[a][0]+1} is passed to a parent of this vertex - ${para}. ${diams[para][diams[para].length-2][1]>=this.companion_value[a][0]+1?`Still, it's not greater number than currently 2nd greatest path starting from parent.`:(diams[para][diams[para].length-2][0]<this.companion_value[a][0]+1?`This is the longest path starting from parent going onto it's subtree found up to now, so the old longest path is replaced with new longest path, and old 2nd longest path is replaced with old 1st longest path starting from parent`:`This is the 2nd longest path starting from parent going onto it's subtree found up to now, so the old 2nd longest path is replaced with new 2nd longest path`)}. Currently, longest paths starting in it have length ${this.companion_value[para][0]} and ${this.companion_value[para][1]}.`;
+		if (s[0]==3) strr+=` This vertex does not have any other not processed descendants - so it's considered finished, and it's data is passed to it's parent. Longest path, whose vertex of lowest depth is this vertex has length ${this.companion_value[a][0]+this.companion_value[a][1]}, and the longest found path up to now was ${this.ans_snapshot[this.ans_snapshot.length-2]} - ${this.ans_snapshot[this.ans_snapshot.length-2]==this.companion_value[a][0]+this.companion_value[a][1]?`thus, this is the longest path in a tree found up to now`:`therefore, this is not the longest path in a tree`}. Furthermore, the length of longest path starting in this vertex with lenght increased by 1 (because of adding edge going to parent): ${this.companion_value[a][0]+1} is passed to a parent of this vertex - ${para}. ${snapshot[para][snapshot[para].length-2][1]>=this.companion_value[a][0]+1?`Still, it's not greater number than currently 2nd greatest path starting from parent.`:(snapshot[para][snapshot[para].length-2][0]<this.companion_value[a][0]+1?`This is the longest path starting from parent going onto it's subtree found up to now, so the old longest path is replaced with new longest path, and old 2nd longest path is replaced with old 1st longest path starting from parent`:`This is the 2nd longest path starting from parent going onto it's subtree found up to now, so the old 2nd longest path is replaced with new 2nd longest path`)}. Currently, longest paths starting in it have length ${this.companion_value[para][0]} and ${this.companion_value[para][1]}.`;
 		if (s[0]==100) strr=`Now stack is empty, algorithm ends, result is ${this.ans}.`;
 		return strr;
 	}
@@ -529,6 +548,12 @@ class DoubleWalk extends DiamFinder{
 	}
 	
 	
+	reformulate_companion(a){
+		for (var j=0;j<3;j++){
+			if (this.companion_value[a][j]>=-1) this.companion[a][j].innerHTML=this.companion_value[a][j];
+			else this.companion[a][j].innerHTML="-&infin;";
+		}
+	}
 	//Add data from son to parent
 	reformulate_parent(a){
 		var para=this.par[a];
@@ -545,9 +570,7 @@ class DoubleWalk extends DiamFinder{
 				this.companion_value[para][1]=this.companion_value[a][0]+1;
 				this.Painter(this.companion[para][1], 1);
 			}
-			this.companion[para][0].innerHTML=this.companion_value[para][0];
-			if (this.companion_value[para][1]>=0) this.companion[para][1].innerHTML=this.companion_value[para][1];
-			this.companion[para][2].innerHTML=this.companion_value[para][2];
+			this.reformulate_companion(para);
 		}
 		this.snapshot[para].push(this.companion_value[para].slice());
 
@@ -582,9 +605,7 @@ class DoubleWalk extends DiamFinder{
 				this.companion_value[a][1]=this.companion_value[para][1]+1;
 				this.Painter(this.companion[a][1], 1);
 			}
-			this.companion[a][0].innerHTML=this.companion_value[a][0];
-			if (this.companion_value[a][1]>=0) this.companion[a][1].innerHTML=this.companion_value[a][1];
-			this.companion[a][2].innerHTML=this.companion_value[a][2];
+			this.reformulate_companion(a);
 		}
 		this.snapshot[a].push(this.companion_value[a].slice());
 
@@ -608,6 +629,7 @@ class DoubleWalk extends DiamFinder{
 
 		this.companion.push([valar, valar2, valar3]);
 		this.companion_value.push([-1000000000, -1000000000, -1]);
+		this.snapshot.push([[-1000000000, -1000000000, -1]]);
 
 		this.treeDiv.appendChild(valar);
 		this.treeDiv.appendChild(valar2);
@@ -624,22 +646,17 @@ class DoubleWalk extends DiamFinder{
 		super.BeginningExecutor();
 		this.inverse_preorder=[];
 		this.preorder=[];
-		this.snapshot=[];
 		var a;
 		for (var i=0;i<this.marked.length;i++){
 			this.preorder.push(0);
 			a=this.marked[i];
-			this.companion[a][0].innerHTML=0;
-			this.companion[a][2].innerHTML=a;
+
+			this.snapshot[a].push([0, -1000000000, a]);
 			this.companion_value[a][0]=0;
 			this.companion_value[a][2]=a;
-			this.snapshot.push([]);
+			this.reformulate_companion(a);
 		}
-		for (var i=0; i<=this.n; i++){
-			this.preorder.push(0);
-			this.snapshot.push([]);
-		}
-		this.snapshot.push([]);
+		for (var i=0; i<=this.n; i++)	this.preorder.push(0);
 	}
 
 	newDivCreator(local, n, name){
@@ -680,7 +697,7 @@ class DoubleWalk extends DiamFinder{
 
 		a=s[1], para=this.par[a];
 		v0=this.ij[para];
-		if (s[0]==3 && para==1 && v0>=this.tr[para].length) this.lees.push([4, this.inverse_preorder[1]]);
+		if (s[0]==3 && para==1 && v0>=this.tr[para].length) this.lees.push([4, this.inverse_preorder[1]]), this.ij[para]+=1;
 		else if (s[0]==4 && this.preorder[a]+1 < this.n) this.lees.push([4, this.inverse_preorder[this.preorder[a]+1]]);
 		else if (s[0]==4) this.lees.push([100]);
 		else super.NextState();
@@ -734,13 +751,13 @@ class DoubleWalk extends DiamFinder{
 		if (s[0]==4){
 			this.Painter(this.inv_pre_tree_vertex[this.preorder[a]-1], 1);
 			this.Painter(this.inv_pre_tree_vertex[this.preorder[a]], 0);
-			for (var j=0; j<3; j++) {
-				this.companion_value[a][j]=this.snapshot[a][this.snapshot[a].length-1][j];
-				this.companion[a][j].innerHTML=this.companion_value[a][j];
-			}
+
+			this.snapshot[a].pop();
+			this.companion_value[a]=this.snapshot[a][this.snapshot[a].length-1].slice();
+			this.reformulate_companion(a);
 		}
 
-		super.StateUnmaker(false);
+		super.StateUnmaker();
 	}
 }
 
