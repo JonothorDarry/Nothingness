@@ -16,7 +16,7 @@
 
 		<h3>First Problem statement and definitions</h3>
 		<p id="Theory">
-			Let's say \(q\) queries \((q \le 1000000)\) are given: Is given number \(a_i (1 \le a_i \le 1000000)\) a prime? To solve this problem, first let's define prime number: a number \(k \in N^+\) is prime, if and only if<br><br>
+			Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime? To solve this problem, first let's define prime number: a number \(k \in N^+\) is prime, if and only if<br><br>
 			<span class="central">\(k \in P \iff \exists ! _{x \in N^+\backslash\{1\}} k \equiv 0\ (mod\ x)\)<br><br></span>
 			where \(N^+\) is set of natural numbers excluding \(0\), \(P\) is set of primes. In other words, \(k\) needs to have exactly \(1\) natural divisor different than one - itself. A number \(k\) is divisible by \(m\) (or \(m\) is a divisor of \(k\)), if and only if:<br><br>
 			<span class="central">\(m|k \iff \exists_{x \in N^+} mx=k\)</span><br>
@@ -117,7 +117,7 @@
 		</p>
 			<h3>Complexity proof #2</h3>
 			<p>
-				But there is also simpler proof with assumtion, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
+				But there is also simpler proof with assumption, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
 			<br><br>
 			<span class="central">(I) If \(x\) can be shown as 
 				\(
