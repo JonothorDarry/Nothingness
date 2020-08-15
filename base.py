@@ -16,6 +16,7 @@ class transformation:
             'sieve':'ErastotenesSieve',
             'gcd':'EuclidAlgo',
             'crt':'ChineseTheorem',
+            'divisors':'Divisors',
             'binex':'BinExpo',
             'totient':'Totient',
             'treewalk':'TreeBasic',
@@ -32,6 +33,7 @@ class transformation:
             'NumberTheory/BinaryExpo.html':'Binary_Exponentation',
             'NumberTheory/Primes.html':'Erastotenes_Sieve',
             'NumberTheory/Gcd.html':'Greatest_Common_Divisor',
+            'NumberTheory/Divisors.html':'Divisors',
             'NumberTheory/Totient.html':'Totient_function',
             'Trees/TreeBasics.html':'Tree_Walk',
     }
@@ -42,6 +44,7 @@ class transformation:
             'Erastotenes Sieve':'sieve',
             'Greatest Common Divisor':'gcd',
             'Totient function':'totient',
+            'Divisors':'divisors',
             'Tree Walk':'treewalk',
             'index':'index',
     }
@@ -51,6 +54,7 @@ class transformation:
             'Binary Exponentation':'NumberTheory/BinaryExpo.html',
             'Erastotenes Sieve':'NumberTheory/Primes.html',
             'Greatest Common Divisor':'NumberTheory/Gcd.html',
+            'Divisors':'NumberTheory/Divisors.html',
             'Totient function':'NumberTheory/Totient.html',
             'Tree Walk':'Trees/TreeBasics.html',
     }
@@ -60,6 +64,7 @@ class transformation:
             'NumberTheory/BinaryExpo.html':'binex',
             'NumberTheory/Primes.html':'sieve',
             'NumberTheory/Gcd.html':'gcd',
+            'NumberTheory/Divisors.html':'divisors',
             'NumberTheory/Totient.html':'totient',
             'Trees/TreeBasics.html':'treewalk', 
     }
@@ -239,6 +244,10 @@ def BinExpo():
 @app.route('/treewalk', methods=['GET', 'POST'])
 def TreeBasic():
     return Router('Trees/TreeBasics.html')
+
+@app.route('/divisors', methods=['GET', 'POST'])
+def Divisors():
+    return Router('NumberTheory/Divisors.html')
 
 @app.route('/logger/<login>')
 def logChecker(login):

@@ -30,7 +30,7 @@
 		Let's create arrays \(a_i\) and \(b_i\) such that \(a_0=w\), \(b_0=v\). One can define these arrays for \(i &gt; 0\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\ mod\ b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
 
 		</p>
-		<div id="Algo1">
+		<div id="Algo1" class="pureAlgo">
 			<h2>Euclidean algorithm</h2>
 			<p>Input format: Two numbers \(w, v\), specifying values, for which \(gcd(w,v)\) has to be calculated.<br>
 			\(w, v\)
@@ -87,7 +87,7 @@
 				\(b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z(p_iw + q_iv)= w(p_{i-1} - zp_i)+ v(q_{i-1} - zq_i)\)</span>
 			And so, \(p_{i+1}=p_{i-1}-zp_i\) and \(q_{i+1}=q_{i-1}-zq_i\)
 		</p>
-		<div id="Algo2">
+		<div id="Algo2" class="pureAlgo">
 			<h2>Extended Euclidean Algorithm</h2>
 			<p>Input format: Two numbers \(w, v\), specifying values, for which extended euclid algorithm will be run.<br>
 			\(w, v\)

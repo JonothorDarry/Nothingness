@@ -33,10 +33,10 @@
 		</p><br>
 
 		<h3>Third Solution - sieve</h3>
-		<p id="sol3">However, problem can be solved with preprocessing and answering query in O(1) by creating array p[1000000], taking subsequent prime numbers starting from 2 and marking all numbers divisible by it as non-primes; then going to the next prime number (3), repeat procedure, and so on, as on animation:
+		<p id="sol3">However, problem can be solved with preprocessing and answering query in O(1) by creating array of all elements, initially marked as primes, then taking subsequent prime numbers (the lowest marked as prime number) starting from 2 and marking all numbers divisible by it except itself as non-primes; then going to the next prime number (3), repeat procedure, and so on, as on animation:
 		</p>
 		
-		<div id="Algo1">
+		<div id="Algo1" class="pureAlgo">
 			<h2>Sieve</h2>
 			<p>Input format: One number \(n\) is the size of the sieve.<br>
 			\(n\)
@@ -114,6 +114,7 @@
 				\)
 			</span>
 			<br>
+			Furthermore, the second inequality in this proof also shows, that sum of number of divisors over all numbers in a range \(&lt;1; n&gt;\) can be estimated by \(O(n*logn)\) - because every divisor \(d\) has at most \(\lfloor \frac{n}{d} \rfloor\) numbers divisible by it, and this sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*logn)\).
 		</p>
 			<h3>Complexity proof #2</h3>
 			<p>
@@ -166,12 +167,12 @@
 				
 			<h3>Second problem</h3>
 			<p id="ZwieteProbleme">
-				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(n\ (n\le1000000)\) numbers \(a_i (1 \le a_i \le 1000000)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). Such representation is unique for each number. If You'll mark each number with it's lowest divisor (instead of sole information whether it's prime) then You'll be able to solve this problem in the same way as above, in complexity \(O(nlog(n)+qlog(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)
+				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(n\ (n\le10^6)\) numbers \(a_i (1 \le a_i \le 10^6)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). Such representation is unique for each number. If You'll mark each number with it's lowest divisor (instead of sole information whether it's prime) then You'll be able to solve this problem in the same way as above, in complexity \(O(nlog(n)+qlog(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)
 
 		</p>
 		
 		<br><br>
-		<div id="Algo2" style="position:sticky">
+		<div id="Algo2" class="pureAlgo" style="position:sticky">
 			<div id="sieveSection">
 				<h2>Enchanced Sieve</h2>
 				<p>Input format: One number \(n\) is the maximal number, for which a minimal divisor has to be found:<br>

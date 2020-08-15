@@ -80,7 +80,7 @@
 		<h3>Sieve algorithm for finding totient</h3>
 		<p>To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve</p>
 
-		<div id="Algo1">
+		<div id="Algo1" class="pureAlgo">
 			<h2>Totient calculation</h2>
 			<p>Input format: One number \(n\) is the size of the sieve used to find totients.<br>
 			\(n\)
@@ -194,7 +194,7 @@
 			</ol>
 		</p>
 
-		<div id="Algo2">
+		<div id="Algo2" class="pureAlgo">
 			<h2>Power Tower</h2>
 			<div id="Inputter2">
 				<p>Input format: values \(n, m\), and then \(n\) values \(a_i\), such that an expression \(a_1^{(a_2^{(\dots a^n)})} \pmod m\) is evaluated.<br>
