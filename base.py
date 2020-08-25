@@ -19,6 +19,10 @@ class transformation:
             'divisors':'Divisors',
             'binex':'BinExpo',
             'totient':'Totient',
+            'proot':'PrimeRoot',
+            'dlog':'DiscreteLog',
+            'ntt':'NumberTransform',
+
             'treewalk':'TreeBasic',
             'index':'Wisdom',
             'signup':'Signer',
@@ -35,6 +39,10 @@ class transformation:
             'NumberTheory/Gcd.html':'Greatest_Common_Divisor',
             'NumberTheory/Divisors.html':'Divisors',
             'NumberTheory/Totient.html':'Totient_function',
+            'NumberTheory/Proot.html':'Primitive_Root',
+            'NumberTheory/Discrete.html':'Discrete_Logarithm_and_Root',
+            'NumberTheory/Ntt.html':'Number_Theoretic_Transform',
+
             'Trees/TreeBasics.html':'Tree_Walk',
     }
 
@@ -45,6 +53,10 @@ class transformation:
             'Greatest Common Divisor':'gcd',
             'Totient function':'totient',
             'Divisors':'divisors',
+            'Primitive Root':'proot',
+            'Discrete Logarithm and Root':'dlog',
+            'Number Theoretic Transform':'ntt',
+
             'Tree Walk':'treewalk',
             'index':'index',
     }
@@ -56,6 +68,10 @@ class transformation:
             'Greatest Common Divisor':'NumberTheory/Gcd.html',
             'Divisors':'NumberTheory/Divisors.html',
             'Totient function':'NumberTheory/Totient.html',
+            'Primitive Root':'NumberTheory/Proot.html',
+            'Discrete Logarithm and Root':'NumberTheory/Discrete.html',
+            'Number Theoretic Transform':'NumberTheory/Ntt.html',
+
             'Tree Walk':'Trees/TreeBasics.html',
     }
     
@@ -66,6 +82,10 @@ class transformation:
             'NumberTheory/Gcd.html':'gcd',
             'NumberTheory/Divisors.html':'divisors',
             'NumberTheory/Totient.html':'totient',
+            'NumberTheory/Proot.html':'proot',
+            'NumberTheory/Discrete.html':'dlog',
+            'NumberTheory/Ntt.html':'ntt',
+
             'Trees/TreeBasics.html':'treewalk', 
     }
 
@@ -241,13 +261,26 @@ def Totient():
 def BinExpo():
     return Router('NumberTheory/BinaryExpo.html')
 
+@app.route('/divisors', methods=['GET', 'POST'])
+def Divisors():
+    return Router('NumberTheory/Divisors.html')
+
+@app.route('/proot', methods=['GET', 'POST'])
+def PrimeRoot():
+    return Router('NumberTheory/Proot.html')
+
+@app.route('/dlog', methods=['GET', 'POST'])
+def DiscreteLog():
+    return Router('NumberTheory/Discrete.html')
+
+@app.route('/ntt', methods=['GET', 'POST'])
+def NumberTransform():
+    return Router('NumberTheory/Ntt.html')
+
 @app.route('/treewalk', methods=['GET', 'POST'])
 def TreeBasic():
     return Router('Trees/TreeBasics.html')
 
-@app.route('/divisors', methods=['GET', 'POST'])
-def Divisors():
-    return Router('NumberTheory/Divisors.html')
 
 @app.route('/logger/<login>')
 def logChecker(login):
