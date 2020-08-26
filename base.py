@@ -7,6 +7,7 @@ import re
 import random
 import string
 import os
+from math import log
 
 app=Flask(__name__)
 
@@ -442,8 +443,18 @@ def AuthReseter(auth_value):
 def jinjautils():
     def jipow(a, b):
         return pow(a, b)
+    def jilog(a):
+        return log(a)
+    def ji_formatter(a, numb=4):
+        return f'{a:.{numb}f}'
+    def ji_expo(a):
+        if len(str(a))<5:
+            return str(a), -1
+        sa=str(a)
+        return f'{sa[0]}.{sa[1]}*10', len(sa)-1
+
     topics=[x for x in transformation.inverse_place_mapper if ord(x[0])<92]
-    return dict(jipow=jipow, topics=topics)
+    return dict(jipow=jipow, jilog=jilog, ji_expo=ji_expo, ji_formatter=ji_formatter, topics=topics)
 
 def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
     port = 465
