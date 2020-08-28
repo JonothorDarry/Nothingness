@@ -211,10 +211,29 @@
 		<span class="central">\((1-\frac{\phi(m)}{m})^k \lt 2^{-l}\)</span>
 		<span class="central">\(k*ln(1-\frac{\phi(m)}{m}) \lt -l*ln(2)\) //note that \(ln(1-\frac{\phi(m)}{m}) \lt 0\) </span>
 		<span class="central">\(k \gt \frac{-l*ln(2)}{ln(1-\frac{\phi(m)}{m})}\)</span>
-
-		
-		
 		Therefore, one can almost certainly find a primitive root of \(m\) in \(150*O(log^2(m))+O(\sqrt{m})\) operations, which should be enough for \(m \le 10^9\). It's worth noting that - thanks to only using algorithm for prime numbers - one always draws number coprime to \(m\) (which makes algorithm less of a chore, and a bit faster)</p>
 
+		<div id="Algo1" class="pureAlgo">
+			<h2>Primitive root finding</h2>
+			<p>Input format: One number \(m\), such that primitive root modulo \(m\) has to be found<br>
+			\(m\)
+			</p>
+
+			<div id="Inputter">
+				<form>
+					<input value="859548722" class="inputter" id="Proot" name="Proot">
+				</form>
+				<button id="Sender" class="sender">Begin</button>
+				<button id="Prever" class="previous">Previous Move</button>
+				<button id="Nexter" class="next">Next Move</button>
+				<button id="Finisher" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez" class="primez"></div>
+			<div id="Comprehend" class="comprehend"></div>
+		</div>
+
+
+		<script src="{{url_for('static', filename='Proot.js')}}"></script>
 	</body>
 </html>
