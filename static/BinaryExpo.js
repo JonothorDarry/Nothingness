@@ -57,17 +57,6 @@ class BinaryExpo extends Algorithm{
 		this.reality=z-1;
 	}
 
-	//0: red, 1:green, 2: gray, 3: dead white
-	Painter(btn, col=1){
-		if (col==0 || col==1) btn.style.color="#FFFFFF";
-		else btn.style.backgroundColor="#FFFFFF";
-
-		if (col==0) btn.style.backgroundColor="#440000";
-		else if (col==1) btn.style.backgroundColor="#004400";
-		else if (col==2) btn.style.color="#666666";
-		else if (col==3) btn.style.color="#FFFFFF";
-	}
-
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], col, vl, lst;

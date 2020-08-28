@@ -307,17 +307,6 @@ class PowerTower extends Algorithm{
 
 	}
 
-	//0: red, 1:green, 2: gray, 3: dead white
-	Painter(btn, col=1){
-		if (col==0 || col==1) btn.style.color="#FFFFFF";
-		else btn.style.backgroundColor="#FFFFFF";
-
-		if (col==0) btn.style.backgroundColor="#440000";
-		else if (col==1) btn.style.backgroundColor="#004400";
-		else if (col==2) btn.style.color="#666666";
-		else if (col==3) btn.style.color="#FFFFFF";
-	}
-
 	find_totient(x){
 		var dv=1, i=2, rs=x;
 		for(i=2;i*i<=rs;i++){

@@ -1,4 +1,13 @@
-class PowerTower extends Algorithm{
+class Proot extends Algorithm{
+
+	Twin_Buttons(btn, size, topper){
+		this.Painter(btn, 4);
+		btn.style.height="20px";
+		btn.style.position="absolute";
+		if (topper==1) btn.style.top=0;
+		else btn.style.bottom=0;
+	}
+
 	constructor(block, n=-1, m, lees){
 		super(block);
 		if (n==-1) return;
@@ -13,8 +22,8 @@ class PowerTower extends Algorithm{
 					btn2.style.top=`${-(40-mini_size)/2}px`;
 					btn2.style.position="relative";
 				}
-				else if (i==1) btn=this.buttCreator();
-				else btn=this.buttCreator();
+
+				btn=this.buttCreator();
 				this.zdivs[i][1].appendChild(btn);
 				if (i==0) this.zdivs[i][1].appendChild(btn2);
 			}
@@ -51,6 +60,7 @@ class PowerTower extends Algorithm{
 		this.recover=[];
 		this.last_index=0;
 		this.falsify=0;
+		this.finito=0;
 
 		this.btnlist=[];
 		for (i=0;i<6;i++){
@@ -64,11 +74,31 @@ class PowerTower extends Algorithm{
 					btn2.style.top=`${-(40-mini_size)/2}px`;
 					btn2.style.position="relative";
 				}
+
+				if (i==5) {
+					var butt_container=document.createElement("DIV");
+					butt_container.style.position="relative";
+					butt_container.style.display="inline-block";
+					butt_container.style.height="40px";
+					butt_container.style.width="40px";
+					btn=this.buttCreator();
+					btn2=this.buttCreator();
+
+					this.Twin_Buttons(btn, 20, 1);
+					this.Twin_Buttons(btn2, 20, 0);
+
+					butt_container.appendChild(btn);
+					butt_container.appendChild(btn2);
+
+				}
+
 				else if (i==1) btn=this.buttCreator();
 				else btn=this.buttCreator();
-				this.zdivs[i][1].appendChild(btn);
+				if (i!=5) this.zdivs[i][1].appendChild(btn);
+				else this.zdivs[i][1].appendChild(butt_container);
 				this.btnlist[i].push(btn);
-				if (i==0) this.zdivs[i][1].appendChild(btn2), this.btnlist[i].push(btn2);
+				if (i==0) this.zdivs[i][1].appendChild(btn2);
+				if (i==0 || i==5) this.btnlist[i].push(btn2);
 			}
 		}
 	}
@@ -163,7 +193,7 @@ class PowerTower extends Algorithm{
 			if (x==0){
 				this.current_candidate=this.Take_Next_Candidate()
 				this.falsify=0;
-				for (var i=0;i<this.t_primes.length;i++) this.Painter(this.btnlist[4][i], 4);
+				for (var i=0;i<this.check_expos.length;i++) this.Painter(this.btnlist[4][i], 4);
 			}
 			base=this.btnlist[4][x];
 			if (x>0) old_base=this.btnlist[4][x-1];
@@ -179,6 +209,48 @@ class PowerTower extends Algorithm{
 			this.recover[this.last_index].push(res);
 		}
 
+		if (s[0]==6){
+			base=this.btnlist[5][s[1]*2];
+			expo=this.btnlist[5][s[1]*2+1];
+			if (s[1]>0){
+				old_base=this.btnlist[5][s[1]*2-2];
+				old_expo=this.btnlist[5][s[1]*2-1];
+
+				this.Painter(old_base, 0);
+				this.Painter(old_expo, 0);
+			}
+			else this.Painter(this.btnlist[4][this.t_primes.length], 0);
+				
+			this.Painter(base, 1);
+			this.Painter(expo, 1);
+			var ln=this.exponents[this.primes.length-1];
+			if (s[1]==0){
+				this.current_result=this.current_candidate;
+				expo.innerHTML=this.toth+1;
+				if (this.toth+1==this.m) this.finito=1;
+			}
+			else if (s[1]==1 && ln>1){
+				var numb=this.m;
+				if (this.m%2!=0) this.finito=1;
+				else numb=Math.floor(this.m/2);
+				if (this.pow(this.current_candidate, this.toth, (this.toth+1)*(this.toth+1))==1) this.current_result=this.current_candidate+this.toth+1;
+				expo.innerHTML=numb;
+			}
+
+			else{
+				this.finito=1;
+				if (this.current_result%2==0) this.current_result=this.current_result+Math.floor(this.m/2);
+				expo.innerHTML=this.m;
+			}
+			base.innerHTML=this.current_result;
+
+
+
+			if (this.finito==1){
+				this.Painter(base, 8);
+				this.Painter(expo, 8);
+			}
+		}
 
 		if (s[0]==101){
 			base=this.btnlist[0][(this.amount_of_primes_m-1)*2];
@@ -269,12 +341,13 @@ class PowerTower extends Algorithm{
 				this.last_index--;
 				var i;
 				if (this.last_index>-1){
+					this.current_candidate=this.recover[this.last_index][0];
 					for (i=0;i<this.recover[this.last_index].length;i++){
 						if (i!=0) this.Painter(this.btnlist[4][i], 0);
 						this.btnlist[4][i].innerHTML=this.recover[this.last_index][i];
 					}
 					for (;i<this.check_expos.length;i++) this.Painter(this.btnlist[4][i], 4);
-					this.Painter(this.btnlist[4][this.recover[this.last_index].length-1], 1);
+					if (this.recover[this.last_index].length-1>-1) this.Painter(this.btnlist[4][this.recover[this.last_index].length-1], 1);
 				}
 				else{
 					this.last_index++;
@@ -288,6 +361,27 @@ class PowerTower extends Algorithm{
 
 			if (x!=1) this.Painter(old_base, 1);
 			if (x>0) this.Painter(base, 4);
+		}
+
+		if (s[0]==6){
+			base=this.btnlist[5][s[1]*2];
+			expo=this.btnlist[5][s[1]*2+1];
+			if (s[1]>0){
+				old_base=this.btnlist[5][s[1]*2-2];
+				old_expo=this.btnlist[5][s[1]*2-1];
+
+				this.Painter(old_base, 1);
+				this.Painter(old_expo, 1);
+			}
+			else this.Painter(this.btnlist[4][this.t_primes.length], 1);
+			this.finito=0;
+
+			this.Painter(base, 4);
+			this.Painter(expo, 4);
+			var ln=this.exponents[this.primes.length-1];
+
+			if (s[1]==1 && ln>1) this.current_result=this.current_candidate;
+			else if (this.current_result>Math.floor(this.m/2)) this.current_result=this.current_result-Math.floor(this.m/2);
 		}
 
 
@@ -350,9 +444,13 @@ class PowerTower extends Algorithm{
 		}
 
 		if (s[0]==5){
-			if (s[1]==this.t_primes.length) this.lees.push([6, 0]);
-			else if (this.falsify==1) this.lees.push([5, 0]);
+			if (this.falsify==1) this.lees.push([5, 0]);
+			else if (s[1]==this.t_primes.length) this.lees.push([6, 0]);
 			else this.lees.push([5, s[1]+1]);
+		}
+		if (s[0]==6){
+			if (this.finito==1) this.lees.push([100]);
+			else this.lees.push([6, s[1]+1]);
 		}
 	}
 
@@ -372,11 +470,11 @@ class PowerTower extends Algorithm{
 	}
 
 	Append_Randomness(arr, recover, amount, ceil){
-		for (var i=0;i<amount;i++) arr.push(Math.floor(Math.random()*(ceil-1))+1), recover.push([]);
+		for (var i=0;i<amount;i++) arr.push(Math.floor(Math.random()*ceil)+1), recover.push([]);
 	}
 
 	Take_Next_Candidate(){
-		if (this.candidates.length==this.last_index)	this.Append_Randomness(this.candidates, this.recover, 200, this.toth-1);
+		if (this.candidates.length==this.last_index)	this.Append_Randomness(this.candidates, this.recover, 200, this.toth);
 		else this.last_index++;
 		return this.candidates[this.last_index];
 	}
@@ -388,9 +486,24 @@ class PowerTower extends Algorithm{
 		return `As factorization of m was found, one may proceed to decide, whether ${this.m} has a primitive root: ${(n>2 || (n>1 && this.primes[0]!=2))?`This number does not have primitive root, as it has more than 1 prime divisor different than 2`:((this.m%4==0 && this.m!=4)?`This number has no primitive root, for it is divisible by 4, yet it is not equal to 4`:`This number does have a primitive root, for ${(n==2)?`It can be shown as 2p<sup>k</sup>, where p is odd prime`:((n==1 && this.m%2==1)?`It can be shown as p<sup>k</sup>, where p is odd`:`it is ${this.m} a special case`)}`)}`;
 	}
 
+	Last_Exit_For_The_Lost(){
+		var vals=0, mine=0, p=this.primes[this.primes.length-1], s=this.lees[this.lees.length-1], x, form_1, sup, cur_sup;
+		if (this.m%2==0) vals+=2;
+		if (this.m-p>p) vals+=1;
+		x=s[1];
+		sup=(vals%2==1)?`<sup>k</sup>`:``;
+		if (s[1]==0) mine=0;
+		if (s[1]==1 && vals==3) mine=1;
+		cur_sup=(mine==1)?`<sup>k</sup>`:``;
+		
+		if (x==2 || x==1 && vals<3 || x==0 && vals==0) return `As I've found primitive root of a number, for which ultimately I was trying to find primitive root, algorithm ends, result is ${this.current_result}`;
+		return `As the number, for which ultimately I'm trying to find primitive root has form ${vals>1?`2`:``}p${sup}=${this.m}, and I've found a primitive root for p${cur_sup}, I still need to find primitive root of ${mine==0?((vals%2==1)?`p${sup}`:`2p`):`2p${sup}`}${(mine==0 && vals==3)?` and then 2p${sup}`:``}.`
+	}
+
 	StatementComprehension(){
 		var l=this.lees.length;
 		var last=this.lees[l-1], prev=this.lees[l-2], fa_m=this.bastard_m, ga_m=this.bastard_toth;
+		var p=this.toth+1;
 		
 		if (last[0]==0 && fa_m!=1) return `I search for next prime dividing fa_m=${fa_m*last[2]} - m divided by all its prime divisors already found, starting from ${last[1]} ... all the way to ${last[2]}, which divides fa_m - I change fa_m=${fa_m*last[2]}/${last[2]}=${fa_m} and search for further primes dividing fa_m`;
 		else if (last[0]==0) return `I search for next prime dividing fa_m=${this.bastard_m*last[2]} - m divided by all its prime divisors already found, starting from ${last[1]} ... all the way to ${Math.floor(Math.sqrt(last[2]))}, which does not divide fa_m - What follows, fa_m is a prime and whole number m is now factorized, which allows proceeding further in the algorithm. `+this.Finito();
@@ -404,20 +517,20 @@ class PowerTower extends Algorithm{
 		else if (last[0]==4 && last[1]!=0) return `Now, I find exponents x, which I will later check on candidates for primitive roots for condition g<sup>x</sup> &equiv; 1 - they're just &#x03D5;(m') divided by its prime divisors. Now, the &#x03D5;(m')/p=${this.toth}/${this.t_primes[last[1]-1]}=${this.check_expos[last[1]]}`;
 		else if (last[0]==4 && last[1]==0) return `Just for convenience, I add 1 to exponents to check to show currently processed candidate for primitive root.`;
 
-		
-		else if (last[0]==101) return `This number has no primitive root, so algorithm is finished`;
-	}
+		else if (last[0]==5 && last[1]==0) return `I draw another random number to check, whether it is a primitive root mod ${p}`;
+		else if (last[0]==5 && last[1]!=0) return `It turns out, that ${this.current_candidate}<sup>${this.check_expos[last[1]]}</sup> &equiv; ${this.recover[this.last_index][last[1]]} (mod ${p}). ${(this.recover[this.last_index][last[1]]==1)?`This number cannot be a primitive root, as ord<sub>${p}</sub>(${this.current_candidate}) <= ${this.check_expos[last[1]]} < &#x03D5;(${p})`:((last[1]==this.t_primes.length?`As for all exponents this number was not equivalent to 1, this is primitive root`:`As it is not yet known whether this number is a primitive root, I check it against next exponent.`))}`;
 
-	//0: red, 1:green, 2: gray, 3: dead white
-	Painter(btn, col=1){
-		if (col==0 || col==1 || col==8) btn.style.color="#FFFFFF";
-		else btn.style.backgroundColor="#FFFFFF";
+		else if (last[0]==6 && last[1]==0) return `The primitive root for p=${p} is already found; `+this.Last_Exit_For_The_Lost();
+		else if (last[0]==6 && last[1]==1 && (this.finito==0 || this.m%2==0)) return `The primitive root for p<sup>k</sup>=${this.m} is either equal to g=${this.current_candidate} or g+p=${this.current_candidate+p}, where g is primitive root of p - this follows from second case of existential proof of primitive root. As g<sup>&#x03D5;(p)</sup> ${this.current_result>p?`&equiv;`:`&#8802;`} 1 (mod p<sup>2</sup>), then primitive root mod p<sup>k</sup> is ${this.current_result<p?`g`:`g+p`}=${this.current_result}`+this.Last_Exit_For_The_Lost();
+		else if (last[0]==6){
+			var olden=this.current_result>Math.floor(this.m/2)?this.current_result+Math.floor(this.m/2):this.current_result, newer, sup;
+			newer=olden+Math.floor(this.m/2);
+			sup=(this.m-p>p)?`<sup>k</sup>`:``;
+			return `The primitive root for 2p${sup}=${this.m} is either equal to g=${olden} or g+p${sup}=${newer}, depending on whether 2 divides g: as one can see, 2${olden%2==0?`|`:`&nmid;`}g - and so, primitive root modulo 2p${sup} is ${olden%2==0?`g+p${sup}`:`g`}=${this.current_result}. `+this.Last_Exit_For_The_Lost();
+		}
 
-		if (col==0) btn.style.backgroundColor="#440000";
-		else if (col==1) btn.style.backgroundColor="#004400";
-		else if (col==2) btn.style.color="#666666";
-		else if (col==3) btn.style.color="#FFFFFF";
-		else if (col==8) btn.style.backgroundColor="#8A7400";
+		else if (last[0]==100) return `Algorithm ended, result is ${this.current_result}.`;
+		else if (last[0]==101) return `This number has no primitive root, so algorithm is finished.`;
 	}
 
 	find_next_prime(start, v){
@@ -428,8 +541,8 @@ class PowerTower extends Algorithm{
 		return v;
 	}
 
-	pow(a, b, m=1000000007){
-		var res=1;
+	pow(ap, b, mp=1000000007){
+		var res=1n, a=BigInt(ap), m=BigInt(mp);
 		for (;b>0;b=Math.floor(b/2)){
 			if (b%2==1) res=(res*a)%m;
 			a=(a*a)%m;
@@ -489,7 +602,7 @@ class PowerTower extends Algorithm{
 }
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var sk2=new PowerTower(feral2, 6, 107, [2, 7, 3, 12, 43, 25]);
+var sk2=new Proot(feral2, 6, 107, [2, 7, 3, 12, 43, 25]);
 
 
 //Prime: 20731

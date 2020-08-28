@@ -96,6 +96,26 @@ class Algorithm{
 		}
 		return lst;	
 	}
+	
+	//0: red, 1:green, 2: gray, 3: dead white 8: gold
+	Painter(btn, col=1){
+		if (col==0 || col==1 || col==5 || col==6 || col==8) btn.style.color="#FFFFFF";
+		else btn.style.backgroundColor="#FFFFFF";
+
+		if (col==0) btn.style.backgroundColor="#440000";
+		else if (col==1) btn.style.backgroundColor="#004400";
+		else if (col==2 || col==7) btn.style.color="#666666";
+		else if (col==3) btn.style.color="#FFFFFF";
+		else if (col==5) btn.style.backgroundColor="#000000";
+		else if (col==6) btn.style.backgroundColor="#888888";
+		else if (col==8) btn.style.backgroundColor="#8A7400";
+
+		if (col==7){
+			btn.style.border="1px solid";
+			btn.style.borderColor="#888888";
+		}
+		else btn.style.border="0px none";
+	}
 
 	static ObjectParser(v){
 		var dick={
