@@ -1,16 +1,8 @@
 class Proot extends Algorithm{
-
-	Twin_Buttons(btn, size, topper){
-		this.Painter(btn, 4);
-		btn.style.height="20px";
-		btn.style.position="absolute";
-		if (topper==1) btn.style.top=0;
-		else btn.style.bottom=0;
-	}
-
-	constructor(block, n=-1, m, lees){
+	constructor(block){
 		super(block);
-		if (n==-1) return;
+		this.deter=block.radio_d;
+		this.prob=block.radio_p;
 
 		var i, j, btn, btn2, mini_size=20;
 		this.divsCreator();
@@ -34,7 +26,10 @@ class Proot extends Algorithm{
 		this.lees=[];
 		this.place.innerHTML='';
 		var fas=this.input.value;
-		var a=0, x, i=0, c, j, btn, btn2, mini_size=20;
+
+		this.is_deter=this.deter.checked;
+
+		var a=0, x, i=0, c, j, btn, btn2, mini_size=20, allez;
 
 		this.btnlist=[];
 		for (i=0;i<6;i++) this.btnlist.push([]);
@@ -76,20 +71,10 @@ class Proot extends Algorithm{
 				}
 
 				if (i==5) {
-					var butt_container=document.createElement("DIV");
-					butt_container.style.position="relative";
-					butt_container.style.display="inline-block";
-					butt_container.style.height="40px";
-					butt_container.style.width="40px";
-					btn=this.buttCreator();
-					btn2=this.buttCreator();
-
-					this.Twin_Buttons(btn, 20, 1);
-					this.Twin_Buttons(btn2, 20, 0);
-
-					butt_container.appendChild(btn);
-					butt_container.appendChild(btn2);
-
+					allez=this.doubleButtCreator(0, this.buttCreator.bind(this));
+					btn=allez[1];
+					btn2=allez[2];
+					var butt_container=allez[0];
 				}
 
 				else if (i==1) btn=this.buttCreator();
@@ -340,7 +325,7 @@ class Proot extends Algorithm{
 				this.recover[this.last_index]=[];
 				this.last_index--;
 				var i;
-				if (this.last_index>-1){
+				if ((this.last_index>-1 && this.is_deter==0) || this.last_index>1){
 					this.current_candidate=this.recover[this.last_index][0];
 					for (i=0;i<this.recover[this.last_index].length;i++){
 						if (i!=0) this.Painter(this.btnlist[4][i], 0);
@@ -470,10 +455,16 @@ class Proot extends Algorithm{
 	}
 
 	Append_Randomness(arr, recover, amount, ceil){
-		for (var i=0;i<amount;i++) arr.push(Math.floor(Math.random()*ceil)+1), recover.push([]);
+		for (var i=0;i<amount;i++) arr.push(Math.floor(Math.random()*(ceil-1))+2), recover.push([]);
 	}
 
 	Take_Next_Candidate(){
+		if (this.is_deter) {
+			if (this.last_index==0) this.last_index++, this.recover.push([]), this.recover.push([]);
+			this.last_index++;
+			this.recover.push([]);
+			return this.last_index;
+		}
 		if (this.candidates.length==this.last_index)	this.Append_Randomness(this.candidates, this.recover, 200, this.toth);
 		else this.last_index++;
 		return this.candidates[this.last_index];
@@ -481,7 +472,6 @@ class Proot extends Algorithm{
 
 	Finito(){
 		var n=this.amount_of_primes_m;
-		console.log(n)
 
 		return `As factorization of m was found, one may proceed to decide, whether ${this.m} has a primitive root: ${(n>2 || (n>1 && this.primes[0]!=2))?`This number does not have primitive root, as it has more than 1 prime divisor different than 2`:((this.m%4==0 && this.m!=4)?`This number has no primitive root, for it is divisible by 4, yet it is not equal to 4`:`This number does have a primitive root, for ${(n==2)?`It can be shown as 2p<sup>k</sup>, where p is odd prime`:((n==1 && this.m%2==1)?`It can be shown as p<sup>k</sup>, where p is odd`:`it is ${this.m} a special case`)}`)}`;
 	}
@@ -517,7 +507,7 @@ class Proot extends Algorithm{
 		else if (last[0]==4 && last[1]!=0) return `Now, I find exponents x, which I will later check on candidates for primitive roots for condition g<sup>x</sup> &equiv; 1 - they're just &#x03D5;(m') divided by its prime divisors. Now, the &#x03D5;(m')/p=${this.toth}/${this.t_primes[last[1]-1]}=${this.check_expos[last[1]]}`;
 		else if (last[0]==4 && last[1]==0) return `Just for convenience, I add 1 to exponents to check to show currently processed candidate for primitive root.`;
 
-		else if (last[0]==5 && last[1]==0) return `I draw another random number to check, whether it is a primitive root mod ${p}`;
+		else if (last[0]==5 && last[1]==0) return `I draw ${this.is_deter==0?`another random`:`next natural`} number to check, whether it is a primitive root mod ${p}`;
 		else if (last[0]==5 && last[1]!=0) return `It turns out, that ${this.current_candidate}<sup>${this.check_expos[last[1]]}</sup> &equiv; ${this.recover[this.last_index][last[1]]} (mod ${p}). ${(this.recover[this.last_index][last[1]]==1)?`This number cannot be a primitive root, as ord<sub>${p}</sub>(${this.current_candidate}) <= ${this.check_expos[last[1]]} < &#x03D5;(${p})`:((last[1]==this.t_primes.length?`As for all exponents this number was not equivalent to 1, this is primitive root`:`As it is not yet known whether this number is a primitive root, I check it against next exponent.`))}`;
 
 		else if (last[0]==6 && last[1]==0) return `The primitive root for p=${p} is already found; `+this.Last_Exit_For_The_Lost();
@@ -529,7 +519,10 @@ class Proot extends Algorithm{
 			return `The primitive root for 2p${sup}=${this.m} is either equal to g=${olden} or g+p${sup}=${newer}, depending on whether 2 divides g: as one can see, 2${olden%2==0?`|`:`&nmid;`}g - and so, primitive root modulo 2p${sup} is ${olden%2==0?`g+p${sup}`:`g`}=${this.current_result}. `+this.Last_Exit_For_The_Lost();
 		}
 
-		else if (last[0]==100) return `Algorithm ended, result is ${this.current_result}.`;
+		else if (last[0]==100){
+			var amount=(this.is_deter==1)?this.last_index-1:this.last_index+1;
+			return `Algorithm ended, result is ${this.current_result}. It was found after processing ${amount} candidate${amount>0?`s`:``} for primitive roots.`;
+		}
 		else if (last[0]==101) return `This number has no primitive root, so algorithm is finished.`;
 	}
 
@@ -587,9 +580,12 @@ class Proot extends Algorithm{
 }
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var sk2=new Proot(feral2, 6, 107, [2, 7, 3, 12, 43, 25]);
+feral2.radio_p=document.getElementById('Probabilistic');
+feral2.radio_d=document.getElementById('Deterministic');
+var sk2=new Proot(feral2);
 
 
 //Prime: 20731
 //Composite: 859548722
 //Ultra-composite: 
+////Problematic-deterministic: 409

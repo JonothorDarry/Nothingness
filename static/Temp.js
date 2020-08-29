@@ -142,6 +142,39 @@ class Algorithm{
 		return butt;
 	}	
 
+
+	//Create Button
+	doubleButtCreator(v, fun){
+		var butt1=fun(v);
+		var butt2=fun(v);
+		butt1.classList.add("fullNumb");
+		butt2.classList.add("divisNumb");
+
+		var dv = document.createElement("DIV");
+		dv.style.display="inline-block";
+		dv.style.position="relative";
+
+		butt1.style.top="0";
+		butt2.style.bottom="0";
+		var lst=[butt1, butt2];
+		for (var i=0;i<2;i++){
+			lst[i].style.width="40px";
+			lst[i].style.height="20px";
+			lst[i].style.textAlign="center";
+			lst[i].style.margin="0";
+			lst[i].style.position="absolute";
+		}
+
+		dv.style.width="40px";
+		dv.style.height="40px";
+		dv.backgroundColor="#000000";
+		dv.appendChild(butt1);
+		dv.appendChild(butt2);
+		
+		return [dv, butt1, butt2];
+	}
+
+
 	static ObjectParser(v){
 		var dick={
 			'primePlace':v.getElementsByClassName('primez')[0],

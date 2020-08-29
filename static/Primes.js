@@ -57,45 +57,8 @@ class ExtendedSieve extends Sieve{
 		return strr;
 	}
 
-	//Create Button
 	buttCreator(v){
-		//var sub= document.createElement("SUB");
-		//if (v>1) sub.innerHTML=0;
-		//else sub.innerHTML=-1;
-		//sub.style.fontSize="10px";
-		var butt1=super.buttCreator(v);
-		var butt2=super.buttCreator(v);
-		butt1.classList.add("fullNumb");
-		butt2.classList.add("divisNumb");
-		if (v>1) butt2.innerHTML=0;
-		else butt2.innerHTML=-1;
-
-		var dv = document.createElement("DIV");
-		dv.style.display="inline-block";
-		dv.style.position="relative";
-
-		butt1.style.position="absolute";
-		butt2.style.position="absolute";
-
-		butt1.style.top="0";
-		butt2.style.bottom="0";
-		butt1.style.width="40px";
-		butt2.style.width="40px";
-		butt1.style.height="20px";
-		butt2.style.height="20px";
-		butt1.style.textAlign="center";
-		butt2.style.textAlign="center";
-
-		butt1.style.margin="0";
-		butt2.style.margin="0";
-
-		dv.style.width="40px";
-		dv.style.height="40px";
-		dv.backgroundColor="#000000";
-		dv.appendChild(butt1);
-		dv.appendChild(butt2);
-		
-		return dv;
+		return this.doubleButtCreator(v, super.buttCreator.bind(this))[0];
 	}
 }
 

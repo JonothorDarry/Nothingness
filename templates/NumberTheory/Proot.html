@@ -215,25 +215,38 @@
 
 		<div id="Algo1" class="pureAlgo">
 			<h2>Primitive root finding</h2>
+			<p>It's worth noting You can change, whether the algorithm checks numbers:</p>
+			<ul>
+				<li>Deterministically: algorithm checks subsequent natural numbers from \(2\) to \(p-1\) whether they're primitive roots.</li>
+				<li>Probabilistically: algorithm checks random numbers from interval \(\lt 2;p-1 \gt\) whether they're primitive roots. Note that 200 numbers are randomly generated after calculating exponents and they cannot change during the algorithm - unless You clicked "prev" before drawing 2nd random number (it's implementational nuissance)</li>
+			</ul>
+			<p>Of course, number written on the input at start was not coincidentally chosen: \(21\) is the least positive integer being primitive root of 409, so deterministic approach will be almost certainly slower than probabilistic</p>
+
 			<p>Input format: One number \(m\), such that primitive root modulo \(m\) has to be found<br>
 			\(m\)
 			</p>
 
 			<div id="Inputter">
 				<form>
-					<input value="859548722" class="inputter" id="Proot" name="Proot">
+					<input value="334562" class="inputter" id="Proot" name="Proot">
 				</form>
 				<button id="Sender" class="sender">Begin</button>
 				<button id="Prever" class="previous">Previous Move</button>
 				<button id="Nexter" class="next">Next Move</button>
 				<button id="Finisher" class="finish">Finish</button>
+				<input type="radio" id="Probabilistic" name="algoType" checked><label for="Probabilistic">Probabilistic</label>
+				<input type="radio" id="Deterministic" name="algoType"><label for="Deterministic">Deterministic</label>
 			</div>
 			<div class="breakAlgo"></div>
 			<div id="Primez" class="primez"></div>
 			<div id="Comprehend" class="comprehend"></div>
-		</div>
+		</div>		
 
-
+			<h2>Problems</h2>
+			<p>
+			There are not many problems concerning primitive roots, knowledge of them is useful for understanding theory of NTT and discrete roots. Examples are:<br>
+			<a href="https://codeforces.com/problemset/problem/487/C">Prefix Product Sequence</a>, 
+			</p>
 		<script src="{{url_for('static', filename='Proot.js')}}"></script>
 	</body>
 </html>
