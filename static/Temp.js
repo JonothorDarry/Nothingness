@@ -158,14 +158,14 @@ class Algorithm{
 		butt2.style.bottom="0";
 		var lst=[butt1, butt2];
 		for (var i=0;i<2;i++){
-			lst[i].style.width="40px";
+			lst[i].style.width=this.bs_butt_width;
 			lst[i].style.height="20px";
 			lst[i].style.textAlign="center";
 			lst[i].style.margin="0";
 			lst[i].style.position="absolute";
 		}
 
-		dv.style.width="40px";
+		dv.style.width=this.bs_butt_width;
 		dv.style.height="40px";
 		dv.backgroundColor="#000000";
 		dv.appendChild(butt1);

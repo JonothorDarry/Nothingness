@@ -25,6 +25,10 @@ class BinaryExpo extends Algorithm{
 		a=c.get_next();
 		b=c.get_next();
 		m=c.get_next();
+		var mx_all=Math.max(Math.max(a.toString().length, b.toString().length), m.toString().length)*10;
+		console.log(mx_all);
+		this.bs_butt_width=`${Math.max(40, mx_all)}px`;
+		this.bs_butt_width_h=Math.max(40, mx_all);
 
 		this.lees.push([0, a, b, 1, m]);
 		this.Create_reality(a, b);
@@ -51,6 +55,8 @@ class BinaryExpo extends Algorithm{
 			this.zdivs[j][1].appendChild(btn);
 		}
 		this.reality=z-1;
+		//Controversial - there must be a better way than hardcoding width
+		this.place.style.width=`${(z+1)*this.bs_butt_width_h+200}px`;
 	}
 
 	StateMaker(){
@@ -153,7 +159,6 @@ class BinaryExpo extends Algorithm{
 		var divs=[], zdivs=[], i, j;
 		for (i=0;i<3;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
 		for (i=0;i<3;i++){
-			divs[i].style.width="100%";
 			divs[i].style.height="40px";
 			for (j=0;j<3;j++) {
 				zdivs[i].push(document.createElement("DIV"));
@@ -166,7 +171,7 @@ class BinaryExpo extends Algorithm{
 			if (i==1) zdivs[i][0].innerHTML="Current a:";
 			if (i==2) zdivs[i][0].innerHTML="Current b:";
 			zdivs[i][0].style.width="200px";
-			zdivs[i][1].style.width="50px";
+			zdivs[i][1].style.width=`${this.bs_butt_width}+100px`;
 
 			this.place.appendChild(divs[i]);
 		}

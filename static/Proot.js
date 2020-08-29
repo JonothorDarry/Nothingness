@@ -6,26 +6,13 @@ class Proot extends Algorithm{
 
 		var i, j, btn, btn2, mini_size=20;
 		this.divsCreator();
-		for (i=0;i<6;i++){
-			for (j=0;j<16;j++){
-				if (i==0) {
-					btn=this.buttCreator();
-					btn2=this.buttCreator(mini_size);
-					btn2.style.top=`${-(40-mini_size)/2}px`;
-					btn2.style.position="relative";
-				}
-
-				btn=this.buttCreator();
-				this.zdivs[i][1].appendChild(btn);
-				if (i==0) this.zdivs[i][1].appendChild(btn2);
-			}
-		}
 	}
 
 	BeginningExecutor(){
 		this.lees=[];
 		this.place.innerHTML='';
 		var fas=this.input.value;
+		this.bs_butt_width=`${Math.max(40, fas.length*10)}px`;
 
 		this.is_deter=this.deter.checked;
 
@@ -62,7 +49,7 @@ class Proot extends Algorithm{
 			this.btnlist.push([]);
 			for (j=0;j<16;j++){
 				if (i==0) {
-					btn=this.buttCreator();
+					btn=super.buttCreator();
 					btn2=this.buttCreator(mini_size);
 					if (j==0) btn2=this.buttCreator(0);
 					btn2.innerHTML="";
@@ -77,8 +64,8 @@ class Proot extends Algorithm{
 					var butt_container=allez[0];
 				}
 
-				else if (i==1) btn=this.buttCreator();
-				else btn=this.buttCreator();
+				else if (i==1) btn=super.buttCreator();
+				else btn=super.buttCreator();
 				if (i!=5) this.zdivs[i][1].appendChild(btn);
 				else this.zdivs[i][1].appendChild(butt_container);
 				this.btnlist[i].push(btn);
@@ -588,4 +575,5 @@ var sk2=new Proot(feral2);
 //Prime: 20731
 //Composite: 859548722
 //Ultra-composite: 
-////Problematic-deterministic: 409
+//Problematic-deterministic: 409
+//Large primes: 33456259, 998244353, 1000000007

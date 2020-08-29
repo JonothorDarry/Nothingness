@@ -18,6 +18,7 @@ class Sieve extends Algorithm{
 		var fas=this.input.value;
 		this.place.textContent='';
 
+		this.bs_butt_width=`${Math.max(40, fas.length*10)}px`
 		this.createMarked(fas);
 		for (var i=0;i<=fas;i++){
 			var butt = this.buttCreator(i);

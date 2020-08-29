@@ -135,6 +135,7 @@ class EuclidGcd extends Algorithm{
 		c=this.dissolve_input(fas);
 		a=c.get_next();
 		b=c.get_next();
+		this.bs_butt_width_h=Math.max(Math.max(a.toString().length, a.toString().length)*10, 40);
 
 		this.lees.push([0, a, b])
 		this.divs=this.divsCreator();
@@ -184,6 +185,7 @@ class EuclidGcd extends Algorithm{
 		var butt=super.buttCreator(numb, col);
 		butt.style.backgroundColor=col;
 		if (numb==null) butt.innerHTML="", butt.style.color="";
+		else butt.style.width=`${this.bs_butt_width_h}px`;
 		return butt;
 	}
 
