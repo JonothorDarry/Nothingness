@@ -1,6 +1,11 @@
 class EuclidGcd extends Algorithm{
 	constructor(block, a=-1, b=-1){
 		super(block);
+
+		this.bs_butt_width="30px";
+		this.bs_butt_height="30px";
+		this.bs_border="1px solid";
+
 		if (a!=-1 && b!=-1){
 			this.divs=this.divsCreator();
 
@@ -127,9 +132,9 @@ class EuclidGcd extends Algorithm{
 		var fas=this.input.value;
 		var a=0, b=0, x, i=0, c;
 		
-		c=this.getInput(0, fas);
-		a=c[0];
-		b=this.getInput(c[1]+1, fas)[0];
+		c=this.dissolve_input(fas);
+		a=c.get_next();
+		b=c.get_next();
 
 		this.lees.push([0, a, b])
 		this.divs=this.divsCreator();
@@ -176,17 +181,9 @@ class EuclidGcd extends Algorithm{
 
 	//Creates buttons
 	buttCreator(col="#440000", numb=null){
-		var butt=document.createElement("BUTTON");
-		butt.style.width="30px";
-		butt.style.height="30px";
-		butt.style.border="1px solid";
+		var butt=super.buttCreator(numb, col);
 		butt.style.backgroundColor=col;
-		butt.style.padding='0px';
-		if (numb!=null) {
-			butt.innerHTML=numb;
-			butt.style.color='#FFFFFF';
-			butt.style.fontSize='12px';
-		}
+		if (numb==null) butt.innerHTML="", butt.style.color="";
 		return butt;
 	}
 

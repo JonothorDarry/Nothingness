@@ -56,26 +56,19 @@ class Sieve extends Algorithm{
 	//Mark number depending on values defined in sieve
 	MarkNormally(v, granted="sieveBut"){
 		var bt=this.place.getElementsByClassName(granted)[v];
-		if (this.PrimeCheck(v)==1){
-			bt.style.backgroundColor='#440000';
-			bt.style.color='#FFFFFF';
-		}
-		if (this.PrimeCheck(v)==0){
-			bt.style.backgroundColor='#FFFFFF';
-			bt.style.color='#888888';
-		}
+		if (this.PrimeCheck(v)==1) this.Painter(bt, 0);
+		if (this.PrimeCheck(v)==0) this.Painter(bt, 2);
 	}
 
 	//Color processed slaying number
 	Darken(v, granted="sieveBut"){
-		this.place.getElementsByClassName(granted)[v].style.backgroundColor='#000000';
+		this.Painter(this.place.getElementsByClassName(granted)[v], 5, 1);
 	}
 
 	//Color processed just slain by prime
 	PrimeColor(v1, v2, granted="sieveBut"){
 		var bt=this.place.getElementsByClassName(granted)[v1];
-		bt.style.backgroundColor='#FFFF00';
-		bt.style.color='#888888';
+		this.Painter(bt, 9);
 		this.Darken(v2);
 	}
 
@@ -155,17 +148,9 @@ class Sieve extends Algorithm{
 	}
 
 	//Create Button
-	buttCreator(v){
-		var butt = document.createElement("BUTTON");
-		butt.innerHTML=v;
-		butt.style.backgroundColor="#440000"
-		butt.style.color="#FFFFFF"
-		butt.style.width="40px";
-		butt.style.height="40px";
-		butt.style.padding="0";
-		butt.style.border="None";
+	buttCreator(numb=null){
+		var butt = super.buttCreator(numb);
 		butt.classList.add("sieveBut");
-		//butt.appendChild(sub);
 		return butt;
 	}
 }

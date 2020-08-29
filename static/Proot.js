@@ -39,7 +39,7 @@ class Proot extends Algorithm{
 		this.btnlist=[];
 		for (i=0;i<6;i++) this.btnlist.push([]);
 		
-		c=this.getInput(0, fas);
+		c=this.dissolve_input(fas);
 		this.m=c[0];
 
 		var v=this.find_next_prime(2, this.m);
@@ -579,24 +579,9 @@ class Proot extends Algorithm{
 	
 	//Creates buttons
 	buttCreator(size=40, numb=null){
-		var butt=document.createElement("BUTTON");
+		var butt=super.buttCreator(numb);
 		butt.style.width=`${size}px`;
 		butt.style.height=`${size}px`;
-		butt.style.backgroundColor='#440000';
-		butt.style.border="0";
-		butt.style.padding='0';
-		butt.style.margin='0';
-		
-		if (numb!=null) {
-			butt.innerHTML=numb;
-			butt.style.color='#FFFFFF';
-			butt.style.fontSize='12px';
-		}
-		else {
-			butt.innerHTML=0;
-			butt.style.backgroundColor="#FFFFFF";
-			butt.style.color="#FFFFFF";
-		}
 		return butt;
 	}
 }

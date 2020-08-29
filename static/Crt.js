@@ -1,6 +1,11 @@
 class CrtSolver extends Algorithm{
 	constructor(block, n=-1, c, s){
 		super(block);
+
+		this.bs_butt_width="min(200px, 49%)";
+		this.bs_butt_height="30px";
+		this.bs_font_size="14px";
+
 		if (n!=-1){
 			var i, af=[];
 			this.divs=this.divsCreator();
@@ -11,6 +16,7 @@ class CrtSolver extends Algorithm{
 	}
 	
 	BeginningExecutor(){
+
 		this.lees=[];
 		this.solstack=[];
 		var fas=this.input.value, resp;
@@ -19,16 +25,10 @@ class CrtSolver extends Algorithm{
 		this.dt=[];
 		var n, c, d, i=0, dis, vd, lst;
 
-		c=this.getInput(0, fas);
-		n=c[0];
-		dis=c[1];
-		for (i=0;i<n;i++){
-			c=this.getInput(dis+1, fas);
-			vd=c[0];
-			c=this.getInput(c[1]+1, fas);
-			this.dt.push([vd, c[0]]);
-			dis=c[1];
-		}
+		c=this.dissolve_input(fas);
+		n=c.get_next();
+		for (i=0;i<n;i++) this.dt.push([c.get_next(), c.get_next()]);
+
 		this.solstack.push(this.dt[0]);
 		this.lees.push([0, this.dt[1], this.extended_euclid(this.dt[0][1], this.dt[1][1])]);
 		this.divs=this.divsCreator();
@@ -45,41 +45,20 @@ class CrtSolver extends Algorithm{
 	}
 
 	buttChanger(a, b, rev=0){
-		var cl1="#FFFFFF", cl2="#004400", tcol="#666666", wh="#FFFFFF";
-		var toldcol="#FFFFFF", clb="#440000";
 		if (this.btn1){
-			if (rev==0){
-				this.btn1.style.backgroundColor=cl1;
-				this.btn1.style.color=tcol;
-			}
-			else{
-				this.btn1.style.backgroundColor=clb;
-				this.btn1.style.color=toldcol;
-			}
+			if (rev==0) this.Painter(this.btn1, 2);
+			else this.Painter(this.btn1, 0);
 		}
 		if (this.btn2){
-			if (rev==0){
-				this.btn2.style.backgroundColor=cl1;
-				this.btn2.style.color=tcol;
-			}
-			else{
-				this.btn2.style.backgroundColor=clb;
-				this.btn2.style.color=toldcol;
-			}
+			if (rev==0) this.Painter(this.btn2, 2);
+			else this.Painter(this.btn2, 0);
 		}
 
 		this.btn1=this.divs[0].getElementsByTagName("button")[a];
 		this.btn2=this.divs[0].getElementsByTagName("button")[b];
 
-		if (this.btn1){
-			this.btn1.style.backgroundColor=cl2;
-			this.btn1.style.color=wh;
-		}
-
-		if (this.btn2) {
-			this.btn2.style.backgroundColor=cl2;
-			this.btn2.style.color=wh;
-		}
+		if (this.btn1) this.Painter(this.btn1, 1);
+		if (this.btn2) this.Painter(this.btn2, 1);
 	}
 	
 	extended_euclid(a, b){
@@ -198,26 +177,13 @@ class CrtSolver extends Algorithm{
 	buttMaker(lst){
 		var i, bt;
 		for (i=0;i<lst.length;i++){
-			bt=this.buttCreator("#440000", `x &equiv; ${lst[i][0]} (mod ${lst[i][1]})`);
+			bt=this.buttCreator(`x &equiv; ${lst[i][0]} (mod ${lst[i][1]})`, "#440000");
 			this.divs[0].appendChild(bt);
-			bt=this.buttCreator("#440000", ``);
+			bt=this.buttCreator(``, "#440000");
 			bt.style.display="None";
 			this.divs[0].appendChild(bt);
 			this.divs[0].appendChild(document.createElement("BR"))
 		}
-	}
-
-	buttCreator(col="#440000", numb=null){
-		var butt=document.createElement("BUTTON");
-		butt.style.width="min(200px, 49%)";
-		butt.style.height="30px";
-		//butt.style.border="1px solid";
-		butt.style.border="None";
-		butt.style.backgroundColor=col;
-		butt.style.color="#FFFFFF";
-		butt.style.padding='0px';
-		if (numb!=null) butt.innerHTML=numb;
-		return butt;
 	}
 
 	divsCreator(){

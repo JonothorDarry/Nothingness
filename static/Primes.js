@@ -137,14 +137,13 @@ class Querier extends Algorithm{
 			}
 		}
 		if (s[0]!=100)	{
-			var cl='#0000FF';
-			this.sieve.place.getElementsByClassName("divisNumb")[s[1]].style.backgroundColor=cl;
-			this.sieve.place.getElementsByClassName("fullNumb")[s[1]].style.backgroundColor=cl;
+			this.Painter(this.sieve.place.getElementsByClassName("divisNumb")[s[1]], 10, 1);
+			this.Painter(this.sieve.place.getElementsByClassName("fullNumb")[s[1]], 10, 1);
 		}
 		if (l>1){
 			var prv=this.lees[l-2]
-			this.sieve.place.getElementsByClassName("divisNumb")[prv[1]].style.backgroundColor='#444400';
-			this.sieve.place.getElementsByClassName("fullNumb")[prv[1]].style.backgroundColor='#444400';
+			this.Painter(this.sieve.place.getElementsByClassName("divisNumb")[prv[1]], 11, 1);
+			this.Painter(this.sieve.place.getElementsByClassName("fullNumb")[prv[1]], 11, 1)
 		}
 
 
@@ -167,9 +166,8 @@ class Querier extends Algorithm{
 			this.place.textContent=tex.slice(0, i+1);
 		}
 
-		var cl='#0000FF'
-		this.sieve.place.getElementsByClassName("divisNumb")[prv[1]].style.backgroundColor=cl;
-		this.sieve.place.getElementsByClassName("fullNumb")[prv[1]].style.backgroundColor=cl;
+		this.Painter(this.sieve.place.getElementsByClassName("divisNumb")[prv[1]], 10, 1);
+		this.Painter(this.sieve.place.getElementsByClassName("fullNumb")[prv[1]], 10, 1);
 	
 		this.lees.pop();
 	}

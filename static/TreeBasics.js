@@ -185,9 +185,7 @@ class Tree extends Algorithm{
 		var str=this.dissolved_input, edges=[];
 		var n=str.get_next();
 		this.n=n;
-		for (var i=1; i<n; i++){
-			edges.push([str.get_next(), str.get_next()]);
-		}
+		for (var i=1; i<n; i++) edges.push([str.get_next(), str.get_next()]);
 		return edges;
 
 	};
@@ -195,24 +193,8 @@ class Tree extends Algorithm{
 	
 	//Creates buttons
 	buttCreator(numb=null, col='#440000'){
-		var butt=document.createElement("BUTTON");
-		butt.style.width="40px";
-		butt.style.height="40px";
+		var butt=super.buttCreator(numb, col);
 		butt.style.borderRadius="100%";
-		butt.style.backgroundColor=col;
-		butt.style.border="0";
-		butt.style.padding='0';
-		butt.style.margin='0';
-		
-		if (numb!=null) {
-			butt.innerHTML=numb;
-			butt.style.color='#FFFFFF';
-			butt.style.fontSize='12px';
-		}
-		else {
-			butt.style.backgroundColor="#FFFFFF";
-			butt.style.color="#FFFFFF";
-		}
 		return butt;
 	}
 	
@@ -496,7 +478,7 @@ class DiamFinder extends Tree{
 	}
 
 	betterButtCreator(numb=null, col='#440000'){
-		var butt=this.buttCreator(numb, col);
+		var butt=super.buttCreator(numb, col);
 		butt.style.width="20px";
 		butt.style.height="20px";
 		butt.style.borderRadius="0%";

@@ -47,6 +47,12 @@ class Algorithm{
 			var zis=Algorithm.alldict[this.id];
 			zis.FinishingSequence();
 		});
+
+		//Button style
+		this.bs_butt_width="40px";
+		this.bs_butt_height="40px";
+		this.bs_font_size="12px";
+		this.bs_border="0";
 	}
 
 	isFinished(){
@@ -70,16 +76,6 @@ class Algorithm{
 		l.innerHTML=p;
 	} 
 
-	getInput(beg, str){
-		var a=0, i=0, x;
-		for (i=beg;i<str.length;i++){
-			x=str.charCodeAt(i);
-			if (x<58 && x>=48) a=a*10+x-48;
-			else break;
-		}
-		return [a, i];
-	}
-
 	dissolve_input(str){
 		var lst=[], j=0, i=0, x, a=0;
 		lst.iter=-1;
@@ -97,25 +93,54 @@ class Algorithm{
 		return lst;	
 	}
 	
-	//0: red, 1:green, 2: gray, 3: dead white 8: gold
-	Painter(btn, col=1){
-		if (col==0 || col==1 || col==5 || col==6 || col==8) btn.style.color="#FFFFFF";
+	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
+	//9: yellow(grey) 10: blue 11: dark gold
+	Painter(btn, col=1, only_bg=0){
+		var olden;
+		if (only_bg==1) olden=btn.style.color;
+		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11) btn.style.color="#FFFFFF";
 		else btn.style.backgroundColor="#FFFFFF";
 
 		if (col==0) btn.style.backgroundColor="#440000";
 		else if (col==1) btn.style.backgroundColor="#004400";
-		else if (col==2 || col==7) btn.style.color="#666666";
+		else if (col==2 || col==7 || col==9) btn.style.color="#666666";
 		else if (col==3) btn.style.color="#FFFFFF";
 		else if (col==5) btn.style.backgroundColor="#000000";
 		else if (col==6) btn.style.backgroundColor="#888888";
 		else if (col==8) btn.style.backgroundColor="#8A7400";
+		else if (col==10) btn.style.backgroundColor="#0000FF";
+		else if (col==11) btn.style.backgroundColor="#222200";
+		if (col==9) btn.style.backgroundColor="#FFFF00"
 
 		if (col==7){
 			btn.style.border="1px solid";
 			btn.style.borderColor="#888888";
 		}
 		else btn.style.border="0px none";
+		if (only_bg==1) btn.style.color=olden;
 	}
+
+	//Creates buttons
+	buttCreator(numb=null, col='#440000'){
+		var butt=document.createElement("BUTTON");
+		butt.style.width=this.bs_butt_width;
+		butt.style.height=this.bs_butt_height;
+		butt.style.backgroundColor=col;
+		butt.style.border=this.bs_border;
+		butt.style.padding='0';
+		butt.style.margin='0';
+		
+		butt.style.color="#FFFFFF";
+		if (numb!=null) {
+			butt.innerHTML=numb;
+			butt.style.fontSize=this.font_size;
+		}
+		else {
+			butt.innerHTML=0;
+			butt.style.backgroundColor="#FFFFFF";
+		}
+		return butt;
+	}	
 
 	static ObjectParser(v){
 		var dick={

@@ -21,14 +21,10 @@ class BinaryExpo extends Algorithm{
 		
 		
 		for (i=0;i<3;i++) this.btlist.push([]);
-		c=this.getInput(0, fas);
-		a=c[0];
-
-		c=this.getInput(c[1]+1, fas);
-		b=c[0];
-
-		c=this.getInput(c[1]+1, fas);
-		m=c[0];
+		c=this.dissolve_input(fas);
+		a=c.get_next();
+		b=c.get_next();
+		m=c.get_next();
 
 		this.lees.push([0, a, b, 1, m]);
 		this.Create_reality(a, b);
@@ -177,29 +173,6 @@ class BinaryExpo extends Algorithm{
 		this.divs=divs;
 		this.zdivs=zdivs;
 	}
-	
-	//Creates buttons
-	buttCreator(numb=null, col='#440000'){
-		var butt=document.createElement("BUTTON");
-		butt.style.width="40px";
-		butt.style.height="40px";
-		butt.style.backgroundColor=col;
-		butt.style.border="0";
-		butt.style.padding='0';
-		butt.style.margin='0';
-		
-		if (numb!=null) {
-			butt.innerHTML=numb;
-			butt.style.color='#FFFFFF';
-			butt.style.fontSize='12px';
-		}
-		else {
-			butt.innerHTML=0;
-			butt.style.backgroundColor="#FFFFFF";
-			butt.style.color="#FFFFFF";
-		}
-		return butt;
-	}	
 }
 
 

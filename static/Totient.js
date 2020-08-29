@@ -178,19 +178,11 @@ class PowerTower extends Algorithm{
 		this.btnlist=[];
 		for (i=0;i<5;i++) this.btnlist.push([]);
 		
-		c=this.getInput(0, fas);
-		n=c[0];
-		this.n=n;
+		c=this.dissolve_input(fas);
+		n=c.get_next(), this.n=n;
+		this.toth.push(c.get_next());
+		for (i=0;i<n;i++)	this.dt.push(c.get_next());
 
-		c=this.getInput(c[1]+1, fas);
-		this.toth.push(c[0]);
-		dis=c[1];
-
-		for (i=0;i<n;i++){
-			c=this.getInput(dis+1, fas);
-			this.dt.push(c[0]);
-			dis=c[1];
-		}
 		this.lees.push([1, 0]);
 		this.divs=this.divsCreator();
 
@@ -350,28 +342,6 @@ class PowerTower extends Algorithm{
 		this.zdivs=zdivs;
 	}
 	
-	//Creates buttons
-	buttCreator(numb=null, col='#440000'){
-		var butt=document.createElement("BUTTON");
-		butt.style.width="40px";
-		butt.style.height="40px";
-		butt.style.backgroundColor=col;
-		butt.style.border="0";
-		butt.style.padding='0';
-		butt.style.margin='0';
-		
-		if (numb!=null) {
-			butt.innerHTML=numb;
-			butt.style.color='#FFFFFF';
-			butt.style.fontSize='12px';
-		}
-		else {
-			butt.innerHTML=0;
-			butt.style.backgroundColor="#FFFFFF";
-			butt.style.color="#FFFFFF";
-		}
-		return butt;
-	}
 }
 
 
