@@ -135,7 +135,7 @@ class EuclidGcd extends Algorithm{
 		c=this.dissolve_input(fas);
 		a=c.get_next();
 		b=c.get_next();
-		this.bs_butt_width_h=Math.max(Math.max(a.toString().length, a.toString().length)*10, 40);
+		this.bs_butt_width_h=Math.max(Math.max(a.toString().length, b.toString().length)*10, 30);
 
 		this.lees.push([0, a, b])
 		this.divs=this.divsCreator();

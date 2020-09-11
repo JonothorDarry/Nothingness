@@ -11,23 +11,40 @@
 	</head>
 	<body>
 		{{ headers.header('Greatest Common Divisor', 'NumberTheory') }}
-
 		<h3>First problem statement and definitions</h3>
 		<p>
 		<!--\(\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}\)-->
-			Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of numbers \(w\) and \(v\) where \(1 \le w, v \le 10^9\)? To answer this question, let's define greatest common divisor (gcd): A number \(g \in N_+\) is gcd of numbers \(w, v\) if and only if:<br>
-			<span class="central">
-				\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h h|w \land h|v \land h&gt;g\)
-			</span><br>
-			In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all numbers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:
+		Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of numbers \(w\) and \(v\) where \(1 \le w, v \le 10^9\)?</p>
+		<p>To answer this question, several definitions and notational nuissances shall be formulated:
+		<ol>
+			<li><b>Divisor</b> \(d\) of number \(x\) is such number, often denoted by \(d|x\), such that<br>
+				<span class="central">\(d|x \iff \exists_{k \in Z}dk=x\)</span><br>
+				If \(d|x\), then \(x\) is divisible by \(d\).
+			</li>
+			<li><b>Greatest common divisor (gcd)</b>: A number \(g \in N^+\) is gcd of numbers \(w, v\) if and only if:<br>
+				<span class="central">\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h (h|w \land h|v \land h&gt;g)\)</span><br>
+			</li>
+			<li><b>Remainder from dividing</b> number \(x\) by number \(m\), denoted later by \(x\%m\), is equal to:<br>
+				<span class="central">\(m \gt x\%m=x-\lfloor \frac{x}{m} \rfloor m \ge 0\)</span><br>
+			</li>
+			<li><b>Two numbers \(a\), \(b\) are equivalent modulo m</b>, if:<br>
+				<span class="central">\(a \equiv b \pmod m \iff \exists_{k \in Z} a-km=b\)</span><br>
+				It's worth noting, that \(x \equiv x\%m \pmod m\).
+			</li>
+		</ol>
+
+		<p>In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all numbers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:</p>
+		</p>
+		<h3>Distribution of all divisors of a number and their upper estimate</h3>
+		<p>If \(d\) is a divisor of \(x\), \(d \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction is trivial: if \(d|x\) then, there exists such natural \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\) occurs \(|\{d:d|x \land d \ge 1\}| \le 2\sqrt{x}\) - because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
 		</p>
 		<h3>First solution</h3>
 		<p>
-		Without loss of generality, let's assume that \(w \lt v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|u \lor k|u\), and take maximum of those - this will work in \(O(q*\sqrt{w})\).
+		Without loss of generality, let's assume that \(w \lt v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this will work in \(O(q*\sqrt{w})\).
 		</p>
 		<h3>Second Solution</h3>
 		<p>
-		Let's create arrays \(a_i\) and \(b_i\) such that \(a_0=w\), \(b_0=v\). One can define these arrays for \(i &gt; 0\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\ mod\ b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
+		Let's create arrays \(a_i\) and \(b_i\) such that \(a_0=w\), \(b_0=v\). One can define these arrays for \(i &gt; 0\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\%b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
 
 		</p>
 		<div id="Algo1" class="pureAlgo">
@@ -49,43 +66,39 @@
 		</div>
 
 		<h2>Proofs</h2>
-		<h3>Finiteness proof</h3>
-		<p>
-		In each iteration, \(b_i\) becomes \(a_{i-1}\ mod\ b_{i-1}\), but \(a_{i-1}\ mod\ b_{i-1} &lt; b_{i-1}\) by definition - and so, in each iteration \(b_i\) becomes lower, but in each iteration it's greater than \(0\) or algorithm ends - so number of steps must be lower or equal to \(b_0\), so it is finite
-		</p>
 		<h3>Correctness proof</h3>
 		<p>
 			Thesis: for each \(i,\ gcd(a_i, b_i)\) is equal to gcd(\(w\), \(v\)).<br>
-			Proof by induction: For \(i=0\) \(gcd(a_i, b_i)=gcd(w, v)\), because \(a_0=w, b_0=v\). So: \(\exists_i gcd(a_i, b_i)=gcd(w, v)\). To finish proof is to show that for any \(i\) either \(gcd(a_i, b_i)=gcd(a_{i+1}, b_{i+1})\), or \(b_{i+1}=0\)<br>
+			Proof by induction: For \(i=0\) \(gcd(a_i, b_i)=gcd(w, v)\), because \(a_0=w, b_0=v\). So: \(\exists_i gcd(a_i, b_i)=gcd(w, v)\). To finish proof is to show that for any \(i\) either \(gcd(a_i, b_i)=gcd(a_{i+1}, b_{i+1})\), or \(b_i=0\)<br>
 			What can be said about any divisor \(g\) dividing both \(a_i\) and \(b_i\)? If \(a_i\) is shown as \(sb_i +m\), where \(s \in N\), then:
 			
 			<br><span class="central">\(a_i = gk, b_i =gl, a_i=sb_i +m\)</span><br>
 			<span class="central">\(gk=sgl+m\)</span><br>
 			<span class="central">\(gk-sgl=g*(k-sl)=m\)</span><br>
-			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\ mod\ b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\ mod\ b_i, b_i)=gcd(b_i, a_i\ mod\ b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any number divides \(0\), and so any number that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of a number \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Moreover, proof shows, that gcd(\(w\), \(v\)) has to be natural number.
+			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\%b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\%b_i, b_i)=gcd(b_i, a_i\%b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any number divides \(0\), and so any number that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of a number \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Furthermore, it shows, that every divisor of both \(w, v\) is also a divisor of \(gcd(w,v)\)
 
 		</p>
 		<h3>Complexity proof</h3>
 		<p>
 			It can be assumed without loss of generality, that \(a_i &gt; b_i\) - it is true after first iteration. Furthermore, 
-			<br><span class="central">\(b_i + a_i\ mod\ b_i &lt; b_i+b_i=2b_i\)</span><br>
+			<br><span class="central">\(b_i + a_i\%b_i &lt; b_i+b_i=2b_i\)</span><br>
 			To prove that \(\frac{a_i + b_i}{a_{i+1}+b_{i+1}} &ge; \frac{3}{2}\) , let's consider two cases: first, when \(a_i &ge; 2b_i\), second, when \(2b_i &gt; a_i &ge; b_i\).
 
-			<br><span class="central">(1) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{a_i\ mod\ b_i +b_i} &ge; \frac{a_i+b_i}{2b_i} &ge; \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span>
+			<br><span class="central">(1) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} &gt; \frac{a_i+b_i}{2b_i} &ge; \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span>
 
-			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{a_i\ mod\ b_i+b_i} = \frac{a_i+b_i}{a_i-b_i+b_i} = \frac{a_i+b_i}{a_i} &gt; 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
-			And so, maximum number of operations can be bounded by \(O(q*log(min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, and after \(k\) iterations it becomes lower at least \((\frac{3}{2})^{k}\) times.
+			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} = \frac{a_i+b_i}{b_i+a_i-b_i} = \frac{a_i+b_i}{a_i} = 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
+			And so, maximum number of operations can be bounded by \(O(q*log(min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after second iteration \(b_2 \lt a_2 \le min(w,v)\), and after \(k\) iterations it becomes lower at least \((\frac{3}{2})^{k}\) times.
 		</p>
 		<h3>Second Problem</h3>
 		<p>
 			Let's say that sole \(gcd(w,v)\) is not enough: You want to find such numbers \(x, y\) such that: \(wx+vy=gcd(w,v)\). One can use same mechanism to solve this problem, but calculate also arrays \(p, q\), such that for each \(i\) following stands:
 			<br><span class="central">\(p_iw+q_iv=b_i\)<br>
 				\(p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1\)<br>
-				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\ mod\ b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}\)<br></span>
+				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}\)<br></span>
 			It is possble to show \(b_{i-1}\) as \(b_{i-1}=p_{i-1}w+q_{i-1}v\). But what with \(a_{i-1}\)? It's equal to \(b_{i-2}\), except when \(i=2\)... unless \(b_0=a_1=w\). Let also, for simplicity, \(z_i=\lfloor \frac{a_i}{b_i} \rfloor\). Then: <br>
 			<span class="central">\(p_0=1, q_0=0 \implies wp_0+vq_0=w=b_0\)<br>
 				\(b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z(p_iw + q_iv)= w(p_{i-1} - zp_i)+ v(q_{i-1} - zq_i)\)</span>
-			And so, \(p_{i+1}=p_{i-1}-zp_i\) and \(q_{i+1}=q_{i-1}-zq_i\)
+			And so, \(p_{i+1}=p_{i-1}-zp_i\) and \(q_{i+1}=q_{i-1}-zq_i\). The existence of solution to this equation is called bezout's identity.
 		</p>
 		<div id="Algo2" class="pureAlgo">
 			<h2>Extended Euclidean Algorithm</h2>
@@ -114,7 +127,7 @@
 				\(gkx+gly=h\)<br>
 				\(g(kx+ly)=h\)<br>
 			</span>
-			So, \(h\) must simultaneously fulfill: \(g|h\) and \(g &gt; h &gt; 0\). It is impossible, which finishes the proof.<br>
+			So, \(h\) must simultaneously fulfill: \(g|h\) and \(g &gt; h &gt; 0\). It is impossible, which finishes the proof. Furthermore, it shows, that for any \(x, y\) occurs \(gcd(w,v)|wx+vy\) <br>
 		</p>
 			<h3>Second proof - different x, y</h3>
 		<p>
@@ -126,20 +139,92 @@
 				\(wr_1+vr_2=0\)<br>
 				\(wr_1=-vr_2\)<br>	
 			</span>
-			And so, there is infinite amount of possible solutions; it is obvious, if \(r_2=kw\), \(r_1=kv\). But how to attain minimal next solution, i.e. \(s=|r_1w|\) is minimal for given \(r_1\)? Certainly:
+			And so, there is infinite amount of possible solutions; it is obvious, if \(r_2=kw\), \(r_1=-kv\). But how to attain minimal next solution, i.e. \(s=|r_1w|\) is minimal for given \(r_1\)? Certainly:
 			<br><span class="central">
-				\(s|w, s|v\) - it comes from last equation and fact, that \(r_1\) has to be integer - because by definition \(x+r_1\) is integer.<br>
+				\(w|s, v|s\) - it comes from last equation and fact, that \(r_1\) has to be integer - because by definition \(x+r_1\) is integer.<br>
 				\(s &gt; 0\) - otherwise \(r_1=0\) and so, next solution is still unknown.<br>
 				\(s\) is minimal.
 			</span>
-			In other words, \(s\) is least common multiple of \(w\) and \(v\) - or \(s=lcm(w, v)\). What can be said about \(c\), if \(s\) is shown as \(s=\frac{wv}{c}\)?
+			In other words, \(s\) is least common multiple of \(w\) and \(v\) - or \(s=lcm(w, v)\).
+		</p>
+
+		<p>One can show, that \(lcm(v, w)|vw\). By contradiction, suppose it is not true. What can be said about \(f=gcd(lcm(v,w), vw)\)?</p>
+		<ol>
+			<li>\(f \le lcm(v,w)\) - divisor of \(x\) must be lower than \(x\) (if x is positive).</li>
+			<li>As \(v|lcm(v,w) \land w|lcm(v,w) \land w|wv \land v|wv\) , then, from euclid's algorithm, \(v|f \land w|f\)</li>
+		</ol>
+		<p>So, if \(lcm(v, w) \nmid vw\), then \(gcd(lcm(v, w), vw)|vw\), it's divisible by both \(v, w\), and lower than \(lcm(v,w)\) - but it contradicts statement, that \(lcm(w, v)\) is lowest common mutiple of \(w, v\) - what follows, \(lcm(v,w)|vw\)</p>
+		</p>
+		<p>
+			
+			If \(s\) is shown as \(s=\frac{wv}{c}\), what can be said about \(c\)?
 			<br><span class="central">
 				\(w|s \implies w|w\frac{v}{c} \implies c|v\)<br>
 				\(v|s \implies v|v\frac{w}{c} \implies c|w\)<br>
 				In order to minimize \(s=\frac{wv}{c}\), \(c\) has to be maximal possible.
 			</span>
 			And maximal number \(c\) dividing both \(w\) and \(v\) is \(c=gcd(v, w)\). So, \(s=|rw|=\frac{wv}{gcd(w, v)}\). What follows, \(|r_1|=\frac{v}{gcd(w,v)}\) and \(|r_2|=\frac{w}{gcd(w,v)}\).<br><br>
-			Problems concerning GCD rely on finding multiplicative inverse, and so on. Example problems involving gcds are: <br>
+		</p>
+			<h3>Third proof - estimation of \(a_i, b_i\)</h3>
+			<p>First, one can see, that \(sgn(p_i) \neq sgn(p_{i+1})\) and \(sgn(q_i) \neq sgn(q_{i+1})\) - it is because:</p>
+			<ol>
+				<li>\(p_0=1, p_1=0\), also \(q_0=0, q_1=1\) - as inductive step is exactly same for \(p\) and \(q\), it'll be shown only for \(p\)</li>
+				<li>By induction, \(p_i=p_{i-2}-zp_{i-1}\) - \(z\) is positive (as it is equal to \(\lfloor \frac{b_{i-2}}{b_{i-1}} \rfloor\)) - so it does not change sign, and as \(sgn(p_{i-1}) \neq sgn(p_{i-2})\), then:
+					<ul>
+						<li>If \(p_{i-2}\) is \(0\) - then \(p_{i-1}\) cannot be \(0\), and \(-zp_{i-1}\) have different sign than \(p_{i-1}\).</li>
+						<li>If \(p_{i-2}\) is not zero, then \(-zp_{i-1}\) either is equal to \(0\) - or \(-zp_{i-1}\) have same sign as \(p_{i-2}\), in both cases, \(sgn(p_{i-2})=sgn(p_i) \neq sgn(p_{i-1})\)</li>
+					</ul>
+				</li>
+			</ol>
+			{% set z="\\lfloor \\frac{b_{i-1}}{b_i} \\rfloor " %}
+			<p>One can also notice, that \(|p_{i-1}b_i-p_ib_{i-1}|=v\), and also \(|q_{i-1}b_i-q_ib_{i-1}|=w\) - proof is same for both, so inductive step will be shown only for \(p_i\)
+			<span class="central">(1) \(|p_0b_1-p_1b_0|=|b_1-0|=v\), also \(|q_0b_1-q_1b_0|=|0-b_0|=|w|\)</span>
+			<span class="central">(2) \(|p_ib_{i+1}-p_{i+1}b_i|=|p_i(b_{i-1}-{{z}} b_i)-(p_{i-1}-{{z}} p_i)b_i|=|p_ib_{i-1}-{{z}} p_ib_i-p_{i-1}b_i+{{z}} p_ib_i|=|p_{i-1}b_i-p_ib_{i-1}|=v\)</span>
+			</p>
+			<p>These two lemmas show, that:</p>
+			<ol>
+				<li>Values of \(|p_i|, |q_i|\) for \(i \ge 2\) are not decreasing, as \(|p_i|=|p_{i-2}-{{z}}p_{i-1}|=|p_{i-2}|+|{{z}}p_{i-1}| \ge |p_{i-2}|+|p_{i-1}|\)</li>
+				<li>\(|p_{i-1}b_i-p_ib_{i-1}|=|p_{i-1}b_i|+|p_ib_{i-1}|=v \implies |p_ib_{i-1}| \le v \implies |p_i| \le v\). Same holds for \(|q_i \le w\)</li>
+			</ol>
+			<p>This shows, tha always \(p_i \le v\) and \(q_i \le w\)
+
+
+		<h3>Third Problem</h3>
+		<p>Suppose you have to find all solutions \(x\) satisfying: \(ax \equiv c \pmod m\) for given \(1 \le a, c, m \le 10^9\)</p>
+		<h3>Solution</h3>
+		<p>
+		One can show the problem as:
+		<span class="central">\(\exists_{y \in Z} ax+my=c\)</span>
+		From Bezout's identity consequences, \(gcd(a, m)|c\) - otherwise, there are no solutions. If there are solutions however, then, from extended Euclidean algorithm, one can find such \(p, q \in Z\), such that:
+		<span class="central">\(ap+mq=gcd(a, m) /// *\frac{c}{gcd(a, m)}\)<br>
+			\(ap\frac{c}{gcd(a, m)}+mq\frac{c}{gcd(a, m)}=c\)
+		</span>
+		and so, \(x=p\frac{c}{gcd(a, m)}\) solves this equation. Furthermore, next solutions have form \(x_k=(p+k\frac{m}{gcd(a,m)})\frac{c}{gcd(a, m)}\)
+
+		</p>
+		<h3>The notion of modular inverse</h3>
+		<p>
+		A number \(p\) is called a <b>modular multiplicative inverse</b> of \(a\) modulo \(m\) (where \(gcd(a, m)=1\)), if
+		<span class="central">\(\exists_{q \in Z} ap+mq=1\)</span>
+		Such number \(p\) always exists - this is a consequence of extended Euclidean algorithm. One may note, that all modular inverses of \(a\) have same remainder from division by \(m\) - this comes from lemma above, as \(gcd(a, m)=1\) - and so, only numbers in form \(p+km\) can sitisfy this equation for some \(k \in Z\). The name comes from fact, that:
+		<span class="central">\(ap \equiv 1 \pmod m\)</span>
+		Number \(p\) is often denoted as \(a^{-1}\).
+
+		</p>
+
+		<h2>Summary</h2>
+		<ol>
+			<li>\((d|x \land d \ge 1) \implies (d \le \sqrt{x} \lor \frac{x}{d} \le \sqrt{x})\). Also, \(|\{d: d|x \land d \ge 1 \land x \ge 1\}| \le 2\sqrt{x}\)</li>
+			<li>\(gcd(w, v)\) can be calculated in \(O(log(min(v,w)))\) with <b>Euclidean algortithm</b>, using fact, that \(gcd(w, v)=gcd(w\%v, v)\).</li>
+			<li>One can find \(x, y\) solving equation \(wx+vy=gcd(w,v)\) also called <b>bezout's identity</b> using <b>extended Euclidean algorithm</b>. Also, for any \(x, y\) occurs \(gcd(w,v)|wx+vy\).</li>
+			<li>\(lcm(v, w)=\frac{vw}{gcd(v,w)}\)</li>
+			<li>If \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) -, then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
+			<li>If \(gcd(m, a)=1\), then number \(p\) solving \(ap+mq=1\) is called modular multiplicative inverse of \(a\) modulo \(m\), also \(ap \equiv 1 \pmod m\)</li>
+
+		</ol>
+
+		<h3>Problems</h3>
+		<p>Problems concerning GCD rely on finding multiplicative inverse, and so on. Example problems involving gcds are: <br>
 			<a href="https://codeforces.com/problemset/problem/200/E">Tractor College</a>, 
 			<a href="https://codeforces.com/problemset/problem/919/E">Congruence Equation</a>
 		</p>
