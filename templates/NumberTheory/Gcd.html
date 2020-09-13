@@ -15,32 +15,35 @@
 		<p>
 		<!--\(\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}\)-->
 		Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of numbers \(w\) and \(v\) where \(1 \le w, v \le 10^9\)?</p>
-		<p>To answer this question, several definitions and notational nuissances shall be formulated:
+		<p>To answer this question, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
 		<ol>
-			<li><b>Divisor</b> \(d\) of number \(x\) is such number, often denoted by \(d|x\), such that<br>
+			<li><b>Divisor</b> A number \(d \in Z\) is a divisor of number \(x \in Z\) (which is often denoted by \(d|x\)), if and only if:<br>
 				<span class="central">\(d|x \iff \exists_{k \in Z}dk=x\)</span><br>
 				If \(d|x\), then \(x\) is divisible by \(d\).
 			</li>
 			<li><b>Greatest common divisor (gcd)</b>: A number \(g \in N^+\) is gcd of numbers \(w, v\) if and only if:<br>
 				<span class="central">\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h (h|w \land h|v \land h&gt;g)\)</span><br>
 			</li>
+			<li><b>Least common multiple (lcm)</b>: A number \(l \in N^+\) is lcm of numbers \(w, v\) if and only if:<br>
+				<span class="central">\(l=lcm(w, v) \iff w|l \land v|l \land !\exists_h (w|h \land v|h \land h&lt;l)\)</span><br>
+			</li>
 			<li><b>Remainder from dividing</b> number \(x\) by number \(m\), denoted later by \(x\%m\), is equal to:<br>
 				<span class="central">\(m \gt x\%m=x-\lfloor \frac{x}{m} \rfloor m \ge 0\)</span><br>
 			</li>
-			<li><b>Two numbers \(a\), \(b\) are equivalent modulo m</b>, if:<br>
+			<li><b>Two integers \(a\), \(b\) are equivalent modulo m</b>, if:<br>
 				<span class="central">\(a \equiv b \pmod m \iff \exists_{k \in Z} a-km=b\)</span><br>
 				It's worth noting, that \(x \equiv x\%m \pmod m\).
 			</li>
 		</ol>
 
-		<p>In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all numbers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:</p>
+		<p>In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all integers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:</p>
 		</p>
 		<h3>Distribution of all divisors of a number and their upper estimate</h3>
 		<p>If \(d\) is a divisor of \(x\), \(d \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction is trivial: if \(d|x\) then, there exists such natural \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\) occurs \(|\{d:d|x \land d \ge 1\}| \le 2\sqrt{x}\) - because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
 		</p>
 		<h3>First solution</h3>
 		<p>
-		Without loss of generality, let's assume that \(w \lt v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this will work in \(O(q*\sqrt{w})\).
+		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this solution will work in \(O(q*\sqrt{w})\).
 		</p>
 		<h3>Second Solution</h3>
 		<p>
@@ -59,6 +62,7 @@
 				<button id="Prever" class="previous">Previous Move</button>
 				<button id="Nexter" class="next">Next Move</button>
 				<button id="Finisher" class="finish">Finish</button>
+				<input type="checkbox" id="Nothingness" name="shower"><label for="Nothingness">Show only table</label>
 			</div>
 			<div class="breakAlgo"></div>
 			<div id="Primez" class="primez"></div>
@@ -70,12 +74,12 @@
 		<p>
 			Thesis: for each \(i,\ gcd(a_i, b_i)\) is equal to gcd(\(w\), \(v\)).<br>
 			Proof by induction: For \(i=0\) \(gcd(a_i, b_i)=gcd(w, v)\), because \(a_0=w, b_0=v\). So: \(\exists_i gcd(a_i, b_i)=gcd(w, v)\). To finish proof is to show that for any \(i\) either \(gcd(a_i, b_i)=gcd(a_{i+1}, b_{i+1})\), or \(b_i=0\)<br>
-			What can be said about any divisor \(g\) dividing both \(a_i\) and \(b_i\)? If \(a_i\) is shown as \(sb_i +m\), where \(s \in N\), then:
+			What can be said about any divisor \(g\) dividing both \(a_i\) and \(b_i\)? If \(a_i\) is shown as \(sb_i +m\), where \(s \in Z\), then:
 			
-			<br><span class="central">\(a_i = gk, b_i =gl, a_i=sb_i +m\)</span><br>
-			<span class="central">\(gk=sgl+m\)</span><br>
+			<br><span class="central">\(a_i = gk, b_i =gl, a_i=sb_i +m\)</span>
+			<span class="central">\(gk=sgl+m\)</span>
 			<span class="central">\(gk-sgl=g*(k-sl)=m\)</span><br>
-			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\%b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\%b_i, b_i)=gcd(b_i, a_i\%b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any number divides \(0\), and so any number that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of a number \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Furthermore, it shows, that every divisor of both \(w, v\) is also a divisor of \(gcd(w,v)\)
+			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\%b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\%b_i, b_i)=gcd(b_i, a_i\%b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any integer divides \(0\), and so any number that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of a number \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Furthermore, it shows, that every divisor of both \(w, v\) is also a divisor of \(gcd(w,v)\)
 
 		</p>
 		<h3>Complexity proof</h3>
@@ -87,7 +91,7 @@
 			<br><span class="central">(1) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} &gt; \frac{a_i+b_i}{2b_i} &ge; \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span>
 
 			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} = \frac{a_i+b_i}{b_i+a_i-b_i} = \frac{a_i+b_i}{a_i} = 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
-			And so, maximum number of operations can be bounded by \(O(q*log(min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after second iteration \(b_2 \lt a_2 \le min(w,v)\), and after \(k\) iterations it becomes lower at least \((\frac{3}{2})^{k}\) times.
+			And so, maximum number of operations can be bounded by \(O(q*log(min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after second iteration \(b_2 \lt a_2 \le min(w,v)\), and after \(k\) iterations sum \(a_k+b_k\) becomes lower at least \((\frac{3}{2})^{k-1}\) times than \(a_0+b_0\).
 		</p>
 		<h3>Second Problem</h3>
 		<p>
@@ -97,8 +101,8 @@
 				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}\)<br></span>
 			It is possble to show \(b_{i-1}\) as \(b_{i-1}=p_{i-1}w+q_{i-1}v\). But what with \(a_{i-1}\)? It's equal to \(b_{i-2}\), except when \(i=2\)... unless \(b_0=a_1=w\). Let also, for simplicity, \(z_i=\lfloor \frac{a_i}{b_i} \rfloor\). Then: <br>
 			<span class="central">\(p_0=1, q_0=0 \implies wp_0+vq_0=w=b_0\)<br>
-				\(b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z(p_iw + q_iv)= w(p_{i-1} - zp_i)+ v(q_{i-1} - zq_i)\)</span>
-			And so, \(p_{i+1}=p_{i-1}-zp_i\) and \(q_{i+1}=q_{i-1}-zq_i\). The existence of solution to this equation is called bezout's identity.
+				\(b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z_i(p_iw + q_iv)= w(p_{i-1} - z_ip_i)+ v(q_{i-1} - z_iq_i)\)</span>
+			And so, \(p_{i+1}=p_{i-1}-z_ip_i\) and \(q_{i+1}=q_{i-1}-z_iq_i\). The existence of solution to this equation is called bezout's identity.
 		</p>
 		<div id="Algo2" class="pureAlgo">
 			<h2>Extended Euclidean Algorithm</h2>
@@ -113,6 +117,7 @@
 				<button id="Prever2" class="previous">Previous Move</button>
 				<button id="Nexter2" class="next">Next Move</button>
 				<button id="Finisher2" class="finish">Finish</button>
+				<input type="checkbox" id="Nothingness2" name="shower"><label for="Nothingness2">Show only table</label>
 			</div>
 			<div class="breakAlgo"></div>
 			<div id="Primez2" class="primez"></div>
@@ -139,7 +144,7 @@
 				\(wr_1+vr_2=0\)<br>
 				\(wr_1=-vr_2\)<br>	
 			</span>
-			And so, there is infinite amount of possible solutions; it is obvious, if \(r_2=kw\), \(r_1=-kv\). But how to attain minimal next solution, i.e. \(s=|r_1w|\) is minimal for given \(r_1\)? Certainly:
+			And so, there is infinite amount of possible solutions; it is obvious, if \(r_2=kw\), \(r_1=-kv\) for any integer \(k\). But how to attain minimal next solution, i.e. \(s=|r_1w|\) is minimal for given \(r_1\)? Certainly:
 			<br><span class="central">
 				\(w|s, v|s\) - it comes from last equation and fact, that \(r_1\) has to be integer - because by definition \(x+r_1\) is integer.<br>
 				\(s &gt; 0\) - otherwise \(r_1=0\) and so, next solution is still unknown.<br>
@@ -151,7 +156,7 @@
 		<p>One can show, that \(lcm(v, w)|vw\). By contradiction, suppose it is not true. What can be said about \(f=gcd(lcm(v,w), vw)\)?</p>
 		<ol>
 			<li>\(f \le lcm(v,w)\) - divisor of \(x\) must be lower than \(x\) (if x is positive).</li>
-			<li>As \(v|lcm(v,w) \land w|lcm(v,w) \land w|wv \land v|wv\) , then, from euclid's algorithm, \(v|f \land w|f\)</li>
+			<li>As \(v|lcm(v,w) \land w|lcm(v,w) \land w|wv \land v|wv\) , then, from \(gcd\) properties, \(v|f \land w|f\)</li>
 		</ol>
 		<p>So, if \(lcm(v, w) \nmid vw\), then \(gcd(lcm(v, w), vw)|vw\), it's divisible by both \(v, w\), and lower than \(lcm(v,w)\) - but it contradicts statement, that \(lcm(w, v)\) is lowest common mutiple of \(w, v\) - what follows, \(lcm(v,w)|vw\)</p>
 		</p>
@@ -163,30 +168,31 @@
 				\(v|s \implies v|v\frac{w}{c} \implies c|w\)<br>
 				In order to minimize \(s=\frac{wv}{c}\), \(c\) has to be maximal possible.
 			</span>
-			And maximal number \(c\) dividing both \(w\) and \(v\) is \(c=gcd(v, w)\). So, \(s=|rw|=\frac{wv}{gcd(w, v)}\). What follows, \(|r_1|=\frac{v}{gcd(w,v)}\) and \(|r_2|=\frac{w}{gcd(w,v)}\).<br><br>
+			And maximal number \(c\) dividing both \(w\) and \(v\) is \(c=gcd(v, w)\). So, \(s=|rw|=lcm(w, v)=\frac{wv}{gcd(w, v)}\). What follows, \(|r_1|=\frac{v}{gcd(w,v)}\) and \(|r_2|=\frac{w}{gcd(w,v)}\).<br><br>
 		</p>
 			<h3>Third proof - estimation of \(a_i, b_i\)</h3>
 			<p>First, one can see, that \(sgn(p_i) \neq sgn(p_{i+1})\) and \(sgn(q_i) \neq sgn(q_{i+1})\) - it is because:</p>
 			<ol>
 				<li>\(p_0=1, p_1=0\), also \(q_0=0, q_1=1\) - as inductive step is exactly same for \(p\) and \(q\), it'll be shown only for \(p\)</li>
-				<li>By induction, \(p_i=p_{i-2}-zp_{i-1}\) - \(z\) is positive (as it is equal to \(\lfloor \frac{b_{i-2}}{b_{i-1}} \rfloor\)) - so it does not change sign, and as \(sgn(p_{i-1}) \neq sgn(p_{i-2})\), then:
+				<li>Proving lemma by induction, \(p_i=p_{i-2}-zp_{i-1}\) - \(z\) is positive (as it is equal to \(\lfloor \frac{b_{i-2}}{b_{i-1}} \rfloor\)) - so it does not change sign of \(p_{i-1}\), and as \(sgn(p_{i-1}) \neq sgn(p_{i-2})\), then:
 					<ul>
-						<li>If \(p_{i-2}\) is \(0\) - then \(p_{i-1}\) cannot be \(0\), and \(-zp_{i-1}\) have different sign than \(p_{i-1}\).</li>
+						<li>If \(p_{i-2}\) is \(0\) - then \(p_{i-1}\) cannot be \(0\), and \(-zp_{i-1}\) have different sign than \(p_{i-1}\), so \(sgn(p_i)=sgn(-p_{i-1}) \neq 0\), which implies \(sgn(p_i) \neq sgn(p_{i-1})\)</li>
 						<li>If \(p_{i-2}\) is not zero, then \(-zp_{i-1}\) either is equal to \(0\) - or \(-zp_{i-1}\) have same sign as \(p_{i-2}\), in both cases, \(sgn(p_{i-2})=sgn(p_i) \neq sgn(p_{i-1})\)</li>
 					</ul>
 				</li>
 			</ol>
 			{% set z="\\lfloor \\frac{b_{i-1}}{b_i} \\rfloor " %}
+			{% set z2="\\lfloor \\frac{b_{i-2}}{b_{i-1}} \\rfloor " %}
 			<p>One can also notice, that \(|p_{i-1}b_i-p_ib_{i-1}|=v\), and also \(|q_{i-1}b_i-q_ib_{i-1}|=w\) - proof is same for both, so inductive step will be shown only for \(p_i\)
 			<span class="central">(1) \(|p_0b_1-p_1b_0|=|b_1-0|=v\), also \(|q_0b_1-q_1b_0|=|0-b_0|=|w|\)</span>
 			<span class="central">(2) \(|p_ib_{i+1}-p_{i+1}b_i|=|p_i(b_{i-1}-{{z}} b_i)-(p_{i-1}-{{z}} p_i)b_i|=|p_ib_{i-1}-{{z}} p_ib_i-p_{i-1}b_i+{{z}} p_ib_i|=|p_{i-1}b_i-p_ib_{i-1}|=v\)</span>
 			</p>
 			<p>These two lemmas show, that:</p>
 			<ol>
-				<li>Values of \(|p_i|, |q_i|\) for \(i \ge 2\) are not decreasing, as \(|p_i|=|p_{i-2}-{{z}}p_{i-1}|=|p_{i-2}|+|{{z}}p_{i-1}| \ge |p_{i-2}|+|p_{i-1}|\)</li>
-				<li>\(|p_{i-1}b_i-p_ib_{i-1}|=|p_{i-1}b_i|+|p_ib_{i-1}|=v \implies |p_ib_{i-1}| \le v \implies |p_i| \le v\). Same holds for \(|q_i \le w\)</li>
+				<li>Values of \(|p_i|, |q_i|\) for \(i \ge 2\) are not decreasing, as \(|p_i|=|p_{i-2}-{{z2}}p_{i-1}|=|p_{i-2}|+|{{z2}}p_{i-1}| \ge |p_{i-2}|+|p_{i-1}|\) and since \(i=3\) occurs \(a_{i-1}=b_{i-2} \ge b_{i-1}\)</li>
+				<li>In the last (\(k\)-th) iteration of the algorithm, \(b_k=0, b_{k-1}=gcd(w, v)\) - and so \(v=|p_{k-1}b_k-p_kb_{k-1}|=|p_kgcd(w, v)|\), and \(|p_k|=\frac{v}{gcd(v, w)}\). Also, \(w=|q_{k-1}b_k-q_kb_{k-1}|=|q_kgcd(w, v)|\) - and so, \(|q_k|=\frac{w}{gcd(w,v)}\)</li>
 			</ol>
-			<p>This shows, tha always \(p_i \le v\) and \(q_i \le w\)
+			<p>This shows, tha always \(|p_i| \le \frac{v}{gcd(v,w)}\) and \(|q_i| \le \frac{w}{gcd(v,w)}\), which gives upper estimate on sizes of \(p_i, q_i\).
 
 
 		<h3>Third Problem</h3>
@@ -199,7 +205,12 @@
 		<span class="central">\(ap+mq=gcd(a, m) /// *\frac{c}{gcd(a, m)}\)<br>
 			\(ap\frac{c}{gcd(a, m)}+mq\frac{c}{gcd(a, m)}=c\)
 		</span>
-		and so, \(x=p\frac{c}{gcd(a, m)}\) solves this equation. Furthermore, next solutions have form \(x_k=(p+k\frac{m}{gcd(a,m)})\frac{c}{gcd(a, m)}\)
+		and so, \(x=p\frac{c}{gcd(a, m)}\) solves this equation. The question arises, however: what are next solutions? if \(x\) solves this equation, for what \(r\): \(x+r\) solves this equation?
+		<span class="central">\(a(x+r) \equiv c \pmod m\)<br>
+			\(ar \equiv c-ax \equiv 0 \pmod m\)<br>
+			\(ar=km\)</span>
+		What follows, \(s=|ar|\) is minimal such number, such that \(m|s \land a|s\) - then, \(|ar|=lcm(a, m)\), and so, \(r=\frac{lcm(a, m)}{a}\). Therefore, all solutions have form \(x+k\frac{lcm(a, m)}{a}\) for some integer \(k\).
+
 
 		</p>
 		<h3>The notion of modular inverse</h3>
@@ -209,7 +220,6 @@
 		Such number \(p\) always exists - this is a consequence of extended Euclidean algorithm. One may note, that all modular inverses of \(a\) have same remainder from division by \(m\) - this comes from lemma above, as \(gcd(a, m)=1\) - and so, only numbers in form \(p+km\) can sitisfy this equation for some \(k \in Z\). The name comes from fact, that:
 		<span class="central">\(ap \equiv 1 \pmod m\)</span>
 		Number \(p\) is often denoted as \(a^{-1}\).
-
 		</p>
 
 		<h2>Summary</h2>
@@ -219,8 +229,8 @@
 			<li>One can find \(x, y\) solving equation \(wx+vy=gcd(w,v)\) also called <b>bezout's identity</b> using <b>extended Euclidean algorithm</b>. Also, for any \(x, y\) occurs \(gcd(w,v)|wx+vy\).</li>
 			<li>\(lcm(v, w)=\frac{vw}{gcd(v,w)}\)</li>
 			<li>If \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) -, then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
+			<li>Numbers \(x, y\) produced by extended Euclidean algorithm are not exceeding those given as input.</li>
 			<li>If \(gcd(m, a)=1\), then number \(p\) solving \(ap+mq=1\) is called modular multiplicative inverse of \(a\) modulo \(m\), also \(ap \equiv 1 \pmod m\)</li>
-
 		</ol>
 
 		<h3>Problems</h3>
