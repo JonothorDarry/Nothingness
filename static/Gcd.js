@@ -1,8 +1,10 @@
 class EuclidGcd extends Algorithm{
 	constructor(block, a=-1, b=-1){
 		super(block);
+		this.check=block.check;
 
 		this.bs_butt_width="30px";
+		this.bs_butt_width_h=30;
 		this.bs_butt_height="30px";
 		this.bs_border="1px solid";
 
@@ -58,12 +60,14 @@ class EuclidGcd extends Algorithm{
 		if (s[0]==100) return;
 		var a=s[1], b=s[2], i=0;
 
-		if (s[0]==0){
+		if ((s[0]==2 || s[0]==1) && this.shower) return;
+		else if (s[0]==0){
 			for (i=0;i<2;i++) this.divs[i].innerHTML='';
 			var butt;
 			this.div3Creator()
 			this.div3Appendor(s[1], s[2]);
-			for (i=0;i<a;i++){
+			if (this.shower) return;
+			for (i=BigInt(0);i<a;i++){
 				if (i%b==0 && a-i>=b) col=this.colorGenerator(192);
 				else if (i%b==0) col='#440000';
 				butt=this.buttCreator(col);
@@ -77,7 +81,7 @@ class EuclidGcd extends Algorithm{
 		}
 
 		else if (s[0]==1){
-			for (i=0;i<a;i++){
+			for (i=BigInt(0);i<a;i++){
 				if (i%b==0 && a-i>=b) col=this.colorGenerator(192);
 				else if (i%b==0) col='#440000';
 				this.divs[0].getElementsByTagName("button")[i].style.backgroundColor=col;
@@ -93,7 +97,7 @@ class EuclidGcd extends Algorithm{
 
 		else if (s[0]==2){
 			var dp=this.lees[l-2][1];
-			for (i=dp;i>a;i--) 	this.divs[0].getElementsByTagName("button")[0].outerHTML="";
+			for (i=dp;i>a;i--) this.divs[0].getElementsByTagName("button")[0].outerHTML="";
 		}
 	}
 
@@ -103,7 +107,8 @@ class EuclidGcd extends Algorithm{
 
 		var a=s[1], b=s[2], i=0;
 		
-		if (s[0]==3){
+		if ((s[0]==2 || s[0]==1) && this.shower){}
+		else if (s[0]==3){
 			this.div3Exterminator();
 			var tmp=this.divs[0].innerHTML;
 			this.divs[0].innerHTML=this.divs[1].innerHTML;
@@ -127,6 +132,7 @@ class EuclidGcd extends Algorithm{
 	}
 
 	BeginningExecutor(){
+		this.shower=this.check.checked;
 		this.lees=[]
 		this.place.innerHTML='';
 		var fas=this.input.value;
@@ -135,6 +141,8 @@ class EuclidGcd extends Algorithm{
 		c=this.dissolve_input(fas);
 		a=c.get_next();
 		b=c.get_next();
+		a=BigInt(a);
+		b=BigInt(b);
 		this.bs_butt_width_h=Math.max(Math.max(a.toString().length, b.toString().length)*10, 30);
 
 		this.lees.push([0, a, b])
@@ -201,10 +209,20 @@ class EuclidGcd extends Algorithm{
 			lees[i].style.display="inline-block";
 			lees[i].style.verticalAlign="top";
 		}
-		lees[0].style.width="42%";
-		lees[1].style.width="42%";
-		lees[2].style.width="14%";
-		
+
+		var width=this.place.offsetWidth;
+		var width_h=5*this.bs_butt_width_h;
+		var part=Math.max(0.14, width_h/width);
+		var rest=(1-part)*50-1;
+
+		lees[0].style.width=lees[1].style.width=`${rest}%`;
+		lees[2].style.width=`${100*part}%`;
+		if (this.shower){
+			lees[0].style.width="0";
+			lees[1].style.width="0";
+			lees[2].style.width="100%";
+			lees[2].style.marginLeft=`${rest+1}%`;
+		}
 		
 		lees[0].style.left=0;
 		lees[1].style.rigth=0;
@@ -221,8 +239,8 @@ class EuclidGcd extends Algorithm{
 class ExtendedEuclidGcd extends EuclidGcd{
 	constructor(block, a, b){
 		super(block, -1, -1);
-		this.varp=[1, 0];
-		this.varq=[0, 1];
+		this.varp=[BigInt(1), BigInt(0)];
+		this.varq=[BigInt(0), BigInt(1)];
 
 		var butt, col='#440000', i=0;
 		this.divs=this.divsCreator();
@@ -251,13 +269,14 @@ class ExtendedEuclidGcd extends EuclidGcd{
 		if (s[0]==0){
 			for (i=0;i<2;i++) this.divs[i].innerHTML='';
 			var butt;
-			this.varp=[1, 0];
-			this.varq=[0, 1];
+			this.varp=[BigInt(1), BigInt(0)];
+			this.varq=[BigInt(0), BigInt(1)];
 
 			this.div3Creator();
 			this.div3Appendor("-", s[1], 0);
 			this.div3Appendor(s[1], s[2], 1);
-			for (i=0;i<a;i++){
+			if (this.shower) return;
+			for (i=BigInt(0);i<a;i++){
 				if (i%b==0 && a-i>=b) col=this.colorGenerator(192);
 				else if (i%b==0) col='#440000';
 				butt=this.buttCreator(col);
@@ -283,7 +302,7 @@ class ExtendedEuclidGcd extends EuclidGcd{
 
 		if (ind==null){
 			var s=this.lees[this.lees.length-3];
-			z=Math.floor(s[1]/s[2]);
+			z=s[1]/s[2];
 			p=this.varp[ln-2]-this.varp[ln-1]*z;
 			q=this.varq[ln-2]-this.varq[ln-1]*z;
 			this.varp.push(p);
@@ -310,7 +329,7 @@ class ExtendedEuclidGcd extends EuclidGcd{
 		var l=this.lees.length, strr=super.StatementComprehension(), ln=this.varp.length;
 
 		var prev=this.lees[l-2], last=this.lees[l-1];
-		if (last[0]==1 || last[0]==0) strr+=`. Result of dividing a by b is z=a/b=${last[1]}/${last[2]}=${Math.floor(last[1]/last[2])} - it will be used to calculate next p and q`;
+		if (last[0]==1 || last[0]==0) strr+=`. Result of dividing a by b is z=a/b=${last[1]}/${last[2]}=${last[1]/last[2]} - it will be used to calculate next p and q`;
 		if (last[0]==3) strr+=`. I also change p[i]=p[i-2]-z*p[i-1], q=q[i-2]-z*q[i-1], so that p[i]*u+q[i]*v are equal to current b=${last[2]} in the algorithm`;
 		if (last[0]==100) strr+=`. Numbers x, y such that u*x+v*y=gcd(u,v) are x=p[i-1]=${this.varp[ln-2]}, y=q[i-1]=${this.varq[ln-2]}: u*x+v*y=${this.lees[0][1]}*${this.varp[ln-2]}+${this.lees[0][2]}*${this.varq[ln-2]}=${this.lees[0][1]*this.varp[ln-2]+this.lees[0][2]*this.varq[ln-2]}`;
 		return strr;
@@ -318,6 +337,10 @@ class ExtendedEuclidGcd extends EuclidGcd{
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
+feral.check=document.getElementById('Nothingness');
 var eg1=new EuclidGcd(feral, 84, 35);
+
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+feral2.check=document.getElementById('Nothingness2');
 var eg2=new ExtendedEuclidGcd(feral2, 84, 35);
+//incorrect: 3122132132932 917232687231 - gcd - cor, multiplication result - shit

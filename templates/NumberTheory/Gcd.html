@@ -7,24 +7,24 @@
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
 		<script src="{{url_for('static', filename='Temp.js')}}"></script>
-		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+		<script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 	</head>
 	<body>
 		{{ headers.header('Greatest Common Divisor', 'NumberTheory') }}
 		<h3>First problem statement and definitions</h3>
 		<p>
 		<!--\(\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}\)-->
-		Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of numbers \(w\) and \(v\) where \(1 \le w, v \le 10^9\)?</p>
+		Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le 10^{18}\)?</p>
 		<p>To answer this question, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
 		<ol>
-			<li><b>Divisor</b> A number \(d \in Z\) is a divisor of number \(x \in Z\) (which is often denoted by \(d|x\)), if and only if:<br>
+			<li><b>Divisor</b> An integer \(d \in Z\) is a divisor of an integer \(x \in Z\) (which is often denoted by \(d|x\)), if and only if:<br>
 				<span class="central">\(d|x \iff \exists_{k \in Z}dk=x\)</span><br>
 				If \(d|x\), then \(x\) is divisible by \(d\).
 			</li>
-			<li><b>Greatest common divisor (gcd)</b>: A number \(g \in N^+\) is gcd of numbers \(w, v\) if and only if:<br>
+			<li><b>Greatest common divisor (gcd)</b>: An integer \(g \in N^+\) is gcd of numbers \(w, v\) if and only if:<br>
 				<span class="central">\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h (h|w \land h|v \land h&gt;g)\)</span><br>
 			</li>
-			<li><b>Least common multiple (lcm)</b>: A number \(l \in N^+\) is lcm of numbers \(w, v\) if and only if:<br>
+			<li><b>Least common multiple (lcm)</b>: An integer \(l \in N^+\) is lcm of numbers \(w, v\) if and only if:<br>
 				<span class="central">\(l=lcm(w, v) \iff w|l \land v|l \land !\exists_h (w|h \land v|h \land h&lt;l)\)</span><br>
 			</li>
 			<li><b>Remainder from dividing</b> number \(x\) by number \(m\), denoted later by \(x\%m\), is equal to:<br>
@@ -37,9 +37,8 @@
 		</ol>
 
 		<p>In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all integers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:</p>
-		</p>
 		<h3>Distribution of all divisors of a number and their upper estimate</h3>
-		<p>If \(d\) is a divisor of \(x\), \(d \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction is trivial: if \(d|x\) then, there exists such natural \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\) occurs \(|\{d:d|x \land d \ge 1\}| \le 2\sqrt{x}\) - because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
+		<p>If \(d\) is a divisor of \(x\), where \(d,x \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction is trivial: if \(d|x\) then, there exists such integer \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\) occurs \(|\{d:d|x \land d \ge 1\}| \le 2\sqrt{x}\) - because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
 		</p>
 		<h3>First solution</h3>
 		<p>
@@ -159,7 +158,6 @@
 			<li>As \(v|lcm(v,w) \land w|lcm(v,w) \land w|wv \land v|wv\) , then, from \(gcd\) properties, \(v|f \land w|f\)</li>
 		</ol>
 		<p>So, if \(lcm(v, w) \nmid vw\), then \(gcd(lcm(v, w), vw)|vw\), it's divisible by both \(v, w\), and lower than \(lcm(v,w)\) - but it contradicts statement, that \(lcm(w, v)\) is lowest common mutiple of \(w, v\) - what follows, \(lcm(v,w)|vw\)</p>
-		</p>
 		<p>
 			
 			If \(s\) is shown as \(s=\frac{wv}{c}\), what can be said about \(c\)?
@@ -202,35 +200,36 @@
 		One can show the problem as:
 		<span class="central">\(\exists_{y \in Z} ax+my=c\)</span>
 		From Bezout's identity consequences, \(gcd(a, m)|c\) - otherwise, there are no solutions. If there are solutions however, then, from extended Euclidean algorithm, one can find such \(p, q \in Z\), such that:
-		<span class="central">\(ap+mq=gcd(a, m) /// *\frac{c}{gcd(a, m)}\)<br>
+		<span class="central">\(ap+mq=gcd(a, m)\ \ \  /// *\frac{c}{gcd(a, m)}\)<br>
 			\(ap\frac{c}{gcd(a, m)}+mq\frac{c}{gcd(a, m)}=c\)
 		</span>
 		and so, \(x=p\frac{c}{gcd(a, m)}\) solves this equation. The question arises, however: what are next solutions? if \(x\) solves this equation, for what \(r\): \(x+r\) solves this equation?
 		<span class="central">\(a(x+r) \equiv c \pmod m\)<br>
 			\(ar \equiv c-ax \equiv 0 \pmod m\)<br>
 			\(ar=km\)</span>
-		What follows, \(s=|ar|\) is minimal such number, such that \(m|s \land a|s\) - then, \(|ar|=lcm(a, m)\), and so, \(r=\frac{lcm(a, m)}{a}\). Therefore, all solutions have form \(x+k\frac{lcm(a, m)}{a}\) for some integer \(k\).
+		What follows, \(s=|ar|\) is minimal such integer, such that \(m|s \land a|s\) - then, \(|ar|=lcm(a, m)\), and so, \(r=\frac{lcm(a, m)}{a}\). Therefore, all solutions have form \(\frac{pc}{gcd(a, m)}+k\frac{lcm(a, m)}{a}\) for some integer \(k\).
 
 
 		</p>
 		<h3>The notion of modular inverse</h3>
 		<p>
-		A number \(p\) is called a <b>modular multiplicative inverse</b> of \(a\) modulo \(m\) (where \(gcd(a, m)=1\)), if
+		An integer \(p\) is called a <b>modular multiplicative inverse</b> of \(a\) modulo \(m\) (where \(gcd(a, m)=1\)), if
 		<span class="central">\(\exists_{q \in Z} ap+mq=1\)</span>
-		Such number \(p\) always exists - this is a consequence of extended Euclidean algorithm. One may note, that all modular inverses of \(a\) have same remainder from division by \(m\) - this comes from lemma above, as \(gcd(a, m)=1\) - and so, only numbers in form \(p+km\) can sitisfy this equation for some \(k \in Z\). The name comes from fact, that:
+		Such integer \(p\) always exists - this is a consequence of extended Euclidean algorithm. One may note, that all modular inverses of \(a\) have same remainder from division by \(m\) - this comes from lemma above, as \(gcd(a, m)=1\) - and so, only integers in form \(p+km\) can satisfy this equation for some \(k \in Z\). The name comes from fact, that:
 		<span class="central">\(ap \equiv 1 \pmod m\)</span>
 		Number \(p\) is often denoted as \(a^{-1}\).
 		</p>
 
 		<h2>Summary</h2>
 		<ol>
-			<li>\((d|x \land d \ge 1) \implies (d \le \sqrt{x} \lor \frac{x}{d} \le \sqrt{x})\). Also, \(|\{d: d|x \land d \ge 1 \land x \ge 1\}| \le 2\sqrt{x}\)</li>
+			<li>\((d|x \land d \ge 1 \land x \ge 1) \implies (d \le \sqrt{x} \lor \frac{x}{d} \le \sqrt{x})\). Also, \(|\{d: d|x \land d \ge 1 \land x \ge 1\}| \le 2\sqrt{x}\)</li>
 			<li>\(gcd(w, v)\) can be calculated in \(O(log(min(v,w)))\) with <b>Euclidean algortithm</b>, using fact, that \(gcd(w, v)=gcd(w\%v, v)\).</li>
-			<li>One can find \(x, y\) solving equation \(wx+vy=gcd(w,v)\) also called <b>bezout's identity</b> using <b>extended Euclidean algorithm</b>. Also, for any \(x, y\) occurs \(gcd(w,v)|wx+vy\).</li>
+			<li>One can find pair \((x, y)\) solving equation \(wx+vy=gcd(w,v)\) also called <b>bezout's identity</b> using <b>extended Euclidean algorithm</b>. Also, for any \(p, q\) occurs \(gcd(w,v)|wp+vq\).</li>
 			<li>\(lcm(v, w)=\frac{vw}{gcd(v,w)}\)</li>
-			<li>If \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) -, then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
-			<li>Numbers \(x, y\) produced by extended Euclidean algorithm are not exceeding those given as input.</li>
-			<li>If \(gcd(m, a)=1\), then number \(p\) solving \(ap+mq=1\) is called modular multiplicative inverse of \(a\) modulo \(m\), also \(ap \equiv 1 \pmod m\)</li>
+			<li>If \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) - then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
+			<li>All integers \(x, y\) produced by extended Euclidean algorithm are not exceeding those given as input.</li>
+			<li>Equation \(ax \equiv c \pmod m\) has any solutions if and only if \(c|gcd(a,m)\). Solutions have form \(\frac{pc}{gcd(a, m)}+k\frac{lcm(a, m)}{a}\) for some integer \(k\), where \(ap+ml=gcd(a, m)\) for some integer \(l\).</li>
+			<li>If \(gcd(m, a)=1\), then integer \(p\) solving \(ap+mq=1\) is called <b>modular multiplicative inverse of \(a\) modulo \(m\)</b>, also \(ap \equiv 1 \pmod m\)</li>
 		</ol>
 
 		<h3>Problems</h3>
