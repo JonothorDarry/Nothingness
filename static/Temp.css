@@ -2,7 +2,7 @@
         position: relative;
         height:80px;
 }
-.sender, .previous, .next, .finish{
+.sender, .previous, .next, .finish, .show{
         background-color: #000000;
         color: #FFFFFF;
         border:None;

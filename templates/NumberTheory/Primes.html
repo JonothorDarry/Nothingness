@@ -16,20 +16,16 @@
 
 		<h3>First Problem statement and definitions</h3>
 		<p id="Theory">
-			Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime? To solve this problem, first let's define prime number: a number \(k \in N^+\) is prime, if and only if<br><br>
-			<span class="central">\(k \in P \iff \exists ! _{x \in N^+\backslash\{1\}} k \equiv 0\ (mod\ x)\)<br><br></span>
-			where \(N^+\) is set of natural numbers excluding \(0\), \(P\) is set of primes. In other words, \(k\) needs to have exactly \(1\) natural divisor different than one - itself. A number \(k\) is divisible by \(m\) (or \(m\) is a divisor of \(k\)), if and only if:<br><br>
-			<span class="central">\(m|k \iff \exists_{x \in N^+} mx=k\)</span><br>
-
-			For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A number is is composite, if it's neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number. The first solution that can be discussed is absolute brute force
+			Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime? To solve this problem, first let's define prime number: a number \(p \in N^+\) is prime, if and only if<br><br>
+			<span class="central">\(p \in P \iff |\{d:d|p \land d \ge 1\}|=2\)<br><br></span>
+			where \(P\) is set of all primes. In other words, \(k\) needs to have exactly \(2\) different positive divisors - one and itself (note that \(1\) is not a prime, as it has only \(1\) divisor). For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A number is is composite, if it's neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number. The first solution that can be discussed is absolute brute force
 		</p><br>
 		<h3>First Solution</h3>
-		<p id="sol1">One can check whether \(a_i\) is prime by checking whether any number \(x \in \lt 2;a_i-1 \gt\) is it's divisor: if it is, then \(a_i\) is not prime. This solution works in \(O(q*max(a_i))\), which is obvious if all numbers given in queries are prime - q numbers needs to be checked whether they have third divisor, and single check works in \(O(a_i)\)
+		<p id="sol1">One can check whether \(a_i\) is prime by checking whether any integer \(x \in \lt 2;a_i-1 \gt\) is it's divisor: if it is, then \(a_i\) is not prime. This solution works in \(O(q*max(a_i))\), which is obvious if all numbers given in queries are prime - q numbers needs to be checked whether they have third divisor, and single check works in \(O(a_i)\)
 		</p><br>
 
 		<h3>Second Solution</h3>
-		<p id="sol2">
-		If \(d\) is a divisor of \(a_i\), \(d \ge 1\) and \(d \le a_i\), then either \(d \le \sqrt{a_i}\) or \( \frac{a_i}{d} \le \sqrt{a_i}\); proof by contradiction is trivial: if \(d|a_i\) then, there exists such natural \(b\), that \(bd=a_i\); if \(d \gt \sqrt{a_i} \) and \(b \gt \sqrt{a_i}\), then \( db \gt \sqrt{a_i}\sqrt{a_i}=a_i\); if one of them is equal to \(\sqrt{a_i}\), then, by definition, second must be equal to \(\sqrt{a_i}\) too, which finishes the proof. <br> And so, we need to check only \(\sqrt{a_i}\) values to check whether \(a_i\) is prime. That makes the algorithm run in \(O(q\sqrt{max(a_i)})\)
+		<p id="sol2">If a number \(x\) is divisible by \(d\), then either \(d \le \sqrt{x}\), or \(\frac{x}{d} \le \sqrt{x}\) - and so, one needs to check only integers between \(\lt 1;\sqrt{a_i} \gt\) whether they divide \(a_i\) to check whether \(a_i\) is prime. That makes the algorithm run in \(O(q\sqrt{max(a_i)})\)
 		</p><br>
 
 		<h3>Third Solution - sieve</h3>
@@ -59,7 +55,7 @@
 		Begin starts the sieve with a given limit. Next move moves forward current sieve, Previous move moves backward. This sieve has 2 optimizations: first, if a number is marked as non-prime, then all numbers it could mark were already marked by it's divisor. Proof:<br><br>
 		<span class="central">\(a|b \land b|c \implies \exists_{k, l \in N} (ka=b \land lb=lka=c) \implies a|c\)</span><br><br>
 
-		Secondly, for given \(x\), no composite number \(y \lt x^2\) has lowest divisor \(d \gt 1\) greater or equal to \(x\), which was shown in 2nd solution to this problem - and so, marking starts from \(x^2\)
+		Secondly, for given \(x\), no composite number \(y \lt x^2\) has lowest divisor \(d \gt 1\) greater or equal to \(x\), which was shown in 2nd solution to this problem - and so, marking can start from \(x^2\)
 		</p>
 			<h3>Complexity proof #1</h3>
 		<p id="Complexity">
@@ -114,8 +110,12 @@
 				\)
 			</span>
 			<br>
-			Furthermore, the second inequality in this proof also shows, that sum of number of divisors over all numbers in a range \(&lt;1; n&gt;\) can be estimated by \(O(n*logn)\) - because every divisor \(d\) has at most \(\lfloor \frac{n}{d} \rfloor\) numbers divisible by it, and this sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*logn)\).
+			Furthermore, the second inequality in this proof also shows, that sum of number of divisors over all numbers in a range \(&lt;1; n&gt;\) can be estimated by \(O(n*logn)\) - because every divisor \(d\) has exactly \(\lfloor \frac{n}{d} \rfloor\) numbers divisible by it, and this sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*logn)\).
 		</p>
+			<h3>Fundamental theorem of arithmetic</h3>
+			<p>
+
+			</p>
 			<h3>Complexity proof #2</h3>
 			<p>
 				But there is also simpler proof with assumption, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
@@ -127,7 +127,7 @@
 					{% for j in range(2) %}
 						p_{{j}}^{ q_{{j}} }
 					{% endfor %}
-					...*p_n^{q_n}
+					...p_n^{q_n}
 				\)
 				then there is \(y \le x\) that can be shown as 
 				
@@ -136,7 +136,7 @@
 					{% for j in range(2) %}
 						p_{{j}}
 					{% endfor %}
-					...*p_n
+					...p_n
 				\)
 				having same number of distinct prime divisors.
 			</span>
@@ -147,7 +147,7 @@
 					{% for j in range(2) %}
 						p_{{j}}
 					{% endfor %}
-					...*p_n
+					...p_n
 				\)
 
 				there is such prime number \(v\) such that \(\exists_{i} v \lt p_i\) and \(!\exists_{j}v=p_j\), then

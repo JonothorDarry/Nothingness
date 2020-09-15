@@ -1,10 +1,7 @@
 class Algorithm{
 	static alldict={};
-	constructor(block){
-		this.lees=[]
-		this.place=block.primePlace;
-		this.wisdom=block.output;
-		this.input=block.input;
+
+	Creato(block){
 		this.inbut=block.sendButton;
 		this.nextbut=block.nextButton;
 		this.prevbut=block.prevButton;
@@ -47,6 +44,14 @@ class Algorithm{
 			var zis=Algorithm.alldict[this.id];
 			zis.FinishingSequence();
 		});
+	}
+
+	constructor(block){
+		this.lees=[];
+		this.place=block.primePlace;
+		this.wisdom=block.output;
+		this.input=block.input;
+		this.Creato(block);
 
 		//Button style
 		this.bs_butt_width="40px";
@@ -189,4 +194,24 @@ class Algorithm{
 	}
 }
 
+class Partial extends Algorithm{
+	Creato(block){
+		this.show=block.showButton;
+		Algorithm.alldict[this.show.id]=this;
+		
+		this.show.addEventListener('click', function(){
+			var zis=Algorithm.alldict[this.id];
+			zis.ShowReality();
+		});
+	}
 
+	static ObjectParser(v){
+		var dick={
+			'primePlace':v.getElementsByClassName('primez')[0],
+			'showButton':v.getElementsByClassName('show')[0],
+			'input':v.getElementsByClassName('inputter')[0],
+			'output':v.getElementsByClassName('comprehend')[0],
+		}
+		return dick;
+	}
+}

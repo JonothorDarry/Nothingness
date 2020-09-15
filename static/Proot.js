@@ -1,3 +1,127 @@
+class Order extends Partial{
+	constructor(block, x){
+		super(block);
+		this.ShowReality(x);
+	}
+	ShowReality(){
+		var i=0, x=this.input.value, toth;
+		toth=this.sieve_mark(x);
+		this.place.innerHTML='';
+		this.create_upper_div(x, toth);
+
+		this.known=[];
+		for (i=0;i<x;i++) this.known.push(0);
+		for (i=1;i<x;i++){
+			if (this.marked[i]==1) continue;
+			this.create_standard_div(i, x, toth);
+		}
+
+		this.create_summary(x, toth);
+	}
+
+	sieve_mark(x){
+		var i=0, j, lim=x, toth=x;
+		this.marked=[];
+		for (i=0; i<x; i++) this.marked.push(0);
+		for (i=2; i*i<=x; i++) {
+			if (x%i==0){
+				toth=Math.floor(toth/i)*(i-1);
+				for (j=i;j<lim;j+=i) this.marked[j]=1;
+			}
+			while (x%i==0) x=Math.floor(x/i);
+		}
+
+		if (x>1){
+			toth=Math.floor(toth/x)*(x-1);
+			for (j=x;j<lim;j+=x) this.marked[j]=1;
+		}
+		return toth;
+	}
+
+	create_standard_div(g, mod, toth){
+		var i, a=g;
+		var dv=document.createElement("DIV"), btn=[];
+		this.place.position="relative";
+		dv.style.position="relative";
+		dv.style.width=`${(mod-1+5)*40}px`;
+		dv.style.height="40px"
+		var lst=['x', g, 'x', 0, 'x'];
+		for (i=1;i<mod;i++){
+			lst.push(a);
+			if (a==1) break;
+			a=(a*g)%mod;
+		}
+		lst[3]=i;
+		this.known[i]+=1;
+
+		for (i=0; i<lst.length; i++){
+			btn.push(this.buttCreator(lst[i]));
+			btn[i].style.position="relative";
+			btn[i].style.display="inline-block";
+			if (lst[i]=='x') this.Painter(btn[i], 3);
+			dv.append(btn[i]);
+		}
+		//Tocjent
+		if (lst[3]==toth) this.Painter(btn[1], 8);
+		this.place.append(dv);
+	}
+
+	create_upper_div(x, toth){
+		var i;
+		var dv=document.createElement("DIV"), btn=[];
+		this.place.position="relative";
+		dv.style.position="relative";
+		dv.style.width=`${(x-1+5)*40}px`;
+		dv.style.height="40px"
+		var lst=['x', 'g', `ord<sub>${x}</sub>(g)`, 'g<sup>i</sup>; i='];
+		for (i=1;i<=toth;i++) lst.push(i);
+		for (i=0; i<lst.length; i++){
+			btn.push(this.buttCreator(lst[i]));
+			btn[i].style.position="relative";
+			btn[i].style.display="inline-block";
+			if (lst[i]=='x') this.Painter(btn[i], 3);
+			dv.append(btn[i]);
+		}
+		btn[2].style.width="80px";
+		btn[2].style.top="-1.5px";
+		btn[3].style.top="1px";
+		this.place.append(dv);
+	}
+
+	create_summary(x, toth){
+		var i, btn, lefts, rights, proper;
+		var dv_upper=document.createElement("DIV"), dv_lower=document.createElement("DIV");
+		var dv_upper_r=document.createElement("DIV"), dv_lower_r=document.createElement("DIV"), dv_upper_l=document.createElement("DIV"), dv_lower_l=document.createElement("DIV");
+		var titles=[`Order x=ord<sub>${x}</sub>(g) for some g`, `Number of occurences of x: |{g: ord<sub>${x}</sub>(g)=x}|`];
+		lefts=[dv_upper_l, dv_lower_l];
+		rights=[dv_upper_r, dv_lower_r];
+		proper=[dv_upper, dv_lower];
+
+		for (i=0;i<=toth;i++){
+			if (this.known[i]>0){
+				btn=this.buttCreator(i);
+				if (i==toth) this.Painter(btn, 8);
+				dv_upper_r.append(btn);
+			}
+		}
+		for (i=0;i<=toth;i++){
+			if (this.known[i]>0){
+				btn=this.buttCreator(this.known[i]);
+				dv_lower_r.append(btn);
+			}
+		}
+		for (i=0;i<2;i++){
+			lefts[i].style.width="450px";
+			lefts[i].innerHTML=titles[i];
+			lefts[i].style.display="inline-block";
+			rights[i].style.display="inline-block";
+			proper[i].append(lefts[i]);
+			proper[i].append(rights[i]);
+			this.place.append(proper[i]);
+		}
+	}
+}
+
 class Proot extends Algorithm{
 	constructor(block){
 		super(block);
@@ -566,11 +690,13 @@ class Proot extends Algorithm{
 	}
 }
 
-var feral2=Algorithm.ObjectParser(document.getElementById('Algo1'));
+var feral1=Partial.ObjectParser(document.getElementById('Algo1'));
+var sk1=new Order(feral1, 7);
+
+var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 feral2.radio_p=document.getElementById('Probabilistic');
 feral2.radio_d=document.getElementById('Deterministic');
 var sk2=new Proot(feral2);
-
 
 //Prime: 20731
 //Composite: 859548722
