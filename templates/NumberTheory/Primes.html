@@ -16,10 +16,21 @@
 
 		<h3>First Problem statement and definitions</h3>
 		<p id="Theory">
-			Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime? To solve this problem, first let's define prime number: a number \(p \in N^+\) is prime, if and only if<br><br>
-			<span class="central">\(p \in P \iff |\{d:d|p \land d \ge 1\}|=2\)<br><br></span>
-			where \(P\) is set of all primes. In other words, \(k\) needs to have exactly \(2\) different positive divisors - one and itself (note that \(1\) is not a prime, as it has only \(1\) divisor). For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A number is is composite, if it's neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number. The first solution that can be discussed is absolute brute force
-		</p><br>
+		Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime?<br>
+		To solve this problem, first let's formulate certain defininition:</p>
+		<ol>
+			<li><b>Prime number</b>: a number \(p \in N^+\) is prime (or \(p \in P\), where \(P\) is set of all primes), if and only if<br>
+			<span class="central">\(p \in P \iff |\{d:d|p \land d \ge 1\}|=2\)<br></span>
+			In other words, \(k\) needs to have exactly \(2\) different positive divisors - one and itself (note that \(1\) is not a prime, as it has only \(1\) divisor). For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A <b>composite number</b> is a number which is neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number. The first solution that can be discussed is absolute brute force
+			</li>
+			<li><b>Factorization of a number \(x\) into primes</b> is representation of a number as a product of prime numbers:
+				<span class="central">\(x=p_1p_2 \dots p_m\)</span>
+				Where \(p_i \in P\). One can also represent it as:
+				<span class="central">\(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\)</span>
+				Where \(q_i \ge 0\) are certain exponents and \(p_i\) are distinct. For example, \(100\) can be represented as \(100=2*2*5*5=2^25^2\). One can also consider infinite vector \(v_x=(q_1, q_2, \dots)\) such that \(x=p_1^{q_1} p_2^{q_2} \dots\), where \(p_i\) is the \(i\)-th prime number a factorization of \(x\). A prime factoriztion of \(x\) is unique if there is only one \(v_x\).
+			</li>
+		<br>
+		</ol>
 		<h3>First Solution</h3>
 		<p id="sol1">One can check whether \(a_i\) is prime by checking whether any integer \(x \in \lt 2;a_i-1 \gt\) is it's divisor: if it is, then \(a_i\) is not prime. This solution works in \(O(q*max(a_i))\), which is obvious if all numbers given in queries are prime - q numbers needs to be checked whether they have third divisor, and single check works in \(O(a_i)\)
 		</p><br>
@@ -113,9 +124,23 @@
 			Furthermore, the second inequality in this proof also shows, that sum of number of divisors over all numbers in a range \(&lt;1; n&gt;\) can be estimated by \(O(n*logn)\) - because every divisor \(d\) has exactly \(\lfloor \frac{n}{d} \rfloor\) numbers divisible by it, and this sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*logn)\).
 		</p>
 			<h3>Fundamental theorem of arithmetic</h3>
-			<p>
+			<p>One can prove, that each number \(x \in N^+\) has unique factorization: if \(x\) is shown as \(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\), where \(p_i \in P \land q_i \in N \land p_i \lt p_{i+1}\) (it is always possible to show \(x\) in such manner - this will also be proven) and also as \(x=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\), where \(r_i \in P \land s_i \in N^+ \land r_i \lt r_{i+1}\), then \(m=n \land \forall_i (p_i=r_i \land s_i=q_i)\). It may be wise to prove certain lemmas first:</p>
+			<ol>
+				<li> Euclid's lemma: if prime number \(p \in P\) is given, \(a,b \in N\) and \(p|ab\), then \(p|a\) or \(p|b\). Proof:
+					<span class="central">If \(p|a\), then the statement is true. Otherwise, if \(p \nmid a\) and \(pk=ab\), then:</span>
+					<span class="central"> \(\exists_{x,y \in Z} ax+py=gcd(a, p)=1\), because \(p\) has two divisors: one is \(p \nmid a\), second is one. Equation follows from bezout identity.</span>
+					<span class="central"> \(abx+pby=b\)</span>
+					<span class="central"> \(pkx+pby=b\)</span>
+					<span class="central"> \(p(kx+by)=b \implies p|b\)</span>
+				</li>
+				<li>Direct consequence of euclid's lemma: \(p|v_1v_2 \dots v_k \implies p|v_1 \lor p|v_2v_3...v_k \implies \dots \implies p|v_1 \lor p|v_2 \lor p|v_3 \lor \dots \lor p|v_k\)</li>
+				<li>Any prime number \(p\) has an unique factorization into primes: \(p=p\) - by definition it cannot be shown as product of different primes. Number \(1\) can be shown as \(p^0\) for any prime \(p\) - so factorization is unique.</li>
+				<li>Existence of factorization: suppose integer \(y \in N^+\) is a minimal number not having any factorization into primes: so, \(y\) cannot be a prime number (otherwise, its factorization would be \(y\)). Therefore, it can be shown as \(y=kl\), where \(k,l \ge 2\), but \(k=p_1^{g_1}p_2^{g_2} \dots p_n^{g_n}\) and \(l=p_1^{h_1}p_2^{h_2} \dots p_n^{h_n}\) (where \(h_i, g_i \ge 0\)) as they have some factorization, so, \(y=kl=p_1^{h_1+g_1}p_2^{h_2+g_2} \dots p_n^{h_n+g_n}\), which contradicts assumption - so, any natural number have a factorization into primes.</li>
+				<li>Uniqueness of factorization: suppose integer \(y \in N^+\) is a minimal number having at least two factorizations into primes: then, \(y=p_1^{q_1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\). From euclid's lemma consequences, \(p_1|r_1 \lor p_1|r_2 \lor \dots \lor p_1|r_n\) - without loss of generality, suppose, that \(p_1|r_1\) - then, \(\frac{y}{p_1}=p_1^{q_1-1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1-1}r_2^{s_2} \dots r_m^{s_m}\). But \(\frac{y}{p_1}\) have one factorization, which contradicts assumption and finishes the proof.</li>
 
-			</p>
+
+			</ol>
+
 			<h3>Complexity proof #2</h3>
 			<p>
 				But there is also simpler proof with assumption, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
@@ -214,6 +239,16 @@
 				</div>
 			</div>
 		</div>
+		<h2>Summary</h2>
+		<ol>
+			<li>One can check a single number \(x\) whether it is prime by checking, whether it has any divisor \(2 \le d \le \sqrt{x}\) - this solution works in \(O(\sqrt{x})\).</li>
+			<li>One can check for any number in range \(\lt 1;n \gt\) whether it is prime with <b>sieve of Erastothnes</b>, using fact, that a number is prime if it is not divisible by any other prime; this algorithm runs in \(O(nlog(n))\)</li>
+			<li>One can estimate sum in form \(\sum_{i=1}^{n} \frac{1}{n}+\frac{2}{n}+\dots+\frac{n}{n}=O(log(n))\); from this follows thesis, that sum of amount of divisors of all numbers in range \(\lt 1;n \gt\) can be estimated by \(O(nlog(n))\)
+			<li><b>Euclid's lemma</b> states that for \(p \in P\) occurs: \(p|ab \implies (p|a \land p|b)\) furthermore, \(p|a_1a_2 \dots a_n \implies (p|a_1 \lor p|a_2 \lor \dots \lor p|a_n)\)</li>
+			<li><b>Fundamental theorem of arithmetic</b> states that every number \(x \in N^+\) has one unique factorization into prime numbers.</li>
+			<li>Sieve can be utilized to find factorization of all numbers in range \(\lt 1;n \gt\).</li>
+		</ol>
+		<h2>Problems</h2>
 		<p id="Summary">
 		Sieves allow solving multitude of problems, including also finding Euler totient function or applying includion/exclusion principle on greatest common divisors (GCD). Example problems regarding sieves from codeforces: <a href="https://codeforces.com/contest/300/problem/E">Empire Strikes Back</a>, <a href="https://codeforces.com/problemset/problem/73/E">Morrowindows</a>, <a href="https://codeforces.com/problemset/problem/839/D">Winter is Here</a>
 		</p>

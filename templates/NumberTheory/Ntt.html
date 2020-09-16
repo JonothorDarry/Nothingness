@@ -12,5 +12,25 @@
 
 	<body>
 		{{ headers.header('Number Theoretic Transform', 'NumberTheory') }}
+		<h3>First problem statement and definitions</h3>
+		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_n\) and \(b_0, b_1, \dots, b_m\) of two polynominals \(A(x), B(x)\), \(1 \le n,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{n+m}\) such that \((a_0+a_1x+a_2x^2+\dots+a_nx^n)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+n}x^{m+n})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \ge m+n\)</p>
+		<h3>First solution</h3>
+		<p>One can multiply each element in brackets with element from second bracket, then add resulting \(nm\) elements; this solution works in \(O(nm)\)
+		<h3>Threshold of transformation</h3>
+		<ol>
+			<li>If \(n+m=k\), then let \(w\) be minimal number, such that \(w \ge k \land \exists_{l \in Z} w=2^l\). Then, the result will be calculated as \(w\) coefficients, and polynominals \(A(x), B(x)\) will be used as if they had \(w\) coefficients (The additional coefficients will be evaluated to \(0\))</li>
+			<li>One may change the methodology of obtaining a polynominal a little bit: instead of directly finding the coefficients, one may find \(w\) values \(x_i\), obtain values of both \(A(x_i)\) and \(B(x_i)\) in those points, then multiply values \(A(x_i)B(x_i)=C(x_i)=y_i\), and transform \(w\) values of polynominal \(C(x)\) in points \(x_i: C(x_i)=y_i\) into its coefficients - this process is called interpolation of a polynominal.</li>
+			<li>Let 
+				<span class="central">\(A(x)=a_0+a_1x+ \dots + a_{w-1}x^{w-1}\)<br>
+					\(A_1(x)=a_1+a_3x+a_5x^2+ \dots a_{w-1}x^{\frac{w}{2}-1}\)<br>
+					\(A_0(x)=a_0+a_2x+a_4x^2+ \dots a_{w-2}x^{\frac{w}{2}}\)				
+				</span>
+				What follows, 
+				<span class="central">\(A(x)=A_0(x^2)+xA_1(x^2)\)</span>
+
+			
+			
+			</li>
+		</ol>
 	</body>
 </html>
