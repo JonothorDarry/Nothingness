@@ -215,3 +215,41 @@ class Partial extends Algorithm{
 		return dick;
 	}
 }
+
+
+class NTMath{
+	static pow(ap, bp, mp=1000000007){
+		var res=1n, a=BigInt(ap), b=BigInt(bp), m=BigInt(mp);
+		for (;b>0;b=b/2n){
+			if (b%2n==1n) res=(res*a)%m;
+			a=(a*a)%m;
+		}
+		return res;
+	}
+
+	static factorize(x){
+		var i, ace=0, lst=[[],[]];
+		for (i=2;i*i<=x;i++){
+			if (x%i==0) lst[0].push(i), lst[1].push(0);
+			while(x%i==0) x=Math.floor(x/i), lst[1][lst[1].length-1]++;
+		}
+		if (x>1) lst[0].push(x), lst[1].push(1);
+		return lst;
+	}
+
+	static find_proot(x){
+		var toth_n=x-1, y, p=x, i;
+		var fac_t=NTMath.factorize(toth_n);
+		var ln=fac_t[0].length;
+		var lst=[];
+		for (i=0;i<ln;i++) lst.push(toth_n/fac_t[0][i]);
+
+		while(true){
+			y=Math.floor(Math.random()*(p-2))+2;
+			for (i=0; i<ln; i++){
+				if (NTMath.pow(y, lst[i], p)==1) break;							
+			}
+			if (i==ln) return y;
+		}
+	}
+}

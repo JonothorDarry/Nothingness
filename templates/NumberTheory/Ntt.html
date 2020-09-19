@@ -15,11 +15,11 @@
 		<h3>First problem statement and definitions</h3>
 		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_o\) and \(b_0, b_1, \dots, b_m\) of two polynominals \(A(x), B(x)\), \(1 \le o,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{o+m}\) such that \((a_0+a_1x+a_2x^2+\dots+a_ox^o)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+o}x^{m+o})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \ge m+o\)</p>
 		<h3>First solution</h3>
-		<p>One can multiply each element in brackets with element from second bracket, then add resulting \(om\) elements; this solution works in \(O(om)\)
+		<p>One can multiply each element in the first bracket with element from second bracket, then add resulting \(om\) elements; this solution works in \(O(om)\)
 		<h3>Threshold of transformation</h3>
 		<ol>
-			<li>If \(m+o=k\), then let \(n\) be minimal number, such that \(n \ge k \land \exists_{l \in Z} n=2^l\). Then, the result will be calculated as \(n\) coefficients, and polynominals \(A(x), B(x)\) will be used as if they had \(n\) coefficients (The additional coefficients will be evaluated to \(0\))</li>
-			<li>One may change the methodology of obtaining a polynominal a little bit: instead of directly finding the coefficients, one may find \(n\) values \(x_i\), obtain values of both \(A(x_i)\) and \(B(x_i)\) in those points, then multiply values \(A(x_i)B(x_i)=C(x_i)=y_i\), and transform \(n\) values of polynominal \(C(x)\) in points \(x_i: C(x_i)=y_i\) into its coefficients - this process is called interpolation of a polynominal.</li>
+			<li>If \(m+o=k\), then let \(n\) be minimal number, such that \(n \gt k \land \exists_{l \in Z} n=2^l\). Then, the result will be calculated as \(n\) coefficients, and polynominals \(A(x), B(x)\) will be used as if they had \(n\) coefficients (The additional coefficients will be evaluated to \(0\))</li>
+			<li>One may change the methodology of obtaining a polynominal a little bit: instead of directly finding the coefficients of \(C(x)\), one may find \(n\) values \(x_i\), obtain values of both \(A(x_i)\) and \(B(x_i)\) in those points, then multiply values \(A(x_i)B(x_i)=C(x_i)=y_i\), and transform \(n\) values of polynominal \(C(x)\) in points \(x_i: C(x_i)=y_i\) into its coefficients - this process is called interpolation of a polynominal.</li>
 			<li>Let 
 				<span class="central">\(A(x)=a_0+a_1x+ \dots + a_{n-1}x^{n-1}\)<br>
 					\(A_1(x)=a_1+a_3x+a_5x^2+ \dots a_{n-1}x^{n/2-1}\)<br>
@@ -28,7 +28,7 @@
 				What follows, 
 				<span class="central">\(A(x)=A_0(x^2)+xA_1(x^2)\)</span>
 				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the places, in which \(A(x)\) an be easily calculated are \(A(x_i^{1/2})\) and \(A(-x_i^{1/2})\) - so one needs to find suitable values for subsequent iterations.</li>
-			<li>Let \(w_n^k=f^{\frac{kg}{n}}\), where \(f^g\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynominal will be calculated. Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); this leads to establish \(w_n^{n/2}=-1\), and \(f^g=w_n^n=1\); then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynominal \(A(x)\) in \(w\) points if values of \(A_0(x), A_1(x)\) were calculated.</li>
+			<li>Let \(w_n^k=f^{\frac{kg}{n}}\), where \(f^g\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynominal will be calculated. Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); this leads to establish \(w_n^{n/2}=-1\), and \(f^g=w_n^n=1\); then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynominal \(A(x)\) in \(n\) points if values of \(A_0(x), A_1(x)\) in certain \(\frac{n}{2}\) points were calculated.</li>
 			<li>It may be beneficial to get rid of recursion before things start getting messy; to find value of \(A(x)\) in \(n\) points, one needs to find values of \(A_0(x)=a_0+a_2x+\dots+a_{n-2}x^{n/2}\) and \(A_1(x)=a_1+a_3x+\dots+a_{n-1}x^{n/2}\) in \(\frac{n}{2}\) points. Then, to find values of \(A_0(x)\) one needs to find values of \(a_0+a_4x+a_8x^2+\dots+a_{n-4}x^{n/4}\) and \(a_2+a_6x+a_{10}x^2+\dots+a_{n-2}x^{n/4}\) in \(\frac{n}{4}\) points, etc. For example, for \(n=16\), the subsequent coefficients of polynominals in recursion will be:
 				{% set pows=[1, 2, 4, 8, 16] %}
 				{% set ns = namespace(start=0, broke=1) %}
@@ -59,12 +59,12 @@
 					{% endfor %}
 					\)</span>
 				{% endfor %}
-				But only on the lowest level of recursion those coefficients are useful; in higher levels of recursion finding values of a polynominal in a point is only dependant on that point and previous values. On a lowest level, value of a polynominal in form \(P(x)=a_i\) is the coefficient itself; the question arises, how to construct such sequence as in the lowest level of recursion? This allows to process subsequent polynominals as pair of two next polynominals from level below. One can observe, that:
+				But only on the lowest level of recursion those coefficients are useful; in higher levels of recursion finding values of a polynominal in a point is only dependant on that point and previous values of polynominals \(A_0(x^2)\) and \(A_1(x^2)\). On a lowest level, value of a polynominal in form \(P(x)=a_i\) is the coefficient itself; the question arises, how to construct such sequence as in the lowest level of recursion? This allows to process subsequent polynominals as pair of two next polynominals from level below. One can observe, that:
 				<ul>
 					<li>In a group there are subsequent numbers with same difference between them: At the start, there is one group with difference \(1\); in each partition, a group is divided into two groups with every second element each; as the difference is constant between each - say \(d\), then in group on lower level there will be subsequent numbers with difference \(2d\). Furhermore, difference within one group is equal to \(2^l\), as on the highest level difference is \(1\), and in each lower level the difference becomes twice higher.</li>
-					<li>As in each group \(g_0\) there are subsequent elements with difference \(d\), then after division into groups \(g_1\) and \(g_2\) difference between \(k\)-th element of \(g_2\) and \(g_1\) is equal to \(d=2^{l-1}\), as subsequent elements from \(g_0\) go to different groups. Furthermore, both groups then are divided in same way - then this holds after subsequent division and going deeper into recursion (that \(g_2(k)-g_1(k)=2^{l-1}\)).</li>
+					<li>As in each group \(g_0\) there are subsequent elements with difference \(d\), then after division into groups \(g_1\) and \(g_2\) difference between \(k\)-th element of \(g_2\) and \(g_1\) is equal to \(d=2^{l-1}\), as subsequent elements from \(g_0\) go to different groups. Furthermore, both groups since then are divided in same way - then this holds after subsequent division and going deeper into recursion (that \(g_2(k)-g_1(k)=2^{l-1}\)).</li>
 				</ul>
-				So, one can create such algorithm for attaining subsequent numbers in this seqence, call it \(S\) with element \(S(i)\): at the beginning, \(S(0)=0\), then, whenever \(2^x\) for some \(x\) is reached, then all subsequent elements are marked as \(S(i)=S(i-2^x)+2^{all/x-1}\), where \(2^{all}=n\); this follows from fact, that \(\frac{all}{x}\) is level of recursion, which is used for deriving element \(S(i)\).
+				So, one can create such algorithm for attaining subsequent numbers in this seqence, call it \(S\) with element \(S(i)\): at the beginning, \(S(0)=0\), then, whenever \(2^x\) for some \(x\) is reached, then all subsequent elements up to \(2^{x+1}-1\) are evaluated as \(S(i)=S(i-2^x)+2^{k/x-1}\), where \(2^{k}=n\); this follows from fact, that \(\frac{k}{x}\) is level of recursion, which is used for deriving element \(S(i)\).
 			</li>
 			<li>After finding salvation from abyss of abstract, absolutely brutal and unforgiving realm of finding values of two polynominals in \(n\) points in \(O(nlog(n))\), it may be wise to multiply values of both polynominals in those points: \(C(x_i)=A(x_i)B(x_i)\) this step works in \(O(n)\)</li>
 			<li>The final problem is finding from values \(C(x_0), C(x_1), \dots C(x_n)\) coefficients \(c_0, c_1, \dots, c_{n-1}\) of a polynominal \(C(x)\). One can represent the problem as matrix equation:
@@ -136,7 +136,7 @@
 			</span>
 			This equality stems from \(2\) theses (where \(AB=M\)):
 			<ul>
-				<li>On each diagonal, the value of \(M[i,i]\) will be equal to:
+				<li>On main diagonal, the value of \(M[i,i]\) will be equal to:
 				<span class="central">\(\frac{1}{n}(A[i,0]B[0,i]+A[i,1]B[1,i]+A[i,2]B[2,i]+ \dots + A[i,n-1]B[n-1,i])=\frac{1}{n}(w_n^0w_n^0+w_n^iw_n^{-i}+w_n^{2i}w_n^{-2i}+ \dots +w_n^{(n-1)i}w_n^{-(n-1)i})=\)</span><span class="central">\(=\frac{1}{n}(w_n^0+w_n^{i-i}+w_n^{2i-2i}+ \dots +w_n^{(n-1)i-(n-1)i})=\frac{1}{n}(w_n^0+w_n^0+w_n^0+ \dots +w_n^0)=nw_n^0=\frac{n}{n}=1\)</span>
 				</li>
 				<li>Outside of the diagonal, the value of \(M[i,j]\) will be equal to 
@@ -148,12 +148,48 @@
 			</li>
 			<li>
 				From inverse matrix equation, one may notice, that to calculate \(c_i\) is to solve following equation:
-				<span class="central">\(c_i=\frac{1}{n} \sum_{i=0}^{n-1}y_iw_n^{-i}\)</span>
-				First of all, \(w_n^{-i}w_n^{i}=1=w_n^n=w_n^iw_n^{n-i}\). If \(w_n^i\) has exactly one inverse, then \(w_n^{n-i}=w_n^{-i}\). Secondly, the values calculated in the first phase of the algorithm had form:
-				<span class="central">\(y_i=\sum_{i=0}^{n-1}a_iw_n^i\)</span>
-				The only differences are: lack of division by \(n\), and \(w_n^i\) instead of \(w_n^{-i}\) - this allows one to construct algorithm finding \(c_i\) in \(O(nlog(n))\) in the same way as for finding \(y_i\).
-
+				<span class="central">\(c_i=\frac{1}{n} \sum_{j=0}^{n-1}y_jw_n^{-ij}\)</span>
+				First of all, \(w_n^{-i}w_n^{i}=1=w_n^n=w_n^iw_n^{n-i}\). If \(w_n^{i}\) has exactly one inverse, then \(w_n^{n-i}=w_n^{-i}\). Secondly, the values calculated in the first phase of the algorithm had form:
+				<span class="central">\(y_i=\sum_{j=0}^{n-1}a_iw_n^{ij}\)</span>
+				The only differences are: lack of division by \(n\), and \(w_n^{ij}\) instead of \(w_n^{-ij}\) - this allows one to construct algorithm finding \(c_i\) in \(O(nlog(n))\) in the same way as for finding \(y_i\).
 			</li>
 		</ol>
+		<h3>The sequence of roots I: NTT</h3>
+		<p>Last question needed to ultimately solve the problem is: what is \(w_n^1\)? In the second version of the problem, the coefficients have to be calculate \(\pmod m\). If \(m\) have a primitive root \(p\), then:
+		<ul>
+			<li>One can find some primitive root \(p\) rather rapidly.</li>
+			<li>One can notice, that if \(\phi(m)=2^kx\), then \(w_n^1=x2^{k-n}=\frac{\phi(m)}{2^n}\) can be used as a root - because, as \(p\) is a primitive root, values \(w_n^k\) will be distinct; becuse \(w_n^{n/2}=p-1\), and \(w_n^n=1\).
+			<li>Note, that \(m\) does not have to have a primitive root, however, in this case one needs to find such number \(g\), whose \(ord_m(g)=2^kx\), where \(k \ge n\) - and such number may not exist, finding it can also become problematic.</li>
+			<li>Furthermore, \(n\) must have an inverse \(\pmod m\) - as \(n=2^k\), then \(gcd(2, m)=1\)</li>
+		</ul>
+
+		<div id="Algo1" class="pureAlgo">
+			<h2>Number Theoretical Transform</h2>
+			<p>Input format: two sequences of \(o+1, m+1\) numbers denoting coefficients of polynominals \(A(x), B(x)\); then, \(q\) - number modulo which those coefficients will be found.<br>
+			\(o\)<br>
+			\(a_0, a_1, \dots, a_o\)<br>
+			\(m\)<br>
+			\(b_0, b_1, \dots, b_m\)<br>
+			\(q\)<br>
+			</p>
+
+			<div id="Inputter">
+				<form>
+					<textarea class="inputter" id="Totient2" name="Totient">6&#10;2 7 3 12 43 25 19&#10;7&#10;4 6 7 1 2 3 4 132&#10;257
+
+					</textarea>
+				</form>
+				<button id="Sender" class="sender">Begin</button>
+				<button id="Prever" class="previous">Previous Move</button>
+				<button id="Nexter" class="next">Next Move</button>
+				<button id="Finisher" class="finish">Finish</button>
+			</div>
+			<div class="breakAlgo"></div>
+			<div id="Primez" class="primez"></div>
+			<div id="Comprehend" class="comprehend"></div>
+		</div>
+
+		<script src="{{url_for('static', filename='Ntt.js')}}"></script>
+		<form id="page" style="display:none"></form>
 	</body>
 </html>
