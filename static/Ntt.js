@@ -11,12 +11,16 @@ class Ntt extends Algorithm{
 	BeginningExecutor(){
 		this.btnlist=[];
 		this.utilbts=[];
+		this.to_clear=[];
 
 		this.lees=[];
 		this.place.innerHTML='';
 		var fas=this.input.value;
 		this.a=[];
 		this.b=[];
+
+		this.a_merger=[];
+		this.b_merger=[];
 		var x, i=0, j=0, c, m, j, btn, mx_all, g;
 		
 		for (i=0;i<3;i++) this.btlist.push([]);
@@ -27,11 +31,23 @@ class Ntt extends Algorithm{
 		this.m=c.get_next();
 		for (i=0;i<=this.m;i++) this.b.push(BigInt(c.get_next()));
 		this.q=c.get_next();
+		this.Bq=BigInt(this.q);
 
-		for (i=1;i<=this.o+this.m;i*=2) ;
-		this.n=i
+
+		for (i=1,j=0;i<=this.o+this.m;i*=2,j++) ;
+		this.n=i;
+		this.lv=j;
+
 		for (j=this.o+1;j<i;j++) this.a.push(0n);
 		for (j=this.m+1;j<i;j++) this.b.push(0n);
+		for (j=0;j<=this.lv;j++){
+			this.a_merger.push([]);
+			this.b_merger.push([]);
+			for (i=0;i<this.n;i++){
+				this.a_merger[j].push(0);
+				this.b_merger[j].push(0);
+			}
+		}
 
 
 		mx_all=Math.max(4, 4)*10;
@@ -55,21 +71,34 @@ class Ntt extends Algorithm{
 		this.btnlist[3].push(btn);
 		this.zdivs[3][1].appendChild(btn);
 
-		for (i=4;i<7;i++){
+		for (i=4;i<15;i++){
 			this.btnlist.push([]);
 			if (i==5) continue;
 			for (j=0;j<this.n;j++){
 				btn=super.buttCreator();
+				if (i>=7 && i<=7+this.lv && ((j%(1<<(i-7+1)))<(1<<(i-7))))
+					btn.base_color=12;
+
+
 				this.btnlist[i].push(btn);
 				this.zdivs[i-1][2].appendChild(btn);
 			}
 		}
 	}
 
+	clear(){
+		var i;
+		for (i=0;i<this.to_clear.length;i++){
+			if ('base_color' in this.to_clear[i])
+				this.Painter(this.to_clear[i], this.to_clear[i].base_color);
+			else this.Painter(this.to_clear[i], 0);
+		}
+	}
+
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], j, btn, value, i=0;
-		if (s[0]>=100) lst=this.lees[l-2];
+		var s=this.lees[l-1], j, btn, value, i=0, n=this.n;
+		this.clear();
 
 		if (s[0]==0){
 			for (i=0;i<3;i++){
@@ -88,7 +117,7 @@ class Ntt extends Algorithm{
 		}
 
 		if (s[0]==2){
-			var beg=NTMath.pow(this.qoot, Math.floor((this.q-1)/this.n), this.q)
+			var beg=NTMath.pow(this.qoot, Math.floor((this.q-1)/this.n), this.q);
 			this.w=beg;
 			this.Painter(this.btnlist[4][0], 1);
 			this.Painter(this.btnlist[4][1], 1);
@@ -98,7 +127,7 @@ class Ntt extends Algorithm{
 		}
 
 		if (s[0]==3){
-			this.roots=[1, this.w];
+			this.roots=[1n, this.w];
 			var starter=this.w, i=0, BIpr=BigInt(this.q);
 			this.Painter(this.btnlist[4][0], 0);
 			this.Painter(this.btnlist[4][1], 0);
@@ -112,9 +141,8 @@ class Ntt extends Algorithm{
 		}
 
 		if (s[0]==4){
-			var x=s[1], btn, n=this.n;
+			var x=s[1], btn;
 			var cnst=Math.floor(n/x), halfx=Math.floor(x/2);
-			console.log(x);
 			if (x==1) {
 				for(i=2;i<n;i++) this.Painter(this.btnlist[4][i], 0);
 				this.butterfly.push(0);
@@ -129,8 +157,46 @@ class Ntt extends Algorithm{
 				}
 			}
 			for (i=Math.floor(halfx/2); i<halfx; i++) this.Painter(this.btnlist[6][i], 0);
+		}
 
+		if (s[0]==5){
+			for (i=0;i<n;i++) {
+				this.btnlist[7][i].innerHTML=this.a[this.butterfly[i]];
+				this.a_merger[0][i]=this.a[this.butterfly[i]];
+				this.Painter(this.btnlist[7][i], 1);
+				this.Painter(this.btnlist[1][i], 1);
+			}
+			for (i=Math.floor(n/2);i<n;i++) this.Painter(this.btnlist[6][i], 0);
+		}
+
+		if (s[0]==6 || s[0]==7){
+			console.log(this.roots);
+			if (s[0]==6 && s[1]==0 && s[2]==1 && s[3]==0 && s[4]==0){
+				for (i=0;i<n;i++) {
+					this.Painter(this.btnlist[7][i], 0);
+					this.Painter(this.btnlist[1][i], 0);
+				}
+			}
+
+			var pnt=s[1], level=s[2], poly=s[3], place=s[4], part=(1<<(level-1)), whole=(1<<level)*poly+place;
+			var cur_btn=this.btnlist[level+7][whole+((s[0]==7)?part:0)];
+			var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
+			var pol_0=this.btnlist[level+6][whole];
+			var pol_1=this.btnlist[level+6][whole+part];
+			var w=this.btnlist[4][diff];
+			var value=(this.a_merger[level-1][whole]+this.roots[diff]*this.a_merger[level-1][whole+part])%this.Bq;
 			
+			this.a_merger[level][whole+((s[0]==7)?part:0)]=value;
+			this.Painter(cur_btn, 1);
+			if (s[0]==6){
+				this.Painter(pol_0, 5);
+				this.Painter(pol_1, 8);
+			}
+			this.Painter(w, 8);
+
+			if (s[0]==7) this.to_clear=[cur_btn, pol_0, pol_1, w];
+			else this.to_clear=[cur_btn, w];
+			cur_btn.innerHTML=value;
 		}
 	}
 
@@ -179,7 +245,7 @@ class Ntt extends Algorithm{
 
 	NextState(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], col;
+		var s=this.lees[l-1], col, lv=this.lv;
 		var i=0;
 
 		if (s[0]>=100) return;
@@ -188,6 +254,14 @@ class Ntt extends Algorithm{
 		if (s[0]==2) this.lees.push([3]);
 		if (s[0]==3) this.lees.push([4, 1]);
 		if (s[0]==4 && s[1]<this.n) this.lees.push([4, s[1]*2]);
+		if (s[0]==4 && s[1]==this.n) this.lees.push([5, 0]);
+		if (s[0]==5) this.lees.push([6, 0, 1, 0, 0]);
+		if (s[0]==6) this.lees.push([7, s[1], s[2], s[3], s[4]]);
+
+		     if (s[0]==7 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1 && s[2]==lv) this.lees.push([8]);
+		else if (s[0]==7 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1) this.lees.push([6, s[1], s[2]+1, 0, 0]);
+		else if (s[0]==7 && s[4]==(1<<(s[2]-1))-1) this.lees.push([6, s[1], s[2], s[3]+1, 0]);
+		else if (s[0]==7) this.lees.push([6, s[1], s[2], s[3], s[4]+1]);
 	}
 
 	//Adding belt for write-ups and buttons 
@@ -195,8 +269,8 @@ class Ntt extends Algorithm{
 		var divs=[], zdivs=[], i, j;
 		var title_list=["i", "a<sub>i</sub>", "b<sub>i</sub>", "primitive root and w<sub>n</sub><sup>i</sup>", "", "i", "a<sub>i</sub>"];
 
-		for (i=0;i<7;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<7;i++){
+		for (i=0;i<15;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<15;i++){
 			divs[i].style.width="100%";
 			divs[i].style.height="40px";
 			//zdivs - inside div: 0 is write-up, 1 is button

@@ -103,7 +103,7 @@ class Algorithm{
 	Painter(btn, col=1, only_bg=0){
 		var olden;
 		if (only_bg==1) olden=btn.style.color;
-		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11) btn.style.color="#FFFFFF";
+		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12) btn.style.color="#FFFFFF";
 		else btn.style.backgroundColor="#FFFFFF";
 
 		if (col==0) btn.style.backgroundColor="#440000";
@@ -115,6 +115,7 @@ class Algorithm{
 		else if (col==8) btn.style.backgroundColor="#8A7400";
 		else if (col==10) btn.style.backgroundColor="#0000FF";
 		else if (col==11) btn.style.backgroundColor="#222200";
+		if (col==12) btn.style.backgroundColor="#FF3333";
 		if (col==9) btn.style.backgroundColor="#FFFF00"
 
 		if (col==7){
