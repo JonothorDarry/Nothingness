@@ -56,6 +56,7 @@ class Ntt extends Algorithm{
 		this.divsCreator();
 		this.lees.push([0]);
 		this.butterfly=[];
+		for (i=0;i<this.n;i++) this.butterfly.push(0);
 
 		for (i=0;i<3;i++){
 			this.btnlist.push([]);
@@ -70,14 +71,19 @@ class Ntt extends Algorithm{
 		btn=super.buttCreator();
 		this.btnlist[3].push(btn);
 		this.zdivs[3][1].appendChild(btn);
+		
 
-		for (i=4;i<15;i++){
+		var ij, thrs=[7, 13];
+		this.mapp={0:[this.a, this.a_merger, 7, 1], 1:[this.b, this.b_merger, 7+this.lv+2, 2]};
+		for (i=4;i<20;i++){
 			this.btnlist.push([]);
 			if (i==5) continue;
 			for (j=0;j<this.n;j++){
 				btn=super.buttCreator();
-				if (i>=7 && i<=7+this.lv && ((j%(1<<(i-7+1)))<(1<<(i-7))))
-					btn.base_color=12;
+				for (ij=0; ij<thrs.length; ij++){
+					if (i>=thrs[ij] && i<=thrs[ij]+this.lv && ((j%(1<<(i-thrs[ij]+1)))<(1<<(i-thrs[ij]))))
+						btn.base_color=12;
+				}
 
 
 				this.btnlist[i].push(btn);
@@ -86,19 +92,19 @@ class Ntt extends Algorithm{
 		}
 	}
 
-	clear(){
+	clear(clear_list){
 		var i;
-		for (i=0;i<this.to_clear.length;i++){
-			if ('base_color' in this.to_clear[i])
-				this.Painter(this.to_clear[i], this.to_clear[i].base_color);
-			else this.Painter(this.to_clear[i], 0);
+		for (i=0;i<clear_list.length;i++){
+			if ('base_color' in clear_list[i])
+				this.Painter(clear_list[i], clear_list[i].base_color);
+			else this.Painter(clear_list[i], 0);
 		}
 	}
 
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], j, btn, value, i=0, n=this.n;
-		this.clear();
+		this.clear(this.to_clear);
 
 		if (s[0]==0){
 			for (i=0;i<3;i++){
@@ -112,12 +118,12 @@ class Ntt extends Algorithm{
 
 		if (s[0]==1){
 			this.Painter(this.btnlist[3][0], 1);
-			this.qoot=NTMath.find_proot(this.q);
-			this.btnlist[3][0].innerHTML=this.qoot;
+			this.proot=NTMath.find_proot(this.q);
+			this.btnlist[3][0].innerHTML=this.proot;
 		}
 
 		if (s[0]==2){
-			var beg=NTMath.pow(this.qoot, Math.floor((this.q-1)/this.n), this.q);
+			var beg=NTMath.pow(this.proot, Math.floor((this.q-1)/this.n), this.q);
 			this.w=beg;
 			this.Painter(this.btnlist[4][0], 1);
 			this.Painter(this.btnlist[4][1], 1);
@@ -145,13 +151,12 @@ class Ntt extends Algorithm{
 			var cnst=Math.floor(n/x), halfx=Math.floor(x/2);
 			if (x==1) {
 				for(i=2;i<n;i++) this.Painter(this.btnlist[4][i], 0);
-				this.butterfly.push(0);
 				this.btnlist[6][0].innerHTML=0;
 				this.Painter(this.btnlist[6][0], 1);
 			}
 			else{
 				for (i=halfx; i<x; i++){
-					this.butterfly.push(this.butterfly[i-halfx]+cnst);
+					this.butterfly[i]=this.butterfly[i-halfx]+cnst;
 					this.btnlist[6][i].innerHTML=this.butterfly[i];
 					this.Painter(this.btnlist[6][i], 1);
 				}
@@ -160,49 +165,81 @@ class Ntt extends Algorithm{
 		}
 
 		if (s[0]==5){
+			var mapp=this.mapp[s[1]];
+			var pos=mapp[2], seq_pos=mapp[3], real_seq=mapp[0], merger=mapp[1];
 			for (i=0;i<n;i++) {
-				this.btnlist[7][i].innerHTML=this.a[this.butterfly[i]];
-				this.a_merger[0][i]=this.a[this.butterfly[i]];
-				this.Painter(this.btnlist[7][i], 1);
-				this.Painter(this.btnlist[1][i], 1);
+				this.btnlist[pos][i].innerHTML=real_seq[this.butterfly[i]];
+				merger[0][i]=real_seq[this.butterfly[i]];
+				this.Painter(this.btnlist[pos][i], 1);
+				this.Painter(this.btnlist[seq_pos][i], 1);
+				this.to_clear.push(this.btnlist[pos][i]);
 			}
-			for (i=Math.floor(n/2);i<n;i++) this.Painter(this.btnlist[6][i], 0);
+			if (s[1]==0){
+				for (i=Math.floor(n/2);i<n;i++) 
+					this.Painter(this.btnlist[6][i], 0);
+			}
 		}
 
 		if (s[0]==6 || s[0]==7){
-			console.log(this.roots);
-			if (s[0]==6 && s[1]==0 && s[2]==1 && s[3]==0 && s[4]==0){
+			var mapp=this.mapp[s[1]];
+			var pos=mapp[2], merger=mapp[1], seq_pos=mapp[3];
+			if (s[0]==6 && s[2]==1 && s[3]==0 && s[4]==0){
 				for (i=0;i<n;i++) {
-					this.Painter(this.btnlist[7][i], 0);
-					this.Painter(this.btnlist[1][i], 0);
+					this.Painter(this.btnlist[seq_pos][i], 0);
 				}
 			}
 
 			var pnt=s[1], level=s[2], poly=s[3], place=s[4], part=(1<<(level-1)), whole=(1<<level)*poly+place;
-			var cur_btn=this.btnlist[level+7][whole+((s[0]==7)?part:0)];
+			var cur_btn=this.btnlist[level+pos][whole+((s[0]==7)?part:0)];
 			var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
-			var pol_0=this.btnlist[level+6][whole];
-			var pol_1=this.btnlist[level+6][whole+part];
-			var w=this.btnlist[4][diff];
-			var value=(this.a_merger[level-1][whole]+this.roots[diff]*this.a_merger[level-1][whole+part])%this.Bq;
-			
-			this.a_merger[level][whole+((s[0]==7)?part:0)]=value;
-			this.Painter(cur_btn, 1);
-			if (s[0]==6){
-				this.Painter(pol_0, 5);
-				this.Painter(pol_1, 8);
-			}
-			this.Painter(w, 8);
-
-			if (s[0]==7) this.to_clear=[cur_btn, pol_0, pol_1, w];
-			else this.to_clear=[cur_btn, w];
+			var value=(merger[level-1][whole]+this.roots[diff]*merger[level-1][whole+part])%this.Bq;
+			merger[level][whole+((s[0]==7)?part:0)]=value;
+			this.show_merge(s);
 			cur_btn.innerHTML=value;
 		}
 	}
 
+	show_merge(s, back=0){
+		var mapp=this.mapp[s[1]];
+		var pos=mapp[2], merger=mapp[1], seq_pos=mapp[3];
+
+		var pnt=s[1], level=s[2], poly=s[3], place=s[4], part=(1<<(level-1)), whole=(1<<level)*poly+place;
+		var cur_btn=this.btnlist[level+pos][whole+((s[0]==7)?part:0)];
+		var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
+		var pol_0=this.btnlist[level+pos-1][whole];
+		var pol_1=this.btnlist[level+pos-1][whole+part];
+		var w=this.btnlist[4][diff];
+
+		this.Painter(cur_btn, 1);
+		if ((s[0]==6 && back==0) || (s[0]==7 && back==1)){
+			this.Painter(pol_0, 5);
+			this.Painter(pol_1, 8);
+		}
+		this.Painter(w, 8);
+
+		if (s[0]==7) this.to_clear=[cur_btn, w, pol_0, pol_1];
+		else this.to_clear=[cur_btn, w];
+	}
+
+	revert_merge(s){
+		var mapp=this.mapp[s[1]];
+		var pos=mapp[2];
+
+		this.Painter(this.to_clear[0], 4);
+		var lst=[this.to_clear[1]];
+		if (s[0]==6){
+			var pnt=s[1], level=s[2], poly=s[3], place=s[4], part=(1<<(level-1)), whole=(1<<level)*poly+place;
+			var pol_0=this.btnlist[level+pos-1][whole];
+			var pol_1=this.btnlist[level+pos-1][whole+part];
+			lst.push(pol_0);
+			lst.push(pol_1);
+		}
+		this.clear(lst);
+	}
+
 	StateUnmaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1];
+		var s=this.lees[l-1], n=this.n;
 
 		if (s[0]==1){
 			this.Painter(this.btnlist[3][0], 4);
@@ -226,6 +263,54 @@ class Ntt extends Algorithm{
 			}
 		}
 
+		if (s[0]==4){
+			var x=s[1], btn;
+			var cnst=Math.floor(n/x), halfx=Math.floor(x/2);
+			if (x==1) {
+				for(i=2;i<n;i++) this.Painter(this.btnlist[4][i], 1);
+				this.Painter(this.btnlist[6][0], 4);
+			}
+			else{
+				for (i=halfx; i<x; i++) this.Painter(this.btnlist[6][i], 4);
+			}
+			for (i=Math.floor(halfx/2); i<halfx; i++) this.Painter(this.btnlist[6][i], 1);
+		}
+
+		if (s[0]==5){
+			var mapp=this.mapp[s[1]];
+			var pos=mapp[2], seq_pos=mapp[3], real_seq=mapp[0], merger=mapp[1];
+			this.to_clear=[];
+			for (i=0;i<n;i++) {
+				this.Painter(this.btnlist[pos][i], 4);
+				this.Painter(this.btnlist[seq_pos][i], 0);
+			}
+			if (s[1]==0){
+				for (i=Math.floor(n/2);i<n;i++) 
+					this.Painter(this.btnlist[6][i], 1);
+			}
+			if (s[1]==1){
+				var last=this.lees[l-2];
+				this.show_merge(last, 1);
+				console.log(this.to_clear.length);
+			}
+		}
+
+		if (s[0]==6 || s[0]==7){
+			this.revert_merge(s);
+
+			var mapp=this.mapp[s[1]];
+			var pos=mapp[2], seq_pos=mapp[3];
+			var last=this.lees[l-2];
+			if (last[0]==6 || last[0]==7) this.show_merge(last, 1);
+			else{
+				this.to_clear=[];
+				for (i=0;i<n;i++) {
+					this.Painter(this.btnlist[pos][i], 1);
+
+				}
+				this.to_clear=[];
+			}
+		}
 		if (l>1) this.lees.pop();
 	}
 
@@ -237,9 +322,28 @@ class Ntt extends Algorithm{
 		var s=this.lees[l-1];
 		var strr=``;
 		if (s[0]==0) strr=`At the start of the algorithm, the polynominals A(x), B(x) are padded with 0's, so that it will be possible to find their values in not less than o+m+1=${this.o+this.m+1} &le; ${this.n} places`
-		if (s[0]==1) strr=`Primitive root modulo q=${this.q} is found, it is equal to ${this.qoot} (to attain this root probabilistic algorithm was used).`;
-		if (s[0]==2) strr=`As root was found, new aim is to find such value g, that ord<sub>${this.q}</sub>(g)=${this.n} - this value is proot<sup>&#x3d5;(q)/n</sup> mod q=${this.qoot}<sup>${this.q-1}/${this.n}</sup> mod ${this.q}=${this.w}. Besides, I also fill value of ${wn}=${w0}=1`;
-		if (s[0]==3) strr=`I find further subsequent values of ${wi} using fact, that ${w1}${wi_1} mod q=${wi} (so I just multiply previous value by ${w1}=${this.w} modulo ${this.q}). Notice that I didn't added ${wn}, as ${wn}=${w0}`
+		if (s[0]==1) strr=`Primitive root modulo q=${this.q} is found, it is equal to ${this.proot} (to attain this root probabilistic algorithm was used).`;
+		if (s[0]==2) strr=`As root was found, new aim is to find such value g, that ord<sub>${this.q}</sub>(g)=${this.n} - this value is proot<sup>&#x3d5;(q)/n</sup> mod q=${this.proot}<sup>${this.q-1}/${this.n}</sup> mod ${this.q}=${this.w}. Besides, I also fill value of ${wn}=${w0}=1`;
+		if (s[0]==3) strr=`I find further subsequent values of ${wi} using fact, that ${w1}${wi_1} mod q=${wi} (so I just multiply previous value by ${w1}=${this.w} modulo ${this.q}). Notice that I didn't add ${wn}, as ${wn}=${w0}`
+		
+		if (s[0]==4 && s[1]==0) strr=`I start finding order of indexes - so called butterfly - using which I will be abe to construct NTT without recursion. I start from 0`;
+		else if (s[0]==4) strr=`I find next series of indexes in butterfly sequence - I use the pattern: for 2<sup>${s[2]-1}</sup>=${Math.floor(s[1]/2)} &le; x &lt; 2<sup>${s[2]}</sup>=${s[1]}: S(x)=S(x-${Math.floor(s[1]/2)})+n/${s[1]}=S(x-${Math.floor(s[1]/2)})+${Math.floor(this.n/s[1])}`;
+
+		if (s[0]==5){
+			var poly=(s[1]==0?'A':'B');
+			strr=`I show ${(s[1]==0 || s[1]==1)?`Sequence of coefficients of polynominal ${poly}(x)`:``} according to the indexes in butterfly sequence; those are values of polynominals ${poly}<sub>0,p</sub>(x) in one point: w<sub>n</sub><sup>0</sup>=1 - these are ${this.n} polynominals, and later different polynominals on the same level will have colors aternating.`;
+		}
+
+		if (s[0]==6 || s[0]==7){
+			var pnt=s[1], level=s[2], poly=s[3], place=s[4], part=(1<<(level-1)), whole=(1<<level)*poly+place;
+			var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
+			var pl=(pnt==0?'A':'B');
+			var merger=this.mapp[s[1]][1];
+
+			strr=`I find value of a polynominal ${pl}<sub>${level},${poly}</sub>(${wfun(diff)}) &equiv; ${pl}<sub>${level}-1,2*${poly}</sub>(${wfun(`${diff}*2`)})+${wfun(diff)}${pl}<sub>${level}-1,2*${poly}+1</sub>(${wfun(`${diff}*2`)}) &equiv; ${pl}<sub>${level-1},${2*poly}</sub>(${wfun(diff*2)})+${wfun(diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*diff)}) ${(2*diff>=this.n)?` &equiv;${pl}<sub>${level-1},${2*poly}</sub>(${wfun(diff*2-this.n)})+${wfun(diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*diff-this.n)})`:``}  &equiv;${merger[level-1][whole]}+${this.roots[diff]}*${merger[level-1][whole+part]} &equiv; ${merger[level][whole+((s[0]==7)?part:0)]} (mod ${this.q}). `;
+			if (s[0]==7) strr+=` It's worth noting, that one could calculate ${wfun(diff)} &equiv; ${wfun(Math.floor(this.n/2))}${wfun(diff-Math.floor(this.n/2))} &equiv; -${wfun(diff-Math.floor(this.n/2))} (mod ${this.q}).`;
+		}
+
 		return strr;
 	}
 
@@ -252,13 +356,14 @@ class Ntt extends Algorithm{
 		if (s[0]==0) this.lees.push([1]);
 		if (s[0]==1) this.lees.push([2]);
 		if (s[0]==2) this.lees.push([3]);
-		if (s[0]==3) this.lees.push([4, 1]);
-		if (s[0]==4 && s[1]<this.n) this.lees.push([4, s[1]*2]);
+		if (s[0]==3) this.lees.push([4, 1, 0]);
+		if (s[0]==4 && s[1]<this.n) this.lees.push([4, s[1]*2, s[2]+1]);
 		if (s[0]==4 && s[1]==this.n) this.lees.push([5, 0]);
-		if (s[0]==5) this.lees.push([6, 0, 1, 0, 0]);
+		if (s[0]==5) this.lees.push([6, s[1], 1, 0, 0]);
 		if (s[0]==6) this.lees.push([7, s[1], s[2], s[3], s[4]]);
 
-		     if (s[0]==7 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1 && s[2]==lv) this.lees.push([8]);
+		     if (s[0]==7 && s[1]==1 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1 && s[2]==lv) this.lees.push([101]);
+		else if (s[0]==7 && s[1]==0 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1 && s[2]==lv) this.lees.push([5, s[1]+1]);
 		else if (s[0]==7 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1) this.lees.push([6, s[1], s[2]+1, 0, 0]);
 		else if (s[0]==7 && s[4]==(1<<(s[2]-1))-1) this.lees.push([6, s[1], s[2], s[3]+1, 0]);
 		else if (s[0]==7) this.lees.push([6, s[1], s[2], s[3], s[4]+1]);
@@ -269,8 +374,8 @@ class Ntt extends Algorithm{
 		var divs=[], zdivs=[], i, j;
 		var title_list=["i", "a<sub>i</sub>", "b<sub>i</sub>", "primitive root and w<sub>n</sub><sup>i</sup>", "", "i", "a<sub>i</sub>"];
 
-		for (i=0;i<15;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<15;i++){
+		for (i=0;i<20;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<20;i++){
 			divs[i].style.width="100%";
 			divs[i].style.height="40px";
 			//zdivs - inside div: 0 is write-up, 1 is button
