@@ -73,7 +73,7 @@ class Ntt extends Algorithm{
 		this.place_mul=7+2*this.lv+4;
 		this.endet=this.place_mul+8+this.lv+1;
 		var ij, thrs=[7, 7+this.lv+2, this.place_mul+8];
-		this.mapp={0:[this.a, this.a_merger, thrs[0], 1], 1:[this.b, this.b_merger, thrs[1], 2], 2:[this.y, this.y_merger, thrs[2], 2]};
+		this.mapp={0:[this.a, this.a_merger, thrs[0], 1], 1:[this.b, this.b_merger, thrs[1], 2], 2:[this.y, this.y_merger, thrs[2], this.place_mul+3]};
 
 		this.divsCreator();
 		this.lees.push([0]);
@@ -111,6 +111,10 @@ class Ntt extends Algorithm{
 				this.zdivs[i-1][2].appendChild(btn);
 			}
 		}
+		this.btnlist.push([]);
+		btn=super.buttCreator();
+		this.btnlist[this.endet+1].push(btn);
+		this.zdivs[this.endet-1][1].appendChild(btn);
 	}
 
 	clear(clear_list){
@@ -263,7 +267,11 @@ class Ntt extends Algorithm{
 				this.btnlist[this.endet][i].innerHTML=this.res[i];
 				this.Painter(this.btnlist[this.endet][i], 8);
 			}
+			this.btnlist[this.endet+1][0].innerHTML=this.inv_n;
+			this.Painter(this.btnlist[this.endet+1][0], 1);
 		}
+
+		if (s[0]==101) this.Painter(this.btnlist[this.endet+1][0], 0);
 	}
 
 	show_merge(s, back=0){
@@ -275,7 +283,7 @@ class Ntt extends Algorithm{
 		var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
 		var pol_0=this.btnlist[level+pos-1][whole];
 		var pol_1=this.btnlist[level+pos-1][whole+part];
-		var w=this.btnlist[4][diff];
+		var w=((s[1]==2)?this.btnlist[this.place_mul+6][diff]:this.btnlist[4][diff]);
 
 		this.Painter(cur_btn, 1);
 		if ((s[0]==6 && back==0) || (s[0]==7 && back==1)){
@@ -355,8 +363,17 @@ class Ntt extends Algorithm{
 			if (s[1]==1){
 				var last=this.lees[l-2];
 				this.show_merge(last, 1);
-				console.log(this.to_clear.length);
 			}
+
+			if (s[1]==2){
+				for (j=0;j<2;j++){
+					for (i=0;i<n;i++){
+						this.Painter(this.btnlist[this.place_mul+j+5][i], 1);
+						this.to_clear.push(this.btnlist[this.place_mul+j+5][i]);
+					}
+				}
+			}
+
 		}
 
 		if (s[0]==6 || s[0]==7){
@@ -367,14 +384,49 @@ class Ntt extends Algorithm{
 			var last=this.lees[l-2];
 			if (last[0]==6 || last[0]==7) this.show_merge(last, 1);
 			else{
-				this.to_clear=[];
-				for (i=0;i<n;i++) {
-					this.Painter(this.btnlist[pos][i], 1);
-
-				}
+				for (i=0;i<n;i++) this.Painter(this.btnlist[pos][i], 1);
+				for (i=0;i<n;i++) this.Painter(this.btnlist[seq_pos][i], 1);
 				this.to_clear=[];
 			}
 		}
+
+		if (s[0]==8){
+			var pm=this.place_mul, i, j;
+			for (j=0;j<3;j++){
+				for (i=0;i<n;i++) this.Painter(this.btnlist[pm+j][i], 4);
+			}
+			var last=this.lees[l-2];
+			this.show_merge(last, 1);
+		}
+
+		if (s[0]==9){
+			var pm=this.place_mul, i, j;
+			for (j=0;j<3;j++){
+				for (i=0;i<n;i++) this.Painter(this.btnlist[pm+j][i], 1);
+			}
+			for (i=0;i<n;i++) this.Painter(this.btnlist[pm+3][i], 4);
+		}
+
+		if (s[0]==10){
+			var pm=this.place_mul, i, j;
+			for (i=0;i<n;i++) this.Painter(this.btnlist[pm+3][i], 1);
+			for (j=0;j<2;j++){
+				for (i=0;i<n;i++) this.Painter(this.btnlist[pm+j+5][i], 4);
+			}
+			this.to_clear=[];
+		}
+
+		if (s[0]==11){
+			for (i=0;i<this.n;i++)	this.Painter(this.btnlist[this.endet][i], 4);
+			this.Painter(this.btnlist[this.endet+1][0], 4);
+			var last=this.lees[l-2];
+			this.show_merge(last, 1);
+		}
+
+		if (s[0]==101){
+			this.Painter(this.btnlist[this.endet+1][0], 1);
+		}
+
 		if (l>1) this.lees.pop();
 	}
 
@@ -394,19 +446,29 @@ class Ntt extends Algorithm{
 		else if (s[0]==4) strr=`I find next series of indexes in butterfly sequence - I use the pattern: for 2<sup>${s[2]-1}</sup>=${Math.floor(s[1]/2)} &le; x &lt; 2<sup>${s[2]}</sup>=${s[1]}: S(x)=S(x-${Math.floor(s[1]/2)})+n/${s[1]}=S(x-${Math.floor(s[1]/2)})+${Math.floor(this.n/s[1])}`;
 
 		if (s[0]==5){
-			var poly=(s[1]==0?'A':'B');
-			strr=`I show ${(s[1]==0 || s[1]==1)?`Sequence of coefficients of polynominal ${poly}(x)`:``} according to the indexes in butterfly sequence; those are values of polynominals ${poly}<sub>0,p</sub>(x) in one point: w<sub>n</sub><sup>0</sup>=1 - these are ${this.n} polynominals, and later different polynominals on the same level will have colors aternating.`;
+			var poly=(s[1]==2?'Y':(s[1]==0?'A':'B'));
+			strr=`I show ${(s[1]==0 || s[1]==1)?`Sequence of coefficients of polynominal ${poly}(x)`:`Sequence of values of polynominal ${poly}(x) in points w<sub>n</sub><sup>i</sup>`} according to the indexes in butterfly sequence; those are values of polynominals ${poly}<sub>0,p</sub>(x) in one point: w<sub>n</sub><sup>0</sup>=1 - these are ${this.n} polynominals, and later different polynominals on the same level will have colors aternating.`;
 		}
 
 		if (s[0]==6 || s[0]==7){
 			var pnt=s[1], level=s[2], poly=s[3], place=s[4], part=(1<<(level-1)), whole=(1<<level)*poly+place;
 			var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
-			var pl=(pnt==0?'A':'B');
+			var a_diff=(pnt==2?-diff:diff);
+			var sgn=(pnt==2?-1:1);
+			var pl=(pnt==2?'Y':(pnt==0?'A':'B'));
 			var merger=this.mapp[s[1]][1];
+			var used_roots=(pnt==2?this.inv_roots:this.roots);
 
-			strr=`I find value of a polynominal ${pl}<sub>${level},${poly}</sub>(${wfun(diff)}) &equiv; ${pl}<sub>${level}-1,2*${poly}</sub>(${wfun(`${diff}*2`)})+${wfun(diff)}${pl}<sub>${level}-1,2*${poly}+1</sub>(${wfun(`${diff}*2`)}) &equiv; ${pl}<sub>${level-1},${2*poly}</sub>(${wfun(diff*2)})+${wfun(diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*diff)}) ${(2*diff>=this.n)?` &equiv;${pl}<sub>${level-1},${2*poly}</sub>(${wfun(diff*2-this.n)})+${wfun(diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*diff-this.n)})`:``}  &equiv;${merger[level-1][whole]}+${this.roots[diff]}*${merger[level-1][whole+part]} &equiv; ${merger[level][whole+((s[0]==7)?part:0)]} (mod ${this.q}). `;
-			if (s[0]==7) strr+=` It's worth noting, that one could calculate ${wfun(diff)} &equiv; ${wfun(Math.floor(this.n/2))}${wfun(diff-Math.floor(this.n/2))} &equiv; -${wfun(diff-Math.floor(this.n/2))} (mod ${this.q}).`;
+			strr=`I find value of a polynominal ${pl}<sub>${level},${poly}</sub>(${wfun(a_diff)}) &equiv; ${pl}<sub>${level}-1,2*${poly}</sub>(${wfun(`${a_diff}*2`)})+${wfun(a_diff)}${pl}<sub>${level}-1,2*${poly}+1</sub>(${wfun(`${a_diff}*2`)}) &equiv; ${pl}<sub>${level-1},${2*poly}</sub>(${wfun(a_diff*2)})+${wfun(a_diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*a_diff)}) ${(2*diff>=this.n)?` &equiv;${pl}<sub>${level-1},${2*poly}</sub>(${wfun(a_diff*2-sgn*this.n)})+${wfun(a_diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*a_diff-sgn*this.n)})`:``}  &equiv;${merger[level-1][whole]}+${used_roots[diff]}*${merger[level-1][whole+part]} &equiv; ${merger[level][whole+((s[0]==7)?part:0)]} (mod ${this.q}). `;
+			if (s[0]==7) strr+=` It's worth noting, that one could calculate ${wfun(sgn*diff)} &equiv; ${wfun(sgn*Math.floor(this.n/2))}${wfun(sgn*(diff-Math.floor(this.n/2)))} &equiv; -${wfun(sgn*(diff-Math.floor(this.n/2)))} (mod ${this.q}).`;
 		}
+
+
+		if (s[0]==9) strr=`Now, it is time to find values C(x)=A(x)B(x) mod ${this.q} in ${this.n} points, where A(x) and B(x) are known.`;
+		if (s[0]==9) strr=`Values of C(${wfun("k")}) &equiv; A(${wfun("k")})B(${wfun("k")}) mod ${this.q} are found`;
+		if (s[0]==10) strr=`As in the last part of algorithm - interpolation - roots in form of ${wfun("-j")} are needed, I proceed to calculate them, using fact, that ${wfun("-i")}${wfun("i")}=${wfun("n-i")}${wfun("i")}=1, and so ${wfun("-i")}=${wfun("n-i")} - also ${wfun("n")}=${wfun(0)}, so except for the first element the sequence of roots will be inversed.`;
+		if (s[0]==11) strr=`At the end of algorithm, all values nc<sub>i</sub>=${this.n}c<sub>i</sub> are multiplied by n<sup>-1</sup>=${this.inv_n} - modular inverse of n modulo ${this.q} (which can be found using extended Euclid algorithm, for example), so that I attain all coefficients c<sub>i</sub>`;
+		if (s[0]==101) strr=`And so, NTT ends, coefficients of a polynominal C(x)=A(x)B(x) are, starting from c<sub>0</sub>: ${this.res}`;
 
 		return strr;
 	}
@@ -442,10 +504,22 @@ class Ntt extends Algorithm{
 	//Adding belt for write-ups and buttons 
 	divsCreator(){
 		var divs=[], zdivs=[], i, j;
-		var title_list=["i", "a<sub>i</sub>", "b<sub>i</sub>", "primitive root and w<sub>n</sub><sup>i</sup>", "", "i", "a<sub>i</sub>"];
+		var wnk="w<sub>n</sub><sup>k</sup>";
+		var title_list=["k", "a<sub>k</sub>", "b<sub>k</sub>", `primitive root and ${wnk}`, "", "i", "a<sub>i</sub>=A<sub>0</sub>"];
+		for (i=1;i<=this.lv;i++) title_list.push(`A<sub>${i}</sub>`);
+		title_list.push("");
 
-		for (i=0;i<this.endet+1;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<this.endet+1;i++){
+		title_list.push("b<sub>i</sub>=B<sub>0</sub>");
+		for (i=1;i<=this.lv;i++) title_list.push(`B<sub>${i}</sub>`);
+		var mini_list=["", wnk, `A(${wnk})`, `B(${wnk})`, `C(${wnk}) &equiv; A(${wnk})B(${wnk})`, ``, "j", "w<sub>n</sub><sup>j</sup>", ""];
+
+		title_list=title_list.concat(mini_list);
+		title_list.push("y<sub>i</sub>=Y<sub>0</sub>");
+		for (i=1;i<=this.lv;i++) title_list.push(`Y<sub>${i}</sub>`);
+		title_list.push("inverse n and values c<sub>k</sub>")
+
+		for (i=0;i<this.endet;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<this.endet;i++){
 			divs[i].style.width="100%";
 			divs[i].style.height="40px";
 			//zdivs - inside div: 0 is write-up, 1 is button

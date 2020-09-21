@@ -155,7 +155,7 @@
 			</li>
 		</ol>
 		<h3>The sequence of roots I: NTT</h3>
-		<p>Last question needed to ultimately solve the problem is: what is \(w_n^1\)? In the second version of the problem, the coefficients have to be calculate \(\pmod m\). If \(m\) have a primitive root \(p\), then:
+		<p>Last question needed to ultimately solve the problem is: what is \(w_n^1\)? In the second version of the problem, the coefficients have to be calculated \(\pmod m\). If \(m\) have a primitive root \(p\), then:
 		<ul>
 			<li>One can find some primitive root \(p\) rather rapidly.</li>
 			<li>One can notice, that if \(\phi(m)=2^kx\), then \(w_n^1=x2^{k-n}=\frac{\phi(m)}{2^n}\) can be used as a root - because, as \(p\) is a primitive root, values \(w_n^k\) will be distinct; becuse \(w_n^{n/2}=p-1\), and \(w_n^n=1\).
@@ -176,17 +176,19 @@
 			<div id="Inputter">
 				<form>
 					<textarea class="inputter" id="Totient2" name="Totient">6&#10;2 7 3 12 43 25 19&#10;7&#10;4 6 7 1 2 3 4 132&#10;257
-
 					</textarea>
 				</form>
+			</div>
+			<div id="Buttons" style="position:sticky; top:0; z-index:1;">
 				<button id="Sender" class="sender">Begin</button>
 				<button id="Prever" class="previous">Previous Move</button>
 				<button id="Nexter" class="next">Next Move</button>
 				<button id="Finisher" class="finish">Finish</button>
 			</div>
+
 			<div class="breakAlgo"></div>
 			<div id="Primez" class="primez"></div>
-			<div id="Comprehend" class="comprehend"></div>
+			<div id="Comprehend" class="comprehend" style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"></div>
 		</div>
 
 		<script src="{{url_for('static', filename='Ntt.js')}}"></script>
