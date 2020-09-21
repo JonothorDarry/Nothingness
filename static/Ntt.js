@@ -18,9 +18,15 @@ class Ntt extends Algorithm{
 		var fas=this.input.value;
 		this.a=[];
 		this.b=[];
+		this.y=[];
 
 		this.a_merger=[];
 		this.b_merger=[];
+		this.y_merger=[];
+
+		this.roots=[];
+		this.inv_roots=[];
+		this.res=[];
 		var x, i=0, j=0, c, m, j, btn, mx_all, g;
 		
 		for (i=0;i<3;i++) this.btlist.push([]);
@@ -37,15 +43,25 @@ class Ntt extends Algorithm{
 		for (i=1,j=0;i<=this.o+this.m;i*=2,j++) ;
 		this.n=i;
 		this.lv=j;
+		this.inv_n=BigInt(NTMath.inverse(this.n, this.q));
 
 		for (j=this.o+1;j<i;j++) this.a.push(0n);
 		for (j=this.m+1;j<i;j++) this.b.push(0n);
+		for (j=0;j<i;j++) this.y.push(0n);
+		for (j=0;j<this.n;j++){
+			this.roots.push(0);
+			this.inv_roots.push(0);
+			this.res.push(0);
+		}
+
 		for (j=0;j<=this.lv;j++){
 			this.a_merger.push([]);
 			this.b_merger.push([]);
+			this.y_merger.push([]);
 			for (i=0;i<this.n;i++){
 				this.a_merger[j].push(0);
 				this.b_merger[j].push(0);
+				this.y_merger[j].push(0);
 			}
 		}
 
@@ -53,6 +69,12 @@ class Ntt extends Algorithm{
 		mx_all=Math.max(4, 4)*10;
 		this.bs_butt_width=`${Math.max(40, mx_all)}px`;
 		this.bs_butt_width_h=Math.max(40, mx_all);
+
+		this.place_mul=7+2*this.lv+4;
+		this.endet=this.place_mul+8+this.lv+1;
+		var ij, thrs=[7, 7+this.lv+2, this.place_mul+8];
+		this.mapp={0:[this.a, this.a_merger, thrs[0], 1], 1:[this.b, this.b_merger, thrs[1], 2], 2:[this.y, this.y_merger, thrs[2], 2]};
+
 		this.divsCreator();
 		this.lees.push([0]);
 		this.butterfly=[];
@@ -73,9 +95,8 @@ class Ntt extends Algorithm{
 		this.zdivs[3][1].appendChild(btn);
 		
 
-		var ij, thrs=[7, 13];
-		this.mapp={0:[this.a, this.a_merger, 7, 1], 1:[this.b, this.b_merger, 7+this.lv+2, 2]};
-		for (i=4;i<20;i++){
+
+		for (i=4;i<this.endet+1;i++){
 			this.btnlist.push([]);
 			if (i==5) continue;
 			for (j=0;j<this.n;j++){
@@ -133,14 +154,16 @@ class Ntt extends Algorithm{
 		}
 
 		if (s[0]==3){
-			this.roots=[1n, this.w];
+			this.roots[0]=1n;
+			this.roots[1]=this.w;
+
 			var starter=this.w, i=0, BIpr=BigInt(this.q);
 			this.Painter(this.btnlist[4][0], 0);
 			this.Painter(this.btnlist[4][1], 0);
 
 			for (i=2;i<this.n;i++){
 				starter=(starter*this.w)%BIpr;
-				this.roots.push(starter);
+				this.roots[i]=starter;
 				this.btnlist[4][i].innerHTML=starter;
 				this.Painter(this.btnlist[4][i], 1);
 			}
@@ -188,14 +211,58 @@ class Ntt extends Algorithm{
 					this.Painter(this.btnlist[seq_pos][i], 0);
 				}
 			}
+			var used_roots=((s[1]==2)?this.inv_roots:this.roots);
 
 			var pnt=s[1], level=s[2], poly=s[3], place=s[4], part=(1<<(level-1)), whole=(1<<level)*poly+place;
 			var cur_btn=this.btnlist[level+pos][whole+((s[0]==7)?part:0)];
 			var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
-			var value=(merger[level-1][whole]+this.roots[diff]*merger[level-1][whole+part])%this.Bq;
+			var value=(merger[level-1][whole]+used_roots[diff]*merger[level-1][whole+part])%this.Bq;
 			merger[level][whole+((s[0]==7)?part:0)]=value;
 			this.show_merge(s);
 			cur_btn.innerHTML=value;
+		}
+
+		if (s[0]==8){
+			var pm=this.place_mul, i, j;
+			for (i=0;i<n;i++) this.btnlist[pm][i].innerHTML=this.roots[i];
+			for (i=0;i<n;i++) this.btnlist[pm+1][i].innerHTML=this.a_merger[this.lv][i];
+			for (i=0;i<n;i++) this.btnlist[pm+2][i].innerHTML=this.b_merger[this.lv][i];
+			for (j=0;j<3;j++){
+				for (i=0;i<n;i++) this.Painter(this.btnlist[pm+j][i], 1);
+			}
+		}
+
+		if (s[0]==9){
+			var pm=this.place_mul, i, j;
+			for (j=0;j<3;j++){
+				for (i=0;i<n;i++) this.Painter(this.btnlist[pm+j][i], 0);
+			}
+			for (i=0;i<n;i++) this.Painter(this.btnlist[pm+3][i], 1);
+			for (i=0;i<n;i++) this.y[i]=(this.a_merger[this.lv][i]*this.b_merger[this.lv][i])%this.Bq;
+			for (i=0;i<n;i++) this.btnlist[pm+3][i].innerHTML=this.y[i];
+		}
+
+		if (s[0]==10){
+			var pm=this.place_mul, i, j;
+			for (i=0;i<n;i++) this.Painter(this.btnlist[pm+3][i], 0);
+			for (j=0;j<2;j++){
+				for (i=0;i<n;i++) this.Painter(this.btnlist[pm+j+5][i], 1);
+				for (i=0;i<n;i++) this.to_clear.push(this.btnlist[pm+j+5][i]);
+			}
+			for (i=0;i<n;i++) this.btnlist[pm+5][i].innerHTML=-i;
+
+			this.inv_roots[0]=this.roots[0];
+			for (i=1;i<n;i++) this.inv_roots[i]=this.roots[n-i];
+			for (i=0;i<n;i++) this.btnlist[pm+6][i].innerHTML=this.inv_roots[i];
+			console.log(this.inv_roots);
+		}
+
+		if (s[0]==11){
+			for (i=0;i<this.n;i++){
+				this.res[i]=(this.y_merger[this.lv][i]*this.inv_n)%this.Bq;
+				this.btnlist[this.endet][i].innerHTML=this.res[i];
+				this.Painter(this.btnlist[this.endet][i], 8);
+			}
 		}
 	}
 
@@ -257,10 +324,7 @@ class Ntt extends Algorithm{
 			this.Painter(this.btnlist[4][0], 1);
 			this.Painter(this.btnlist[4][1], 1);
 
-			for (i=2;i<this.n;i++){
-				this.roots.pop();
-				this.Painter(this.btnlist[4][i], 4);
-			}
+			for (i=2;i<this.n;i++) this.Painter(this.btnlist[4][i], 4);
 		}
 
 		if (s[0]==4){
@@ -362,11 +426,17 @@ class Ntt extends Algorithm{
 		if (s[0]==5) this.lees.push([6, s[1], 1, 0, 0]);
 		if (s[0]==6) this.lees.push([7, s[1], s[2], s[3], s[4]]);
 
-		     if (s[0]==7 && s[1]==1 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1 && s[2]==lv) this.lees.push([101]);
+		     if (s[0]==7 && s[1]==2 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1 && s[2]==lv) this.lees.push([11]);
+		else if (s[0]==7 && s[1]==1 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1 && s[2]==lv) this.lees.push([8]);
 		else if (s[0]==7 && s[1]==0 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1 && s[2]==lv) this.lees.push([5, s[1]+1]);
 		else if (s[0]==7 && s[4]==(1<<(s[2]-1))-1 && s[3]==(1<<(lv-s[2]))-1) this.lees.push([6, s[1], s[2]+1, 0, 0]);
 		else if (s[0]==7 && s[4]==(1<<(s[2]-1))-1) this.lees.push([6, s[1], s[2], s[3]+1, 0]);
 		else if (s[0]==7) this.lees.push([6, s[1], s[2], s[3], s[4]+1]);
+
+		if (s[0]==8) this.lees.push([9]);
+		if (s[0]==9) this.lees.push([10]);
+		if (s[0]==10) this.lees.push([5, 2]);
+		if (s[0]==11) this.lees.push([101]);
 	}
 
 	//Adding belt for write-ups and buttons 
@@ -374,8 +444,8 @@ class Ntt extends Algorithm{
 		var divs=[], zdivs=[], i, j;
 		var title_list=["i", "a<sub>i</sub>", "b<sub>i</sub>", "primitive root and w<sub>n</sub><sup>i</sup>", "", "i", "a<sub>i</sub>"];
 
-		for (i=0;i<20;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<20;i++){
+		for (i=0;i<this.endet+1;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<this.endet+1;i++){
 			divs[i].style.width="100%";
 			divs[i].style.height="40px";
 			//zdivs - inside div: 0 is write-up, 1 is button

@@ -228,6 +228,27 @@ class NTMath{
 		return res;
 	}
 
+	static ext_gcd(a, b){
+		var p=[1, 0], q=[0, 1], lst=2, c, z;
+
+		while (b>0){
+			z=Math.floor(a/b);
+			p.push(p[lst-2]-z*p[lst-1]);
+			q.push(q[lst-2]-z*q[lst-1]);
+			c=a%b, a=b, b=c;
+			lst=lst+1
+		}
+		return [a, p[lst-2], q[lst-2]];
+	}
+
+	static inverse(a, m){
+		var s=NTMath.ext_gcd(a, m);
+		console.log(s);
+		if (s[0]==0) return null;
+		if (s[1]<0) return s[1]+m;
+		return s[1];
+	}
+
 	static factorize(x){
 		var i, ace=0, lst=[[],[]];
 		for (i=2;i*i<=x;i++){
