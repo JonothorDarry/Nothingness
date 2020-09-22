@@ -259,19 +259,35 @@ class NTMath{
 		return lst;
 	}
 
+	static find_totient(x){
+		var y=NTMath.factorize(x)[0], toth=x, i;
+		for (i=0;i<y.length;i++)
+			toth=Math.floor(toth/y[i])*(y[i]-1);
+		return toth;
+	}
+
 	static find_proot(x){
-		var toth_n=x-1, y, p=x, i;
-		var fac_t=NTMath.factorize(toth_n);
+		var fac_x=NTMath.factorize(x);
+		var ln=fac_x[0].length;
+		if (x==4) return 3;
+		if (fac_x[0].length>2 || (fac_x[0].length==2 && fac_x[0][0]!=2) || (fac_x[0][0]==2 && fac_x[1][0]>=2)) return null;
+
+		var p=fac_x[0][ln-1], toth_p=p-1, y, i;
+		var fac_t=NTMath.factorize(toth_p);
+
 		var ln=fac_t[0].length;
 		var lst=[];
-		for (i=0;i<ln;i++) lst.push(toth_n/fac_t[0][i]);
+		for (i=0;i<ln;i++) lst.push(toth_p/fac_t[0][i]);
 
 		while(true){
 			y=Math.floor(Math.random()*(p-2))+2;
 			for (i=0; i<ln; i++){
-				if (NTMath.pow(y, lst[i], p)==1) break;							
+				if (NTMath.pow(y, lst[i], p)==1) break;
 			}
-			if (i==ln) return y;
+			if (i==ln) break;
 		}
+		if (2*p<x && NTMath.pow(y, p-1, p*p)!=1) y=y+p;
+		if (x%2==0 && y%2==0) y=y+(x>>1);
+		return y;
 	}
 }

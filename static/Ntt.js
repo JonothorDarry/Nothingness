@@ -37,11 +37,14 @@ class Ntt extends Algorithm{
 		this.m=c.get_next();
 		for (i=0;i<=this.m;i++) this.b.push(BigInt(c.get_next()));
 		this.q=c.get_next();
+
 		this.Bq=BigInt(this.q);
 
 
 		for (i=1,j=0;i<=this.o+this.m;i*=2,j++) ;
 		this.n=i;
+		this.toth=NTMath.find_totient(this.q);
+
 		this.lv=j;
 		this.inv_n=BigInt(NTMath.inverse(this.n, this.q));
 
@@ -66,7 +69,7 @@ class Ntt extends Algorithm{
 		}
 
 
-		mx_all=Math.max(4, 4)*10;
+		mx_all=Math.max(4, this.q.toString().length)*10;
 		this.bs_butt_width=`${Math.max(40, mx_all)}px`;
 		this.bs_butt_width_h=Math.max(40, mx_all);
 
@@ -76,7 +79,13 @@ class Ntt extends Algorithm{
 		this.mapp={0:[this.a, this.a_merger, thrs[0], 1], 1:[this.b, this.b_merger, thrs[1], 2], 2:[this.y, this.y_merger, thrs[2], this.place_mul+3]};
 
 		this.divsCreator();
-		this.lees.push([0]);
+		if (this.q%2==0)
+			this.lees.push([103]);
+		else if (this.toth%this.n!=0)
+			this.lees.push([104]);
+		else
+			this.lees.push([0]);
+
 		this.butterfly=[];
 		for (i=0;i<this.n;i++) this.butterfly.push(0);
 
@@ -142,13 +151,15 @@ class Ntt extends Algorithm{
 		}
 
 		if (s[0]==1){
-			this.Painter(this.btnlist[3][0], 1);
 			this.proot=NTMath.find_proot(this.q);
-			this.btnlist[3][0].innerHTML=this.proot;
+			if (this.proot){
+				this.Painter(this.btnlist[3][0], 1);
+				this.btnlist[3][0].innerHTML=this.proot;
+			}
 		}
 
 		if (s[0]==2){
-			var beg=NTMath.pow(this.proot, Math.floor((this.q-1)/this.n), this.q);
+			var beg=NTMath.pow(this.proot, Math.floor((this.toth)/this.n), this.q);
 			this.w=beg;
 			this.Painter(this.btnlist[4][0], 1);
 			this.Painter(this.btnlist[4][1], 1);
@@ -258,7 +269,7 @@ class Ntt extends Algorithm{
 			this.inv_roots[0]=this.roots[0];
 			for (i=1;i<n;i++) this.inv_roots[i]=this.roots[n-i];
 			for (i=0;i<n;i++) this.btnlist[pm+6][i].innerHTML=this.inv_roots[i];
-			console.log(this.inv_roots);
+			console.log(this.roots);
 		}
 
 		if (s[0]==11){
@@ -438,8 +449,10 @@ class Ntt extends Algorithm{
 		var s=this.lees[l-1];
 		var strr=``;
 		if (s[0]==0) strr=`At the start of the algorithm, the polynominals A(x), B(x) are padded with 0's, so that it will be possible to find their values in not less than o+m+1=${this.o+this.m+1} &le; ${this.n} places`
-		if (s[0]==1) strr=`Primitive root modulo q=${this.q} is found, it is equal to ${this.proot} (to attain this root probabilistic algorithm was used).`;
-		if (s[0]==2) strr=`As root was found, new aim is to find such value g, that ord<sub>${this.q}</sub>(g)=${this.n} - this value is proot<sup>&#x3d5;(q)/n</sup> mod q=${this.proot}<sup>${this.q-1}/${this.n}</sup> mod ${this.q}=${this.w}. Besides, I also fill value of ${wn}=${w0}=1`;
+		if (s[0]==1 && this.proot) strr=`Primitive root modulo q=${this.q} is found, it is equal to ${this.proot} (to attain this root probabilistic algorithm was used).`;
+		else if (s[0]==1) strr=`Primitive root modulo q=${this.q} cannot be found, as it doesn't exist - calculations are not performed`;
+
+		if (s[0]==2) strr=`As root was found, new aim is to find such value g, that ord<sub>${this.q}</sub>(g)=${this.n} - this value is proot<sup>&#x3d5;(q)/n</sup> mod q=${this.proot}<sup>${this.toth}/${this.n}</sup> mod ${this.q}=${this.w}. Besides, I also fill value of ${wn}=${w0}=1`;
 		if (s[0]==3) strr=`I find further subsequent values of ${wi} using fact, that ${w1}${wi_1} mod q=${wi} (so I just multiply previous value by ${w1}=${this.w} modulo ${this.q}). Notice that I didn't add ${wn}, as ${wn}=${w0}`
 		
 		if (s[0]==4 && s[1]==0) strr=`I start finding order of indexes - so called butterfly - using which I will be abe to construct NTT without recursion. I start from 0`;
@@ -469,6 +482,9 @@ class Ntt extends Algorithm{
 		if (s[0]==10) strr=`As in the last part of algorithm - interpolation - roots in form of ${wfun("-j")} are needed, I proceed to calculate them, using fact, that ${wfun("-i")}${wfun("i")}=${wfun("n-i")}${wfun("i")}=1, and so ${wfun("-i")}=${wfun("n-i")} - also ${wfun("n")}=${wfun(0)}, so except for the first element the sequence of roots will be inversed.`;
 		if (s[0]==11) strr=`At the end of algorithm, all values nc<sub>i</sub>=${this.n}c<sub>i</sub> are multiplied by n<sup>-1</sup>=${this.inv_n} - modular inverse of n modulo ${this.q} (which can be found using extended Euclid algorithm, for example), so that I attain all coefficients c<sub>i</sub>`;
 		if (s[0]==101) strr=`And so, NTT ends, coefficients of a polynominal C(x)=A(x)B(x) are, starting from c<sub>0</sub>: ${this.res}`;
+		if (s[0]==102) strr=`A number ${this.q} modulo which calculations had to be obtained has no primitive root!`;
+		if (s[0]==103) strr=`gcd(${this.n},${this.q})>1 - and so, it is impossible to find inverse of ${this.n} modulo ${this.q} - algorithm cannot go further!`;
+		if (s[0]==104) strr=`&#632;(${this.q})=${this.toth}, and ${this.toth}%${this.n} &#8800; 0 - and so, there are not enough viable roots of unity to solve this problem.`;
 
 		return strr;
 	}
@@ -480,7 +496,9 @@ class Ntt extends Algorithm{
 
 		if (s[0]>=100) return;
 		if (s[0]==0) this.lees.push([1]);
-		if (s[0]==1) this.lees.push([2]);
+		if (s[0]==1 && this.proot) this.lees.push([2]);
+		else if (s[0]==1) this.lees.push([102]);
+
 		if (s[0]==2) this.lees.push([3]);
 		if (s[0]==3) this.lees.push([4, 1, 0]);
 		if (s[0]==4 && s[1]<this.n) this.lees.push([4, s[1]*2, s[2]+1]);
