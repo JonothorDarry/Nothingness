@@ -477,7 +477,7 @@ class Ntt extends Algorithm{
 		}
 
 
-		if (s[0]==9) strr=`Now, it is time to find values C(x)=A(x)B(x) mod ${this.q} in ${this.n} points, where A(x) and B(x) are known.`;
+		if (s[0]==8) strr=`Now, it is time to find values C(x)=A(x)B(x) mod ${this.q} in ${this.n} points, where A(x) and B(x) are known.`;
 		if (s[0]==9) strr=`Values of C(${wfun("k")}) &equiv; A(${wfun("k")})B(${wfun("k")}) mod ${this.q} are found`;
 		if (s[0]==10) strr=`As in the last part of algorithm - interpolation - roots in form of ${wfun("-j")} are needed, I proceed to calculate them, using fact, that ${wfun("-i")}${wfun("i")}=${wfun("n-i")}${wfun("i")}=1, and so ${wfun("-i")}=${wfun("n-i")} - also ${wfun("n")}=${wfun(0)}, so except for the first element the sequence of roots will be inversed.`;
 		if (s[0]==11) strr=`At the end of algorithm, all values nc<sub>i</sub>=${this.n}c<sub>i</sub> are multiplied by n<sup>-1</sup>=${this.inv_n} - modular inverse of n modulo ${this.q} (which can be found using extended Euclid algorithm, for example), so that I attain all coefficients c<sub>i</sub>`;

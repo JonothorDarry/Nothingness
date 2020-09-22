@@ -13,7 +13,7 @@
 	<body>
 		{{ headers.header('Number Theoretic Transform', 'NumberTheory') }}
 		<h3>First problem statement and definitions</h3>
-		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_o\) and \(b_0, b_1, \dots, b_m\) of two polynominals \(A(x), B(x)\), \(1 \le o,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{o+m}\) such that \((a_0+a_1x+a_2x^2+\dots+a_ox^o)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+o}x^{m+o})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \ge m+o\)</p>
+		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_o\) and \(b_0, b_1, \dots, b_m\) of two polynominals \(A(x), B(x)\), \(1 \le o,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{o+m}\) such that \((a_0+a_1x+a_2x^2+\dots+a_ox^o)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+o}x^{m+o})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \ge m+o\) and \(2 \nmid x\)</p>
 		<h3>First solution</h3>
 		<p>One can multiply each element in the first bracket with element from second bracket, then add resulting \(om\) elements; this solution works in \(O(om)\)
 		<h3>Threshold of transformation</h3>
@@ -27,7 +27,7 @@
 				</span>
 				What follows, 
 				<span class="central">\(A(x)=A_0(x^2)+xA_1(x^2)\)</span>
-				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the places, in which \(A(x)\) an be easily calculated are \(A(x_i^{1/2})\) and \(A(-x_i^{1/2})\) - so one needs to find suitable values for subsequent iterations.</li>
+				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the places, in which \(A(x)\) an be easily calculated are \(A(x_i^{1/2})\) and \(A(-x_i^{1/2})\) - so one needs to find suitable points for evaluating polynominal for subsequent iterations.</li>
 			<li>Let \(w_n^k=f^{\frac{kg}{n}}\), where \(f^g\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynominal will be calculated. Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); this leads to establish \(w_n^{n/2}=-1\), and \(f^g=w_n^n=1\); then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynominal \(A(x)\) in \(n\) points if values of \(A_0(x), A_1(x)\) in certain \(\frac{n}{2}\) points were calculated.</li>
 			<li>It may be beneficial to get rid of recursion before things start getting messy; to find value of \(A(x)\) in \(n\) points, one needs to find values of \(A_0(x)=a_0+a_2x+\dots+a_{n-2}x^{n/2}\) and \(A_1(x)=a_1+a_3x+\dots+a_{n-1}x^{n/2}\) in \(\frac{n}{2}\) points. Then, to find values of \(A_0(x)\) one needs to find values of \(a_0+a_4x+a_8x^2+\dots+a_{n-4}x^{n/4}\) and \(a_2+a_6x+a_{10}x^2+\dots+a_{n-2}x^{n/4}\) in \(\frac{n}{4}\) points, etc. For example, for \(n=16\), the subsequent coefficients of polynominals in recursion will be:
 				{% set pows=[1, 2, 4, 8, 16] %}
@@ -134,23 +134,27 @@
 			B
 			$$
 			</span>
-			This equality stems from \(2\) theses (where \(AB=M\)):
+			This equality stems from several theses (where \(AB=M\)):
 			<ul>
-				<li>On main diagonal, the value of \(M[i,i]\) will be equal to:
-				<span class="central">\(\frac{1}{n}(A[i,0]B[0,i]+A[i,1]B[1,i]+A[i,2]B[2,i]+ \dots + A[i,n-1]B[n-1,i])=\frac{1}{n}(w_n^0w_n^0+w_n^iw_n^{-i}+w_n^{2i}w_n^{-2i}+ \dots +w_n^{(n-1)i}w_n^{-(n-1)i})=\)</span><span class="central">\(=\frac{1}{n}(w_n^0+w_n^{i-i}+w_n^{2i-2i}+ \dots +w_n^{(n-1)i-(n-1)i})=\frac{1}{n}(w_n^0+w_n^0+w_n^0+ \dots +w_n^0)=nw_n^0=\frac{n}{n}=1\)</span>
+				<li>The value of \(M[i,j]\) will be equal to 
+					<span class="central">\(M[i,j]=\frac{1}{n}(A[i,0]B[0,j]+A[i,1]B[1,j]+A[i,2]B[2,j]+ \dots + A[i,n-1]B[n-1,j])=\frac{1}{n}(w_n^0w_n^0+w_n^iw_n^{-j}+w_n^{2i}w_n^{-2j}+ \dots +w_n^{(n-1)i}w_n^{-(n-1)j})=\)</span><span class="central">\(=\frac{1}{n}(w_n^{0(i-j)}+w_n^{1(i-j)}+w_n^{2(i-j)}+ \dots +w_n^{(n-1)(i-j)})=\frac{1}{n}\sum_{k=0}^{n-1}w_n^{k(i-j)}\)</span>
 				</li>
-				<li>Outside of the diagonal, the value of \(M[i,j]\) will be equal to 
-					<span class="central">\(\frac{1}{n}(A[i,0]B[0,j]+A[i,1]B[1,j]+A[i,2]B[2,j]+ \dots + A[i,n-1]B[n-1,j])=\frac{1}{n}(w_n^0w_n^0+w_n^iw_n^{-j}+w_n^{2i}w_n^{-2j}+ \dots +w_n^{(n-1)i}w_n^{-(n-1)j})=\frac{1}{n}(w_n^0+w_n^{i-j}+w_n^{2(i-j)}+\dots+w_n^{(n-1)(i-j)})=\)</span>
-				<span class="central">\(=\frac{1}{n}w_n^{i-j}(w_n^0+w_n^1+ \dots + w_n^{n-1})=\frac{1}{n}w_n^{i-j}(w_n^0+w_n^1+ \dots + w_n^{n-1}))=\frac{1}{n}w_n^{i-j}(w_n^0+w_n^{n/2}+w_n^1+w_n^{n/2+1}+ \dots +w_n^{n-2}+w_n^{n/2+(n/2-1)})=\frac{1}{n}w_n^{i-j}(w_n^0-w_n^0+w_n^1-w_n^1+ \dots +w_n^{n/2-1}-w_n^{n/2-1})=0\)</span>
+				<li>Let \(c=i-j\); as \(\forall_{x \in Z} w_n^x=1 \iff x \equiv 0 \pmod n\) (this emerges from fact, that all roots have to be different), then what can be said about \(s: w_n^{sc}=1\)? Clearly, \(sc=h*lcm(n, c)=h\frac{nc}{gcd(n, c)}\) for some natural \(h\). A minimal \(s \gt 0\) is \(s=\frac{n}{gcd(n, c)}\). Certainly, \(s|n\) - and so, \(s=2^f\) for some natural \(f\). Furthermore, \(s=1\) if and only if \(gcd(n, c)=n\).
+				</li>
+				<li>What can be said about \(c\)? as \(-n \lt i-j=c \lt n\), \(gcd(n, c)=n \iff i-j=c=0\). In this case, 
+					<span class="central">$$\frac{1}{n}\sum_{k=0}^{n-1}w_n^{k(i-j)}=\frac{1}{n}\sum_{k=0}^{n-1}w_n^0=\frac{1}{n}\sum_{k=0}^{n-1}1=\frac{1}{n}n=1$$</span> - this is the value of the main diagonal \(M[i,i]\) of resulting matrix.</li>
+				<li>If \(c \neq 0\), then \(w_n^{cs/2}=-1\) - because \(2|s\) and \(w_n^{cs/2} \neq 1\) (by definition of \(s\)). In this case:
+					{% set beg="\\frac{1}{n}\sum_{k=0}^{n/s-1}"%}
+					<span class="central">$$M[i,j]=\frac{1}{n}\sum_{k=0}^{n-1}w_n^{(i-j)k}={{beg}} \sum_{l=0}^{s-1}w_n^{c(ks+l)}={{beg}} \sum_{l=0}^{s-1}(w_n^{cs})^{k}w_n^{cl}={{beg}} \sum_{l=0}^{s-1}w_n^{cl}={{beg}} \sum_{l=0}^{s-1}w_n^{cl}={{beg}} \sum_{l=0}^{s/2-1}w_n^{cl}+w_n^{s/2+cl}={{beg}} \sum_{l=0}^{s/2-1}w_n^{cl}-w_n^{cl}={{beg}} \sum_{l=0}^{s/2-1}0=0$$</span>
 				</li>
 			</ul>
-			Last equality uses property, that \(w_n^{n/2}=-1\) - and so, M is indeed identity matrix, so \(B=A^{-1}\)
+			And so, M is indeed identity matrix, so \(B=A^{-1}\)
 			</li>
 			<li>
 				From inverse matrix equation, one may notice, that to calculate \(c_i\) is to solve following equation:
-				<span class="central">\(c_i=\frac{1}{n} \sum_{j=0}^{n-1}y_jw_n^{-ij}\)</span>
+				<span class="central">$$c_i=\frac{1}{n} \sum_{j=0}^{n-1}y_jw_n^{-ij}$$</span>
 				First of all, \(w_n^{-i}w_n^{i}=1=w_n^n=w_n^iw_n^{n-i}\). If \(w_n^{i}\) has exactly one inverse, then \(w_n^{n-i}=w_n^{-i}\). Secondly, the values calculated in the first phase of the algorithm had form:
-				<span class="central">\(y_i=\sum_{j=0}^{n-1}a_iw_n^{ij}\)</span>
+				<span class="central">$$y_i=\sum_{j=0}^{n-1}a_iw_n^{ij}$$</span>
 				The only differences are: lack of division by \(n\), and \(w_n^{ij}\) instead of \(w_n^{-ij}\) - this allows one to construct algorithm finding \(c_i\) in \(O(nlog(n))\) in the same way as for finding \(y_i\).
 			</li>
 		</ol>
