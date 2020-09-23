@@ -1,11 +1,31 @@
 class Ntt extends Algorithm{
-	constructor(block, a=17, b=43, m=107){
+	constructor(block, o, a, m, b){
 		super(block);
-		this.btlist=[];
+		var i, j, btn;
+		this.btnlist=[];
 		this.utilbts=[];
 
 		this.place.innerHTML='';
-		for (var i=0;i<3;i++) this.btlist.push([]);
+		for (i=1,j=0;i<=o+m;i*=2,j++) ;
+		this.n=i;
+		this.lv=j;
+		this.place_mul=7+2*this.lv+4;
+		this.endet=this.place_mul+8+this.lv+1;
+		for (j=o+1;j<i;j++) a.push(0);
+		for (j=m+1;j<i;j++) b.push(0);
+
+		this.divsCreator();
+		for (i=0;i<3;i++){
+			this.btnlist.push([]);
+			for (j=0;j<this.n;j++){
+				btn=super.buttCreator();
+				this.btnlist[i].push(btn);
+				this.zdivs[i][2].appendChild(btn);
+
+				this.btnlist[i][j].innerHTML=(i==0?j:(i==1?a[j]:b[j]));
+				this.Painter(this.btnlist[i][j], 0);
+			}
+		}
 	}
 
 	BeginningExecutor(){
@@ -29,7 +49,6 @@ class Ntt extends Algorithm{
 		this.res=[];
 		var x, i=0, j=0, c, m, j, btn, mx_all, g;
 		
-		for (i=0;i<3;i++) this.btlist.push([]);
 		c=this.dissolve_input(fas);
 
 		this.o=c.get_next();
@@ -104,7 +123,7 @@ class Ntt extends Algorithm{
 		this.zdivs[3][1].appendChild(btn);
 		
 
-
+		//All except inverse n
 		for (i=4;i<this.endet+1;i++){
 			this.btnlist.push([]);
 			if (i==5) continue;
@@ -120,12 +139,14 @@ class Ntt extends Algorithm{
 				this.zdivs[i-1][2].appendChild(btn);
 			}
 		}
+		//Inverse n
 		this.btnlist.push([]);
 		btn=super.buttCreator();
 		this.btnlist[this.endet+1].push(btn);
 		this.zdivs[this.endet-1][1].appendChild(btn);
 	}
 
+	//Purge according to base_color, if defined
 	clear(clear_list){
 		var i;
 		for (i=0;i<clear_list.length;i++){
@@ -550,7 +571,7 @@ class Ntt extends Algorithm{
 			}
 			zdivs[i][0].innerHTML=title_list[i];
 			zdivs[i][0].style.width="200px";
-			zdivs[i][1].style.width="60px";
+			zdivs[i][1].style.width=`${this.bs_butt_width_h+10}px`;
 			zdivs[i][2].style.position="relative";
 
 			this.place.appendChild(divs[i]);
