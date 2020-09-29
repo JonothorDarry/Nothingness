@@ -159,7 +159,7 @@
 				From inverse matrix equation, one may notice, that to calculate \(c_i\) is to solve following equation:
 				<span class="central">$$c_i=\frac{1}{n} \sum_{j=0}^{n-1}y_jw_n^{-ij}$$</span>
 				First of all, \(w_n^{-i}w_n^{i}=1=w_n^n=w_n^iw_n^{n-i}\). If \(w_n^{i}\) has exactly one inverse, then \(w_n^{n-i}=w_n^{-i}\). Secondly, the values calculated in the first phase of the algorithm had form:
-				<span class="central">$$y_i=\sum_{j=0}^{n-1}a_iw_n^{ij}$$</span>
+				<span class="central">$$P(w_n^i)=\sum_{j=0}^{n-1}a_jw_n^{ij}$$</span>
 				The only differences are: lack of division by \(n\), and \(w_n^{ij}\) instead of \(w_n^{-ij}\) - this allows one to construct algorithm finding \(c_i\) in \(O(nlog(n))\) in the same way as for finding \(y_i\).
 			</li>
 		</ol>
@@ -221,12 +221,14 @@
 					</textarea>
 				</form>
 			</div>
-			<div id="Buttons" style="position:sticky; top:0; z-index:1;">
+			<div id="Buttons" style="position:sticky; top:0; z-index:1; display:inline-block;">
 				<button id="Sender" class="sender">Begin</button>
 				<button id="Prever" class="previous">Previous Move</button>
 				<button id="Nexter" class="next">Next Move</button>
 				<button id="Finisher" class="finish">Finish</button>
 			</div>
+				<input type="radio" id="NTT" name="algoType" checked><label for="NTT">NTT</label>
+				<input type="radio" id="FFT" name="algoType"><label for="FFT">FFT</label>
 
 			<div class="breakAlgo"></div>
 			<div id="Primez" class="primez"></div>

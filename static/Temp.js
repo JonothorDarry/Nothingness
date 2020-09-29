@@ -101,6 +101,11 @@ class Algorithm{
 	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
 	//9: yellow(grey) 10: blue 11: dark gold
 	Painter(btn, col=1, only_bg=0){
+		if ('upper' in btn){
+			this.Painter(btn.upper, col, only_bg);
+			this.Painter(btn.lower, col, only_bg);
+			return;
+		}
 		var olden;
 		if (only_bg==1) olden=btn.style.color;
 		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12) btn.style.color="#FFFFFF";
@@ -176,7 +181,8 @@ class Algorithm{
 		dv.backgroundColor="#000000";
 		dv.appendChild(butt1);
 		dv.appendChild(butt2);
-		
+		dv.upper=butt1;
+		dv.lower=butt2;
 		return [dv, butt1, butt2];
 	}
 
@@ -289,5 +295,22 @@ class NTMath{
 		if (2*p<x && NTMath.pow(y, p-1, p*p)!=1) y=y+p;
 		if (x%2==0 && y%2==0) y=y+(x>>1);
 		return y;
+	}
+}
+
+class Complex{
+	constructor(a, b=0){
+		this.real=a;
+		this.img=b;
+	}
+	add(b){
+		return new Complex(this.real+b.real, this.img+b.img);
+	}
+	mul(b){
+		return new Complex(this.real*b.real-this.img*b.img, this.img*b.real+b.img*this.real);
+	}
+	toString(){
+		if (-10e-6<this.img && this.img<10e-6) return `${this.real.toFixed(5)}`;
+		return `${this.real.toFixed(5)}+${this.img.toFixed(5)}i`;
 	}
 }

@@ -1,6 +1,8 @@
 class Ntt extends Algorithm{
 	constructor(block, o, a, m, b){
 		super(block);
+		this.ntt=block.radio_n;
+		this.fft=block.radio_f;
 		var i, j, btn;
 		this.btnlist=[];
 		this.utilbts=[];
@@ -32,6 +34,8 @@ class Ntt extends Algorithm{
 		this.btnlist=[];
 		this.utilbts=[];
 		this.to_clear=[];
+		this.is_ntt=this.ntt.checked;
+		this.is_fft=this.fft.checked;
 
 		this.lees=[];
 		this.place.innerHTML='';
@@ -50,30 +54,47 @@ class Ntt extends Algorithm{
 		var x, i=0, j=0, c, m, j, btn, mx_all, g;
 		
 		c=this.dissolve_input(fas);
+		var pusher=function(arr, x, ntt){
+			if (ntt==true) arr.push(BigInt(x));
+			else arr.push(new Complex(x));
+		}
 
 		this.o=c.get_next();
-		for (i=0;i<=this.o;i++) this.a.push(BigInt(c.get_next()));
+		for (i=0;i<=this.o;i++) pusher(this.a, c.get_next(), this.is_ntt);
 		this.m=c.get_next();
-		for (i=0;i<=this.m;i++) this.b.push(BigInt(c.get_next()));
-		this.q=c.get_next();
-
-		this.Bq=BigInt(this.q);
-
+		for (i=0;i<=this.m;i++) pusher(this.b, c.get_next(), this.is_ntt);
 
 		for (i=1,j=0;i<=this.o+this.m;i*=2,j++) ;
 		this.n=i;
-		this.toth=NTMath.find_totient(this.q);
-
 		this.lv=j;
-		this.inv_n=BigInt(NTMath.inverse(this.n, this.q));
 
-		for (j=this.o+1;j<i;j++) this.a.push(0n);
-		for (j=this.m+1;j<i;j++) this.b.push(0n);
-		for (j=0;j<i;j++) this.y.push(0n);
+		for (j=this.o+1;j<this.n;j++) pusher(this.a, 0, this.is_ntt);
+		for (j=this.m+1;j<this.n;j++) pusher(this.b, 0, this.is_ntt);
+		for (j=0;j<this.n;j++) this.y.push(0n);
 		for (j=0;j<this.n;j++){
 			this.roots.push(0);
 			this.inv_roots.push(0);
 			this.res.push(0);
+		}
+
+
+
+		//System-specific feats: either read q or not, then find inverse n and minsize of button (perhaps too large for fft)
+		if (this.is_ntt){
+			this.q=c.get_next();
+			this.Bq=BigInt(this.q);
+			this.inv_n=BigInt(NTMath.inverse(this.n, this.q));
+			mx_all=Math.max(4, this.q.toString().length)*10;
+		}
+		else{
+			var mxa=0, sumb=0;
+			for (i=0;i<this.n;i++) {
+				if (mxa<Math.max(this.a[i].real, mxa)) mxa=this.a[i].real;
+			}
+			for (i=0;i<this.n;i++) sumb+=this.b[i].real;
+			
+			this.inv_n=1/this.n;
+			mx_all=Math.max(4, 7+Math.ceil(Math.log(sumb*mxa)))*10;
 		}
 
 		for (j=0;j<=this.lv;j++){
@@ -88,62 +109,59 @@ class Ntt extends Algorithm{
 		}
 
 
-		mx_all=Math.max(4, this.q.toString().length)*10;
-		this.bs_butt_width=`${Math.max(40, mx_all)}px`;
-		this.bs_butt_width_h=Math.max(40, mx_all);
+		this.bs_butt_width=`${mx_all}px`;
+		this.bs_butt_width_h=mx_all;
 
 		this.place_mul=7+2*this.lv+4;
-		this.endet=this.place_mul+8+this.lv+1;
+		this.endet=this.place_mul+8+this.lv+2;
 		var ij, thrs=[7, 7+this.lv+2, this.place_mul+8];
 		this.mapp={0:[this.a, this.a_merger, thrs[0], 1], 1:[this.b, this.b_merger, thrs[1], 2], 2:[this.y, this.y_merger, thrs[2], this.place_mul+3]};
 
 		this.divsCreator();
-		if (this.q%2==0)
-			this.lees.push([103]);
-		else if (this.toth%this.n!=0)
-			this.lees.push([104]);
+		//Checking conditions for ntt, adding state
+		if (this.is_ntt){
+			this.toth=NTMath.find_totient(this.q);
+			if (this.q%2==0)
+				this.lees.push([103]);
+			else if (this.toth%this.n!=0)
+				this.lees.push([104]);
+			else
+				this.lees.push([0]);
+		}
 		else
 			this.lees.push([0]);
 
+		//Filling butterfly - so that not push/pop occurs later
 		this.butterfly=[];
 		for (i=0;i<this.n;i++) this.butterfly.push(0);
 
-		for (i=0;i<3;i++){
+		//Filling divs with buttons - indexes 3 and endet-1 are special
+		var ite=0;
+		for (i=0;i<this.endet+1;i++){
 			this.btnlist.push([]);
-			for (j=0;j<this.n;j++){
+			//3 - proot, endet-1 - inv.
+			if (i==3 || i==this.endet-1){
 				btn=super.buttCreator();
 				this.btnlist[i].push(btn);
-				this.zdivs[i][2].appendChild(btn);
+				this.zdivs[i-ite][1].appendChild(btn);
+				ite++;
+				continue;
 			}
-		}
-		//Primitive root
-		this.btnlist.push([]);
-		btn=super.buttCreator();
-		this.btnlist[3].push(btn);
-		this.zdivs[3][1].appendChild(btn);
-		
-
-		//All except inverse n
-		for (i=4;i<this.endet+1;i++){
-			this.btnlist.push([]);
-			if (i==5) continue;
 			for (j=0;j<this.n;j++){
 				btn=super.buttCreator();
 				for (ij=0; ij<thrs.length; ij++){
-					if (i>=thrs[ij] && i<=thrs[ij]+this.lv && ((j%(1<<(i-thrs[ij]+1)))<(1<<(i-thrs[ij]))))
-						btn.base_color=12;
+					if (i>=thrs[ij] && i<=thrs[ij]+this.lv){
+						if (this.is_fft) btn=super.doubleButtCreator(null, super.buttCreator.bind(this))[0];
+						if ((j%(1<<(i-thrs[ij]+1)))<(1<<(i-thrs[ij])))
+							btn.base_color=12;
+					}
+					if (this.is_fft && (i==4 || i==this.place_mul+6 || (i>=this.place_mul && i<this.place_mul+4)))
+						btn=super.doubleButtCreator(null, super.buttCreator.bind(this))[0];
 				}
-
-
 				this.btnlist[i].push(btn);
-				this.zdivs[i-1][2].appendChild(btn);
+				this.zdivs[i-ite][2].appendChild(btn);
 			}
 		}
-		//Inverse n
-		this.btnlist.push([]);
-		btn=super.buttCreator();
-		this.btnlist[this.endet+1].push(btn);
-		this.zdivs[this.endet-1][1].appendChild(btn);
 	}
 
 	//Purge according to base_color, if defined
@@ -156,6 +174,19 @@ class Ntt extends Algorithm{
 		}
 	}
 
+	show_number(btn, value){
+		if (this.is_ntt)
+			btn.innerHTML=value;
+		else{
+			var con=100000, vreal=value.real.toFixed(5), vimg=value.img.toFixed(5);
+			if (Math.round(value.real)*con==Math.round(value.real*con)) vreal=Math.round(value.real);
+			if (Math.round(value.img)*con==Math.round(value.img*con)) vimg=Math.round(value.img);
+
+			btn.upper.innerHTML=vreal;
+			btn.lower.innerHTML=`${vimg}i`;
+		}
+	}
+
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], j, btn, value, i=0, n=this.n;
@@ -165,42 +196,75 @@ class Ntt extends Algorithm{
 			for (i=0;i<3;i++){
 				for (j=0;j<this.n;j++){
 					value=(i==0?j:(i==1?this.a[j]:this.b[j]));
-					this.btnlist[i][j].innerHTML=value;
+					if (this.is_ntt)
+						this.btnlist[i][j].innerHTML=value;
+					else 
+						this.btnlist[i][j].innerHTML=Math.round(value);
 					this.Painter(this.btnlist[i][j], 0);
 				}
 			}
 		}
 
 		if (s[0]==1){
-			this.proot=NTMath.find_proot(this.q);
-			if (this.proot){
-				this.Painter(this.btnlist[3][0], 1);
-				this.btnlist[3][0].innerHTML=this.proot;
+			if (this.is_ntt){
+				this.proot=NTMath.find_proot(this.q);
+				if (this.proot){
+					this.Painter(this.btnlist[3][0], 1);
+					this.btnlist[3][0].innerHTML=this.proot;
+				}
+			}
+			else {
+				this.proot=new Complex(Math.cos(2*Math.PI/this.n), Math.sin(2*Math.PI/this.n));
 			}
 		}
 
 		if (s[0]==2){
-			var beg=NTMath.pow(this.proot, Math.floor((this.toth)/this.n), this.q);
+			var beg;
+			if (this.is_ntt){
+				beg=NTMath.pow(this.proot, Math.floor((this.toth)/this.n), this.q);
+				this.show_number(this.btnlist[4][0], 1);
+			}
+			else{
+				beg=this.proot;
+				this.show_number(this.btnlist[4][0], new Complex(1));
+			}
+
 			this.w=beg;
 			this.Painter(this.btnlist[4][0], 1);
 			this.Painter(this.btnlist[4][1], 1);
 			this.Painter(this.btnlist[3][0], 0);
-			this.btnlist[4][1].innerHTML=beg;
-			this.btnlist[4][0].innerHTML=1;
+
+			this.show_number(this.btnlist[4][1], beg);
 		}
 
 		if (s[0]==3){
-			this.roots[0]=1n;
-			this.roots[1]=this.w;
 
-			var starter=this.w, i=0, BIpr=BigInt(this.q);
+			var starter, i=0, BIpr;
+			if (this.is_ntt){
+				this.roots[0]=1n;
+				this.roots[1]=this.w;
+				starter=this.w;
+				BIpr=this.Bq;
+			}
+			else{
+				this.roots[0]=new Complex(1, 0);
+				this.roots[1]=this.w;
+				starter=new Complex(this.w.real, this.w.img);
+			}
 			this.Painter(this.btnlist[4][0], 0);
 			this.Painter(this.btnlist[4][1], 0);
 
 			for (i=2;i<this.n;i++){
-				starter=(starter*this.w)%BIpr;
-				this.roots[i]=starter;
-				this.btnlist[4][i].innerHTML=starter;
+				if (this.is_ntt){
+					starter=(starter*this.w)%BIpr;
+					this.roots[i]=starter;
+				}
+				else{
+					starter=starter.mul(this.w);
+					this.roots[i]=new Complex(starter.real, starter.img);
+				}
+
+				this.show_number(this.btnlist[4][i], starter);
 				this.Painter(this.btnlist[4][i], 1);
 			}
 		}
@@ -227,7 +291,8 @@ class Ntt extends Algorithm{
 			var mapp=this.mapp[s[1]];
 			var pos=mapp[2], seq_pos=mapp[3], real_seq=mapp[0], merger=mapp[1];
 			for (i=0;i<n;i++) {
-				this.btnlist[pos][i].innerHTML=real_seq[this.butterfly[i]];
+				this.show_number(this.btnlist[pos][i], real_seq[this.butterfly[i]]);
+
 				merger[0][i]=real_seq[this.butterfly[i]];
 				this.Painter(this.btnlist[pos][i], 1);
 				this.Painter(this.btnlist[seq_pos][i], 1);
@@ -252,17 +317,23 @@ class Ntt extends Algorithm{
 			var pnt=s[1], level=s[2], poly=s[3], place=s[4], part=(1<<(level-1)), whole=(1<<level)*poly+place;
 			var cur_btn=this.btnlist[level+pos][whole+((s[0]==7)?part:0)];
 			var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
-			var value=(merger[level-1][whole]+used_roots[diff]*merger[level-1][whole+part])%this.Bq;
+			var value;
+
+			if (this.is_ntt)
+				value=(merger[level-1][whole]+used_roots[diff]*merger[level-1][whole+part])%this.Bq;
+			else
+				value=merger[level-1][whole].add(used_roots[diff].mul(merger[level-1][whole+part]));
+			
 			merger[level][whole+((s[0]==7)?part:0)]=value;
 			this.show_merge(s);
-			cur_btn.innerHTML=value;
+			this.show_number(cur_btn, value);
 		}
 
 		if (s[0]==8){
 			var pm=this.place_mul, i, j;
-			for (i=0;i<n;i++) this.btnlist[pm][i].innerHTML=this.roots[i];
-			for (i=0;i<n;i++) this.btnlist[pm+1][i].innerHTML=this.a_merger[this.lv][i];
-			for (i=0;i<n;i++) this.btnlist[pm+2][i].innerHTML=this.b_merger[this.lv][i];
+			for (i=0;i<n;i++) this.show_number(this.btnlist[pm][i], this.roots[i]);
+			for (i=0;i<n;i++) this.show_number(this.btnlist[pm+1][i], this.a_merger[this.lv][i]);
+			for (i=0;i<n;i++) this.show_number(this.btnlist[pm+2][i], this.b_merger[this.lv][i]);
 			for (j=0;j<3;j++){
 				for (i=0;i<n;i++) this.Painter(this.btnlist[pm+j][i], 1);
 			}
@@ -274,8 +345,11 @@ class Ntt extends Algorithm{
 				for (i=0;i<n;i++) this.Painter(this.btnlist[pm+j][i], 0);
 			}
 			for (i=0;i<n;i++) this.Painter(this.btnlist[pm+3][i], 1);
-			for (i=0;i<n;i++) this.y[i]=(this.a_merger[this.lv][i]*this.b_merger[this.lv][i])%this.Bq;
-			for (i=0;i<n;i++) this.btnlist[pm+3][i].innerHTML=this.y[i];
+			for (i=0;i<n;i++){
+				if (this.is_ntt) this.y[i]=(this.a_merger[this.lv][i]*this.b_merger[this.lv][i])%this.Bq;
+				else this.y[i]=this.a_merger[this.lv][i].mul(this.b_merger[this.lv][i]);
+			}
+			for (i=0;i<n;i++) this.show_number(this.btnlist[pm+3][i], this.y[i]);
 		}
 
 		if (s[0]==10){
@@ -289,21 +363,24 @@ class Ntt extends Algorithm{
 
 			this.inv_roots[0]=this.roots[0];
 			for (i=1;i<n;i++) this.inv_roots[i]=this.roots[n-i];
-			for (i=0;i<n;i++) this.btnlist[pm+6][i].innerHTML=this.inv_roots[i];
-			console.log(this.roots);
+			for (i=0;i<n;i++) this.show_number(this.btnlist[pm+6][i], this.inv_roots[i]);
 		}
 
 		if (s[0]==11){
 			for (i=0;i<this.n;i++){
-				this.res[i]=(this.y_merger[this.lv][i]*this.inv_n)%this.Bq;
-				this.btnlist[this.endet][i].innerHTML=this.res[i];
+				if (this.is_ntt) this.res[i]=(this.y_merger[this.lv][i]*this.inv_n)%this.Bq;
+				else this.res[i]=this.y_merger[this.lv][i].mul(new Complex(this.inv_n));
+				if (this.is_fft)
+					this.btnlist[this.endet][i].innerHTML=Math.round(this.res[i].real);
+				else
+					this.btnlist[this.endet][i].innerHTML=this.res[i];
 				this.Painter(this.btnlist[this.endet][i], 8);
 			}
-			this.btnlist[this.endet+1][0].innerHTML=this.inv_n;
-			this.Painter(this.btnlist[this.endet+1][0], 1);
+			this.btnlist[this.endet-1][0].innerHTML=this.inv_n;
+			this.Painter(this.btnlist[this.endet-1][0], 1);
 		}
 
-		if (s[0]==101) this.Painter(this.btnlist[this.endet+1][0], 0);
+		if (s[0]==101) this.Painter(this.btnlist[this.endet-1][0], 0);
 	}
 
 	show_merge(s, back=0){
@@ -450,13 +527,13 @@ class Ntt extends Algorithm{
 
 		if (s[0]==11){
 			for (i=0;i<this.n;i++)	this.Painter(this.btnlist[this.endet][i], 4);
-			this.Painter(this.btnlist[this.endet+1][0], 4);
+			this.Painter(this.btnlist[this.endet-1][0], 4);
 			var last=this.lees[l-2];
 			this.show_merge(last, 1);
 		}
 
 		if (s[0]==101){
-			this.Painter(this.btnlist[this.endet+1][0], 1);
+			this.Painter(this.btnlist[this.endet-1][0], 1);
 		}
 
 		if (l>1) this.lees.pop();
@@ -578,10 +655,16 @@ class Ntt extends Algorithm{
 		}
 		this.divs=divs;
 		this.zdivs=zdivs;
+		this.place.style.width=`${(this.n+1)*this.bs_butt_width_h+210}px`;
+		this.wisdom.style.minWidth=`max(${(this.n+1)*this.bs_butt_width_h+210}px`;
 	}
 }
 
 
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
+feral.radio_n=document.getElementById('NTT');
+feral.radio_f=document.getElementById('FFT');
 var eg1=new Ntt(feral, 6, [2, 7, 3, 12, 43, 25, 19], 7, [4, 6, 7, 1, 2, 3, 4, 132]);
+// 998244353
+//8,40,68,117,19,208,60,143,188,128,70,179,35,195,0,0
