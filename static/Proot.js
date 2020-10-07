@@ -134,6 +134,7 @@ class Proot extends Algorithm{
 
 	BeginningExecutor(){
 		this.lees=[];
+		this.state_transformation=[];
 		this.place.innerHTML='';
 		var fas=this.input.value;
 		this.bs_butt_width_h=Math.max(40, fas.length*10);
@@ -162,13 +163,14 @@ class Proot extends Algorithm{
 
 		this.t_primes=[];
 		this.check_expos=[];
-		this.amount_of_primes_t=0;
 
 		this.candidates=[];
 		this.recover=[];
-		this.last_index=0;
+		this.last_index=-1;
 		this.falsify=0;
 		this.finito=0;
+		this.dead=0;
+		this.current_exponent=-1;
 
 		this.btnlist=[];
 		for (i=0;i<6;i++){
@@ -204,49 +206,53 @@ class Proot extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x, expo, base, old_base, old_expo;
+		var staat=[];
+		var point=this.amount_of_primes_m*2;
+		//var last_expo=(this.exponents.length>0?this.exponents[this.exponents.length-1]:-1);
+		
 		if (s[0]==0){
 			x=s[2];
+			base=this.btnlist[0][point+2];
+			expo=this.btnlist[0][point+3];
 
-			base=this.btnlist[0][this.amount_of_primes_m*2+2];
-			expo=this.btnlist[0][this.amount_of_primes_m*2+3];
+			staat.push([2, this.primes, x]);
+			if (this.current_exponent>-1) staat.push([2, this.exponents, this.current_exponent]);
+			staat.push([3, 'current_exponent', this.current_exponent, 1]);
+			staat.push([3, 'amount_of_primes_m', this.amount_of_primes_m, this.amount_of_primes_m+1]);
+			staat.push([3, 'bastard_m', this.bastard_m, Math.floor(this.bastard_m/x)]);
 
-			this.primes.push(x);
-			this.exponents.push(1);
-			this.amount_of_primes_m++;
-			this.bastard_m=Math.floor(this.bastard_m/x);
-
-			this.Painter(base, 1);
+			staat.push([0, base, 4, 1]);
 			base.innerHTML=x;
 
-			this.Painter(expo, 1);
+			staat.push([0, expo, 4, 1]);
 			expo.innerHTML=1;
-			if (this.amount_of_primes_m>1){
-				this.Painter(this.btnlist[0][(this.amount_of_primes_m-2)*2+2], 0);
-				this.Painter(this.btnlist[0][(this.amount_of_primes_m-2)*2+3], 0);
+
+			if (this.amount_of_primes_m>0){
+				if (this.current_exponent==1) staat.push([0, this.btnlist[0][point], 1, 0]);
+				staat.push([0, this.btnlist[0][point+1], 1, 0]);
 			}
 		}
+
 		if (s[0]==1){
 			x=s[1];
-			base=this.btnlist[0][(this.amount_of_primes_m-1)*2+2];
-			expo=this.btnlist[0][(this.amount_of_primes_m-1)*2+3];
+			base=this.btnlist[0][point];
+			expo=this.btnlist[0][point+1];
 
-			this.exponents[this.exponents.length-1]++;
-			this.bastard_m=Math.floor(this.bastard_m/x);
+			staat.push([3, 'current_exponent', this.current_exponent, this.current_exponent+1]);
+			staat.push([3, 'bastard_m', this.bastard_m, Math.floor(this.bastard_m/x)]);
 
-			this.Painter(base, 0);
-			this.Painter(expo, 1);
-			expo.innerHTML=this.exponents[this.exponents.length-1];
+			if (this.current_exponent==1) staat.push([0, base, 1, 0]);
+			staat.push([1, expo, this.current_exponent, this.current_exponent+1]);
 		}
 
 		if (s[0]==2){
-			base=this.btnlist[1][1];
-			old_base=this.btnlist[0][(this.amount_of_primes_m-1)*2+2];
-			old_expo=this.btnlist[0][(this.amount_of_primes_m-1)*2+3];
+			var base=this.btnlist[1][1];
 
-			this.Painter(base, 1);
-			
-			this.Painter(old_base, 0);
-			this.Painter(old_expo, 0);
+			staat.push([2, this.exponents, this.current_exponent]);
+			if (this.current_exponent==1) staat.push([0, this.btnlist[0][point], 1, 0]);
+			staat.push([0, this.btnlist[0][point+1], 1, 0]);
+
+			staat.push([0, base, 4, 1]);
 			base.innerHTML=this.primes[this.primes.length-1];
 		}
 
@@ -256,242 +262,159 @@ class Proot extends Algorithm{
 			if (this.t_primes.length>0) old_base=this.btnlist[2][this.t_primes.length];
 			else old_base=this.btnlist[1][1];
 
-			this.t_primes.push(x);
-			this.amount_of_primes_t++;
-			this.bastard_toth=this.Prime_Removal(this.bastard_toth, x);
-			console.log("DEAD", this.bastard_toth);
+			staat.push([2, this.t_primes, x]);
+			staat.push([3, 'bastard_toth', this.bastard_toth, this.Prime_Removal(this.bastard_toth, x)]);
 
-			this.Painter(base, 1);
-			this.Painter(old_base, 0);
-			base.innerHTML=this.t_primes[this.t_primes.length-1];
+			staat.push([0, base, 4, 1]);
+			staat.push([0, old_base, 1, 0]);
+			base.innerHTML=x;
 		}
 
 		if (s[0]==4){
 			x=s[1];
 			base=this.btnlist[3][x];
-			var color=1;
+			var color=1, value_to_expos=1;
 			if (x==0){
 				old_base=this.btnlist[2][this.t_primes.length];
 				base.innerHTML=1;
-				this.check_expos.push(1);
 				color=8;
 			}
 			else{
 				old_base=this.btnlist[3][x-1];
 				base.innerHTML=Math.floor(this.toth/this.t_primes[x-1]);
-				this.check_expos.push(Math.floor(this.toth/this.t_primes[x-1]));
+				value_to_expos=Math.floor(this.toth/this.t_primes[x-1]);
 			}
+			staat.push([2, this.check_expos, value_to_expos]);
 		
-			this.Painter(base, color);
-			if (x!=1) this.Painter(old_base, 0);
+			staat.push([0, base, 4, color]);
+			if (x!=1) staat.push([0, old_base, 1, 0]);
 		}
 
 		if (s[0]==5){
 			x=s[1];
+			var candidate, index;
 			if (x==0){
-				this.current_candidate=this.Take_Next_Candidate()
-				this.falsify=0;
-				for (var i=0;i<this.check_expos.length;i++) this.Painter(this.btnlist[4][i], 4);
+				index=this.Take_Next_Candidate(staat);
+				if (this.is_deter) candidate=index;
+				else candidate=this.candidates[index];
+
+				staat.push([3, 'current_candidate', this.current_candidate, candidate]);
+				staat.push([3, 'falsify', this.falsify, 0]);
+				if (this.last_index>-1){
+					for (var i=1;i<this.recover[this.last_index].length-1;i++) staat.push([0, this.btnlist[4][i], 0, 4]);
+					staat.push([0, this.btnlist[4][this.recover[this.last_index].length-1], 1, 4]);
+				}
 			}
+			else candidate=this.current_candidate, index=this.last_index;
+
 			base=this.btnlist[4][x];
 			if (x>0) old_base=this.btnlist[4][x-1];
 			else old_base=this.btnlist[3][this.t_primes.length];
 
-			if (x!=1) this.Painter(old_base, 0);
-			if (x>0) this.Painter(base, 1);
-			else this.Painter(base, 8);
+			if (x==0 && this.last_index==-1){
+				staat.push([0, base, 4, 8]);
+				staat.push([0, old_base, 1, 0]);
+			}
+			else if (x>1) staat.push([0, old_base, 1, 0]);
+			if (x>0) staat.push([0, base, 4, 1]);
 
-			var res=this.pow(this.current_candidate, this.check_expos[x], this.toth+1);
-			base.innerHTML=res;
-			if (res==1) this.falsify=1;
-			this.recover[this.last_index].push(res);
+			var res=this.pow(candidate, this.check_expos[x], this.toth+1);
+			staat.push([1, base, ((index>0 && this.recover[index-1].length>x)?this.recover[index-1][x]:0), res]);
+			if (res==1) staat.push([3, 'falsify', this.falsify, 1]);
+			staat.push([2, this.recover[index], res]);
 		}
 
 		if (s[0]==6){
+			var finale=0, res=this.current_candidate;
 			base=this.btnlist[5][s[1]*2];
 			expo=this.btnlist[5][s[1]*2+1];
 			if (s[1]>0){
 				old_base=this.btnlist[5][s[1]*2-2];
 				old_expo=this.btnlist[5][s[1]*2-1];
 
-				this.Painter(old_base, 0);
-				this.Painter(old_expo, 0);
+				staat.push([0, old_base, 1, 0]);
+				staat.push([0, old_expo, 1, 0]);
 			}
-			else this.Painter(this.btnlist[4][this.t_primes.length], 0);
-				
-			this.Painter(base, 1);
-			this.Painter(expo, 1);
+			else staat.push([0, this.btnlist[4][this.t_primes.length], 1, 0]);
+
+			staat.push([0, base, 4, 1]);
+			staat.push([0, expo, 4, 1]);
 			var ln=this.exponents[this.primes.length-1];
+			console.log("TOTH: ", this.toth, this.m, s[1]);
 			if (s[1]==0){
-				this.current_result=this.current_candidate;
+				res=this.current_candidate;
+				staat.push([3, 'current_result', this.current_result, res]);
 				expo.innerHTML=this.toth+1;
-				if (this.toth+1==this.m) this.finito=1;
+				console.log("TOTH: ", this.toth, this.m);
+				if (this.toth+1==this.m) finale=1, staat.push([3, 'finito', 0, 1]), console.log("TOTH: ", this.toth, this.m);
 			}
 			else if (s[1]==1 && ln>1){
 				var numb=this.m;
-				if (this.m%2!=0) this.finito=1;
+				if (this.m%2!=0) finale=1, staat.push([3, 'finito', 0, 1]);
 				else numb=Math.floor(this.m/2);
-				if (this.pow(this.current_candidate, this.toth, (this.toth+1)*(this.toth+1))==1) this.current_result=this.current_candidate+this.toth+1;
+				if (this.pow(this.current_candidate, this.toth, (this.toth+1)*(this.toth+1))==1) res=this.current_candidate+this.toth+1, staat.push([0, 'current_result', this.current_result, res]);
 				expo.innerHTML=numb;
 			}
 
 			else{
-				this.finito=1;
-				if (this.current_result%2==0) this.current_result=this.current_result+Math.floor(this.m/2);
+				finale=1, staat.push([3, 'finito', 0, 1]);
+				if (this.current_result%2==0) res=this.current_candidate+Math.floor(this.m/2), staat.push([3, 'current_result', this.current_result, res]);
 				expo.innerHTML=this.m;
 			}
-			base.innerHTML=this.current_result;
+			base.innerHTML=res;
 
-
-
-			if (this.finito==1){
-				this.Painter(base, 8);
-				this.Painter(expo, 8);
+			if (finale==1){
+				staat.push([0, base, 4, 8]);
+				staat.push([0, expo, 4, 8]);
 			}
 		}
 
 		if (s[0]==101){
-			base=this.btnlist[0][(this.amount_of_primes_m-1)*2];
-			expo=this.btnlist[0][(this.amount_of_primes_m-1)*2+1];
+			base=this.btnlist[0][point];
+			expo=this.btnlist[0][point+1];
 
-			this.Painter(base, 0);
-			this.Painter(expo, 0);
+			if (this.dead==1) return;
+
+			staat.push([3, 'dead', this.dead, 1]);
+			if (this.current_exponent==1) staat.push([0, base, 1, 0]);
+			staat.push([0, expo, 1, 0]);
+		}
+
+		if (s[0]==100){
+			if (this.dead==1) return;
+			staat.push([3, 'dead', this.dead, 1]);
+		}
+
+
+		this.state_transformation.push(staat);
+		//Modyfying reality: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field
+		var x;
+		for (i=0;i<staat.length;i++){
+			x=staat[i];
+			if (x[0]==0) this.Painter(x[1], x[3]);
+			if (x[0]==1) x[1].innerHTML=x[3];
+			if (x[0]==2) x[1].push(x[2]);
+			if (x[0]==3) this[x[1]]=x[3];
 		}
 	}
 
 	StateUnmaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], x, base, expo, old_base, old_expo;
+		var s=this.lees[l-1], n=this.n, i, elem;
 
-		if (s[0]==0){
-			x=s[2];
-			this.amount_of_primes_m--;
-			this.exponents.pop();
-			this.primes.pop();
-			base=this.btnlist[0][this.amount_of_primes_m*2+2];
-			expo=this.btnlist[0][this.amount_of_primes_m*2+3];
-
-
-			if (this.amount_of_primes_m>0){
-				if (this.exponents[this.exponents.length-1]==1) this.Painter(this.btnlist[0][(this.amount_of_primes_m-1)*2+2], 1);
-				this.Painter(this.btnlist[0][(this.amount_of_primes_m-1)*2+3], 1);
-			}
-
-			this.bastard_m=this.bastard_m*x;
-
-			this.Painter(base, 4);
-			this.Painter(expo, 4);
+		if (this.state_transformation.length==0) return;
+		//Back to times of Splendor: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field
+		var x=this.state_transformation[this.state_transformation.length-1];
+		for (i=x.length-1;i>=0;i--){
+			elem=x[i];
+			if (elem[0]==0) this.Painter(elem[1], elem[2]);
+			if (elem[0]==1) elem[1].innerHTML=elem[2];
+			if (elem[0]==2) elem[1].pop();
+			if (elem[0]==3) this[elem[1]]=elem[2];
 		}
-		if (s[0]==1){
-			x=s[1];
-			base=this.btnlist[0][(this.amount_of_primes_m-1)*2+2];
-			expo=this.btnlist[0][(this.amount_of_primes_m-1)*2+3];
+		this.state_transformation.pop();
 
-			this.exponents[this.exponents.length-1]--;
-			expo.innerHTML=this.exponents[this.exponents.length-1];
-			if (this.exponents[this.exponents.length-1]==1) this.Painter(base, 1);
-			this.bastard_m=this.bastard_m*x;
-		}
-
-		if (s[0]==2){
-			base=this.btnlist[1][1];
-			old_base=this.btnlist[0][(this.amount_of_primes_m-1)*2+2];
-			old_expo=this.btnlist[0][(this.amount_of_primes_m-1)*2+3];
-
-			this.Painter(base, 4);
-			
-			if (this.exponents[this.exponents.length-1]==1) this.Painter(old_base, 1);
-			this.Painter(old_expo, 1);
-		}
-
-		if (s[0]==3){
-			this.t_primes.pop();
-			this.amount_of_primes_t--;
-
-			x=s[2];
-			base=this.btnlist[2][this.t_primes.length+1];
-			if (this.t_primes.length>0) old_base=this.btnlist[2][this.t_primes.length];
-			else old_base=this.btnlist[1][1];
-
-			this.bastard_toth=this.Prime_Moval(this.toth, this.bastard_toth, x);
-			this.Painter(base, 4);
-			this.Painter(old_base, 1);
-		}
-
-		if (s[0]==4){
-			x=s[1];
-			base=this.btnlist[3][x];
-			var color=1;
-			this.check_expos.pop();
-
-			if (x==0) old_base=this.btnlist[2][this.t_primes.length];
-			else old_base=this.btnlist[3][x-1];
-			
-			this.Painter(base, 4);
-			if (x!=1) this.Painter(old_base, 1);
-		}
-
-		if (s[0]==5){
-			x=s[1];
-			if (x==0){
-				this.falsify=1;
-				this.recover[this.last_index]=[];
-				this.last_index--;
-				var i;
-				if ((this.last_index>-1 && this.is_deter==0) || this.last_index>1){
-					this.current_candidate=this.recover[this.last_index][0];
-					for (i=0;i<this.recover[this.last_index].length;i++){
-						if (i!=0) this.Painter(this.btnlist[4][i], 0);
-						this.btnlist[4][i].innerHTML=this.recover[this.last_index][i];
-					}
-					for (;i<this.check_expos.length;i++) this.Painter(this.btnlist[4][i], 4);
-					if (this.recover[this.last_index].length-1>-1) this.Painter(this.btnlist[4][this.recover[this.last_index].length-1], 1);
-				}
-				else{
-					this.last_index++;
-					this.Painter(this.btnlist[4][0], 4)
-				}
-			}
-			base=this.btnlist[4][x];
-			if (x>0) old_base=this.btnlist[4][x-1];
-			else if (x==0 && this.recover[this.last_index].length-1>0) old_base=this.btnlist[4][this.recover[this.last_index].length-1];
-			else old_base=this.btnlist[3][this.t_primes.length];
-
-			if (x!=1) this.Painter(old_base, 1);
-			if (x>0) this.Painter(base, 4);
-		}
-
-		if (s[0]==6){
-			base=this.btnlist[5][s[1]*2];
-			expo=this.btnlist[5][s[1]*2+1];
-			if (s[1]>0){
-				old_base=this.btnlist[5][s[1]*2-2];
-				old_expo=this.btnlist[5][s[1]*2-1];
-
-				this.Painter(old_base, 1);
-				this.Painter(old_expo, 1);
-			}
-			else this.Painter(this.btnlist[4][this.t_primes.length], 1);
-			this.finito=0;
-
-			this.Painter(base, 4);
-			this.Painter(expo, 4);
-			var ln=this.exponents[this.primes.length-1];
-
-			if (s[1]==1 && ln>1) this.current_result=this.current_candidate;
-			else if (this.current_result>Math.floor(this.m/2)) this.current_result=this.current_result-Math.floor(this.m/2);
-		}
-
-
-		if (s[0]==101){
-			base=this.btnlist[0][(this.amount_of_primes_m-1)*2];
-			expo=this.btnlist[0][(this.amount_of_primes_m-1)*2+1];
-
-			if (this.exponents[this.exponents.length-1]==1) this.Painter(base, 1);
-			this.Painter(expo, 1);
-		}
-
-		this.lees.pop();
+		if (l>1) this.lees.pop();
 	}
 
 	NextState(){
@@ -547,6 +470,7 @@ class Proot extends Algorithm{
 			else this.lees.push([5, s[1]+1]);
 		}
 		if (s[0]==6){
+			console.log(s, this.finito);
 			if (this.finito==1) this.lees.push([100]);
 			else this.lees.push([6, s[1]+1]);
 		}
@@ -571,16 +495,18 @@ class Proot extends Algorithm{
 		for (var i=0;i<amount;i++) arr.push(Math.floor(Math.random()*(ceil-1))+2), recover.push([]);
 	}
 
-	Take_Next_Candidate(){
+	Take_Next_Candidate(staat){
+		var s=this.last_index;
 		if (this.is_deter) {
-			if (this.last_index==0) this.last_index++, this.recover.push([]), this.recover.push([]);
-			this.last_index++;
+			if (s==-1) s+=2, staat.push([3, 'last_index', -1, 1]), this.recover.push([]), this.recover.push([]);
+			s++;
+			staat.push([3, 'last_index', s-1, s]);
 			this.recover.push([]);
-			return this.last_index;
+			return s;
 		}
-		if (this.candidates.length==this.last_index)	this.Append_Randomness(this.candidates, this.recover, 200, this.toth);
-		else this.last_index++;
-		return this.candidates[this.last_index];
+		if (this.candidates.length==s+1) this.Append_Randomness(this.candidates, this.recover, 200, this.toth);
+		s++, staat.push([3, 'last_index', this.last_index, this.last_index+1]);
+		return s;
 	}
 
 	Finito(){

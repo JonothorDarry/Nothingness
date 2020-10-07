@@ -332,6 +332,13 @@ class Ntt extends Algorithm{
 			var diff=(1<<(this.lv-level))*place+((s[0]==7)?(1<<(this.lv-1)):0);
 			var value;
 
+			if (s[0]==6 && level==1 && poly==0 && place==0){
+				for (i=0;i<n;i++) {
+					staat.push([0, this.btnlist[seq_pos][i], 1, 0]);
+					staat.push([0, this.btnlist[level+pos-1][i], 1, 20]);
+				}
+			}
+
 			if (this.is_ntt)
 				value=(merger[level-1][whole]+used_roots[diff]*merger[level-1][whole+part])%this.Bq;
 			else
@@ -351,13 +358,6 @@ class Ntt extends Algorithm{
 			}
 			staat.push([0, w, 0, 8]);
 			/*Show merge*/
-
-			if (s[0]==6 && level==1 && poly==0 && place==0){
-				for (i=0;i<n;i++) {
-					staat.push([0, this.btnlist[seq_pos][i], 1, 0]);
-					staat.push([0, this.btnlist[level+pos-1][i], 1, 20]);
-				}
-			}
 
 			this.show_number(cur_btn, value);
 		}
@@ -429,7 +429,7 @@ class Ntt extends Algorithm{
 
 		if (s[0]==0) return;
 		var x=this.state_transformation[this.state_transformation.length-1];
-		for (i=0;i<x.length;i++){
+		for (i=x.length-1;i>=0;i--){
 			elem=x[i];
 			if (elem[0]==0) this.Painter(elem[1], elem[2]);
 		}
