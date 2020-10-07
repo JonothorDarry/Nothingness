@@ -97,6 +97,25 @@ class Algorithm{
 		}
 		return lst;	
 	}
+
+	StateUnmaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], n=this.n, i, elem;
+
+		if (this.state_transformation.length==0) return;
+		//Back to times of Splendor: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field
+		var x=this.state_transformation[this.state_transformation.length-1];
+		for (i=x.length-1;i>=0;i--){
+			elem=x[i];
+			if (elem[0]==0) this.Painter(elem[1], elem[2]);
+			if (elem[0]==1) elem[1].innerHTML=elem[2];
+			if (elem[0]==2) elem[1].pop();
+			if (elem[0]==3) this[elem[1]]=elem[2];
+		}
+		this.state_transformation.pop();
+
+		if (l>1) this.lees.pop();
+	}
 	
 	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
 	//9: yellow(grey) 10: blue 11: dark gold

@@ -15,7 +15,7 @@
 		<h3>First problem statement and definitions</h3>
 		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_o\) and \(b_0, b_1, \dots, b_m\) of two polynominals \(A(x), B(x)\), \(1 \le o,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{o+m}\) such that \(A(x)B(x)=(a_0+a_1x+a_2x^2+\dots+a_ox^o)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+o}x^{m+o})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \gt m+o\) and \(2 \nmid x\)</p>
 		<h3>First solution</h3>
-		<p>One can multiply each element in the first bracket with element from second bracket, then add resulting \(om\) elements; this solution works in \(O(om)\)
+		<p>One can multiply each element in the first bracket with element from second bracket, then add resulting \(om\) elements to correct coefficient \(c_i\); this solution works in \(O(om)\)
 		<h3>Threshold of transformation</h3>
 		<ol>
 			<li>If \(m+o=k\), then let \(n\) be minimal number, such that \(n \gt k \land \exists_{l \in Z} n=2^l\). Then, the result will be calculated as \(n\) coefficients, and polynominals \(A(x), B(x)\) will be used as if they had \(n\) coefficients (The additional coefficients, say, for \(A(x)\) they will be \(a_{o+1}, a_{o+2} \dots a_{n-1}\) will be evaluated to \(0\))</li>
@@ -27,8 +27,12 @@
 				</span>
 				What follows, 
 				<span class="central">\(A(x)=A_0(x^2)+xA_1(x^2)\)</span>
-				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the places, in which \(A(x)\) an be easily calculated are \(A(x_i^{1/2})\) and \(A(-x_i^{1/2})\) - so one needs to find suitable points for evaluating polynominal for subsequent iterations. </li><br>
-			<li>Let \(w_n^k=f^{\frac{kg}{n}}\), where \(f^g\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynominal will be calculated. Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); <b>this leads to establish \(w_n^{n/2}=-1\), and \(f^g=w_n^n=1\);</b> then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynominal \(A(x)\) in \(n\) points if values of \(A_0(x), A_1(x)\) in certain \(\frac{n}{2}\) points were calculated. All roots \(w_n^k\) have to be different, otherwise the last part of the algorithm will not work (because many polynominals of degree \( \le n\) can have same values in \(\le n\) points and the result would be ambiguous).</li><br>
+				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the values of \(A(x)\) taht can be easily calculated are \(A(x_i^{1/2})\) and \(A(-x_i^{1/2})\) - so one needs to find suitable points for evaluating polynominal for subsequent iterations. </li><br>
+			<li>Let \(w_n^k=f^{\frac{kg}{n}}\), where \(f^g\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynominal will be calculated.
+				<span class="central">\(h \lt \frac{n}{2} \implies A(w_n^h)=A_0(w_n^{2h})+w_n^hA_1(w_n^{2h})=A_0(w_{n/2}^h)+w_n^hA_1(w_{n/2}^h)\)</span>
+				Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); <b>this leads to establish \(w_n^{n/2}=-1\), and \(f^g=w_n^n=1\);</b> then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynominal \(A(x)\) in \(n\) points if values of \(A_0(x), A_1(x)\) in certain \(\frac{n}{2}\) points were calculated.
+				<span class="central">\(h=\frac{n}{2}+s\ge \frac{n}{2} \implies A(w_n^h)=A_0(w_n^{2h})+w_n^hA_1(w_n^{2h})=A_0(w_n^{2(n/2+s)})+w_n^hA_1(w_n^{2(n/2+s)})=A_0(w_n^nw_n^{2s})+w_n^hA_1(w_n^nw_n^{2s})=A_0(w_n^{2s})+w_n^hA_1(w_n^{2s})=A_0(w_{n/2}^s)+w_n^hA_1(w_{n/2}^s)\)</span>
+				All roots \(w_n^k\) have to be different, otherwise the last part of the algorithm will not work (because many polynominals of degree \( \le n\) can have same values in \(\le n\) points and the result would be ambiguous).</li><br>
 
 			<li>It may be beneficial to get rid of recursion before things start getting messy; to find value of \(A(x)\) in \(n\) points, one needs to find values of \(A_0(x)=a_0+a_2x+\dots+a_{n-2}x^{n/2-1}\) and \(A_1(x)=a_1+a_3x+\dots+a_{n-1}x^{n/2-1}\) in \(\frac{n}{2}\) points. Then, to find values of \(A_0(x)\) one needs to find values of \(a_0+a_4x+a_8x^2+\dots+a_{n-4}x^{n/4}\) and \(a_2+a_6x+a_{10}x^2+\dots+a_{n-2}x^{n/4}\) in \(\frac{n}{4}\) points, etc.<br><br>
 
@@ -64,14 +68,15 @@
 					{% endfor %}
 					\)</span>
 				{% endfor %}
-				But only on the lowest level of recursion those coefficients are useful; in higher levels of recursion finding values of a polynominal in a point - is only dependant on that point and previous values of polynominals: \(A_{lev,pol}(x)=A_{lev-1,2pol}(x^2)+xA_{lev-1,2pol+1}(x^2)\). On a lowest level, value of a polynominal in form \(A_{0,pol}(x)=a_i\) is the coefficient itself; the question arises, how to construct such sequence as in the lowest level of recursion? This allows to process subsequent polynominals as pair of two next polynominals from level below. One can observe, that:
+				<br>
+				But only on the lowest level of recursion those coefficients are useful; in higher levels of recursion finding values of a polynominal in a point - is only dependant on that point and previous values of polynominals: \(A_{lev,pol}(x)=A_{lev-1,2pol}(x^2)+xA_{lev-1,2pol+1}(x^2)\). On a lowest level, value of a polynominal in form \(A_{0,pol}(x)=a_i\) is the coefficient itself; the question arises, how to construct such sequence as in the lowest level of recursion? This allows to process subsequent polynominals as pair of two next polynominals from level below. Let group mean sequence of coefficients in a polynominal on some level. One can observe, that:
 				<ul>
 					<li>In a group there are subsequent numbers with same difference between them: At the start, there is one group with difference \(1\); in each partition, a group is divided into two groups with every second element each; as the difference is constant between each - say \(d\), then in group on lower level there will be subsequent numbers with difference \(2d\). Furhermore, difference within one group is equal to \(2^l\), as on the highest level difference is \(1\), and in each lower level the difference becomes twice higher.</li>
 					<li>As in each group \(g_0\) there are subsequent elements with difference \(d\), then after division into groups \(g_1\) and \(g_2\) difference between \(k\)-th element of \(g_2\) and \(g_1\) is equal to \(d=2^{l-1}\), as subsequent elements from \(g_0\) go to different groups. Furthermore, both groups since then are divided in same way - then this holds after subsequent division and going deeper into recursion (that \(g_2(k)-g_1(k)=2^{l-1}\)).</li>
 				</ul>
-				So, one can create such algorithm for attaining subsequent numbers in this seqence, call it \(S\) with element \(S(i)\): at the beginning, \(S(0)=0\), then, whenever \(2^x\) for some \(x\) is reached, then all subsequent elements up to \(2^{x+1}-1\) are evaluated as \(S(i)=S(i-2^x)+2^{k-x-1}\), where \(2^{k}=n\); the \(2^{k-x-1}\) follows from fact, that \(k-x-1\) is nember of splits into \(2\) groups before this one.
-			</li>
-			<li>After finding salvation from abyss of abstract, absolutely brutal and unforgiving realm of finding values of two polynominals in \(n\) points in \(O(nlog(n))\), it may be wise to multiply values of both polynominals in those points: \(C(x_i)=A(x_i)B(x_i)\) this step works in \(O(n)\)</li>
+				So, one can create such algorithm for attaining subsequent numbers in this seqence, call it \(S\) with element \(S(i)\): at the beginning, \(S(0)=0\), then, whenever \(2^x\) for some \(x\) is reached, then all subsequent elements up to \(2^{x+1}-1\) are evaluated as \(S(i)=S(i-2^x)+2^{k-x-1}\), where \(2^{k}=n\); the \(2^{k-x-1}\) follows from fact, that \(k-x-1\) is number of splits into \(2\) groups before this one.
+			</li><br>
+			<li>After finding salvation from abyss of abstract, absolutely brutal and unforgiving realm of finding values of two polynominals in \(n\) points in \(O(nlog(n))\), it may be wise to multiply values of both polynominals in those points: \(C(x_i)=A(x_i)B(x_i)\) - this step works in \(O(n)\)</li>
 			<li>The final problem is finding from values \(C(x_0), C(x_1), \dots C(x_n)\) coefficients \(c_0, c_1, \dots, c_{n-1}\) of a polynominal \(C(x)\). One can represent the problem as matrix equation:
 			<span class="central">
 			$$
@@ -150,7 +155,7 @@
 					<span class="central">$$\frac{1}{n}\sum_{k=0}^{n-1}w_n^{k(i-j)}=\frac{1}{n}\sum_{k=0}^{n-1}w_n^0=\frac{1}{n}\sum_{k=0}^{n-1}1=\frac{1}{n}n=1$$</span> - this is the value of the main diagonal \(M[i,i]\) of resulting matrix.</li>
 				<li>If \(c \neq 0\), then \(w_n^{cs/2}=-1\) - because \(2|s\) and \(w_n^{cs/2} \neq 1\) (by definition of \(s\)). In this case:
 					{% set beg="\\frac{1}{n}\sum_{k=0}^{n/s-1}"%}
-					<span class="central">$$M[i,j]=\frac{1}{n}\sum_{k=0}^{n-1}w_n^{(i-j)k}={{beg}} \sum_{l=0}^{s-1}w_n^{c(ks+l)}={{beg}} \sum_{l=0}^{s-1}(w_n^{cs})^{k}w_n^{cl}={{beg}} \sum_{l=0}^{s-1}w_n^{cl}={{beg}} \sum_{l=0}^{s-1}w_n^{cl}={{beg}} \sum_{l=0}^{s/2-1}w_n^{cl}+w_n^{s/2+cl}={{beg}} \sum_{l=0}^{s/2-1}w_n^{cl}-w_n^{cl}={{beg}} \sum_{l=0}^{s/2-1}0=0$$</span>
+					<span class="central">$$M[i,j]=\frac{1}{n}\sum_{k=0}^{n-1}w_n^{(i-j)k}={{beg}} \sum_{l=0}^{s-1}w_n^{c(ks+l)}={{beg}} \sum_{l=0}^{s-1}(w_n^{cs})^{k}w_n^{cl}={{beg}} \sum_{l=0}^{s-1}w_n^{cl}={{beg}} \sum_{l=0}^{s/2-1}(w_n^{cl}+w_n^{s/2+cl})={{beg}} \sum_{l=0}^{s/2-1}(w_n^{cl}-w_n^{cl})={{beg}} \sum_{l=0}^{s/2-1}0=0$$</span>
 				</li>
 			</ul>
 			And so, M is indeed identity matrix, so \(B=A^{-1}\)
@@ -160,7 +165,7 @@
 				<span class="central">$$c_i=\frac{1}{n} \sum_{j=0}^{n-1}y_jw_n^{-ij}$$</span>
 				First of all, \(w_n^{-i}w_n^{i}=1=w_n^n=w_n^iw_n^{n-i}\). If \(w_n^{i}\) has exactly one inverse, then \(w_n^{n-i}=w_n^{-i}\). Secondly, the values calculated in the first phase of the algorithm had form:
 				<span class="central">$$P(w_n^i)=\sum_{j=0}^{n-1}a_jw_n^{ij}$$</span>
-				The only differences are: lack of division by \(n\), and \(w_n^{ij}\) instead of \(w_n^{-ij}\) - this allows one to construct algorithm finding \(c_i\) in \(O(nlog(n))\) in the same way as for finding \(y_i\).
+				The only differences are: lack of division by \(n\), and \(w_n^{ij}\) instead of \(w_n^{-ij}\) - different roots, but properties of \(w_n^0=w_n^n=w_n^{-n}=1\) and \(w_n^{n/2}=w_n^{n-n/2}=w_n^{-n/2}\) stay the same - this allows one to construct algorithm finding \(c_i\) in \(O(nlog(n))\) in the same way as for finding \(y_i\).
 			</li>
 		</ol>
 
@@ -180,20 +185,20 @@
 			<li>One can find some primitive root \(p\) rather rapidly.</li>
 			<li>If \(p\) is a primitive root, then \(p^{\phi(m)/2}=m-1\) - that's because:
 				<ul>
-					<li>\(m-1\) is coprime to \(m\) - so, there exists exponent \(g\) such that \(p^g=m-1\).</li>
+					<li>\(m-1\) is coprime to \(m\) - so, there exists exponent \(z\) such that \(p^z=m-1\).</li>
 					<li>\((m-1)^2=m^2-2m+1 \equiv 1 \pmod m\).</li>
-					<li>For any \(g \neq \frac{\phi(m)}{2} \land g \neq \phi(m)\) occurs: \(p^{2g}\) is not equivalent to \(1 \pmod m\) - so only possible exponent \(g\), such that \((m-1) \equiv p^g \pmod m\) is \(\frac{\phi(m)}{2}\).</li>
+					<li>For any \(z \not\equiv \frac{\phi(m)}{2} \pmod {\phi(m)} \land z \not\equiv 0 \pmod {\phi(m)}\) occurs: \(p^{2z} \not\equiv p^{\phi(m)} \equiv 1 \pmod m\) - so only possible exponent \(z\), such that \((m-1) \equiv p^z \pmod m\) is \(\frac{\phi(m)}{2}\).</li>
 				</ul>
 			</li>
-			<li>One can notice, that if \(\phi(m)=2^kx\), then \(w_n^1=p^{x2^{k-n}}=p^{\phi(m)/2^n}\) can be used as a root - because, as \(p\) is a primitive root, values \(w_n^k\) will be distinct; becuse \(w_n^{n/2}=m-1\), and \(w_n^n=1\).</li>
-			<li>Note, that \(m\) does not have to have a primitive root, however, in this case one needs to find such number \(g\), whose \(ord_m(g)=2^kx\), where \(k \ge n\) - and such number may not exist, finding it can also become problematic. Furthermore, \(w_n^{n/2}\) does not necessarily need to be equal to \(p-1\)</li>
+			<li>One can notice, that if \(\phi(m)=2^kx\), then \(n|2^k\) implies that, \(w_n^1=p^{x2^k/n}=p^{\phi(m)/n}\) can be used as a root - because, as \(p\) is a primitive root, values \(w_n^k\) will be distinct; becuse \(w_n^{n/2} \equiv m-1 \pmod m\), and \(w_n^n \equiv 1 \pmod m\).</li>
+			<li>Note, that \(m\) does not have to have a primitive root, however, in this case one needs to find such number \(g\), whose \(ord_m(g)=2^kx\), where \(2^k \ge n\) - and such number may not exist, finding it can also become problematic. Furthermore, \(w_n^{n/2}\) does not necessarily need to be equal to \(m-1\), because not for every value \(x\) coprime to \(m\) there will be exponent \(z\) such that \(g^z \equiv x\)</li>
 			<li>Furthermore, \(n\) must have an inverse \(\pmod m\) - as \(n=2^k\), then \(gcd(2, m)=1\)</li>
 		</ol>
 
 		<h3>The sequence of roots II: FFT</h3>
 		<p>In the first version of the problem, the coefficients are calculated as they are. Instead of finding primitive root, Euler's identity: \(e^{2\pi x}=cos(x)+i*sin(x)\) is used, and calculations are executed using complex numbers.</p>
 		<ol>
-			<li>\(\frac{1}{n}\) has an inverse in real numbers (then also in complex numbers).</li>
+			<li>\(n\) has an inverse \(\frac{1}{n}\) in real numbers (then also in complex numbers).</li>
 			<li>Let \(w_n^k=e^{2\pi k/n}\) - then \(w_n^n=e^{2 \pi n/n}=e^{2 \pi}=cos(2\pi)+i*sin(2\pi)=1+i*0=1\)</li>
 			<li>\(w_n^{n/2}=e^{2\pi n/(2n)}=e^{\pi}=cos(\pi)+i*sin(\pi)=-1+i*0=-1\)</li>
 			<li>The roots \(w_n^k\) are distinct, because:
@@ -207,7 +212,7 @@
 
 		<div id="Algo1" class="pureAlgo">
 			<h2>Number Theoretic Transform</h2>
-			<p>Input format: two sequences of \(o+1, m+1\) numbers denoting coefficients of polynominals \(A(x), B(x)\); then, \(q\) - number modulo which those coefficients will be found.<br>
+			<p>Input format: two sequences of \(o+1, m+1\) numbers denoting coefficients of polynominals \(A(x), B(x)\); then if NTT is chosen, also \(q\) - number modulo which those coefficients will be found. (\(q\) is not parsed if FFT is chosen)<br>
 			\(o\)<br>
 			\(a_0, a_1, \dots, a_o\)<br>
 			\(m\)<br>

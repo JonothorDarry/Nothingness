@@ -12,7 +12,7 @@ class Ntt extends Algorithm{
 		this.n=i;
 		this.lv=j;
 		this.place_mul=7+2*this.lv+4;
-		this.endet=this.place_mul+8+this.lv+1;
+		this.endet=this.place_mul+8+this.lv+2;
 		for (j=o+1;j<i;j++) a.push(0);
 		for (j=m+1;j<i;j++) b.push(0);
 
@@ -40,6 +40,7 @@ class Ntt extends Algorithm{
 		this.lees=[];
 		this.place.innerHTML='';
 		var fas=this.input.value;
+		this.dead=0;
 		this.a=[];
 		this.b=[];
 		this.y=[];
@@ -412,31 +413,23 @@ class Ntt extends Algorithm{
 			staat.push([0, this.btnlist[this.endet-1][0], 4, 1])
 		}
 
-		if (s[0]==101) staat.push([0, this.btnlist[this.endet-1][0], 1, 0]);
+		if (s[0]==101){
+			if (this.dead==1) return;
+			staat.push([3, 'dead', 0, 1]);
+			staat.push([0, this.btnlist[this.endet-1][0], 1, 0]);
+		}
 		this.state_transformation.push(staat);
 
 		var x;
 		for (i=0;i<staat.length;i++){
 			x=staat[i];
 			if (x[0]==0) this.Painter(x[1], x[3]);
+			if (x[0]==1) x[1].innerHTML=x[3];
+			if (x[0]==2) x[1].push(x[2]);
+			if (x[0]==3) this[x[1]]=x[3];
 		}
 	}
 
-
-	StateUnmaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], n=this.n, i, elem;
-
-		if (s[0]==0) return;
-		var x=this.state_transformation[this.state_transformation.length-1];
-		for (i=x.length-1;i>=0;i--){
-			elem=x[i];
-			if (elem[0]==0) this.Painter(elem[1], elem[2]);
-		}
-		this.state_transformation.pop();
-
-		if (l>1) this.lees.pop();
-	}
 
 	Painter(btn, color){
 		if (color!=20) super.Painter(btn, color);
@@ -450,16 +443,18 @@ class Ntt extends Algorithm{
 	StatementComprehension(){
 		var wfun=function(x){return `w<sub>n</sub><sup>${x}</sup>`;}
 		var l=this.lees.length, w1=wfun(1), wn=wfun('n'), w0=wfun(0), wi=wfun('i'), wi_1=wfun('i-1');
-		var s=this.lees[l-1];
+		var s=this.lees[l-1], equiv=this.is_ntt?`&equiv;`:`=`;
 		var strr=``;
 		if (s[0]==0) strr=`At the start of the algorithm, the polynominals A(x), B(x) are padded with 0's, so that it will be possible to find their values in not less than o+m+1=${this.o+this.m+1} &le; ${this.n} places`
-		if (s[0]==1 && this.proot) strr=`Primitive root modulo q=${this.q} is found, it is equal to ${this.proot} (to attain this root probabilistic algorithm was used).`;
+		if (s[0]==1 && (this.proot || this.is_fft)) strr=`${this.is_ntt?`Primitive root modulo q=${this.q} is found`:`${this.n}-th root of unity is found`}, it is equal to ${this.proot} ${this.is_ntt?`(to attain this root probabilistic algorithm was used).`:``}`;
 		else if (s[0]==1) strr=`Primitive root modulo q=${this.q} cannot be found, as it doesn't exist - calculations are not performed`;
 
-		if (s[0]==2) strr=`As root was found, new aim is to find such value g, that ord<sub>${this.q}</sub>(g)=${this.n} - this value is proot<sup>&#x3d5;(q)/n</sup> mod q=${this.proot}<sup>${this.toth}/${this.n}</sup> mod ${this.q}=${this.w}. Besides, I also fill value of ${wn}=${w0}=1`;
-		if (s[0]==3) strr=`I find further subsequent values of ${wi} using fact, that ${w1}${wi_1} mod q=${wi} (so I just multiply previous value by ${w1}=${this.w} modulo ${this.q}). Notice that I didn't add ${wn}, as ${wn}=${w0}`
+		if (s[0]==2 && this.is_ntt) strr=`As root was found, new aim is to find such value g, that ord<sub>${this.q}</sub>(g)=${this.n} - this value is proot<sup>&#x3d5;(q)/n</sup> mod q=${this.proot}<sup>${this.toth}/${this.n}</sup> mod ${this.q}=${this.w}. Besides, I also fill value of ${wn}=${w0}=1`;
+		else if (s[0]==2) strr=`Values of ${w0}=${wn}=1 and ${w1}=${this.proot} are written to the array.`;
+
+		if (s[0]==3) strr=`I find further subsequent values of ${wi} using fact, that ${w1}${wi_1} ${this.is_ntt?`mod q`:``}=${wi} (so I just multiply previous value by ${w1}=${this.w} ${this.is_ntt?`modulo ${this.q}`:``}). Notice that I didn't add ${wn}, as ${wn}=${w0}`;
 		
-		if (s[0]==4 && s[1]==0) strr=`I start finding order of indexes - so called butterfly - using which I will be abe to construct NTT without recursion. I start from 0`;
+		if (s[0]==4 && s[2]==0) strr=`I start finding order of indexes - so called butterfly - using which I will be abe to construct NTT without recursion. I start from 0`;
 		else if (s[0]==4) strr=`I find next series of indexes in butterfly sequence - I use the pattern: for 2<sup>${s[2]-1}</sup>=${Math.floor(s[1]/2)} &le; x &lt; 2<sup>${s[2]}</sup>=${s[1]}: S(x)=S(x-${Math.floor(s[1]/2)})+n/${s[1]}=S(x-${Math.floor(s[1]/2)})+${Math.floor(this.n/s[1])}`;
 
 		if (s[0]==5){
@@ -475,14 +470,15 @@ class Ntt extends Algorithm{
 			var pl=(pnt==2?'Y':(pnt==0?'A':'B'));
 			var merger=this.mapp[s[1]][1];
 			var used_roots=(pnt==2?this.inv_roots:this.roots);
+			var modulus=this.is_ntt?`(mod ${this.q})`:``, brace_l=this.is_ntt?``:`(`, brace_r=this.is_ntt?``:`)`;
 
-			strr=`I find value of a polynominal ${pl}<sub>${level},${poly}</sub>(${wfun(a_diff)}) &equiv; ${pl}<sub>${level}-1,2*${poly}</sub>(${wfun(`${a_diff}*2`)})+${wfun(a_diff)}${pl}<sub>${level}-1,2*${poly}+1</sub>(${wfun(`${a_diff}*2`)}) &equiv; ${pl}<sub>${level-1},${2*poly}</sub>(${wfun(a_diff*2)})+${wfun(a_diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*a_diff)}) ${(2*diff>=this.n)?` &equiv;${pl}<sub>${level-1},${2*poly}</sub>(${wfun(a_diff*2-sgn*this.n)})+${wfun(a_diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*a_diff-sgn*this.n)})`:``}  &equiv;${merger[level-1][whole]}+${used_roots[diff]}*${merger[level-1][whole+part]} &equiv; ${merger[level][whole+((s[0]==7)?part:0)]} (mod ${this.q}). `;
-			if (s[0]==7) strr+=` It's worth noting, that one could calculate ${wfun(sgn*diff)} &equiv; ${wfun(sgn*Math.floor(this.n/2))}${wfun(sgn*(diff-Math.floor(this.n/2)))} &equiv; -${wfun(sgn*(diff-Math.floor(this.n/2)))} (mod ${this.q}).`;
+			strr=`I find value of a polynominal ${pl}<sub>${level},${poly}</sub>(${wfun(a_diff)}) ${equiv} ${pl}<sub>${level}-1,2*${poly}</sub>(${wfun(`${a_diff}*2`)})+${wfun(a_diff)}${pl}<sub>${level}-1,2*${poly}+1</sub>(${wfun(`${a_diff}*2`)}) ${equiv} ${pl}<sub>${level-1},${2*poly}</sub>(${wfun(a_diff*2)})+${wfun(a_diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*a_diff)}) ${(2*diff>=this.n)?` ${equiv}${pl}<sub>${level-1},${2*poly}</sub>(${wfun(a_diff*2-sgn*this.n)})+${wfun(a_diff)}${pl}<sub>${level-1},${2*poly+1}</sub>(${wfun(2*a_diff-sgn*this.n)})`:``}  ${equiv}${merger[level-1][whole]}+${brace_l}${used_roots[diff]}${brace_r}*${brace_l}${merger[level-1][whole+part]}${brace_r} ${equiv} ${merger[level][whole+((s[0]==7)?part:0)]} ${modulus}. `;
+			if (s[0]==7) strr+=` It's worth noting, that one could calculate ${wfun(sgn*diff)} ${equiv} ${wfun(sgn*Math.floor(this.n/2))}${wfun(sgn*(diff-Math.floor(this.n/2)))} ${equiv} -${wfun(sgn*(diff-Math.floor(this.n/2)))} ${modulus}.`;
 		}
 
 
-		if (s[0]==8) strr=`Now, it is time to find values C(x)=A(x)B(x) mod ${this.q} in ${this.n} points, where A(x) and B(x) are known.`;
-		if (s[0]==9) strr=`Values of C(${wfun("k")}) &equiv; A(${wfun("k")})B(${wfun("k")}) mod ${this.q} are found`;
+		if (s[0]==8) strr=`Now, it is time to find values C(x) ${equiv} A(x)B(x) ${this.is_ntt?`mod ${this.q}`:``} in ${this.n} points, where A(x) and B(x) are known.`;
+		if (s[0]==9) strr=`Values of C(${wfun("k")}) ${equiv} A(${wfun("k")})B(${wfun("k")}) ${this.is_ntt?`mod ${this.q}`:``} are found`;
 		if (s[0]==10) strr=`As in the last part of algorithm - interpolation - roots in form of ${wfun("-j")} are needed, I proceed to calculate them, using fact, that ${wfun("-i")}${wfun("i")}=${wfun("n-i")}${wfun("i")}=1, and so ${wfun("-i")}=${wfun("n-i")} - also ${wfun("n")}=${wfun(0)}, so except for the first element the sequence of roots will be inversed.`;
 		if (s[0]==11) strr=`At the end of algorithm, all values nc<sub>i</sub>=${this.n}c<sub>i</sub> are multiplied by n<sup>-1</sup>=${this.inv_n} - modular inverse of n modulo ${this.q} (which can be found using extended Euclid algorithm, for example), so that I attain all coefficients c<sub>i</sub>`;
 		if (s[0]==101) strr=`And so, NTT ends, coefficients of a polynominal C(x)=A(x)B(x) are, starting from c<sub>0</sub>: ${this.res}`;
@@ -540,8 +536,8 @@ class Ntt extends Algorithm{
 		for (i=1;i<=this.lv;i++) title_list.push(`Y<sub>${i}</sub>`);
 		title_list.push("inverse n and values c<sub>k</sub>")
 
-		for (i=0;i<this.endet;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<this.endet;i++){
+		for (i=0;i<this.endet-1;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<this.endet-1;i++){
 			divs[i].style.width="100%";
 			divs[i].style.height="40px";
 			//zdivs - inside div: 0 is write-up, 1 is button

@@ -90,6 +90,10 @@ html, body{
 	margin: 0;
 	padding: 0;
 	height:100%;
+	/*Here are changes - dark mode*/
+	color: #EEEEEE;
+	background-color: #00001A;
+	font-size: 16px;
 }
 
 p,ol{

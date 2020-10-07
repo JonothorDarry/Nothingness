@@ -1,0 +1,82 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{pdflscape} 
+\usepackage{lmodern}
+\usepackage[a4paper,bindingoffset=0.2in,%
+            left=0.5in,right=0.5in,top=0.5in,bottom=1in,%
+            footskip=.25in]{geometry}
+\usepackage[colorlinks=true, linkcolor=Black, urlcolor=Blue]{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\definecolor{lightgray}{gray}{0.9}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+
+\begin{document}
+\title{Wahrheit und method\\
+\large Sebastian Michoń}
+\date{\vspace{-10ex}}
+\maketitle
+
+\section{On The Unmaker, I: elements}
+\begin {enumerate}
+	\item {[0, button, color1, color2]} - paints button from color1 to color2.
+	\item {[1, button, innerHTML1, innerHTML2]} - changes innerHTML of a button from innerHTML1 to innerHTML2.
+	\item {[2, list, element]} - appends element to a list.
+	\item {[3, 'variable\_name', value1, value2]} - changes this.variable\_name from value1 to value2.
+\end{enumerate}
+\section{On The Unmaker, II: Inner works}
+\begin {enumerate}
+	\item Unmaker reverts changes done by state maker, that ought to be reversed (examples of changes, that shall not be reversed are variables changed only once and used only since then or innerHTML that may be constant during whole execution).
+	\item Unmaker can paint, pop from list, change value or innerHTML to previous value. It executes in reversed order compared to StateMaker.
+	\item StateMaker has array staat, in which changes to "this" that ought to be reversed and changes to buttons are kept in format described above. The values of "this" variables don't change until the end of a function.
+\end {enumerate}
+
+\section{Primitive Root}
+\begin{enumerate}
+	\item 
+\end{enumerate}
+
+\section{NTT/FFT animation: states}
+\begin {enumerate}
+	\item Writing indexes and values of both polynomials to multiply.
+	\item Formulate either primitive root (NTT) or starting point (FFT)
+	\item Write first two roots (1 and either function of proot - NTT or starting point - FFT)
+	\item Construct butterfly
+	\item Rewrite sequence according to butterfly indices
+	\item First part of double - calculate the left part of next polynomial - \(A_{i,x,2k}\)
+	\item Second part of double - calculate the left part of next polynomial - \(A_{i,x,2k+1}\)
+	\item Repeated values of polynomials in points (roots of unity)
+	\item Multiplication of polynomials
+	\item Showing inverse roots
+	\item Ending (After interpolating C(x))- multiply by inversion
+\end {enumerate}
+
+\end{document}

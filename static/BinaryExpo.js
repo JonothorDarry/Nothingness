@@ -13,9 +13,11 @@ class BinaryExpo extends Algorithm{
 	BeginningExecutor(){
 		this.btlist=[];
 		this.utilbts=[];
+		this.state_transformation=[];
 
 		this.lees=[];
 		this.place.innerHTML='';
+		this.dead=0;
 		var fas=this.input.value;
 		var a=0, b=0, x, i=0, c, m;
 		
@@ -62,74 +64,55 @@ class BinaryExpo extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], col, vl, lst;
-		if (s[0]>=100) lst=this.lees[l-2];
-
+		var staat=[];
 		var a=s[1], b=s[2], res=s[3], m=s[4], i=0;
 
 		if (s[0]==0){
-			this.Painter(this.btlist[0][this.reality], 1);
+			staat.push([0, this.btlist[0][this.reality], 4, 1]);
+
+			//this.Painter(this.btlist[0][this.reality], 1);
 			vl=(res*(b%2==0?1:a))%m;
 			this.btlist[0][this.reality].innerHTML=vl;
-			this.utilbts[0].innerHTML=vl;			
+			staat.push([1, this.utilbts[0], res, vl]);
+			this.utilbts[0].innerHTML=vl;	
 		}
 
 		else if (s[0]==1){
-			this.Painter(this.btlist[0][this.reality], 2);
-			this.Painter(this.btlist[1][this.reality], 2);
-			this.Painter(this.btlist[2][this.reality], 2);
+			staat.push([0, this.btlist[0][this.reality], 1, 2]);
+			staat.push([0, this.btlist[1][this.reality], 1, 2]);
+			staat.push([0, this.btlist[2][this.reality], 1, 2]);
 
-			this.Painter(this.btlist[1][this.reality-1], 1);
-			this.Painter(this.btlist[2][this.reality-1], 1);
+			staat.push([0, this.btlist[1][this.reality-1], 4, 1]);
+			staat.push([0, this.btlist[2][this.reality-1], 0, 1]);
 
 			this.btlist[1][this.reality-1].innerHTML=(a*a)%m;
-			this.utilbts[1].innerHTML=(a*a)%m;
-			this.utilbts[2].innerHTML=Math.floor(b/2);			
-			this.reality--;
+			staat.push([1, this.utilbts[1], a, (a*a)%m]);
+			staat.push([1, this.utilbts[2], b, Math.floor(b/2)]);
+			staat.push([3, 'reality', this.reality, this.reality-1]);
 		}
 
 		else if (s[0]>=100){
-			this.Painter(this.btlist[1][this.reality], 0);
-			this.Painter(this.btlist[2][this.reality], 0);
+			if (this.dead==1) return;
+			staat.push([3, 'dead', 0, 1]);
+			lst=this.lees[l-2];
+			staat.push([0, this.btlist[1][this.reality], 1, 0]);
+			staat.push([0, this.btlist[2][this.reality], 1, 0]);
 
-			this.utilbts[1].innerHTML=(lst[1]*lst[1])%lst[4];
-			this.utilbts[2].innerHTML=0;
+			staat.push[1, this.utilbts[1], lst[1], (lst[1]*lst[1])%lst[4]];
+			staat.push[1, this.utilbts[2], lst[2], 0];
+		}
+
+		this.state_transformation.push(staat);
+
+		var x;
+		for (i=0;i<staat.length;i++){
+			x=staat[i];
+			if (x[0]==0) this.Painter(x[1], x[3]);
+			if (x[0]==1) x[1].innerHTML=x[3];
+			if (x[0]==2) x[1].push(x[2]);
+			if (x[0]==3) this[x[1]]=x[3];
 		}
 	}
-
-	StateUnmaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], col, vl;
-		if (l>1){
-			var s2=this.lees[l-1];
-			if (s[0]>=100) s2=this.lees[l-2];
-
-			var a=s2[1], b=s2[2], res=s2[3], m=s2[4], i=0;
-			if (s[0]<100) 	this.utilbts[0].innerHTML=res;
-			this.utilbts[1].innerHTML=a;
-			this.utilbts[2].innerHTML=b;
-
-			if (s[0]==1){
-				this.reality++;
-
-				this.Painter(this.btlist[0][this.reality], 1);
-				this.Painter(this.btlist[1][this.reality], 1);
-				this.Painter(this.btlist[2][this.reality], 1);
-
-				this.Painter(this.btlist[1][this.reality-1], 3);
-				this.Painter(this.btlist[2][this.reality-1], 0);
-			}
-			if (s[0]==0){
-				this.Painter(this.btlist[0][this.reality], 3);
-			}
-			if (s[0]==100){
-				this.Painter(this.btlist[1][this.reality], 1);
-				this.Painter(this.btlist[2][this.reality], 1);
-			}
-
-		}
-		if (l>1) this.lees.pop();
-	}
-
 
 
 	StatementComprehension(){

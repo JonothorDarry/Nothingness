@@ -398,25 +398,6 @@ class Proot extends Algorithm{
 		}
 	}
 
-	StateUnmaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], n=this.n, i, elem;
-
-		if (this.state_transformation.length==0) return;
-		//Back to times of Splendor: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field
-		var x=this.state_transformation[this.state_transformation.length-1];
-		for (i=x.length-1;i>=0;i--){
-			elem=x[i];
-			if (elem[0]==0) this.Painter(elem[1], elem[2]);
-			if (elem[0]==1) elem[1].innerHTML=elem[2];
-			if (elem[0]==2) elem[1].pop();
-			if (elem[0]==3) this[elem[1]]=elem[2];
-		}
-		this.state_transformation.pop();
-
-		if (l>1) this.lees.pop();
-	}
-
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x, y;
@@ -538,7 +519,7 @@ class Proot extends Algorithm{
 		else if (last[0]==0) return `I search for next prime dividing fa_m=${this.bastard_m*last[2]} - m divided by all its prime divisors already found, starting from ${last[1]} ... all the way to ${Math.floor(Math.sqrt(last[2]))}, which does not divide fa_m - What follows, fa_m is a prime and whole number m is now factorized, which allows proceeding further in the algorithm. `+this.Finito();
 		else if (last[0]==1) return `As ${last[1]} still divides fa_m, I divide fa_m by ${last[1]}: ${fa_m*last[1]}/${last[1]}=${fa_m}. ${fa_m==1?this.Finito():``}`;
 
-		else if (last[0]==2) return `Now, one can have a primitive root of a number in form mp<sup>k</sup>, where m=1 or m=2, by finding primitive root modulo p and then adding to it p or p<sup>k</sup> (or both) - and so, I'll find primitive root modulo ${this.primes[this.primes.length-1]}`
+		else if (last[0]==2) return `Now, one can have a primitive root of a number in form xp<sup>k</sup>, where x=1 or x=2, by finding primitive root modulo p and then adding to it p or p<sup>k</sup> (or both) - and so, I'll find primitive root modulo ${this.primes[this.primes.length-1]}`
 
 		else if (last[0]==3 && (ga_m!=1 || this.toth%(this.t_primes[this.t_primes.length-1]*this.t_primes[this.t_primes.length-1])==0)) return `I search for next prime dividing ga_m=${this.Prime_Moval(this.toth, ga_m, last[2])} - &#x03D5;(m')=m'-1 divided by all its prime divisors already found, starting from ${last[1]} ... all the way to ${last[2]}, which divides ga_m - I divide ga_m while it is divisible by ${last[2]} not caring about exponent - because it has no use in further parts of algorithm, thus obtaining ${ga_m} ${(ga_m==1)?` and thus fully factorizing ga_m`:``}`
 		else if (last[0]==3) return `I search for next prime dividing ga_m=${this.Prime_Moval(this.toth, ga_m, last[2])} - &#x03D5;(m')=m'-1 divided by all its prime divisors already found, starting from ${last[1]} ... all the way to ${Math.floor(Math.sqrt(last[2]))}, which does not divide ga_m - What follows, ga_m is a prime and whole number &#x03D5;(m')=m'-1 is now factorized, which allows proceeding further in the algorithm.`;
@@ -547,10 +528,10 @@ class Proot extends Algorithm{
 		else if (last[0]==4 && last[1]==0) return `Just for convenience, I add 1 to exponents to check to show currently processed candidate for primitive root.`;
 
 		else if (last[0]==5 && last[1]==0) return `I draw ${this.is_deter==0?`another random`:`next natural`} number to check, whether it is a primitive root mod ${p}`;
-		else if (last[0]==5 && last[1]!=0) return `It turns out, that ${this.current_candidate}<sup>${this.check_expos[last[1]]}</sup> &equiv; ${this.recover[this.last_index][last[1]]} (mod ${p}). ${(this.recover[this.last_index][last[1]]==1)?`This number cannot be a primitive root, as ord<sub>${p}</sub>(${this.current_candidate}) <= ${this.check_expos[last[1]]} < &#x03D5;(${p})`:((last[1]==this.t_primes.length?`As for all exponents this number was not equivalent to 1, this is primitive root`:`As it is not yet known whether this number is a primitive root, I check it against next exponent.`))}`;
+		else if (last[0]==5 && last[1]!=0) return `It turns out, that ${this.current_candidate}<sup>${this.check_expos[last[1]]}</sup> &equiv; ${this.recover[this.last_index][last[1]]} (mod ${p}). ${(this.recover[this.last_index][last[1]]==1)?`This number cannot be a primitive root, as ord<sub>${p}</sub>(${this.current_candidate}) <= ${this.check_expos[last[1]]} < &#x03D5;(${p})`:((last[1]==this.t_primes.length?`As for all exponents this number was not equivalent to 1, this is primitive root`:` As it is not yet known whether this number is a primitive root, I check it against next exponent.`))}`;
 
 		else if (last[0]==6 && last[1]==0) return `The primitive root for p=${p} is already found; `+this.Last_Exit_For_The_Lost();
-		else if (last[0]==6 && last[1]==1 && (this.finito==0 || this.m%2==0)) return `The primitive root for p<sup>k</sup>=${this.m} is either equal to g=${this.current_candidate} or g+p=${this.current_candidate+p}, where g is primitive root of p - this follows from second case of existential proof of primitive root. As g<sup>&#x03D5;(p)</sup> ${this.current_result>p?`&equiv;`:`&#8802;`} 1 (mod p<sup>2</sup>), then primitive root mod p<sup>k</sup> is ${this.current_result<p?`g`:`g+p`}=${this.current_result}`+this.Last_Exit_For_The_Lost();
+		else if (last[0]==6 && last[1]==1 && (this.finito==0 || this.m%2!=0)) return `The primitive root for p<sup>k</sup>=${this.m%2!=0?this.m:Math.floor(this.m/2)} is either equal to g=${this.current_candidate} or g+p=${this.current_candidate+p}, where g is primitive root of p - this follows from second case of existential proof of primitive root. As g<sup>&#x03D5;(p)</sup> ${this.current_result>p?`&equiv;`:`&#8802;`} 1 (mod p<sup>2</sup>), then primitive root mod p<sup>k</sup> is ${this.current_result<p?`g`:`g+p`}=${this.current_result} `+this.Last_Exit_For_The_Lost();
 		else if (last[0]==6){
 			var olden=this.current_result>Math.floor(this.m/2)?this.current_result+Math.floor(this.m/2):this.current_result, newer, sup;
 			newer=olden+Math.floor(this.m/2);
