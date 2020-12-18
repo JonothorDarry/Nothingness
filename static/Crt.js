@@ -16,7 +16,6 @@ class CrtSolver extends Algorithm{
 	}
 	
 	BeginningExecutor(){
-
 		this.lees=[];
 		this.solstack=[];
 		var fas=this.input.value, resp;

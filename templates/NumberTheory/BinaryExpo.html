@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'algo.html' as algo %}
 
 <html lang="en">
 	<head>
@@ -29,25 +30,12 @@
 
 
 
-		<div id="Algo1" class="pureAlgo">
-			<h2>Binary Exponentation</h2>
+		{{ algo.algorithm(1, 'Binary Exponentation', '
 			<p>Input format: three numbers \(a, b, m\), such that \(x=a^b \pmod m\) has to be found.<br>
 			\(a, b, m\)
 			</p>
-
-			<div id="Inputter">
-				<form>
-					<input value="17 43 107" class="inputter" id="Crt" name="Crt">
-				</form>
-				<button id="Sender" class="sender">Begin</button>
-				<button id="Prever" class="previous">Previous Move</button>
-				<button id="Nexter" class="next">Next Move</button>
-				<button id="Finisher" class="finish">Finish</button>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez" class="primez"></div>
-			<div id="Comprehend" class="comprehend"></div>
-		</div>
+		'
+		, '17 43 107') }}
 		
 		<p>This animation shows, why method is called binary exponentation: if \(b\) is shown as \(b=2^{i_1}+2^{i_2}+...+2^{i_k}\), where \(\forall_{w,v} i_w \neq i_v\), then \(res=a^{2^{i_1}}*a^{2^{i_2}}*...*a^{2^{i_k}}\).
 		<h3>Further analysis</h3>

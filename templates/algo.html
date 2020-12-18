@@ -1,0 +1,25 @@
+{% macro algorithm(id, header_text, input_format, start_value) %}
+		<div id="Algo{{id}}" class="pureAlgo">
+			<h2>{{header_text}}</h2>
+
+			{% autoescape off %}
+				{{input_format}}
+			{% endautoescape %}
+
+			<div id="Inputter{{id}}">
+				<form>
+					<input class="inputter" id="SomeInput{{id}}" name="SomeInput" value="{{start_value}}">
+				</form>
+			</div>
+			<div id="Buttons{{id}}" style="position:sticky; top:0; z-index:1; display:inline-block;">
+				<button id="Sender{{id}}" class="sender">Begin</button>
+				<button id="Prever{{id}}" class="previous">Previous Move</button>
+				<button id="Nexter{{id}}" class="next">Next Move</button>
+				<button id="Finisher{{id}}" class="finish">Finish</button>
+			</div>
+
+			<div class="breakAlgo"></div>
+			<div id="Primez{{id}}" class="primez"></div>
+			<div id="Comprehend{{id}}" class="comprehend"></div>
+		</div>
+{% endmacro %}

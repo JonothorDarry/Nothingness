@@ -24,6 +24,8 @@ class transformation:
             'dlog':'DiscreteLog',
             'ntt':'NumberTransform',
 
+            'choice':'Choice',
+
             'treewalk':'TreeBasic',
             'index':'Wisdom',
             'signup':'Signer',
@@ -41,8 +43,10 @@ class transformation:
             'NumberTheory/Divisors.html':'Divisors',
             'NumberTheory/Totient.html':'Totient_function',
             'NumberTheory/Proot.html':'Primitive_Root',
-            'NumberTheory/Discrete.html':'Discrete_Logarithm_and_Root',
+            'NumberTheory/Discrete.html':'Discrete_Logarithm',
             'NumberTheory/Ntt.html':'Number_Theoretic_Transform',
+
+            'Combinatorics/Choice.html':'Choice',
 
             'Trees/TreeBasics.html':'Tree_Walk',
     }
@@ -55,8 +59,10 @@ class transformation:
             'Totient function':'totient',
             'Divisors':'divisors',
             'Primitive Root':'proot',
-            'Discrete Logarithm and Root':'dlog',
+            'Discrete Logarithm':'dlog',
             'Number Theoretic Transform':'ntt',
+
+            'Choice':'choice',
 
             'Tree Walk':'treewalk',
             'index':'index',
@@ -70,8 +76,10 @@ class transformation:
             'Divisors':'NumberTheory/Divisors.html',
             'Totient function':'NumberTheory/Totient.html',
             'Primitive Root':'NumberTheory/Proot.html',
-            'Discrete Logarithm and Root':'NumberTheory/Discrete.html',
+            'Discrete Logarithm':'NumberTheory/Discrete.html',
             'Number Theoretic Transform':'NumberTheory/Ntt.html',
+
+            'Choice':'Combinatorics/Choice.html',
 
             'Tree Walk':'Trees/TreeBasics.html',
     }
@@ -86,6 +94,8 @@ class transformation:
             'NumberTheory/Proot.html':'proot',
             'NumberTheory/Discrete.html':'dlog',
             'NumberTheory/Ntt.html':'ntt',
+
+            'Combinatorics/Choice.html':'choice',
 
             'Trees/TreeBasics.html':'treewalk', 
     }
@@ -277,6 +287,12 @@ def DiscreteLog():
 @app.route('/ntt', methods=['GET', 'POST'])
 def NumberTransform():
     return Router('NumberTheory/Ntt.html')
+
+
+@app.route('/choice', methods=['GET', 'POST'])
+def Choice():
+    return Router('Combinatorics/Choice.html')
+
 
 @app.route('/treewalk', methods=['GET', 'POST'])
 def TreeBasic():

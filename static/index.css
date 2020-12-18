@@ -21,6 +21,9 @@
 .treebutton{background-color: #E67300;}
 .treebutton:hover{background-color: #FF9319;}
 
+.combutton{background-color: #800000;}
+.combutton:hover{background-color: #b22222;}
+
 .algoName{
 	width: 180px;
 	text-align: center;

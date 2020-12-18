@@ -57,10 +57,13 @@ class EuclidGcd extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1], col;
 
-		if (s[0]==100) return;
+		if (s[0]==100){
+			if (this.dead==1) return;
+			staat.push([3, 'dead', 0, 1]);
+		}
 		var a=s[1], b=s[2], i=0;
 
-		if ((s[0]==2 || s[0]==1) && this.shower) return;
+		if ((s[0]==2 || s[0]==1) && this.shower){}
 		else if (s[0]==0){
 			for (i=0;i<2;i++) this.divs[i].innerHTML='';
 			var butt;
@@ -135,6 +138,7 @@ class EuclidGcd extends Algorithm{
 		this.shower=this.check.checked;
 		this.lees=[]
 		this.place.innerHTML='';
+		this.dead=0;
 		var fas=this.input.value;
 		var a=0, b=0, x, i=0, c;
 		

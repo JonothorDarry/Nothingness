@@ -38,12 +38,13 @@
 		</p>
 		<!--
 		<h3>Second problem</h3>
-		<p>Suppose You are given a number \(2 \le x \le 10^{15}\) and a set of \(n \le 10^3\) numbers \(1 \le a_i \le x\), and Thine aim is to find a minimal size of a subset of \(a_i\), such that \(a_{f_1}a_{f_2} \dots a_{f_m}=x\) where \(f_i\) are indeces of elements in such subset (in other words, purpose is to minimize \(m\))</p>
+		<p>Suppose You are given a number \(2 \le x \le 10^{15}\) and a set of \(n \le 10^3\) numbers \(1 \le a_i \le x\), and Thine aim is to find a minimal size of a subset of \(a_i\), such that \(x|a_{f_1}a_{f_2} \dots a_{f_m}\) where \(f_i\) are indeces of elements in such subset (in other words, purpose is to minimize \(m\))</p>
 		<h3>Simple solution</h3>
-		<p>Let's denote number of divisors of \(x\) as \(l\). \(l \le 6720\) - this comes from metaknowledge, namely OEIS A066150 (one can check it on his own, for example with some exponential algorithm and using first prime numbers). For each number \(a_i\), one can:</p>
+		<p>Let's denote number of divisors of \(x\) as \(l\). \(l \le 6720\) - this comes from metaknowledge, namely OEIS A066150 (one can check it on his own, for example with some exponential algorithm and using first prime numbers). Let's call a number \(y\) obtainable, if there is sequence \(a_{g_1}, a_{g_2}, \dots a_{g_n}\) such that \(y|a_{g_1}a_{g_2} \dots a_{g_n}\). One can start from marking \(1\) as obtainable divisor of \(x\). Then, for each number \(a_{g_i}\), one can:</p>
 		<ol>
-			<li>Multiply \(a_i\) by each of the divisors, starting from highest one, ending in lowest</li>
-			<li>Checking with binary sear
+			<li>Multiply \(a_i\) by each of the divisors \(d_i\), starting from highest one, ending in lowest.</li>
+			<li>Find \(gcd(a_id_i, x)\) - if one can obtain \(d_i\) in \(s\) moves, then one can obtain \(gcd(a_id_i)\) in \(s+1\) moves.</li>
+			<li>Checking with binary search</li>
 		</ol>
 		<h3>Positional system for divisors of a number</h3>
 		<p>

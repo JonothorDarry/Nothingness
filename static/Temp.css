@@ -39,8 +39,11 @@ header{
 	text-align: left;
 }
 
+header.Combinatorics{background-color:#B80606;}
 header.Trees{background-color:#994D00;}
 header.System{background-color: #000000;}
+
+.utilsBar.Combinatorics{background-color:#600000;}
 .utilsBar.Trees{background-color:#663300;}
 .utilsBar.System{background-color:#000000;}
 
@@ -66,6 +69,9 @@ header.System{background-color: #000000;}
 
 
 .backer:hover{background-color:#000088;}
+
+.backer.Combinatorics{background-color:#330000;}
+.backer.Combinatorics:hover{background-color:#FF1D1D;}
 
 .backer.Trees{background-color:#331100;}
 .backer.Trees:hover{background-color:#CC6600;}
@@ -94,8 +100,8 @@ html, body{
 	/*
 	color: #EEEEEE;
 	background-color: #00001A;
-	font-size: 16px;
 	*/
+	font-size: 16px;
 }
 
 p,ol{

@@ -95,7 +95,7 @@ class Algorithm{
 			else i++;
 			j=i, a=0;
 		}
-		return lst;	
+		return lst;
 	}
 
 	StateUnmaker(){
