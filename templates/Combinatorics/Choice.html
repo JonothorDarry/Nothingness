@@ -78,8 +78,30 @@
 		, '5') }}
 
 		<h3>Permutation with repetitions</h3>
-		<p>Question: How many sequences of size \(n\) of \(n\) objects, each belonging to one of \(t\) distinct element types exist (elements from one type are indistinguishable)? For example, for \(t=2\) and subsequent numbers of objects of certain types: \([2, 2]\) the sequences are: \([1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1], [2, 1, 1, 2], [2, 1, 2, 1], [2, 2, 1, 1]\) - and so, there are \(6\) such sequences.</p>
-		<p>Solution: One can </p>
+		<p>Question: How many sequences of size \(n\) of \(n\) objects, each belonging to one of \(t\) distinct element types exist (elements from one type are indistinguishable)? For example, for \(t=2\) and subsequent numbers of objects of certain types: \(a=[2, 2]\) the sequences are: \([1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1], [2, 1, 1, 2], [2, 1, 2, 1], [2, 2, 1, 1]\) - and so, there are \(6\) such sequences.</p>
+		<p>Solution: One can start by assuming, that objects of same type are possible to distinguish: this leads to \(n!\) sequences, some of them being identical. Let subsequent letters denote type of an object, and numbers - number of an object within a type (that doesn't exist in reality, only in terms of created sequences, as objects of same type are indistinguishable). For example, for \(t=3\) and \(a=[3,2,2]\) some of the resulting sequences are \([a1, c2, a3, b2, a2, c1, b1]\) or \([a3, c1, b2, c2, a1, a2, b3]\). Then, one can observe, that with same positions of same - say \(i\)-th type - there are \(a_i!\) sequences from single sequence with indistinguishable elements of this type, that become distinct after enumerating elements of this type. For example, after enumerating elements from type \(a\):<br>
+		$$
+		[a, b1, c1, b2, a, a, c2] \iff 
+			\begin{cases}
+				[a1, b1, c1, b2, a2, a3, c2] \\
+				[a1, b1, c1, b2, a3, a2, c2] \\
+				[a2, b1, c1, b2, a1, a3, c2] \\
+				[a2, b1, c1, b2, a3, a1, c2] \\
+				[a3, b1, c1, b2, a1, a2, c2] \\
+				[a3, b1, c1, b2, a2, a1, c2] \\
+			\end{cases}
+		$$
+		This comes from permutation of elements of same type. So, if one denotes solution to the problem by \(sol\), then:
+		</p>
+		<span class="central">\(sol*a_1!a_2! \dots a_t!=n!\)</span>
+		<span class="central">\(sol=\frac{n!}{\prod_{i=1}^{t}a_i!}\)</span>
+		{{ algo.algorithm(2, 'Permutation with Repetitions', '
+		<p>Input format: \(t\) - number of types, then sequence \(a_1, \dots, a_t\) - number of object from subsequent types. Note, that \(n=\sum_{i=1}^{t}a_i\)<br>
+			\(t\)<br>
+			\(a_1, a_2, \dots, a_t\)<br>
+			</p>
+		'
+		, '3&#10;3 2 1', 'textarea') }}
 
 		<script src="{{url_for('static', filename='Choice.js')}}"></script>
 		<form id="page" style="display:none"></form>

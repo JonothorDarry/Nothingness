@@ -83,8 +83,6 @@ class Order extends Partial{
 			dv.append(btn[i]);
 		}
 		btn[2].style.width="80px";
-		btn[2].style.top="-1.5px";
-		btn[3].style.top="1px";
 		this.place.append(dv);
 	}
 

@@ -1,4 +1,4 @@
-{% macro algorithm(id, header_text, input_format, start_value) %}
+{% macro algorithm(id, header_text, input_format, start_value, input_type='input') %}
 		<div id="Algo{{id}}" class="pureAlgo">
 			<h2>{{header_text}}</h2>
 
@@ -8,7 +8,13 @@
 
 			<div id="Inputter{{id}}">
 				<form>
-					<input class="inputter" id="SomeInput{{id}}" name="SomeInput" value="{{start_value}}">
+					{% if input_type=='input' %}
+						<input class="inputter" id="SomeInput{{id}}" name="SomeInput" value="{{start_value}}">
+					{% else %}
+						{% autoescape off %}
+						<textarea class="inputter" id="SomeInput{{id}}" name="SomeInput">{{start_value}}</textarea>
+						{% endautoescape %}
+					{% endif %}
 				</form>
 			</div>
 			<div id="Buttons{{id}}" style="position:sticky; top:0; z-index:1; display:inline-block;">

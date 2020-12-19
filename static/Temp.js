@@ -159,6 +159,7 @@ class Algorithm{
 		butt.style.border=this.bs_border;
 		butt.style.padding='0';
 		butt.style.margin='0';
+		butt.style.verticalAlign='middle';
 		
 		butt.style.color="#FFFFFF";
 		if (numb!=null) {
