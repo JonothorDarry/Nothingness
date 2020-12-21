@@ -131,6 +131,23 @@
 		<span class="central">\((A+B)^n=\sum_{i=0}^{n}\binom{n}{i}A^iB^{n-i}\)</span>
 		<p>And the statement above is called binomial theorem.</p>
 
+		<h3>Useful identities III: Hypercube equation</h3>
+		<p>Question: how to calculate value of \(\sum_{k=0}^{n}k^x\binom{n}{k}\) (where \(x \le 5000\))?</p>
+		<p>General identity: To solve this problem, one can find an equation binding \(k^x\binom{n}{k}\) with something easy to calculate. To put it bluntly, one can posit question: in how many ways one can choose two not intersecting subsets (sets are not intersecting when there is no same element in both sets) out of a single set, where size of one set is fixed? Let's say set has size \(n\), fixed size of one subset is \(d\). One can choose \(d\) elements out of \(n\) elements - in one of \(\binom{n}{d}\) ways, and then choose any subset of the remaining elements in \(2^{n-d}\) ways - this leads to establish \(2^{n-d}\binom{n}{d}\) as first part of identity. Furthermore, one can solve problem by choosing subsequent \(k\)s - sizes of sum of both subsets, and then, choosing \(k\) elements out of \(n\) - elements belonging to one of those subsets; and then choosing \(d\) elements out of \(k\) elements. This can be represented as \(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}\). And so, this leads to identity:</p>
+		<span class="central">\(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=2^{n-d}\binom{n}{d}\)</span>
+		<p>Solution: for given \(n\), for \(d=0\), the left part of equation can be calculated as \(\sum_{k=d}^{n}\binom{n}{k}\) - which is equal to \(2^n\). For \(d=1\), left part will be \(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=\sum_{k=0}^{n}\binom{n}{k}k\). For any \(d\):</p>
+		<span class="central">$$\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=\sum_{k=0}^{n}\binom{n}{k}\frac{k(k-1) \dots (k-d)}{d!}=2^{n-d}\binom{n}{d}$$</span>
+		<span class="central">$$\sum_{k=0}^{n}\binom{n}{k}k(k-1) \dots (k-d+1) = \sum_{k=0}^{n}k^d\binom{n}{k}+\sum_{k=0}^{n}c_{d-1}k^{d-1}\binom{n}{k} + \dots + \sum_{k=0}^{n}c_0\binom{n}{k} = \sum_{k=0}^{n}k^d\binom{n}{k}+c_{d-1}\sum_{k=0}^{n}k^{d-1}\binom{n}{k} + \dots + c_0\sum_{k=0}^{n}\binom{n}{k} = 2^{n-d}\binom{n}{d}d!$$</span>
+		<p>This allows to calculate required weighted sum in \(O(d^2)\), storing results for subsequent \(k^x\) and multiplying polynominal by subsequent binomials to obtain coefficients \(c_i\), provided one can quickly calculate right side of equation - for example, \(mod\) some prime number.</p>
+
+
+		<h3>Useful identities IV: Vandermonde identity</h3>
+		<p>Question: You are given two sets, \(A\) and \(B\) (for simplicity, let \(|B| \gt |A|\)). In how many ways one can choose some equal amount of elements from both \(A\) and \(B\)?</p>
+		<p>Solution: One part of the identity is \(\sum_{i=0}^{|B|}\binom{|A|}{i}\binom{|B|}{i}\). One can observe, that one is choosing not only \(i\) elements from set \(B\), but also \(|B|-i\) not chosen elements from same set - so this part of identity can be shown as \(\sum_{i=0}^{|B|}\binom{|A|}{i}\binom{|B|}{|B|-i}\). Furthermore, this means, that one chooses \(|B|\) elements from both sets, and as one can choose any amount of elements from \(A\) any combination of \(|B|\) elements from both sets can be chosen. What follows, the second part of the identity can be shown as \(\binom{|A|+|B|}{|B|}\)</p>
+		<p>Generalization: The constant amount of elements chosen didn't need to be equal to \(|B|\), and so, in general, 
+		<span class="central">$$\sum_{i=0}^{n}\binom{n}{i}\binom{m}{r-i}=\binom{n+m}{r}$$</span>
+
+
 
 
 
