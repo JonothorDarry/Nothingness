@@ -78,7 +78,7 @@
 		, '5') }}
 
 		<h3>Permutation with repetitions</h3>
-		<p>Question: How many sequences of size \(n\) of \(n\) objects, each belonging to one of \(t\) distinct element types exist (elements from one type are indistinguishable)? For example, for \(t=2\) and subsequent numbers of objects of certain types: \(a=[2, 2]\) the sequences are: \([1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1], [2, 1, 1, 2], [2, 1, 2, 1], [2, 2, 1, 1]\) - and so, there are \(6\) such sequences.</p>
+		<p>Question: How many sequences of size \(n\) of \(n\) objects, each belonging to one of \(t\) distinct element types exist (elements from one type are indistinguishable)? For example, for \(t=2\) and subsequent numbers of objects of certain types: \(a=[2, 2]\) (and so, \(n=\sum_{i=1}^{t}a_i=4\)) the sequences are: \([1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1], [2, 1, 1, 2], [2, 1, 2, 1], [2, 2, 1, 1]\) - and so, there are \(6\) such sequences.</p>
 		<p>Solution: One can start by assuming, that objects of same type are possible to distinguish: this leads to \(n!\) sequences, some of them being identical. Let subsequent letters denote type of an object, and numbers - number of an object within a type (that doesn't exist in reality, only in terms of created sequences, as objects of same type are indistinguishable). For example, for \(t=3\) and \(a=[3,2,2]\) some of the resulting sequences are \([a1, c2, a3, b2, a2, c1, b1]\) or \([a3, c1, b2, c2, a1, a2, b3]\). Then, one can observe, that with same positions of same - say \(i\)-th type - there are \(a_i!\) sequences from single sequence with indistinguishable elements of this type, that become distinct after enumerating elements of this type. For example, after enumerating elements from type \(a\):<br>
 		$$
 		[a, b1, c1, b2, a, a, c2] \iff 
@@ -95,6 +95,9 @@
 		</p>
 		<span class="central">\(sol*a_1!a_2! \dots a_t!=n!\)</span>
 		<span class="central">\(sol=\frac{n!}{\prod_{i=1}^{t}a_i!}\)</span>
+		<p>Permutation with repetitions is often denoted by:</p>
+		<span class="central">\(\binom{n}{a_1,a_2, \dots, a_n}=\frac{n!}{\prod_{i=1}^{t}a_i!}\)</span>
+
 		{{ algo.algorithm(2, 'Permutation with Repetitions', '
 		<p>Input format: \(t\) - number of types, then sequence \(a_1, \dots, a_t\) - number of object from subsequent types. Note, that \(n=\sum_{i=1}^{t}a_i\)<br>
 			\(t\)<br>
@@ -102,6 +105,35 @@
 			</p>
 		'
 		, '3&#10;3 2 1', 'textarea') }}
+
+		<h3>Mystical ways of combination</h3>
+		<p>Question: How many there are subsets \(T\) of size \(k\) containing elements from set \(S\) of size \(n\)? For example, for set of \(3\) elements \(\{1,2,3\}\) its subsets of size \(2\) are: \(\{1,2\}, \{1,3\}, \{2,3\}\) - so there are \(3\) subsets of size \(2\) from set of \(3\) elements.</p>
+		<p>Solution: already stated. If one puts elements from set \(S\) in some sequence - say \(Y\), then every subset \(T\) of elements of \(Y\) of size \(k\) can be represented as a sequence \(s\) of \(n-k\) zeros and \(k\) ones, where \(1\) on \(i\)-th indice means, that the element \(Y_i\) was chosen as element of \(T\). For example, </p>
+		<span class="central">Y=[1,2,5,7,9]</span>
+		<span class="central">s=[0,1,0,0,1]</span>
+		<p>would mean choosing \(T=\{2,9\}\) One can notice, that \(\binom{n}{k, n-k}\) is the number of ways, in which one can create sequence of \(k\) ones and \(n-k\) zeros. Which implies, that solution to the problem above is equal to \(\binom{n}{k, n-k}\)</p>
+		<p>Number of subset of size \(k\) from a set of size \(n\) is often denoted by \(\binom{n}{k}\), also called binomial coefficient. The first claims that can be formulated about this coefficients are:</p>
+		<ol>
+			<li>\(\binom{n}{k}=0\) for \(k \gt n\) - as there is no way of choosing subset \(T\) of a set \(S\) such that \(|T| \gt |S|\).</li>
+			<li>\(\binom{n}{k}=\binom{n}{n-k}\) - this follows straight from a pattern \(\binom{n}{n-k,k}=\binom{n}{k,n-k}=\frac{n!}{k!(n-k)!}\). Also, each subset of chosen elements subset \(T\) of size \(k\) defines exactly one set \(T'\) of not chosen elements of size \(n-k\), and set \(T'\) defines exactly one set \(T\) - showing this property by double counting, by bijection.</li>
+			<li>\(\binom{n+1}{k+1}=\binom{n}{k+1}+\binom{n}{k}\) - this can be shown either algebraically (\(\binom{n}{k+1}+\binom{n}{k}=\frac{n!}{(k+1)!(n-k-1)!}+\frac{n!}{k!(n-k)!}=\frac{n!}{k!(n-k-1)!}(\frac{1}{k+1}+\frac{1}{n-k})=\frac{n!}{k!(n-k-1)!}(\frac{n-k+k+1}{(k+1)(n-k)})=\frac{n!(n+1)}{k!(k+1)(n-k-1)!(n-k)}=\frac{n!}{(k+1)!(n-k)!}=\binom{n+1}{k+1}\)) or combinatorically: let \(Z\) be a subsequence of elements of \(Y\) without its last element; either \(T\) consists solely of elements of \(Z\) - so, \(T\) is one of \(\binom{n}{k+1}\) possible sets; or last element of \(Y\) is element of \(T\) - then \(T\) is one of \(\binom{n}{k}\) subsets of sequence \(Z\) with added one element. This identity is often called <b>Pascal's rule</b></li>
+		</ol>
+		<h3>Pascal's triangle and binomial theorem</h3>
+		<!--<p>Question: Suppose Jonasz is making moves. In each move, he either moves left or up. How many sequences of \(n\) moves exist, such that he made exactly \(k\) moves up?</p>-->
+		<p>The last statement of the claims in the list above leads to establish <b>Pascal's triangle</b> - a triangle of numbers, with \(\binom{0}{0}=1\) at the top and subsequent \(\binom{n}{k}\) for each \(k \le n\) below, where each \(\binom{n}{k}\) is calculated as sum of two numbers above.
+
+
+		<p><b>Binomial Theorem</b> is basically a different take on standard combinatorical problem: say, there are \(n\) moves, in each move option \(A\) or \(B\) can be chosen. In how many ways one can make such sequence of moves, such that \(A\) was chosen exactly \(k\) times? While the answer is \(\binom{n}{k}\) - because one chooses \(k\) elements (moves, in which \(A\) was chosen) out of sequence of \(n\) elements (all moves), the problem can be shown as:</p>
+		<span class="central">\((A+B)(A+B) \dots (A+B)=(A+B)^n\)</span>
+		<p>in each move, either \(A\) or \(B\) is chosen, and multiplication represents subsequent moves; then, result of such multiplication will yield result</p>
+		<span class="central">\((A+B)^n=\sum_{i=0}^{n}c_iA^iB^{n-i}\)</span>
+		<p>\(A^i\) represents picking \(A\) as a move in a single sequence of moves \(i\) times. In all other times, \(B\) was chosen - thus, exponent by \(B\) is \(n-i\). \(c_i\) represents number of possible sequences of choices, in which \(A\) was chosen \(i\) times - as stated above, it is equal to \(\binom{n}{i}\). This implies:</p>
+		<span class="central">\((A+B)^n=\sum_{i=0}^{n}\binom{n}{i}A^iB^{n-i}\)</span>
+		<p>And the statement above is called binomial theorem.</p>
+
+
+
+
 
 		<script src="{{url_for('static', filename='Choice.js')}}"></script>
 		<form id="page" style="display:none"></form>
