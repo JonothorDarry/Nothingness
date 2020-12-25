@@ -129,11 +129,18 @@
 		<span class="central">\((A+B)^n=\sum_{i=0}^{n}c_iA^iB^{n-i}\)</span>
 		<p>\(A^i\) represents picking \(A\) as a move in a single sequence of moves \(i\) times. In all other times, \(B\) was chosen - thus, exponent by \(B\) is \(n-i\). \(c_i\) represents number of possible sequences of choices, in which \(A\) was chosen \(i\) times - as stated above, it is equal to \(\binom{n}{i}\). This implies:</p>
 		<span class="central">\((A+B)^n=\sum_{i=0}^{n}\binom{n}{i}A^iB^{n-i}\)</span>
-		<p>And the statement above is called binomial theorem.</p>
+		<p>And the statement above is called binomial theorem. This theorem can be also shown by induction using pascal's identity, with base case:</p>
+		<span class="central">$$(A+B)^0=1=\binom{0}{0}A^0B^0=\sum_{i=0}^{n=0}\binom{n}{i}A^iB^{n-i} \text{ or, depending on definition of \(0^0\), } (A+B)^1=A+B=\binom{1}{0}A^0B^1+\binom{1}{1}A^1B^0=\sum_{i=0}^{n=1}\binom{n}{i}A^iB^{n-i}$$</span>
+		<p>And inductive step (in the last step pascal's identity was used)</p>
+		<span class="central">$$(A+B)(A+B)^{n-1}=A\sum_{i=0}^{n-1}\binom{n-1}{i}A^iB^{n-1-i}+B\sum_{i=0}^{n-1}\binom{n-1}{i}A^iB^{n-1-i}=\sum_{i=0}^{n-1}\binom{n-1}{i}A^{i+1}B^{n-1-i}+\sum_{i=0}^{n-1}\binom{n-1}{i}A^iB^{n-i}=\binom{n-1}{n-1}A^nB^0+\sum_{i=1}^{n-1}\binom{n-1}{i-1}A^iB^{n-i}+\sum_{i=1}^{n-1}\binom{n-1}{i}A^iB^{n-i}+\binom{n}{0}A^0B^n=$$</span>
+		<span class="central">$$=\binom{n}{0}A^0B^n+\binom{n}{n}A^nB^0+\sum_{i=0}^{n-1}(\binom{n-1}{i}+\binom{n-1}{i-1})A^iB^{n-i}=\sum_{i=0}^{n}\binom{n}{i}A^iB^{n-i}$$</span>
+
+
+		<h3>Useful identities I: Hockey stick identity</h3>
 
 		<h3>Useful identities III: Hypercube equation</h3>
 		<p>Question: how to calculate value of \(\sum_{k=0}^{n}k^x\binom{n}{k}\) (where \(x \le 5000\))?</p>
-		<p>General identity: To solve this problem, one can find an equation binding \(k^x\binom{n}{k}\) with something easy to calculate. To put it bluntly, one can posit question: in how many ways one can choose two not intersecting subsets (sets are not intersecting when there is no same element in both sets) out of a single set, where size of one set is fixed? Let's say set has size \(n\), fixed size of one subset is \(d\). One can choose \(d\) elements out of \(n\) elements - in one of \(\binom{n}{d}\) ways, and then choose any subset of the remaining elements in \(2^{n-d}\) ways - this leads to establish \(2^{n-d}\binom{n}{d}\) as first part of identity. Furthermore, one can solve problem by choosing subsequent \(k\)s - sizes of sum of both subsets, and then, choosing \(k\) elements out of \(n\) - elements belonging to one of those subsets; and then choosing \(d\) elements out of \(k\) elements. This can be represented as \(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}\). And so, this leads to identity:</p>
+		<p>General identity: To solve this problem, one can find an equation binding \(k^x\binom{n}{k}\) with something easy to calculate. To put it bluntly, one can posit question: in how many ways one can choose two not intersecting subsets (sets are not intersecting when there is no same element in both sets) out of a single set, where size of one set is fixed? Let's say set has size \(n\), fixed size of one subset is \(d\). One can choose \(d\) elements out of \(n\) elements - in one of \(\binom{n}{d}\) ways, and then choose any subset of the remaining elements in \(2^{n-d}\) ways - this leads to establish \(2^{n-d}\binom{n}{d}\) as first part of identity. Furthermore, one can solve problem by choosing subsequent \(k\)'s - sizes of sum of both subsets, and then, choosing \(k\) elements out of \(n\) - elements belonging to one of those subsets; and then choosing \(d\) elements out of \(k\) elements. This can be represented as \(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}\). And so, this leads to identity:</p>
 		<span class="central">\(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=2^{n-d}\binom{n}{d}\)</span>
 		<p>Solution: for given \(n\), for \(d=0\), the left part of equation can be calculated as \(\sum_{k=d}^{n}\binom{n}{k}\) - which is equal to \(2^n\). For \(d=1\), left part will be \(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=\sum_{k=0}^{n}\binom{n}{k}k\). For any \(d\):</p>
 		<span class="central">$$\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=\sum_{k=0}^{n}\binom{n}{k}\frac{k(k-1) \dots (k-d)}{d!}=2^{n-d}\binom{n}{d}$$</span>
@@ -145,10 +152,8 @@
 		<p>Question: You are given two sets, \(A\) and \(B\) (for simplicity, let \(|B| \gt |A|\)). In how many ways one can choose some equal amount of elements from both \(A\) and \(B\)?</p>
 		<p>Solution: One part of the identity is \(\sum_{i=0}^{|B|}\binom{|A|}{i}\binom{|B|}{i}\). One can observe, that one is choosing not only \(i\) elements from set \(B\), but also \(|B|-i\) not chosen elements from same set - so this part of identity can be shown as \(\sum_{i=0}^{|B|}\binom{|A|}{i}\binom{|B|}{|B|-i}\). Furthermore, this means, that one chooses \(|B|\) elements from both sets, and as one can choose any amount of elements from \(A\) any combination of \(|B|\) elements from both sets can be chosen. What follows, the second part of the identity can be shown as \(\binom{|A|+|B|}{|B|}\)</p>
 		<p>Generalization: The constant amount of elements chosen didn't need to be equal to \(|B|\), and so, in general, 
-		<span class="central">$$\sum_{i=0}^{n}\binom{n}{i}\binom{m}{r-i}=\binom{n+m}{r}$$</span>
-
-
-
+		<span class="central">$$\sum_{i=0}^{r}\binom{n}{i}\binom{m}{r-i}=\binom{n+m}{r}$$</span>
+		<p>This identity is called <b>Vandermonde identity</b></p>
 
 
 

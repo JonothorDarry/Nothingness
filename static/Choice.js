@@ -108,6 +108,7 @@ class Choice extends Algorithm{
 		this.n=c.get_next();
 		this.permutations=[[1]];
 		this.presentation=[];
+		this.finito=false;
 
 		//Create reality
 		this.grid_constructor();
@@ -129,6 +130,7 @@ class Choice extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 		var staat=[], i, presentation, permutations;
+		if (this.finito==true) return;
 
 		if (s[0]==0){
 			this.reformulate_reality(this.presentation, staat, 1);
@@ -145,6 +147,7 @@ class Choice extends Algorithm{
 		}
 
 		if (s[0]==100){
+			staat.push([3, 'finito', false, true]);
 			this.reformulate_reality(this.presentation, staat, 1);
 			presentation=this.make_presentation(this.permutations, 1);
 			this.reformulate_reality(presentation, staat, 0, 0);
@@ -186,10 +189,12 @@ class Perm_rep extends Algorithm{
 
 		this.full_width=Math.floor(com_div.offsetWidth/btn_width);
 		var cols_size=Math.floor((this.full_width+1)/(this.n+1));
+		console.log(cols_size);
 		var one_liner=this.fac[this.a[0]]*cols_size;
 		var fac=this.fac[this.n];
 		var k=Math.ceil(fac/one_liner);
 		var all_rows=k*(this.fac[this.a[0]]+1)-1;
+		console.log(all_rows, this.full_width);
 
 		for (i=0; i<all_rows; i++){
 			tmp_lst=[];
@@ -207,7 +212,7 @@ class Perm_rep extends Algorithm{
 		var row=0, col=0, i, j, ij, color=((clear==0)?0:4), subcolor, precolor=((clear==0)?4:0), subprecolor, tmp_shower;
 
 		for (i=0; i<to_show.length; i++){
-			if (to_show[i][0].length+1+col>this.full_width){
+			if (to_show[i][0].length+col>this.full_width){
 				col=0;
 				if (finale==0) row+=this.fac[size];
 				row++;
@@ -352,6 +357,7 @@ class Perm_rep extends Algorithm{
 		this.place.innerHTML='';
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
+		this.finito=false;
 
 		var i=0, j, jj, ij;
 		this.a=[]
@@ -387,6 +393,7 @@ class Perm_rep extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 		var staat=[], i, presentation, permutations;
+		if (this.finito==true) return;
 
 		if (s[0]==0){
 			presentation=this.make_presentation(this.permutations, 0);
@@ -408,6 +415,8 @@ class Perm_rep extends Algorithm{
 		}
 
 		if (s[0]==100){
+			staat.push([3, 'finito', false, true]);
+			this.finito=true;
 			this.reformulate_reality(this.presentation, staat, this.a[this.t-1], 1);
 			presentation=this.make_presentation(this.permutations, 0);
 			this.reformulate_reality(presentation, staat, 0, 0, 1);
