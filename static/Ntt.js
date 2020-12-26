@@ -418,16 +418,7 @@ class Ntt extends Algorithm{
 			staat.push([3, 'dead', 0, 1]);
 			staat.push([0, this.btnlist[this.endet-1][0], 1, 0]);
 		}
-		this.state_transformation.push(staat);
-
-		var x;
-		for (i=0;i<staat.length;i++){
-			x=staat[i];
-			if (x[0]==0) this.Painter(x[1], x[3]);
-			if (x[0]==1) x[1].innerHTML=x[3];
-			if (x[0]==2) x[1].push(x[2]);
-			if (x[0]==3) this[x[1]]=x[3];
-		}
+		this.transformator(staat);
 	}
 
 
@@ -521,7 +512,7 @@ class Ntt extends Algorithm{
 
 	//Adding belt for write-ups and buttons 
 	divsCreator(){
-		var divs=[], zdivs=[], i, j;
+		var i;
 		var wnk="w<sub>n</sub><sup>k</sup>";
 		var title_list=["k", "a<sub>k</sub>", "b<sub>k</sub>", `primitive root and ${wnk}`, "", "i", "a<sub>i</sub>=A<sub>0</sub>"];
 		for (i=1;i<=this.lv;i++) title_list.push(`A<sub>${i}</sub>`);
@@ -536,29 +527,9 @@ class Ntt extends Algorithm{
 		for (i=1;i<=this.lv;i++) title_list.push(`Y<sub>${i}</sub>`);
 		title_list.push("inverse n and values c<sub>k</sub>")
 
-		for (i=0;i<this.endet-1;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<this.endet-1;i++){
-			divs[i].style.width="100%";
-			divs[i].style.height="40px";
-			//zdivs - inside div: 0 is write-up, 1 is button
-			for (j=0;j<3;j++) {
-				zdivs[i].push(document.createElement("DIV"));
-				zdivs[i][j].style.margin="0";
-				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline-block";
-				divs[i].appendChild(zdivs[i][j]);
-			}
-			zdivs[i][0].innerHTML=title_list[i];
-			zdivs[i][0].style.width="200px";
-			zdivs[i][1].style.width=`${this.bs_butt_width_h+10}px`;
-			zdivs[i][2].style.position="relative";
-
-			this.place.appendChild(divs[i]);
-		}
-		this.divs=divs;
-		this.zdivs=zdivs;
+		super.divsCreator(7, this.endet-1, title_list, `${this.bs_butt_width_h+10}px`);
 		this.place.style.width=`${(this.n+1)*this.bs_butt_width_h+210}px`;
-		this.wisdom.style.minWidth=`max(${(this.n+1)*this.bs_butt_width_h+210}px`;
+		this.wisdom.style.minWidth=`${(this.n+1)*this.bs_butt_width_h+210}px`;
 	}
 }
 

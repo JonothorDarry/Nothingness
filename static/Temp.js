@@ -206,6 +206,46 @@ class Algorithm{
 		return [dv, butt1, butt2];
 	}
 
+	transformator(staat){
+		this.state_transformation.push(staat);
+		var x, i;
+		for (i=0;i<staat.length;i++){
+			x=staat[i];
+			if (x[0]==0) this.Painter(x[1], x[3]);
+			if (x[0]==1) x[1].innerHTML=x[3];
+			if (x[0]==2) x[1].push(x[2]);
+			if (x[0]==3) this[x[1]]=x[3];
+		}
+	}
+
+	divsCreator(mode, ende, title_list, midian){
+		var divs=[], zdivs=[], i, j, mode_title=(((mode&4)>0)?1:0), mode_single=(((mode&2)>0)?1:0), mode_butts=mode&1;
+		var title_id=0, single_id=mode_title, butts_id=mode_title+mode_single;
+
+		for (i=0;i<ende;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<ende;i++){
+			divs[i].style.height="40px";
+			//zdivs - inside div: 0 is write-up, 1 is button
+			for (j=0; j<butts_id+mode_butts; j++) {
+				zdivs[i].push(document.createElement("DIV"));
+				zdivs[i][j].style.margin="0";
+				zdivs[i][j].style.padding="0";
+				zdivs[i][j].style.display="inline-block";
+				divs[i].appendChild(zdivs[i][j]);
+			}
+			if (mode_title==1) {
+				zdivs[i][title_id].innerHTML=title_list[i];
+				zdivs[i][title_id].style.width="200px";
+			}
+			if (mode_single==1) zdivs[i][single_id].style.width=midian;
+			if (mode_butts==1) zdivs[i][butts_id].style.position="relative";
+
+			this.place.appendChild(divs[i]);
+		}
+		this.divs=divs;
+		this.zdivs=zdivs;
+	}
+
 
 	static ObjectParser(v){
 		var dick={

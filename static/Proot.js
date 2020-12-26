@@ -127,7 +127,7 @@ class Proot extends Algorithm{
 		this.prob=block.radio_p;
 
 		var i, j, btn, btn2, mini_size=20;
-		this.divsCreator();
+		this.divsCreator(5, 6, ["m factorization", "m'", "p:p|&#x03D5;(m')=m'-1", "Exponents", "Results", "Primitive root"]);
 	}
 
 	BeginningExecutor(){
@@ -153,7 +153,7 @@ class Proot extends Algorithm{
 		this.bastard_m=this.m;
 
 		this.lees.push([0, 2, v]);
-		this.divs=this.divsCreator();
+		this.divsCreator(5, 6, ["m factorization", "m'", "p:p|&#x03D5;(m')=m'-1", "Exponents", "Results", "Primitive root"]);
 
 		this.primes=[];
 		this.exponents=[];
@@ -382,18 +382,7 @@ class Proot extends Algorithm{
 			if (this.dead==1) return;
 			staat.push([3, 'dead', this.dead, 1]);
 		}
-
-
-		this.state_transformation.push(staat);
-		//Modyfying reality: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field
-		var x;
-		for (i=0;i<staat.length;i++){
-			x=staat[i];
-			if (x[0]==0) this.Painter(x[1], x[3]);
-			if (x[0]==1) x[1].innerHTML=x[3];
-			if (x[0]==2) x[1].push(x[2]);
-			if (x[0]==3) this[x[1]]=x[3];
-		}
+		this.transformator(staat);
 	}
 
 	NextState(){
@@ -559,33 +548,6 @@ class Proot extends Algorithm{
 			a=(a*a)%m;
 		}
 		return res;
-	}
-
-	//Adding belt for write-ups and buttons 
-	divsCreator(){
-		var divs=[], zdivs=[], i, j;
-		var title_list=["m factorization", "m'", "p:p|&#x03D5;(m')=m'-1", "Exponents", "Results", "Primitive root"];
-
-		for (i=0;i<6;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<6;i++){
-			divs[i].style.width="100%";
-			divs[i].style.height="40px";
-			//zdivs - inside div: 0 is write-up, 1 is button
-			for (j=0;j<2;j++) {
-				zdivs[i].push(document.createElement("DIV"));
-				zdivs[i][j].style.margin="0";
-				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline-block";
-				divs[i].appendChild(zdivs[i][j]);
-			}
-			zdivs[i][0].innerHTML=title_list[i];
-			zdivs[i][0].style.width="200px";
-			zdivs[i][1].style.position="relative";
-
-			this.place.appendChild(divs[i]);
-		}
-		this.divs=divs;
-		this.zdivs=zdivs;
 	}
 	
 	//Creates buttons

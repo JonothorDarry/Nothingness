@@ -153,16 +153,7 @@ class Choice extends Algorithm{
 			this.reformulate_reality(presentation, staat, 0, 0);
 		}
 		staat.push([3, 'presentation', this.presentation, presentation]);
-
-		this.state_transformation.push(staat);
-		var x;
-		for (i=0;i<staat.length;i++){
-			x=staat[i];
-			if (x[0]==0) this.Painter(x[1], x[3]);
-			if (x[0]==1) x[1].innerHTML=x[3];
-			if (x[0]==2) x[1].push(x[2]);
-			if (x[0]==3) this[x[1]]=x[3];
-		}
+		this.transformator(staat);
 	}
 }
 
@@ -423,16 +414,7 @@ class Perm_rep extends Algorithm{
 		}
 
 		staat.push([3, 'presentation', this.presentation, presentation]);
-
-		this.state_transformation.push(staat);
-		var x;
-		for (i=0;i<staat.length;i++){
-			x=staat[i];
-			if (x[0]==0) this.Painter(x[1], x[3]);
-			if (x[0]==1) x[1].innerHTML=x[3];
-			if (x[0]==2) x[1].push(x[2]);
-			if (x[0]==3) this[x[1]]=x[3];
-		}
+		this.transformator(staat);
 	}
 }
 

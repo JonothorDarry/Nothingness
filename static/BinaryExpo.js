@@ -28,7 +28,6 @@ class BinaryExpo extends Algorithm{
 		b=c.get_next();
 		m=c.get_next();
 		var mx_all=Math.max(Math.max(a.toString().length, b.toString().length), m.toString().length)*10;
-		console.log(mx_all);
 		this.bs_butt_width=`${Math.max(40, mx_all)}px`;
 		this.bs_butt_width_h=Math.max(40, mx_all);
 
@@ -40,7 +39,7 @@ class BinaryExpo extends Algorithm{
 		var i=0, j=0, z=Math.floor(Math.log2(b))+1, btn, crb=b, mylst=[];
 		for (i=0;i<z;i++) mylst.push(crb%2), crb=Math.floor(crb/2);
 
-		this.divCreator();
+		this.divsCreator(7, 3, ["Current result:", "Current a:", "Current b:"],`${this.bs_butt_width}+100px`);
 		for (j=0;j<3;j++){
 			for (i=0;i<z;i++) {
 				if (j==1 && i==z-1) btn=this.buttCreator(a, '#004400');
@@ -102,16 +101,7 @@ class BinaryExpo extends Algorithm{
 			staat.push[1, this.utilbts[2], lst[2], 0];
 		}
 
-		this.state_transformation.push(staat);
-
-		var x;
-		for (i=0;i<staat.length;i++){
-			x=staat[i];
-			if (x[0]==0) this.Painter(x[1], x[3]);
-			if (x[0]==1) x[1].innerHTML=x[3];
-			if (x[0]==2) x[1].push(x[2]);
-			if (x[0]==3) this[x[1]]=x[3];
-		}
+		this.transformator(staat);
 	}
 
 
@@ -137,33 +127,7 @@ class BinaryExpo extends Algorithm{
 		else if (s[0]==0) this.lees.push([1, a, b, (res*(b%2==0?1:a))%m, m]);
 		else if (s[0]==1) this.lees.push([0, (a*a)%m, Math.floor(b/2), res, m]); 
 	}
-
-	divCreator(){
-		var divs=[], zdivs=[], i, j;
-		for (i=0;i<3;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<3;i++){
-			divs[i].style.height="40px";
-			for (j=0;j<3;j++) {
-				zdivs[i].push(document.createElement("DIV"));
-				zdivs[i][j].style.margin="0";
-				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline-block";
-				divs[i].appendChild(zdivs[i][j]);
-			}
-			if (i==0) zdivs[i][0].innerHTML="Current result:";
-			if (i==1) zdivs[i][0].innerHTML="Current a:";
-			if (i==2) zdivs[i][0].innerHTML="Current b:";
-			zdivs[i][0].style.width="200px";
-			zdivs[i][1].style.width=`${this.bs_butt_width}+100px`;
-
-			this.place.appendChild(divs[i]);
-		}
-		this.divs=divs;
-		this.zdivs=zdivs;
-	}
 }
-
-
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new BinaryExpo(feral, 17, 43, 107);
