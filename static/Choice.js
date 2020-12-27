@@ -121,7 +121,14 @@ class Choice extends Algorithm{
 		else if (s[0]==0) this.lees.push([100]);
 		if (s[0]==1) this.lees.push([0, s[1]+1]);
 	}
-	StatementComprehension(){}
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+		if (s[0]==1) return `All possible permutations of size ${s[1]} (there are ${s[1]}!=${this.permutations.length} such permutations) are grouped.`;
+		if (s[0]==0) return `All possible permutations of size ${s[1]} are generated from permutations of size ${s[1]-1} by inserting one element in one of ${s[1]} indexes of those permutations, resulting in ${s[1]-1}!*${s[1]}=${this.presentation.length}*${s[1]}=${this.presentation.length*s[1]} permutations of size ${s[1]}`;
+		if (s[0]==0) return `Here, all permutations of size ${this.n} are shown.`
+	}
 
 	StateMaker(){
 		var l=this.lees.length;
@@ -343,6 +350,7 @@ class Perm_rep extends Algorithm{
 		this.lees=[];
 		this.state_transformation=[];
 		this.place.innerHTML='';
+		this.finito=false;
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
 
@@ -374,7 +382,16 @@ class Perm_rep extends Algorithm{
 		if (s[0]==2 && s[1]<this.t-1) this.lees.push([1, s[1]+1]);
 		else if (s[0]==2) this.lees.push([100]);
 	}
-	StatementComprehension(){}
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+
+		if (s[0]==0) return `All ${this.n}!=${this.fac[this.n]} representations of solutions are shown.`;
+		if (s[0]==1) return `All representations that describe same object with respect to type ${s[1]} are grouped. In each group, there are a<sub>${s[1]}</sub>!=${this.a[s[1]]}!=${this.fac[this.a[s[1]]]} representations of a single sequence.`;
+		if (s[0]==2) return `All representation except one referring to one object with respect to type ${s[1]} are removed, and so, now one can assume that elements of type ${s[1]} are not enumerated within representations. The number of representations is reduced to ${this.permutations.length*this.fac[this.a[s[1]]]}/${this.fac[this.a[s[1]]]}=${this.permutations.length}`;
+		if (s[0]==100) return `All ${this.permutations.length} solutions are shown.`;
+	}
 
 	StateMaker(){
 		var l=this.lees.length;
