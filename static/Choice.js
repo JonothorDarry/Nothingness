@@ -431,8 +431,7 @@ class Perm_rep extends Algorithm{
 	}
 }
 
-
-class Pascal_triangle extends Algorithm{
+class Pascal_base extends Algorithm{
 	constructor(block, n){
 		super(block);
 		this.n=n;
@@ -440,7 +439,7 @@ class Pascal_triangle extends Algorithm{
 		this.divsCreator(1, this.n+2);
 		this.pascal=[];
 		this.construct_pascal();
-		this.create_reality(0);
+		//this.create_reality(0);
 	}
 
 	construct_pascal(){
@@ -457,14 +456,61 @@ class Pascal_triangle extends Algorithm{
 	BeginningExecutor(){
 		this.starter();
 		this.btnlist=[];
-		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
-		this.n=c.get_next();
+		this.read_data();
 
 		this.divsCreator(1, this.n+2);
 		this.construct_pascal();
-		this.create_reality(4);
 		this.place.style.width=`${(this.n+1)*this.bs_butt_width_h+210}px`;
+		//this.create_reality(4);
+		//this.lees.push([0, 0]);
+	}
+
+	create_reality(color){
+		var i, j, btn;
+		this.bs_butt_width_h=Math.max(this.pascal[this.n][Math.floor(this.n/2)].toString().length*10, 40);
+		this.bs_butt_width=`${this.bs_butt_width_h}px`;
+		this.place.style.width=`${(this.n+2)*this.bs_butt_width_h+10}px`;
+
+		btn=this.buttCreator("n\\k");
+		this.Painter(btn, 8);
+		this.zdivs[0][0].append(btn);
+
+		for (i=0; i<=this.n; i++){
+			btn=this.buttCreator(i); 
+			this.Painter(btn, 5);
+			this.zdivs[0][0].append(btn);
+		}
+		for (i=0; i<=this.n; i++){
+			btn=this.buttCreator(i); 
+			this.Painter(btn, 5);
+			this.zdivs[i+1][0].append(btn);
+			this.btnlist.push([]);
+
+			for (j=0; j<=i; j++){
+				btn=this.buttCreator(this.pascal[i][j]);
+				this.Painter(btn, color);
+				this.zdivs[i+1][0].append(btn);
+				this.btnlist[i].push(btn);
+			}
+		}
+	}
+}
+
+class Pascal_triangle extends Pascal_base{
+	constructor(block, n){
+		super(block, n);
+		this.create_reality(0);
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.n=c.get_next();
+	}
+
+	BeginningExecutor(){
+		super.BeginningExecutor();
+		this.create_reality(4);
 		this.lees.push([0, 0]);
 	}
 
@@ -524,38 +570,73 @@ class Pascal_triangle extends Algorithm{
 		if (s[0]==1) return `One can choose ${s[2]} element${lambda(s[2])} out of ${s[1]} element${lambda(s[1])} in ${this.pascal[s[1]][s[2]]} way${lambda(this.pascal[s[1]][s[2]])}, as Cn(${s[1]},${s[2]})=Cn(${s[1]-1},${s[2]-1})+Cn(${s[1]-1},${s[2]})=${this.pascal[s[1]-1][s[2]-1]}+${s[1]!=s[2]?this.pascal[s[1]-1][s[2]]:0}=${this.pascal[s[1]][s[2]]} - this equation comes from Pascal\'s identity, as ${s[2]} elements out of ${s[1]} element${lambda(s[1])} can be chosen either from first ${s[1]-1} element${lambda(s[1]-1)}, thus - Cn(${s[1]-1},${s[2]}); or ${s[2]-1} element${lambda(s[2]-1)} can be chosen from first ${s[1]-1} element${lambda(s[1]-1)}, then last element will be chosen - thus Cn(${s[1]-1},${s[2]-1})`;
 		if (s[0]==100) return `And so, Pascal's triangle of size ${this.n} was constructed.`;
 	}
-
-	create_reality(color){
-		var i, j, btn;
-		this.bs_butt_width_h=Math.max(this.pascal[this.n][Math.floor(this.n/2)].toString().length*10, 40);
-		this.bs_butt_width=`${this.bs_butt_width_h}px`;
-		this.place.style.width=`${(this.n+2)*this.bs_butt_width_h+10}px`;
-
-		btn=this.buttCreator("n\\k");
-		this.Painter(btn, 8);
-		this.zdivs[0][0].append(btn);
-
-		for (i=0; i<=this.n; i++){
-			btn=this.buttCreator(i); 
-			this.Painter(btn, 5);
-			this.zdivs[0][0].append(btn);
-		}
-		for (i=0; i<=this.n; i++){
-			btn=this.buttCreator(i); 
-			this.Painter(btn, 5);
-			this.zdivs[i+1][0].append(btn);
-			this.btnlist.push([]);
-
-			for (j=0; j<=i; j++){
-				btn=this.buttCreator(this.pascal[i][j]);
-				this.Painter(btn, color);
-				this.zdivs[i+1][0].append(btn);
-				this.btnlist[i].push(btn);
-			}
-		}
-	}
 }
 
+class Hockey_stick extends Pascal_base{
+	constructor(block, n, k){
+		super(block, n);
+		this.create_reality(0);
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.n=c.get_next();
+		this.k=c.get_next();
+	}
+
+	BeginningExecutor(){
+		super.BeginningExecutor();
+		this.create_reality(0);
+		this.Painter(this.btnlist[this.n][this.k], 8);
+		this.str_cn='';
+		this.str_num='';
+		this.lees.push([0, this.n-1]);
+	}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], staat=[];
+
+		if (this.finito==true) return;
+		if (s[0]==0){
+			staat.push([3, 'str_cn', this.str_cn, this.str_cn+`${this.str_num.length==0?'':'+'}`+`Cn(${s[1]},${this.k-1})`]);
+			staat.push([3, 'str_num', this.str_num, this.str_num+`${this.str_num.length==0?'':'+'}`+`${this.pascal[s[1]][this.k-1]}`]);
+
+			staat.push([0, this.btnlist[s[1]][this.k], 0, 1]);
+			staat.push([0, this.btnlist[s[1]][this.k-1], 0, 1]);
+			if (s[1]+1<this.n) staat.push([0, this.btnlist[s[1]+1][this.k], 1, 0]);
+		}
+		if (s[0]==100) {
+			staat.push([3, 'str_cn', this.str_cn, this.str_cn+`${this.str_num.length==0?'':'+'}`+`Cn(${this.k-1},${this.k-1})`]);
+			staat.push([3, 'str_num', this.str_num, this.str_num+`${this.str_num.length==0?'':'+'}`+`1`]);
+
+			staat.push([0, this.btnlist[this.k-1][this.k-1], 0, 1]);
+			if (this.k<this.n) staat.push([0, this.btnlist[this.k][this.k], 1, 0]);
+			staat.push([3, 'finito', false, true]);
+		}
+		this.transformator(staat);
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+		if (s[0]>=100) return;
+		if (s[0]==0){
+			if (s[1]>this.k) this.lees.push([0, s[1]-1]);
+			else this.lees.push([100]);
+		}
+	}
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		var lambda=function(x){return (x>1)?'s':''};
+
+		if (s[0]==0) return `Equality Cn(${s[1]+1},${this.k})=Cn(${s[1]},${this.k})+Cn(${s[1]},${this.k-1}) (stemming from Pascal's identity) is used to show Cn(${this.n},${this.k})=${this.str_cn}+Cn(${s[1]},${this.k})=${this.str_num}+${this.pascal[s[1]][this.k]}=${this.pascal[this.n][this.k]}`;
+		if (s[0]==100) return `Equality Cn(${this.k},${this.k})=Cn(${this.k-1},${this.k})+Cn(${this.k-1},${this.k-1}) (stemming from Pascal's identity) is used - and as Cn(${this.k-1},${this.k})=0, this is the last step in this mechanism showing identity - to show, that Cn(${this.n},${this.k})=${this.str_cn}=${this.str_num}=${this.pascal[this.n][this.k]}`;
+	}
+}
 
 
 
@@ -567,3 +648,6 @@ var eg2=new Perm_rep(feral2, 3, [3, 2, 1]);
 
 var feral3=Algorithm.ObjectParser(document.getElementById('Algo3'));
 var eg3=new Pascal_triangle(feral3, 5);
+
+var feral4=Algorithm.ObjectParser(document.getElementById('Algo4'));
+var eg4=new Hockey_stick(feral4, 7, 4);

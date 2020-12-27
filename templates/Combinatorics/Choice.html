@@ -243,6 +243,12 @@
 		<p>To use both properties above it may be appropriate to define <b>Hockey stick identity</b> first: if one has to choose \(k+1\) elements out of sequence of \(n+1\) elements, then one of chosen elements will be the one with largest index - say \(i\)-th - and then \(k\) elements have to be chosen out of previous \(i\) elements. Thus: </p>
 		<span class="central">$$\sum_{i=0}^{n}\binom{i}{k}=\sum_{i=k}^{n}\binom{i}{k}=\binom{n+1}{k+1}$$</span>
 		<p>This identity can be shown in elegant way using Pascal's triangle</p>
+		{{ algo.algorithm(4, 'Hockey Stick identity', '
+		<p>Input format: \(n\) - size of the set, \(k\) - number of elements from the set.<br>
+			\(n\ k\)
+			</p>
+		'
+		, '7 4') }}
 
 		<p>Returning to starting problem there exists such \(l\), that following equality holds:</p>
 		<span class="central">$$
@@ -294,9 +300,6 @@
 			\end{bmatrix}
 		$$</span>
 		<p>Thus, answer to his problem is \(\sum_{i=0}^{m} \binom{n+m-i}{n} a_{0,i}\) - which can be solved in \(O((n+m)log(n+m))\), if one can quickly find \(i!\) for \(0 \le i \le n+m\) and its inverse - for example, in a ring modulo \(p\).</p>
-
-
-
 
 		<h3>Useful identities III: Hypercube equation</h3>
 		<p>Question: how to calculate value of \(\sum_{k=0}^{n}k^x\binom{n}{k}\) (where \(x \le 5000\))?</p>
