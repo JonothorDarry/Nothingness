@@ -144,9 +144,159 @@
 
 
 		<h3>Useful identities I: Hockey stick identity</h3>
-        <p>Question: You are given values \(a_{0,k}\) for \(0 \le k \le m \le 3*10^5\). Let \(a_{j,k}=\sum_{i=0}^{k}a_{i-1,j}\) for \(1 \le k \le n \le 3*10^5\). What is the value of \(a_{n,m}\)?
-        <p>First valuable observation consists of a way of transforming vector \(a_j\) into vector \(a_{j+1}\); it may be wise to find matrix allowing transition from first array to second:
-        <span class="central">\(Ma_j=a_{j+1}\)</span>
+        <p>Question: You are given values \(a_{0,k}\) for \(0 \le k \le m \le 3*10^5\). Let \(a_{i,k}=\sum_{j=0}^{k}a_{i-1,j}\) for \(1 \le k \le m\). What is the value of \(a_{n,m}\), where \(n \le 3*10^5\)?
+	<p>First valuable observation consists of a way of transforming vector \(a_j\) into vector \(a_{j+1}\); it may be wise to find matrix allowing transition from first array (or vector) to second:</p>
+        <span class="central">$$
+			M
+			\begin{bmatrix}
+			a_{j,0} \\ a_{j,1} \\ a_{j,2} \\ \vdots \\  a_{j,m} \\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			a_{j+1,0} \\ a_{j+1,1} \\ a_{j+1,2} \\ \vdots \\  a_{j+1,m} \\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			a_{j,0} \\ a_{j,0}+a_{j,1} \\ a_{j,0}+a_{j,1}+a_{j,2} \\ \vdots \\  \sum_{i=0}^{m}a_{j,m} \\
+			\end{bmatrix}
+			$$</span><span class="central">$$
+			\begin{bmatrix}
+			1 & 0 & 0 & \cdots & 0\\
+			1 & 1 & 0 & \cdots & 0\\
+			1 & 1 & 1 & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			1 & 1 & 1 & \cdots & 1\\
+			\end{bmatrix}
+			\begin{bmatrix}
+			a_{j,0} \\ a_{j,1} \\ a_{j,2} \\ \vdots \\  a_{j,m} \\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			a_{j,0} \\ a_{j,0}+a_{j,1} \\ a_{j,0}+a_{j,1}+a_{j,2} \\ \vdots \\  \sum_{i=0}^{m}a_{j,m} \\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			a_{j+1,0} \\ a_{j+1,1} \\ a_{j+1,2} \\ \vdots \\  a_{j+1,m} \\
+			\end{bmatrix}
+		$$</span>
+		<p>And so, to obtain \(a_{n,m}\), one can raise matrix \(M\) to the power of \(n\):</p>
+		<span class="central">$$
+			\begin{bmatrix}
+			1 & 0 & 0 & \cdots & 0\\
+			1 & 1 & 0 & \cdots & 0\\
+			1 & 1 & 1 & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			1 & 1 & 1 & \cdots & 1\\
+			\end{bmatrix}^n
+			\begin{bmatrix}
+			a_{0,0} \\ a_{0,1} \\ a_{0,2} \\ \vdots \\  a_{0,m} \\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			a_{n,0} \\ a_{n,1} \\ a_{n,2} \\ \vdots \\  a_{n,m} \\
+			\end{bmatrix}
+		$$</span>
+		<p>The first question, that ought to be addressed, is: what is result of multiplying matrix \(G=M^l\) by matrix \(M\)?</p>
+		<span class="central">$$
+			\begin{bmatrix}
+			1 & 0 & 0 & \cdots & 0\\
+			1 & 1 & 0 & \cdots & 0\\
+			1 & 1 & 1 & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			1 & 1 & 1 & \cdots & 1\\
+			\end{bmatrix}
+			\begin{bmatrix}
+			G_{0,0} & G_{0,1} & G_{0,2} & \cdots & G_{0,m}\\
+			G_{1,0} & G_{1,1} & G_{1,2} & \cdots & G_{1,m}\\
+			G_{2,0} & G_{2,1} & G_{2,2} & \cdots & G_{2,m}\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			G_{m,0} & G_{m,1} & G_{m,2} & \cdots & G_{m,m}\\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			\sum_{i=0}^0 G_{i,0} & \sum_{i=0}^0 G_{i,1} & \sum_{i=0}^0 G_{i,2} & \cdots & \sum_{i=0}^0 G_{i,m}\\
+			\sum_{i=0}^1 G_{i,0} & \sum_{i=0}^1 G_{i,1} & \sum_{i=0}^1 G_{i,2} & \cdots & \sum_{i=0}^1 G_{i,m}\\
+			\sum_{i=0}^2 G_{i,0} & \sum_{i=0}^2 G_{i,1} & \sum_{i=0}^2 G_{i,2} & \cdots & \sum_{i=0}^2 G_{i,m}\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			\sum_{i=0}^m G_{i,0} & \sum_{i=0}^m G_{i,1} & \sum_{i=0}^m G_{i,2} & \cdots & \sum_{i=0}^m G_{i,m}\\
+			\end{bmatrix}
+		$$</span>
+		<p>Then, an observation can be made: matrix \(M\) can be shown as:</p>
+		<span class="central">$$
+			M=
+			\begin{bmatrix}
+			1 & 0 & 0 & \cdots & 0\\
+			1 & 1 & 0 & \cdots & 0\\
+			1 & 1 & 1 & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			1 & 1 & 1 & \cdots & 1\\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			\binom{0}{0} & 0 & 0 & \cdots & 0\\
+			\binom{1}{0} & \binom{0}{0} & 0 & \cdots & 0\\
+			\binom{2}{0} & \binom{1}{0} & \binom{0}{0} & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			\binom{m}{0} & \binom{m-1}{0} & \binom{m-2}{0} & \cdots & \binom{0}{0}\\
+			\end{bmatrix}
+		$$</span>
+		<p>To use both properties above it may be appropriate to define <b>Hockey stick identity</b> first: if one has to choose \(k+1\) elements out of sequence of \(n+1\) elements, then one of chosen elements will be the one with largest index - say \(i\)-th - and then \(k\) elements have to be chosen out of previous \(i\) elements. Thus: </p>
+		<span class="central">$$\sum_{i=0}^{n}\binom{i}{k}=\sum_{i=k}^{n}\binom{i}{k}=\binom{n+1}{k+1}$$</span>
+		<p>This identity can be shown in elegant way using Pascal's triangle</p>
+
+		<p>Returning to starting problem there exists such \(l\), that following equality holds:</p>
+		<span class="central">$$
+			M^l=
+			\begin{bmatrix}
+			\binom{l}{l} & 0 & 0 & \cdots & 0\\
+			\binom{l+1}{l} & \binom{l}{l} & 0 & \cdots & 0\\
+			\binom{l+2}{l} & \binom{l+1}{l} & \binom{l}{l} & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			\binom{l+m}{l} & \binom{l+m-1}{l} & \binom{l+m-2}{l} & \cdots & \binom{l}{l}\\
+			\end{bmatrix}
+		$$</span>
+		<p>And, because of Hockey stick identity:</p>
+		<span class="central">$$
+			MM^l=
+			\begin{bmatrix}
+			\sum_{i=l}^l \binom{i}{l} & 0 & 0 & \cdots & 0\\
+			\sum_{i=l}^{l+1} \binom{i}{l} & \sum_{i=l}^l \binom{i}{l} & 0 & \cdots & 0\\
+			\sum_{i=l}^{l+2} \binom{i}{l} & \sum_{i=l}^{l+1} \binom{i}{l} & \sum_{i=l}^l \binom{i}{l} & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			\sum_{i=l}^{l+m} \binom{i}{l} & \sum_{i=l}^{l+m-1} \binom{i}{l} & \sum_{i=l+m-2}^l & \cdots & \sum_{i=l}^l \binom{i}{l}\\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			\binom{l+1}{l+1} & 0 & 0 & \cdots & 0\\
+			\binom{l+2}{l+1} & \binom{l+1}{l+1} & 0 & \cdots & 0\\
+			\binom{l+3}{l+1} & \binom{l+2}{l+1} & \binom{l+1}{l+1} & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			\binom{l+m+1}{l+1} & \binom{l+m}{l+1} & \binom{l+m-1}{l+1} & \cdots & \binom{l+1}{l+1}\\
+			\end{bmatrix}
+			=M^{l+1}
+		$$</span>
+		<p>Which shows property is universal for every natural \(l\) by induction. To finish this problem, </p>
+		<span class="central">$$
+			M^na_0=
+			\begin{bmatrix}
+			\binom{n}{n} & 0 & 0 & \cdots & 0\\
+			\binom{n+1}{n} & \binom{n}{n} & 0 & \cdots & 0\\
+			\binom{n+2}{n} & \binom{n+1}{n} & \binom{n}{n} & \cdots & 0\\
+			\vdots & \vdots & \vdots & \ddots & \vdots\\
+			\binom{n+m}{n} & \binom{n+m-1}{n} & \binom{n+m-2}{n} & \cdots & \binom{n}{n}\\
+			\end{bmatrix}
+			\begin{bmatrix}
+			a_{0,0} \\ a_{0,1} \\ a_{0,2} \\ \vdots \\  a_{0,m} \\
+			\end{bmatrix}
+			=
+			\begin{bmatrix}
+			\binom{n}{n} a_{0,0} \\ \binom{n+1}{n} a_{0,0}+ \binom{n}{n} a_{0,1} \\ \binom{n+2}{n} a_{0,0}+ \binom{n+1}{n}a_{0,1}+ \binom{n}{n} a_{0,2} \\ \vdots \\  \sum_{i=0}^{m} \binom{n+m-i}{n} a_{0,i} \\
+			\end{bmatrix}
+		$$</span>
+		<p>Thus, answer to his problem is \(\sum_{i=0}^{m} \binom{n+m-i}{n} a_{0,i}\) - which can be solved in \(O((n+m)log(n+m))\), if one can quickly find \(i!\) for \(0 \le i \le n+m\) and its inverse - for example, in a ring modulo \(p\).</p>
+
+
+
 
 		<h3>Useful identities III: Hypercube equation</h3>
 		<p>Question: how to calculate value of \(\sum_{k=0}^{n}k^x\binom{n}{k}\) (where \(x \le 5000\))?</p>
