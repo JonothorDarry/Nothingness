@@ -7,7 +7,6 @@ class Ntt extends Algorithm{
 		this.btnlist=[];
 		this.utilbts=[];
 
-		this.place.innerHTML='';
 		for (i=1,j=0;i<=o+m;i*=2,j++) ;
 		this.n=i;
 		this.lv=j;
@@ -31,14 +30,12 @@ class Ntt extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.state_transformation=[];
+		this.starter();
 		this.btnlist=[];
 		this.utilbts=[];
 		this.is_ntt=this.ntt.checked;
 		this.is_fft=this.fft.checked;
 
-		this.lees=[];
-		this.place.innerHTML='';
 		var fas=this.input.value;
 		this.dead=0;
 		this.a=[];

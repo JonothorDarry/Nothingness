@@ -100,15 +100,12 @@ class Choice extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.lees=[];
-		this.state_transformation=[];
-		this.place.innerHTML='';
+		this.starter();
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
 		this.n=c.get_next();
 		this.permutations=[[1]];
 		this.presentation=[];
-		this.finito=false;
 
 		//Create reality
 		this.grid_constructor();
@@ -348,7 +345,6 @@ class Perm_rep extends Algorithm{
 		this.place.innerHTML='';
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
-		this.finito=false;
 
 		var i=0, j, jj, ij;
 		this.a=[]
@@ -419,8 +415,138 @@ class Perm_rep extends Algorithm{
 }
 
 
+class Pascal_triangle extends Algorithm{
+	constructor(block, n){
+		super(block);
+		this.n=n;
+		this.btnlist=[];
+		this.divsCreator(1, this.n+2);
+		this.pascal=[];
+		this.construct_pascal();
+		this.create_reality(0);
+	}
+
+	construct_pascal(){
+		var i=0, j=0;
+		for (i=0; i<=this.n; i++){
+			this.pascal.push([1]);
+			for (j=1; j<i; j++){
+				this.pascal[i].push(this.pascal[i-1][j]+this.pascal[i-1][j-1]);
+			}
+			this.pascal[i].push(1);
+		}
+	}
+
+	BeginningExecutor(){
+		this.starter();
+		this.btnlist=[];
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.n=c.get_next();
+
+		this.divsCreator(1, this.n+2);
+		this.construct_pascal();
+		this.create_reality(4);
+		this.place.style.width=`${(this.n+1)*this.bs_butt_width_h+210}px`;
+		this.lees.push([0, 0]);
+	}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], staat=[];
+
+		if (this.finito==true) return;
+		if (s[0]==0){
+			staat.push([0, this.btnlist[s[1]][0], 4, 1]);
+			if (s[1]>1){
+				staat.push([0, this.btnlist[s[1]-1][s[1]-1], 1, 0]);
+				staat.push([0, this.btnlist[s[1]-2][s[1]-2], 1, 0]);
+				staat.push([0, this.btnlist[s[1]-1][0], 0, 1]);
+			}
+		}
+
+		if (s[0]==1){
+			staat.push([0, this.btnlist[s[1]][s[2]-1], 1, 0]);
+			if (s[2]!=1) staat.push([0, this.btnlist[s[1]-1][s[2]-2], 1, 0]);
+
+			staat.push([0, this.btnlist[s[1]][s[2]], 4, 1]);
+			if (s[2]!=s[1]) staat.push([0, this.btnlist[s[1]-1][s[2]], 0, 1]);
+		}
+		if (s[0]==100) {
+			staat.push([3, 'finito', false, true]);
+			staat.push([0, this.btnlist[this.n][this.n], 1, 0]);
+			if (this.n>0) staat.push([0, this.btnlist[this.n-1][this.n-1], 1, 0]);
+			
+		}
+		this.transformator(staat);
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+		if (s[0]>=100) return;
+		if (s[0]==0){
+			if (this.n!=0 && s[1]!=0) this.lees.push([1, s[1], 1]);
+			else if (this.n!=0) this.lees.push([0, s[1]+1]);
+			else this.lees.push([100]);
+		}
+		if (s[0]==1){
+			if (this.n==s[2]) this.lees.push([100]);
+			else if (s[1]==s[2]) this.lees.push([0, s[1]+1]);
+			else this.lees.push([1, s[1], s[2]+1]);
+		}
+	}
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		var lambda=function(x){return (x>1)?'s':''};
+
+		if (s[0]==0 && s[1]==0) return `One can choose 0 elements out of 0 elements in exactly one way - by not choosing any elements, so Cn(0,0)=1`;
+		if (s[0]==0) return `One can choose 0 elements out of ${s[1]} elements in exactly one way (or Cn(${s[1]-1},0) ways) - by not choosing any elements, so Cn(${s[1]},0)=1`;
+		if (s[0]==1) return `One can choose ${s[2]} element${lambda(s[2])} out of ${s[1]} element${lambda(s[1])} in ${this.pascal[s[1]][s[2]]} way${lambda(this.pascal[s[1]][s[2]])}, as Cn(${s[1]},${s[2]})=Cn(${s[1]-1},${s[2]-1})+Cn(${s[1]-1},${s[2]})=${this.pascal[s[1]-1][s[2]-1]}+${s[1]!=s[2]?this.pascal[s[1]-1][s[2]]:0}=${this.pascal[s[1]][s[2]]} - this equation comes from Pascal\'s identity, as ${s[2]} elements out of ${s[1]} element${lambda(s[1])} can be chosen either from first ${s[1]-1} element${lambda(s[1]-1)}, thus - Cn(${s[1]-1},${s[2]}); or ${s[2]-1} element${lambda(s[2]-1)} can be chosen from first ${s[1]-1} element${lambda(s[1]-1)}, then last element will be chosen - thus Cn(${s[1]-1},${s[2]-1})`;
+		if (s[0]==100) return `And so, Pascal's triangle of size ${this.n} was constructed.`;
+	}
+
+	create_reality(color){
+		var i, j, btn;
+		this.bs_butt_width_h=Math.max(this.pascal[this.n][Math.floor(this.n/2)].toString().length*10, 40);
+		this.bs_butt_width=`${this.bs_butt_width_h}px`;
+		this.place.style.width=`${(this.n+2)*this.bs_butt_width_h+10}px`;
+
+		btn=this.buttCreator("n\\k");
+		this.Painter(btn, 8);
+		this.zdivs[0][0].append(btn);
+
+		for (i=0; i<=this.n; i++){
+			btn=this.buttCreator(i); 
+			this.Painter(btn, 5);
+			this.zdivs[0][0].append(btn);
+		}
+		for (i=0; i<=this.n; i++){
+			btn=this.buttCreator(i); 
+			this.Painter(btn, 5);
+			this.zdivs[i+1][0].append(btn);
+			this.btnlist.push([]);
+
+			for (j=0; j<=i; j++){
+				btn=this.buttCreator(this.pascal[i][j]);
+				this.Painter(btn, color);
+				this.zdivs[i+1][0].append(btn);
+				this.btnlist[i].push(btn);
+			}
+		}
+	}
+}
+
+
+
+
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new Choice(feral, 5);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var eg1=new Perm_rep(feral2, 3, [3, 2, 1]);
+var eg2=new Perm_rep(feral2, 3, [3, 2, 1]);
+
+var feral3=Algorithm.ObjectParser(document.getElementById('Algo3'));
+var eg3=new Pascal_triangle(feral3, 5);

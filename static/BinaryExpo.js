@@ -11,12 +11,9 @@ class BinaryExpo extends Algorithm{
 	}
 
 	BeginningExecutor(){
+		this.starter();
 		this.btlist=[];
 		this.utilbts=[];
-		this.state_transformation=[];
-
-		this.lees=[];
-		this.place.innerHTML='';
 		this.dead=0;
 		var fas=this.input.value;
 		var a=0, b=0, x, i=0, c, m;

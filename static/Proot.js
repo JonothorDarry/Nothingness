@@ -131,9 +131,7 @@ class Proot extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.lees=[];
-		this.state_transformation=[];
-		this.place.innerHTML='';
+		this.starter();
 		var fas=this.input.value;
 		this.bs_butt_width_h=Math.max(40, fas.length*10);
 		this.bs_butt_width=`${this.bs_butt_width_h}px`;
@@ -207,7 +205,6 @@ class Proot extends Algorithm{
 		var staat=[];
 		var point=this.amount_of_primes_m*2;
 		//var last_expo=(this.exponents.length>0?this.exponents[this.exponents.length-1]:-1);
-		
 		if (s[0]==0){
 			x=s[2];
 			base=this.btnlist[0][point+2];

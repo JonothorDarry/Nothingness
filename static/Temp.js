@@ -98,6 +98,13 @@ class Algorithm{
 		return lst;
 	}
 
+	starter(){
+		this.lees=[];
+		this.state_transformation=[];
+		this.place.innerHTML='';
+		this.finito=false;
+	}
+
 	StateUnmaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], n=this.n, i, elem;
@@ -116,6 +123,7 @@ class Algorithm{
 
 		if (l>1) this.lees.pop();
 	}
+	StatementComprehension(){}
 	
 	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
 	//9: yellow(grey) 10: blue 11: dark gold

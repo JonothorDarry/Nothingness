@@ -132,8 +132,7 @@ class PowerTower extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.lees=[];
-		this.place.innerHTML='';
+		this.starter();
 		var fas=this.input.value;
 		var a=0, n, x, i=0, c, dis, j, btn;
 		this.dt=[];
