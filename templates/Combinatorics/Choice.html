@@ -50,7 +50,7 @@
 
 				<tr>
 					<td>\(\forall_i a_i=\infty\)</td>
-					<td>\(\binom{k+t}{t}\)</td>
+					<td>\(\binom{k+t-1}{t-1}\)</td>
 					<td>-</td>
 					<td>\(t^k\)</td>
 				</tr>
@@ -318,8 +318,12 @@
 		<span class="central">$$\sum_{i=0}^{r}\binom{n}{i}\binom{m}{r-i}=\binom{n+m}{r}$$</span>
 		<p>This identity is called <b>Vandermonde identity</b></p>
 
+		<h3>Combination with repetitions</h3>
+		<p>Question: in how many ways one can choose \(n\) elements, where every element has one of \(t\) types, objects within same type are indistinguishable and one can choose any number of objects of each type?</p>
+		<p>Solution: first thing worth noticing is the fact, that in fact one searches for all possible sequences \(a\) of \(t\) elements (where \(a_i\) means, that \(a_i\) elements were chosen from \(i\)-th type), whose sum is equal to \(n\): for example, for \(n=2\) and \(t=3\) possible sequences \(a\) are: \([0, 0, 2], [0, 2, 0], [2, 0, 0], [0, 1, 1], [1, 0, 1], [1, 1, 0]\). One can notice, that to create such sequences \(a\), one can choose out of \(n+t-1\) elements \(t-1\) elements, where \(n\) is whole sum of elements in sequence and each element out of \(t-1\) elements signifies change of type - for example, if \(1\) signifies one of \(n\) elements being part of sum and \(0\) signifies change of type, sequence \([1,1,1,0,1,1,0,0,1,1]\) could encode sequence \(a=[3,2,0,2]\). Thus, number of ways to choose \(n\) elements from \(t\) types is \(\binom{n+t-1}{t-1}\)</p>
+
 		{{ algo.algorithm(5, 'Combination with repetitions', '
-		<p>Input format: \(n\) - size of the set, \(k\) - number of elements from the set.<br>
+		<p>Input format: \(n\) - size of the set, \(t\) - number of types of elements, that can be chosen.<br>
 			\(n\ k\)
 			</p>
 		'
