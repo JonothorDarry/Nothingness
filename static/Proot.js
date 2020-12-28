@@ -3,8 +3,9 @@ class Order extends Partial{
 		super(block);
 		this.ShowReality(x);
 	}
-	ShowReality(){
-		var i=0, x=this.input.value, toth;
+	ShowReality(x=-1){
+		var i=0, toth;
+		if (x==-1) x=this.input.value;
 		toth=this.sieve_mark(x);
 		this.place.innerHTML='';
 		this.create_upper_div(x, toth);

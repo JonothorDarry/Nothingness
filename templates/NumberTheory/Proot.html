@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'algo.html' as algo %}
 
 <html lang="en">
 	<head>
@@ -22,22 +23,12 @@
 			<li>From <b>Euler's theorem</b>, \(g^{\phi(n)} \equiv 1 \pmod n\) for \(gcd(g, n)=1\) - what follows, \(ord_n(g) \le \phi(n)\) - and so, primitive root has maximal multiplicative order modulo \(n\) possible.</li>
 		</ol>
 
-		<div id="Algo1" class="pureAlgo">
-			<h3>Orders modulo given number</h3>
+		{{ algo.algorithm(1, 'Orders modulo given number', '
 			<p>To formulate certain theoremas concerning primitive roots, it may be wise to visualize first what are their values \(ord_m(g)\) for fixed \(m\) and what is their distribution.
-			<div id="Inputter">
-				<p>Input format: value \(m\), for which all orders will be calculated<br>
-				\(m\)<br>
-				</p>
-				<form>
-					<input value="7" class="inputter" id="Proot" name="Proot">
-				</form>
-				<button id="Show" class="show">Show</button>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez" class="primez"></div>
-			<div id="Comprehend" class="comprehend"></div>
-		</div>		
+			<p>Input format: value \(m\), for which all orders will be calculated<br>
+			\(m\)<br>
+			</p>
+		', '7', 'input', 'shower') }}
 
 		<h3>Primitive roots existence cases: overwiev</h3>
 		<p>First problem quite appropriate to solve before going to the problem itself is: for what \(n\) primitive root exist? There are several cases, which will be covered separately:</p>

@@ -127,7 +127,7 @@ class Choice extends Algorithm{
 
 		if (s[0]==1) return `All possible permutations of size ${s[1]} (there are ${s[1]}!=${this.permutations.length} such permutations) are grouped.`;
 		if (s[0]==0) return `All possible permutations of size ${s[1]} are generated from permutations of size ${s[1]-1} by inserting one element in one of ${s[1]} indexes of those permutations, resulting in ${s[1]-1}!*${s[1]}=${this.presentation.length}*${s[1]}=${this.presentation.length*s[1]} permutations of size ${s[1]}`;
-		if (s[0]==0) return `Here, all permutations of size ${this.n} are shown.`
+		if (s[0]==100) return `Here, all permutations of size ${this.n} are shown.`
 	}
 
 	StateMaker(){
@@ -184,12 +184,10 @@ class Perm_rep extends Algorithm{
 
 		this.full_width=Math.floor(com_div.offsetWidth/btn_width);
 		var cols_size=Math.floor((this.full_width+1)/(this.n+1));
-		console.log(cols_size);
 		var one_liner=this.fac[this.a[0]]*cols_size;
 		var fac=this.fac[this.n];
 		var k=Math.ceil(fac/one_liner);
 		var all_rows=k*(this.fac[this.a[0]]+1)-1;
-		console.log(all_rows, this.full_width);
 
 		for (i=0; i<all_rows; i++){
 			tmp_lst=[];
@@ -638,6 +636,115 @@ class Hockey_stick extends Pascal_base{
 	}
 }
 
+class Com_rep extends Partial{
+	constructor(block, n, k){
+		super(block);
+		this.n=k-1+n;
+		this.k=k-1;
+		this.make_system(this.n, this.k);
+		this.grid_constructor();
+		this.reformulate_reality(this.all_combinats);
+	}
+
+	ShowReality(){
+		this.place.innerHTML='';
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		var seq_ln=c.get_next();
+		this.k=c.get_next()-1;
+		this.n=this.k+seq_ln;
+
+		this.make_system(this.n, this.k);
+		this.grid_constructor();
+		this.reformulate_reality(this.all_combinats);
+	}
+
+	Painter(btn, col=1, only_bg=0){
+		if (col<=12) super.Painter(btn, col, only_bg);
+		if (col==13) btn.style.backgroundColor="#E60073";
+		if (col==14) btn.style.backgroundColor="#B3FFFF";
+		if (col==15) btn.style.backgroundColor="#80FF80";
+		if (col==16) btn.style.backgroundColor="#CC6600";
+		if (col==17) btn.style.backgroundColor="#660011";
+		if (col==18) btn.style.backgroundColor="#7F0099";
+		if (col==19) btn.style.backgroundColor="#004D40";
+	}
+
+	make_system(n, k){
+		this.all_combinats=[];
+		var i, j, cur_perm=[], new_perm, zeros;
+		for (i=0; i<n-k; i++) cur_perm.push(0);
+		for (i=0; i<k; i++) cur_perm.push(1);
+		this.all_combinats.push(cur_perm);
+
+		while (true){
+			new_perm=[], zeros=0;
+			for (i=n-1; i>0; i--){
+				if (cur_perm[i]==1 && cur_perm[i-1]==0) break;
+			}
+			if (i==0) break;
+			for (j=0; j<i-1; j++) {
+				new_perm.push(cur_perm[j]);
+				if (cur_perm[j]==0) zeros++;
+			}
+			new_perm.push(1);
+			for (j=0; j<n-k-zeros; j++) new_perm.push(0);
+			for (j=j+i; j<n; j++) new_perm.push(1);
+			this.all_combinats.push(new_perm);
+			cur_perm=new_perm;
+		}
+	}
+
+	grid_constructor(){
+		var i=0, j=0, btn_width=40, bt, tmp_lst, com_div;
+		this.reality_list=[]
+		var batch=(this.n-this.k)*40+this.k*20;
+		var width_combinations=Math.floor((this.place.offsetWidth+btn_width)/(batch+btn_width));
+		var all_rows=Math.ceil(this.all_combinats.length/width_combinations);
+		var system=width_combinations*(this.n+1)-1;
+		this.system_end=system+Math.floor((this.place.offsetWidth-((batch+btn_width)*(width_combinations-1)+batch))/40);
+		this.divsCreator(1, all_rows);
+
+		console.log(all_rows, this.system_end, width_combinations);
+		for (i=0; i<all_rows; i++){
+			tmp_lst=[];
+			this.reality_list.push(tmp_lst);
+			for (j=0; j<this.system_end; j++){
+				bt=this.buttCreator();
+				bt.innerHTML='';
+				this.zdivs[i][0].appendChild(bt);
+				tmp_lst.push(bt);
+			}
+		}
+	}
+
+	reformulate_reality(permutations){
+		var row=0, col=0, i, j, ij, ones;
+
+		for (i=0; i<permutations.length; i++){
+			ones=0;
+			if (permutations[i].length+col>this.system_end){
+				col=0;
+				row++;
+			}
+
+			for (j=0; j<permutations[i].length; j++){
+				if (permutations[i][j]==0){
+					this.Painter(this.reality_list[row][col+j], 13+ones);
+					this.reality_list[row][col+j].style.borderRadius='100%';
+				}
+				if (permutations[i][j]==1){
+					this.reality_list[row][col+j].style.width='15px';
+					this.reality_list[row][col+j].style.margin='0 2.5px';
+					this.Painter(this.reality_list[row][col+j], 5);
+					ones++;
+				}
+			}
+			col+=this.n+1;
+		}
+	}
+}
+
 
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
@@ -651,3 +758,6 @@ var eg3=new Pascal_triangle(feral3, 5);
 
 var feral4=Algorithm.ObjectParser(document.getElementById('Algo4'));
 var eg4=new Hockey_stick(feral4, 7, 4);
+
+var feral5=Partial.ObjectParser(document.getElementById('Algo5'));
+var eg5=new Com_rep(feral5, 5, 3);

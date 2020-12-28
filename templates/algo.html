@@ -1,4 +1,4 @@
-{% macro algorithm(id, header_text, input_format, start_value, input_type='input') %}
+{% macro algorithm(id, header_text, input_format, start_value, input_type='input', algo_type='algo') %}
 		<div id="Algo{{id}}" class="pureAlgo">
 			<h2>{{header_text}}</h2>
 
@@ -17,12 +17,16 @@
 					{% endif %}
 				</form>
 			</div>
+			{% if algo_type=='algo' %}
 			<div id="Buttons{{id}}" style="position:sticky; top:0; z-index:1; display:inline-block;">
-				<button id="Sender{{id}}" class="sender">Begin</button>
-				<button id="Prever{{id}}" class="previous">Previous Move</button>
-				<button id="Nexter{{id}}" class="next">Next Move</button>
-				<button id="Finisher{{id}}" class="finish">Finish</button>
+					<button id="Sender{{id}}" class="sender">Begin</button>
+					<button id="Prever{{id}}" class="previous">Previous Move</button>
+					<button id="Nexter{{id}}" class="next">Next Move</button>
+					<button id="Finisher{{id}}" class="finish">Finish</button>
 			</div>
+			{% else %}
+				<button id="Show{{id}}" class="show">Show</button>
+			{% endif %}
 
 			<div class="breakAlgo"></div>
 			<div id="Primez{{id}}" class="primez"></div>

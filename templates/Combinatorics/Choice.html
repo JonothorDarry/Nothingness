@@ -299,7 +299,7 @@
 			\binom{n}{n} a_{0,0} \\ \binom{n+1}{n} a_{0,0}+ \binom{n}{n} a_{0,1} \\ \binom{n+2}{n} a_{0,0}+ \binom{n+1}{n}a_{0,1}+ \binom{n}{n} a_{0,2} \\ \vdots \\  \sum_{i=0}^{m} \binom{n+m-i}{n} a_{0,i} \\
 			\end{bmatrix}
 		$$</span>
-		<p>Thus, answer to his problem is \(\sum_{i=0}^{m} \binom{n+m-i}{n} a_{0,i}\) - which can be solved in \(O((n+m)log(n+m))\), if one can quickly find \(i!\) for \(0 \le i \le n+m\) and its inverse - for example, in a ring modulo \(p\).</p>
+		<p>Thus, answer to his problem is \(\sum_{i=0}^{m} \binom{n+m-i}{n} a_{0,i}\) - which can be solved in \(O((n+m)log(n+m))\) or \(O(n+m)\), where complexity is dependant on quick finding \(i!\) for \(0 \le i \le n+m\) and its inverse - for example, in a ring modulo \(p\).</p>
 
 		<h3>Useful identities III: Hypercube equation</h3>
 		<p>Question: how to calculate value of \(\sum_{k=0}^{n}k^x\binom{n}{k}\) (where \(x \le 5000\))?</p>
@@ -317,6 +317,13 @@
 		<p>Generalization: The constant amount of elements chosen didn't need to be equal to \(|B|\), and so, in general, 
 		<span class="central">$$\sum_{i=0}^{r}\binom{n}{i}\binom{m}{r-i}=\binom{n+m}{r}$$</span>
 		<p>This identity is called <b>Vandermonde identity</b></p>
+
+		{{ algo.algorithm(5, 'Combination with repetitions', '
+		<p>Input format: \(n\) - size of the set, \(k\) - number of elements from the set.<br>
+			\(n\ k\)
+			</p>
+		'
+		, '5 3', 'input', 'shower') }}
 
 
 
