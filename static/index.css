@@ -21,6 +21,9 @@
 .treebutton{background-color: #E67300;}
 .treebutton:hover{background-color: #FF9319;}
 
+.nt_combinato{background:linear-gradient(to right bottom, #6666DD 50%, #800000 50%);}
+.nt_combinato:hover{background:linear-gradient(to right bottom, #8888DD 50%, #b22222 50%);}
+
 .combutton{background-color: #800000;}
 .combutton:hover{background-color: #b22222;}
 

@@ -1,14 +1,40 @@
+function g_grid_constructor(obj, all_rows, width){
+	var i=0, j=0, tmp_lst, bt;
+
+	obj.reality_list=[]
+	obj.divsCreator(1, all_rows);
+	obj.all_rows=all_rows;
+	for (i=0; i<all_rows; i++){
+		tmp_lst=[];
+		obj.reality_list.push(tmp_lst);
+		for (j=0; j<width; j++){
+			bt=obj.buttCreator();
+			bt.innerHTML='';
+			obj.zdivs[i][0].appendChild(bt);
+			tmp_lst.push(bt);
+		}
+	}
+}
+
+function g_hide(div){div.style.display='none';}
+function g_unhide(div){div.style.display='';}
+
+function g_purge(obj, staat, row){
+	var i, j, start=Math.min(row, obj.all_rows), end=Math.max(row, obj.all_rows);
+	var f_next=((row<obj.all_rows)?g_hide:g_unhide), f_prev=((row<obj.all_rows)?g_unhide:g_hide);
+
+	for (i=start; i<end; i++){
+		staat.push([5, f_next, f_prev, [obj.divs[i]]]);
+	}
+
+	staat.push([3, 'all_rows', obj.all_rows, row]);
+}
+
 class Choice extends Algorithm{
 	grid_constructor(){
-		var i=0, j=0, btn_width=40, bt, tmp_lst, com_div;
-		com_div=document.createElement("DIV");
-		com_div.style.position="relative";
-		com_div.style.width="100%";
-		com_div.style.display="inline-block";
-		this.place.appendChild(com_div);
-		this.reality_list=[]
+		var i, btn_width=40;
 
-		this.full_width=Math.floor(com_div.offsetWidth/btn_width);
+		this.full_width=Math.floor(this.place.offsetWidth/btn_width);
 		var cols_size=Math.floor((this.full_width+1)/(this.n+1));
 		var one_liner=this.n*cols_size;
 		var fac=1;
@@ -16,15 +42,7 @@ class Choice extends Algorithm{
 		var k=Math.ceil(fac/one_liner);
 		var all_rows=k*(this.n+2)-1;
 
-		for (i=0; i<all_rows; i++){
-			tmp_lst=[];
-			this.reality_list.push(tmp_lst);
-			for (j=0; j<this.full_width; j++){
-				bt=this.buttCreator();
-				com_div.appendChild(bt);
-				tmp_lst.push(bt);
-			}
-		}
+		g_grid_constructor(this, all_rows, this.full_width);
 	}
 
 	reformulate_reality(to_show, staat=null, clear=0, alive=1){
@@ -74,6 +92,7 @@ class Choice extends Algorithm{
 		}
 		return presentation
 	}
+
 	make_permutations(presentation){
 		var j, ij, permutations=[];
 		for (j=0; j<presentation.length; j++){
@@ -175,29 +194,15 @@ class Perm_rep extends Algorithm{
 
 	grid_constructor(){
 		var i=0, j=0, btn_width=40, bt, tmp_lst, com_div;
-		com_div=document.createElement("DIV");
-		com_div.style.position="relative";
-		com_div.style.width="100%";
-		com_div.style.display="inline-block";
-		this.place.appendChild(com_div);
-		this.reality_list=[]
 
-		this.full_width=Math.floor(com_div.offsetWidth/btn_width);
+		this.full_width=Math.floor(this.place.offsetWidth/btn_width);
 		var cols_size=Math.floor((this.full_width+1)/(this.n+1));
 		var one_liner=this.fac[this.a[0]]*cols_size;
 		var fac=this.fac[this.n];
 		var k=Math.ceil(fac/one_liner);
 		var all_rows=k*(this.fac[this.a[0]]+1)-1;
 
-		for (i=0; i<all_rows; i++){
-			tmp_lst=[];
-			this.reality_list.push(tmp_lst);
-			for (j=0; j<this.full_width; j++){
-				bt=this.buttCreator();
-				com_div.appendChild(bt);
-				tmp_lst.push(bt);
-			}
-		}
+		g_grid_constructor(this, all_rows, this.full_width);
 	}
 
 	//param: 0 - normal show, 1 - final v start
@@ -230,6 +235,7 @@ class Perm_rep extends Algorithm{
 			}
 			col+=to_show[i][0].length+1;
 		}
+		if (staat!=null) g_purge(this, staat, row+this.fac[size]);
 	}
 
 	//param: 0 - one per list, t+1 - merge by type
@@ -696,26 +702,14 @@ class Com_rep extends Partial{
 	}
 
 	grid_constructor(){
-		var i=0, j=0, btn_width=40, bt, tmp_lst, com_div;
-		this.reality_list=[]
+		var btn_width=40;
 		var batch=(this.n-this.k)*40+this.k*20;
 		var width_combinations=Math.floor((this.place.offsetWidth+btn_width)/(batch+btn_width));
 		var all_rows=Math.ceil(this.all_combinats.length/width_combinations);
 		var system=width_combinations*(this.n+1)-1;
 		this.system_end=system+Math.floor((this.place.offsetWidth-((batch+btn_width)*(width_combinations-1)+batch))/40);
-		this.divsCreator(1, all_rows);
 
-		console.log(all_rows, this.system_end, width_combinations);
-		for (i=0; i<all_rows; i++){
-			tmp_lst=[];
-			this.reality_list.push(tmp_lst);
-			for (j=0; j<this.system_end; j++){
-				bt=this.buttCreator();
-				bt.innerHTML='';
-				this.zdivs[i][0].appendChild(bt);
-				tmp_lst.push(bt);
-			}
-		}
+		g_grid_constructor(this, all_rows, this.system_end);
 	}
 
 	reformulate_reality(permutations){

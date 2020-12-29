@@ -34,7 +34,7 @@
 			<thead>
 				<tr>
 					<td>\(a_i\) \ structure</td>
-					<td>set</td>
+					<td>multiset</td>
 					<td>sequence (\(k=n\))</td>
 					<td>sequence</td>
 
@@ -63,6 +63,13 @@
 				</tr>
 			</tbody>
 		</table>
+
+		<h3>Basic principles and its basic consequences</h3>
+		<ol>
+			<li><b>Rule of sum</b>: If in one can do one move and it can be done in either one of \(A\) ways or one of \(B\) ways, then one move can be done in \(A+B\) ways</li>
+			<li><b>Rule of product</b>: If in one can do two moves and first can be done in one of \(A\) ways and second in one of \(B\) ways, then sequence of those two moves can be done in \(AB\) ways.</li>
+		</ol>
+		<p>The second statement instantaneously implies, that if one has to create sequence of \(k\) elements, each of which belongs to one of \(t\) types, he can do it in \(t*t*t*t\dots*t=t^k\) ways - let number of sequences be described as \(dp(t,k)\). A sequence of \(0\) elements can be chosen in \(1\) way (so \(dp(t,0)=1\)), and sequence of \(k\) elements - by rule of product - can be chosen in one of \(dp(t,k)=dp(t,k-1)*t\) ways - thus \(dp(t,k)=dp(t,k-1)t=dp(t,k-2)t^2=\dots=t^k\).</p>
 
 		<h3>Permutation</h3>
 		<p>Question: How many sequences of size \(n\) of \(n\) distinct elements exist? For example, for \(n=3\) there are: \([1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]\) - and so, there are \(6\) such sequences.</p>
@@ -130,11 +137,11 @@
 		<p>This structure is useful for analyzing certain identities (e.g. Hockey stick identity), showing properties (e.g. \(\sum_{k=0}^{n}\binom{n}{k}=2^n\)) etc.
 
 
-		<p><b>Binomial Theorem</b> is basically a different take on standard combinatorical problem: say, there are \(n\) moves, in each move option \(A\) or \(B\) can be chosen. In how many ways one can make such sequence of moves, such that \(A\) was chosen exactly \(k\) times? While the answer is \(\binom{n}{k}\) - because one chooses \(k\) elements (moves, in which \(A\) was chosen) out of sequence of \(n\) elements (all moves), the problem can be shown as:</p>
+		<p><b>Binomial Theorem</b> is basically a different take on standard combinatorical problem: say, there are \(n\) moves, in each move one either one of \(A\) options or one of \(B\) options can be chosen. In how many ways one can make such sequence of moves, such that one of \(A\) options was chosen exactly \(k\) times? While the answer is \(\binom{n}{k}\) - because one chooses \(k\) elements (moves, in which \(A\) was chosen) out of sequence of \(n\) elements (all moves), the problem can be shown as:</p>
 		<span class="central">\((A+B)(A+B) \dots (A+B)=(A+B)^n\)</span>
-		<p>in each move, either \(A\) or \(B\) is chosen, and multiplication represents subsequent moves; then, result of such multiplication will yield result</p>
+		<p>in each move, either one of \(A\) moves or one of \(B\) moves is chosen, and multiplication represents subsequent moves (by rule of product); then, result of such multiplication will yield result</p>
 		<span class="central">\((A+B)^n=\sum_{i=0}^{n}c_iA^iB^{n-i}\)</span>
-		<p>\(A^i\) represents picking \(A\) as a move in a single sequence of moves \(i\) times. In all other times, \(B\) was chosen - thus, exponent by \(B\) is \(n-i\). \(c_i\) represents number of possible sequences of choices, in which \(A\) was chosen \(i\) times - as stated above, it is equal to \(\binom{n}{i}\). This implies:</p>
+		<p>\(A^i\) represents picking one of \(A\) moves as a move in a single sequence of moves \(i\) times. In all other times, one of \(B\) moves was chosen - thus, exponent by \(B\) is \(n-i\). \(c_i\) represents number of possible sequences of choices, in which one of \(A\) moves was chosen \(i\) times - as stated above, it is equal to \(\binom{n}{i}\). This implies:</p>
 		<span class="central">\((A+B)^n=\sum_{i=0}^{n}\binom{n}{i}A^iB^{n-i}\)</span>
 		<p>And the statement above is called binomial theorem. This theorem can be also shown by induction using pascal's identity, with base case:</p>
 		<span class="central">$$(A+B)^0=1=\binom{0}{0}A^0B^0=\sum_{i=0}^{n=0}\binom{n}{i}A^iB^{n-i} \text{ or, depending on definition of \(0^0\), } (A+B)^1=A+B=\binom{1}{0}A^0B^1+\binom{1}{1}A^1B^0=\sum_{i=0}^{n=1}\binom{n}{i}A^iB^{n-i}$$</span>
@@ -329,7 +336,13 @@
 		'
 		, '5 3', 'input', 'shower') }}
 
-
+		<h2>Problems</h2>
+		<p>
+		Most combinatorical problems can be solved solely with knowledge of practical number theory, dynamic programming and techniques described above. Problem aiming specificallly at topics described above are, for example:
+			<a href="https://codeforces.com/problemset/problem/837/F">Prefix Sums</a>, 
+			<a href="https://codeforces.com/problemset/problem/785/D">Anton and School - 2</a>, 
+			<a href="https://codeforces.com/problemset/problem/932/E">Team Work</a>, 
+		</p>
 
 		<script src="{{url_for('static', filename='Choice.js')}}"></script>
 		<form id="page" style="display:none"></form>

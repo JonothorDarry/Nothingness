@@ -118,6 +118,7 @@ class Algorithm{
 			if (elem[0]==1) elem[1].innerHTML=elem[2];
 			if (elem[0]==2) elem[1].pop();
 			if (elem[0]==3) this[elem[1]]=elem[2];
+			if (elem[0]==5) elem[2](...elem[3]), console.log(elem[3][0].style.display);
 		}
 		this.state_transformation.pop();
 
@@ -223,6 +224,7 @@ class Algorithm{
 			if (x[0]==1) x[1].innerHTML=x[3];
 			if (x[0]==2) x[1].push(x[2]);
 			if (x[0]==3) this[x[1]]=x[3];
+			if (x[0]==5) x[1](...x[3]);
 		}
 	}
 
