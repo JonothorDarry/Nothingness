@@ -25,6 +25,7 @@ class transformation:
             'ntt':'NumberTransform',
 
             'choice':'Choice',
+            'iep':'Iep',
 
             'treewalk':'TreeBasic',
             'index':'Wisdom',
@@ -47,6 +48,7 @@ class transformation:
             'NumberTheory/Ntt.html':'Number_Theoretic_Transform',
 
             'Combinatorics/Choice.html':'Choice',
+            'Combinatorics/Iep.html':'Choice',
 
             'Trees/TreeBasics.html':'Tree_Walk',
     }
@@ -63,6 +65,7 @@ class transformation:
             'Number Theoretic Transform':'ntt',
 
             'Choice':'choice',
+            'Iep':'iep',
 
             'Tree Walk':'treewalk',
             'index':'index',
@@ -80,6 +83,7 @@ class transformation:
             'Number Theoretic Transform':'NumberTheory/Ntt.html',
 
             'Choice':'Combinatorics/Choice.html',
+            'Iep':'Combinatorics/Iep.html',
 
             'Tree Walk':'Trees/TreeBasics.html',
     }
@@ -96,6 +100,7 @@ class transformation:
             'NumberTheory/Ntt.html':'ntt',
 
             'Combinatorics/Choice.html':'choice',
+            'Combinatorics/Iep.html':'iep',
 
             'Trees/TreeBasics.html':'treewalk', 
     }
@@ -292,6 +297,9 @@ def NumberTransform():
 @app.route('/choice', methods=['GET', 'POST'])
 def Choice():
     return Router('Combinatorics/Choice.html')
+@app.route('/iep', methods=['GET', 'POST'])
+def Iep():
+    return Router('Combinatorics/Iep.html')
 
 
 @app.route('/treewalk', methods=['GET', 'POST'])

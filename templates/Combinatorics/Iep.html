@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+{% import 'algo.html' as algo %}
+
+<html lang="en">
+	<head>
+		<title>Inclusion-Exclusion Principle</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
+		<script src="{{url_for('static', filename='Temp.js')}}"></script>
+		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+	</head>
+
+	<body>
+		{{ headers.header('Inclusion-Exclusion Principle', 'Combinatorics') }}
+		<h3>Problem statement and definitions</h3>
+		<p>Suppose You have to create a multiset of \(k\) elements (\(k \le 10^{14}\)), where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of each type. In how many ways this multiset can be created? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
+		<h3>The posited question</h3>
+		<p>To solve problem, it may be crucial to create well-formulated question on what has to be found, and then find an answer. One can, for example, notice, that \(n \le 20\) allows to create a solution working in \(O(2^n)\), or even \(O(n2^n)\). Then, one can observe, that question can be formulated in different way: let \(b_i\) describe number of elements of \(i\)-th type in a multiset. Then let proper multiset be defined as multiset, in which \(\forall_i b_i \le a_i\). All multisets, that can be found satisfying those constraints are all multisets consisting of elements of \(t\) types (possible to calculate as \(\binom{k+t-1}{t-1}\) - standard combination with repetitions) except those, that are not proper. The question arises: what is the number of not proper multisets? let \(A_1, A_2, \dots, A_t\) be defined as such multisets, such that \(X \in A_i \iff b_i \gt a_i\) in multiset \(X\). Then, the searched result can be represented as \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\). The remaining question is: how to find \(|A_1 \cup A_2 \cup \dots \cup A_n|\).</p>
+		<h3>The principle of inclusion and exclusion</h3>
+		<ol>
+			<li>For each type \(i\), each possible multiset \(S\) with \(k\) elements of \(t\) types either belongs to \(A_i\) or belongs to \(A_i'\), but not both. Thus, for \(S\) there exists exactly one such set \(A_1^F \cap A_2^F \cap \dots \cap A_n^F\), where \(F\) denotes set itself or its complement, such that \(S \in A_1^F \cap A_2^F \cap \dots \cap A_n^F\) - this set is obtained for $$A_i^F=\begin{cases}A_i \iff S \in A_i \\A_i' \text{ otherwise}\end{cases}$$ where \('\) denotes set complement</li>
+			<li>What follows, it is possible denote \(|A_1 \cup A_2 \cup \dots \cup A_t|=\sum_{\emptyset \neq j \subseteq \{A_1, A_2, \dots, A_t\}} |A_1^F \cap A_2^F \cap \dots \cap A_n^F|\), where $$A_i^F=\begin{cases}A_i \iff A_i \in j\\A_i' \text{ otherwise}\end{cases}$$ The notation above means, that sum of sets \(A_1, A_2, \dots, A_n\) can be denoted as sum of all intersections of sets and their complements, where each element of any of non-intersecting sets \(A_1^F \cap A_2^F \cap \dots \cap A_n^F\) belongs to at least one set from \(A_1, A_2, \dots A_t\).</li>
+			<li>The way to calculate any such \(|A_1^F \cap A_2^F \cap \dots \cap A_n^F|\) openly may be not satisfying in terms of both convoluted solution and complexity, contrary to calculating intersections of existing sets: \(|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_n}|\).</li>
+			<li>An expression:
+				$$\sum_{\emptyset \neq j \subseteq \{A_1, A_2, \dots, A_n\}} (-1)^{|j|-1}|\bigcap_{X \in j}X|$$
+			</li>
+		</ol>
+
+	</body>
+</html>

@@ -70,6 +70,7 @@
 			<li><b>Rule of product</b>: If in one can do two moves and first can be done in one of \(A\) ways and second in one of \(B\) ways, then sequence of those two moves can be done in \(AB\) ways.</li>
 		</ol>
 		<p>The second statement instantaneously implies, that if one has to create sequence of \(k\) elements, each of which belongs to one of \(t\) types, he can do it in \(t*t*t*t\dots*t=t^k\) ways - let number of sequences be described as \(dp(t,k)\). A sequence of \(0\) elements can be chosen in \(1\) way (so \(dp(t,0)=1\)), and sequence of \(k\) elements - by rule of product - can be chosen in one of \(dp(t,k)=dp(t,k-1)*t\) ways - thus \(dp(t,k)=dp(t,k-1)t=dp(t,k-2)t^2=\dots=t^k\).</p>
+		<p>The pattern above - also called variation with repetitions - is one of the most fundamental ones in combinatorics, and its consequence is the fact, that there are \(2^k\) subsets of \(k\)-element set - one can assingn each element of set either \(0\) or \(1\) (there are \(2^k\) ways to do this), and then, subset consists of elements with \(1\) assigned.</p>
 
 		<h3>Permutation</h3>
 		<p>Question: How many sequences of size \(n\) of \(n\) distinct elements exist? For example, for \(n=3\) there are: \([1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]\) - and so, there are \(6\) such sequences.</p>
