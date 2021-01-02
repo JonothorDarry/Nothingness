@@ -16,36 +16,69 @@
 		<h3>Problem statement and definitions</h3>
 		<p>Suppose You have to create a multiset of \(n\) elements (\(n \le 10^{14}\)), where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of \(i\)-th type. In how many ways this multiset can be created? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
 		<h3>The posited question</h3>
-		<p>To solve problem, it may be crucial to create well-formulated question on what has to be found, and then find an answer. One can, for example, notice, that \(t \le 20\) allows to create a solution working in \(O(t2^t)\). Then, one can observe, that question can be formulated in different way: let \(b_i\) describe number of elements of \(i\)-th type in a multiset. Then let proper multiset be defined as multiset, in which \(\forall_i b_i \le a_i\). All multisets, that can be found satisfying those constraints are all multisets consisting of elements of \(t\) types (possible to calculate as \(\binom{k+t-1}{t-1}\) - standard combination with repetitions) except those, that are not proper. The question arises: what is the number of not proper multisets? let \(A_1, A_2, \dots, A_t\) be defined as such multisets, such that \(X \in A_i \iff b_i \gt a_i\) in multiset \(X\). Then, the searched result can be represented as \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\). The remaining question is: how to find \(|A_1 \cup A_2 \cup \dots \cup A_n|\).</p>
+		<p>To solve problem, it may be crucial to create well-formulated question on what has to be found, and then find an answer. One can, for example, notice, that \(t \le 20\) allows to create a solution working in \(O(t2^t)\). Then, one can observe, that question can be formulated in different way: let \(b_i\) describe number of elements of \(i\)-th type in a multiset. Then let proper multiset be defined as multiset, in which \(\forall_i b_i \le a_i\). All multisets, that can be found satisfying those constraints are all multisets consisting of elements of \(t\) types (possible to calculate as \(\binom{k+t-1}{t-1}\) - standard combination with repetitions) except those, that are not proper. The question arises: what is the number of not proper multisets? let \(A_1, A_2, \dots, A_t\) be defined as such multisets, such that \(X \in A_i \iff b_i \gt a_i\) in multiset \(X\). Then, the searched result can be represented as \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\). The remaining question is: how to find \(|A_1 \cup A_2 \cup \dots \cup A_t|\).</p>
 		<h3>The principle of inclusion and exclusion</h3>
 		<ol>
-			<li>For each type \(i\), each possible multiset \(S\) with \(k\) elements of \(t\) types either belongs to \(A_i\) or belongs to \(A_i'\), but not both. Thus, for \(S\) there exists exactly one such set \(A_1^F \cap A_2^F \cap \dots \cap A_n^F\), where \(F\) denotes set itself or its complement, such that \(S \in A_1^F \cap A_2^F \cap \dots \cap A_n^F\) - this set is obtained for $$A_i^F=\begin{cases}A_i \iff S \in A_i \\A_i' \text{ otherwise}\end{cases}$$ where \('\) denotes set complement</li>
-			<li>Let \(G=A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_m}\) denote intersection of all elements of \(\{A_1^F, A_2^F, \dots A_t^F\}\), for which \(A_i^F=A_i\) holds. How many times elements of this set will be calculated in expression \(V_1=\sum_{i=1}^t|A_i|\)? \(\binom{m}{1}\) times, because there are exactly \(m\) such sets \(A_i\), such that \(G \subseteq A_i\) - those are sets \(A_{j_1}, A_{j_2} \dots A_{j_m}\). How many times elements of this set will be calculated in expression \(V_2=\sum_{1 \le i \lt j \le t}|A_i \cap A_j|\)? \(\binom{m}{2}\) times, because this is the number of pairs of two sets (all pairs of sets from \(\{A_{j_1}, A_{j_2}, \dots A_{j_m}\}\)), such that \(G \subseteq A_i \cap A_j\). This holds for all further \(V_k=\sum_{1 \le i_1 \lt i_2 \lt \dots \lt i_n \le t}|A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}|\), where \(G \subseteq A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}\) occurs \(\binom{m}{k}\) times for the same reasons.</li>
-			<li>$$\sum_{k=0}^{n}(-1)^{k+1}\binom{n}{k}=-\binom{n}{0}+\binom{n}{1}-\dots+(-1)^{n+1}\binom{n}{k}=-\binom{n-1}{0}+(\binom{n-1}{0}+\binom{n-1}{1})-(\binom{n-1}{1}+\binom{n-1}{2})+\dots +(-1)^{n}(\binom{n-1}{n-2}+\binom{n-1}{n-1})+(-1)^{n+1}\binom{n-1}{n-1}=$$
+			<li>For each type \(i\), each possible multiset \(S\) with \(k\) elements of \(t\) types either belongs to \(A_i\) or belongs to \(A_i'\), but not both. Thus, for \(S\) there exists exactly one such set \(A_1^F \cap A_2^F \cap \dots \cap A_t^F\), where \(F\) denotes set itself or its complement, such that \(S \in A_1^F \cap A_2^F \cap \dots \cap A_t^F\) - this set is obtained for $$A_i^F=\begin{cases}A_i \iff S \in A_i \\A_i' \text{ otherwise}\end{cases}$$ where \('\) denotes set complement</li>
+			<li>Let \(G=A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_m}\) denote intersection of all elements of \(\{A_1^F, A_2^F, \dots A_t^F\}\), for which \(A_i^F=A_i\) holds. How many times elements of this set will be calculated in expression \(V_1=\sum_{i=1}^t|A_i|\)? \(\binom{m}{1}\) times, because there are exactly \(m\) such sets \(A_i\), such that \(G \subseteq A_i\) - those are sets \(A_{j_1}, A_{j_2} \dots A_{j_m}\). How many times elements of this set will be calculated in expression \(V_2=\sum_{1 \le i \lt j \le t}|A_i \cap A_j|\)? \(\binom{m}{2}\) times, because this is the number of pairs of two sets (all pairs of sets from \(\{A_{j_1}, A_{j_2}, \dots A_{j_m}\}\)), such that \(G \subseteq A_i \cap A_j\). This holds for all further \(V_k=\sum_{1 \le i_1 \lt i_2 \lt \dots \lt i_k \le t}|A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}|\), where \(G \subseteq A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}\) occurs \(\binom{m}{k}\) times for the same reasons.</li>
+			<li>For any \(n \ge 1\) occurs:$$\sum_{k=0}^{n}(-1)^{k+1}\binom{n}{k}=-\binom{n}{0}+\binom{n}{1}-\dots+(-1)^{n+1}\binom{n}{k}=-\binom{n-1}{0}+(\binom{n-1}{0}+\binom{n-1}{1})-(\binom{n-1}{1}+\binom{n-1}{2})+\dots +(-1)^{n}(\binom{n-1}{n-2}+\binom{n-1}{n-1})+(-1)^{n+1}\binom{n-1}{n-1}=$$
 			$$=-\binom{n-1}{0}+\binom{n-1}{0}+\binom{n-1}{1}-\binom{n-1}{1}-\dots +(-1)^n\binom{n-1}{n-1}+(-1)^{n+1}\binom{n-1}{n-1}=0$$</li>
 			Also, \(\sum_{k=1}^{n}(-1)^{k+1}\binom{n}{k}=\sum_{k=0}^{n}(-1)^{k+1}\binom{n}{k}+\binom{n}{0}=0+1=1\). This equation holds for \(n \ge 1\).
 			<li>What follows from two points above, in the following equation
-				$$\sum_{1 \le i \le t}|A_i|-\sum_{1 \le i \lt j \le t}|A_i \cap A_j|+\dots+(-1)^{n+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_t \le t}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_t}|$$
+				$$\sum_{1 \le i \le t}|A_i|-\sum_{1 \le i \lt j \le t}|A_i \cap A_j|+\dots+(-1)^{t+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_t \le t}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_t}|$$
 			Each multiset S such that \(S \in A_1 \cup A_2 \cup \dots \cup A_t\) is calculated
-			$$\binom{m}{1}-\binom{m}{2}+\dots +(-1)^n\binom{m}{n}=\sum_{k=1}^{n}(-1)^{n+1}\binom{m}{k}=1$$
+			$$\binom{m}{1}-\binom{m}{2}+\dots +(-1)^{n+1}\binom{m}{n}=\sum_{k=1}^{n}(-1)^{k+1}\binom{m}{k}=1$$
 			times for \(m=|\{A_i: S \in A_i\}|\). Note that as this holds, because \(m \ge 1\) (there is at least one set \(A_i\), to which \(S\) belongs) - otherwise, expression above would be \(0\) (which holds for all multisets not belonging to any \(A_i\)). And so, finally, 
-				$$\sum_{1 \le i \le t}|A_i|-\sum_{1 \le i \lt j \le t}|A_i \cap A_j|+\dots+(-1)^{n+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_t \le t}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_t}|=|A_1 \cup A_2 \cup \dots \cup A_t|$$
+			{% macro iep(x, beg='$$') %}
+			{{beg}} \sum_{1 \le i \le {{x}} } |A_i|-\sum_{1 \le i \lt j \le {{x}} }|A_i \cap A_j|+\dots+(-1)^{ {{x}}+1 }\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{ {{x}} } \le {{x}} }|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{ {{x}} } }|=|A_1 \cup A_2 \cup \dots \cup A_{ {{x}} }|$$
+			{% endmacro %}
+			{{iep('t')}}
 			</li>
 			<li>An expression:
 				$$\sum_{\emptyset \neq j \subseteq \{A_1, A_2, \dots, A_n\}} (-1)^{|j|+1}|\bigcap_{X \in j}X|=|A_1 \cup A_2 \cup \dots \cup A_n|$$
 				fully expresses the glory of inclusion-exclusion principle.
 			</li>
 		</ol>
-		<h3>Original problem solution</h3>
-		<p>One can, for each of \(2^n-1\) sets \(A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_k}\) find its size as equal to \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}\) - where the number of multisets having overabundance of elements of types \(j_i\) and some additional elements of each type (possibly also \(j_i\)) is calculated. Then, add sizes of those sets (mutiplied by \(-1\), iff \(k \equiv 0 \pmod 2\)) and print result. Thus, solution can consist of subsequent steps:</p>
+		<h3>Other Proof of Inclusion-Exclusion princliple</h3>
 		<ol>
-			<li>For each number in range \(\lt 1;2^n \gt\) calculate its number of bits, and amount of multisets in sets corresponding to bits: for example, for \(t=5\) and number \(01011\), it can represent \(A_1 \cap A_2 \cap A_4\), thus one has to find \(\binom{n+t-1-(a_1+1+a_2+1+a_4+1)}{t-1}\) and substract it from result, if number of bits is divisible by 2 or add it otherwise (in this case it shall be added).</li>
+			<li>\(|A_1|=|A_1|\), furthermore, \(|A_1 \cup A_2|=|A_1|+|A_2|-|A_1 \cap A_2|\) - because each element belonging to \(A_1 \cap A_2'\) or \(A_1' \cap A_2\) will be counted once, elements belonging to \(A_1' \cap A_2'\) won't be counted, and elements belonging to \(A_1 \cap A_2\) are counted \(1+1-1=1\) time.</li>
+			<li>Therefore, there exists such \(n\), such that for any sets \(A_1, A_2, \dots A_n\) occurs:
+				{{iep('n')}}
+			</li>
+			<li>Then, one can start inductive step as follows:
+				$$|A_1 \cup A_2 \cup \dots \cup (A_n \cup A_{n+1})|=\sum_{1 \le i \le n-1} |A_i|+|A_n \cup A_{n+1}|-\sum_{1 \le i \lt j \le n-1}|A_i \cap A_j|-\sum_{1 \le i \le n-1}|A_i \cap (A_n \cup A_{n+1})|+\dots+(-1)^{n+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{n-1} \le n-1}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{n-1}} \cap (A_{n} \cup A_{n+1})|$$
+			</li>
+			<li>Additionally, 
+				$$X \cap (Y \cup Z) = (X \cap Y) \cup (X \cap Z)$$
+			From second part of checking equality at the start, 
+			$$|(X \cap Y) \cup (X \cap Z)|=|X \cap Y| + |X \cap Z| - |X \cap Y \cap Z|$$
+			<li>What follows:
+				$$|A_1 \cup A_2 \cup \dots \cup (A_n \cup A_{n+1})|=\sum_{1 \le i \le n-1} |A_i|+|A_n|+|A_{n+1}|-|A_n \cap A_{n+1}|-\sum_{1 \le i \lt j \le n-1}|A_i \cap A_j|-\sum_{1 \le i \le n-1}|A_i \cap A_n|-\sum_{1 \le i \le n-1}|A_i \cap A_{n+1}|+\sum_{1 \le i \le n-1}|A_i \cap A_n \cap A_{n+1}|+\dots +$$
+				$$+(-1)^{n+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{n-1} \le n-1}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{n-1}} \cap A_n|+(-1)^{n+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{n-1} \le n-1}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{n-1}} \cap A_{n+1}|+(-1)^{n+2}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{n-1} \le n-1}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{n-1}} \cap A_n \cap A_{n+1}|=$$
+				{{iep('n+1', '$$=')}}
+			Which proves inclusion-exclusion principle in another way.
+			</li>
+		</ol>
+		<h3>Original problem solution</h3>
+		<p>One can, for each of \(2^t-1\) sets \(A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_k}\) find its size as equal to \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}\) - where the number of multisets having overabundance of elements of types \(j_i\) and some additional elements of each type (possibly also \(j_i\)) is calculated. Then, add sizes of those sets (mutiplied by \(-1\), iff \(k \equiv 0 \pmod 2\)) and print result. Thus, solution can consist of subsequent steps:</p>
+		<ol>
+			<li>For each number in range \(\lt 1;2^t-1 \gt\) calculate its number of bits, and amount of multisets in sets corresponding to bits: for example, for \(t=5\) and number \(01011\), it can represent \(A_1 \cap A_2 \cap A_4\), thus one has to find \(\binom{n+t-1-(a_1+1+a_2+1+a_4+1)}{t-1}\) and substract it from result, if number of bits is divisible by 2 or add it otherwise (in this case it shall be added).</li>
 			<li>It's worth noting that \(amount\_of\_bits(0)=0, amount\_of\_bits(x)=amount\_of\_bits(\lfloor \frac{x}{2} \rfloor)+x\%2\), where \(\%\) denotes modulus operation.</li>
 			<li>One can also calculate leftmost bit of a number as \(leftmost\_bit(0)=-1, leftmost\_bit(x)=leftmost\_bit(\lfloor \frac{x}{2} \rfloor)+1\)</li>
 			<li>Then, \(\sum_{i=0}^{amount\_of\_bits(i)}a_{j_i}\) described by number \(x\) is equal to \(summa(x)=summa(x\oplus2^{leftmost\_bit(x)})+a_{leftmost\_bit(x)}\) - using results computed previously, this result - and all previous results - can be calculated in \(O(2^t)\).</li>
-			<li>At last, calculate \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}=\binom{n+t-1-summa(x)}{t-1}=\frac{(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)}{(t-1)!}=(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)*((t-1)!)^{-1}\). As result has to be calculated \(\pmod 10^9+7\), the last part (\((t-1)!^{-1} \pmod 10^9+7\)) can be calculated beforehand, using Fermat's little theorem or Euclid algorithm. The remaining part shall be calculated by multiplying those \(t-1\) elements leading to complexity \(O(t2^t)\) - \(2^t\) times one has to multiply \(t-1\) numbers.</li>
+			<li>At last, calculate \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}=\binom{n+t-1-summa(x)}{t-1}=\frac{(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)}{(t-1)!}=(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)*((t-1)!)^{-1}\). As result has to be calculated \(\pmod {10^9+7}\), the last part (\((t-1)!^{-1} \pmod {10^9+7}\)) can be calculated beforehand, using Fermat's little theorem or Euclid algorithm. The remaining part shall be calculated by multiplying those \(t-1\) elements leading to complexity \(O(t2^t)\) - \(2^t\) times one has to multiply \(t-1\) numbers.</li>
 			<li>Finally, sum above shall be added to result with positive sign, if \(amount\_of\_bits(x) \equiv 1 \pmod 2\), or negative otherwise.</li>
 		</ol>
 
+		{{ algo.algorithm(1, 'Inclusion-exclusion principle', '
+			<p>Input format: \(t\) - number of types, \(n\) - number of elements in resulting multisets, \(a_i\) - maximal possible number of elements to withdraw from \(i\)-th type<br>
+			\(t\ n\)<br>
+			\(a_1, a_2, \dots, a_n\)
+			</p>
+		'
+		, '5 12&#10;3 2 5 7 3', 'textarea') }}
+
+		<script src="{{url_for('static', filename='Iep.js')}}"></script>
+		<form id="page" style="display:none"></form>
 	</body>
 </html>

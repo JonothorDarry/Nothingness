@@ -118,7 +118,7 @@ class Algorithm{
 			if (elem[0]==1) elem[1].innerHTML=elem[2];
 			if (elem[0]==2) elem[1].pop();
 			if (elem[0]==3) this[elem[1]]=elem[2];
-			if (elem[0]==5) elem[2](...elem[3]), console.log(elem[3][0].style.display);
+			if (elem[0]==5) elem[2](...elem[3]);
 		}
 		this.state_transformation.pop();
 
@@ -228,12 +228,13 @@ class Algorithm{
 		}
 	}
 
-	divsCreator(mode, ende, title_list, midian){
+	//mode: 1 - buttons, 2 - midian button, 4 - text, midian - width of middle
+	divsCreator(mode, number_of_rows, title_list, midian){
 		var divs=[], zdivs=[], i, j, mode_title=(((mode&4)>0)?1:0), mode_single=(((mode&2)>0)?1:0), mode_butts=mode&1;
 		var title_id=0, single_id=mode_title, butts_id=mode_title+mode_single;
 
-		for (i=0;i<ende;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<ende;i++){
+		for (i=0;i<number_of_rows;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<number_of_rows;i++){
 			divs[i].style.height="40px";
 			//zdivs - inside div: 0 is write-up, 1 is button
 			for (j=0; j<butts_id+mode_butts; j++) {
@@ -319,7 +320,6 @@ class NTMath{
 
 	static inverse(a, m){
 		var s=NTMath.ext_gcd(a, m);
-		console.log(s);
 		if (s[0]==0) return null;
 		if (s[1]<0) return s[1]+m;
 		return s[1];
