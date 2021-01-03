@@ -10,8 +10,20 @@ class Iep extends Algorithm{
 	calculate_postfac(n, k, mod){
 		var res=1;
 		if (n-k+1<0) return 0;
-		for (var i=n-k+1; i<=n; i++) res=(res*i)%mod;
+		for (var i=n-k+1; i<=n; i++) res=NTMath.mul(res, i, mod);
 		return res;
+	}
+
+	find_logarithm_binom(n, k){
+		var logg=0, i;
+		for (i=n-k+1; i<=n; i++) logg+=Math.log10(i);
+		for (i=1; i<=k; i++) logg-=Math.log10(i);
+		return Math.ceil(logg);
+	}
+	shapeshift(x){
+		var y=x%this.mod;
+		if (y<0) return y+this.mod;
+		return y;
 	}
 
 	palingnesia(){
@@ -36,8 +48,10 @@ class Iep extends Algorithm{
 			this.add_button_to_reality(0, `a<sub>${i}</sub>`, 5);
 			this.add_button_to_reality(1, `${this.a[i]}`, 5);
 		}
+		this.add_button_to_reality(0, `n`, 5);
+		this.add_button_to_reality(1, `${this.n}`, 8);
 
-		var order_of_destiny=[``, `bits`, `sgn`, ``, `left`, `sum`, ``, `|X|`];
+		var order_of_destiny=[`bits`, `sgn`, ``, `left`, `sum`, ``, `|X|`];
 		for (i=0; i<order_of_destiny.length; i++){
 			this.add_button_to_reality(0, order_of_destiny[i], order_of_destiny[i]==``?4:5);
 		}
@@ -60,7 +74,7 @@ class Iep extends Algorithm{
 				this.amount_of_bits.push(this.amount_of_bits[Math.floor(i/2)]+i%2);
 				this.leftmost_bit.push(this.leftmost_bit[Math.floor(i/2)]+1);
 				this.summa.push(this.summa[i^(1<<this.leftmost_bit[i])]+this.a[this.leftmost_bit[i]]);
-				this.partial_res.push((this.calculate_postfac(this.n+this.t-1-this.summa[i]-this.amount_of_bits[i], this.t-1, this.mod)*this.inversed)%this.mod);
+				this.partial_res.push(NTMath.mul(this.calculate_postfac(this.n+this.t-1-this.summa[i]-this.amount_of_bits[i], this.t-1, this.mod), this.inversed, this.mod));
 			}
 			this.sgn.push(this.amount_of_bits[i]%2==0?-1:1);
 			if (i>0) full_summa=full_summa+this.partial_res[i]*this.sgn[i];
@@ -79,8 +93,8 @@ class Iep extends Algorithm{
 		for (i=0; i<this.pl_sum; i++) this.add_button_to_reality(pows+3, '', 4);
 		
 		this.add_button_to_reality(pows+3, 0, 4);
-		this.base_ender=(this.calculate_postfac(this.n+this.t-1, this.t-1, this.mod)*this.inversed)%this.mod;
-		this.add_button_to_reality(pows+3, (this.base_ender-full_summa)%this.mod, 4);
+		this.base_ender=NTMath.mul(this.calculate_postfac(this.n+this.t-1, this.t-1, this.mod), this.inversed, this.mod);
+		this.add_button_to_reality(pows+3, this.shapeshift(this.base_ender-full_summa), 4);
 		this.last_in_line=pows+3;
 	}
 
@@ -103,7 +117,12 @@ class Iep extends Algorithm{
 		for (var i=0; i<this.t; i++){
 			this.a.push(c.get_next());
 		}
+
+		this.bs_butt_width_h=Math.max(40, 10*Math.max(Math.min(10, this.find_logarithm_binom(this.n+this.t-1, this.t-1)), Math.ceil(Math.log10(this.n)) ));
+		this.bs_butt_width=`${this.bs_butt_width_h}px`;
+
 		this.palingnesia();
+		this.place.style.width=`${(this.pl_sum+1)*this.bs_butt_width_h+210}px`;
 		this.lees.push([0]);
 	}
 
@@ -146,21 +165,33 @@ class Iep extends Algorithm{
 			}
 			staat.push([0, this.btn_list[s[1]+3][this.pl_amount], 4, 1]);
 			staat.push([0, this.btn_list[s[1]+3][this.pl_amount+1], 4, 1]);
+
+			staat.push([0, this.btn_list[(s[1]>>1)+3][this.pl_amount], 0, 14]);
 		}
+
 		if (s[0]==3){
 			staat.push([0, this.btn_list[s[1]+3][this.pl_amount], 1, 0]);
 			staat.push([0, this.btn_list[s[1]+3][this.pl_amount+1], 1, 0]);
+
+			staat.push([0, this.btn_list[(s[1]>>1)+3][this.pl_leftmost], 0, 14]);
+			staat.push([0, this.btn_list[(s[1]^(1<<this.leftmost_bit[s[1]]))+3][this.pl_leftmost+1], 0, 13]);
+			staat.push([0, this.btn_list[(s[1]>>1)+3][this.pl_amount], 14, 0]);
+
 			staat.push([0, this.btn_list[s[1]+3][this.pl_leftmost], 4, 1]);
 			staat.push([0, this.btn_list[s[1]+3][this.pl_leftmost+1], 4, 1]);
 		}
 
 		if (s[0]==4){
 			var summary=this.btn_list[this.last_in_line][this.pl_sum];
+			//Czystka
 			staat.push([0, this.btn_list[s[1]+3][this.pl_leftmost], 1, 0]);
 			staat.push([0, this.btn_list[s[1]+3][this.pl_leftmost+1], 1, 0]);
+			staat.push([0, this.btn_list[(s[1]>>1)+3][this.pl_leftmost], 14, 0]);
+			staat.push([0, this.btn_list[(s[1]^(1<<this.leftmost_bit[s[1]]))+3][this.pl_leftmost+1], 13, 0]);
+			//Odrodzenie
 			staat.push([0, this.btn_list[s[1]+3][this.pl_sum], 4, 1]);
-			staat.push([1, summary, this.full_res, this.full_res+this.partial_res[s[1]]*this.sgn[s[1]]]);
-			staat.push([3, 'full_res', this.full_res, this.full_res+this.partial_res[s[1]]*this.sgn[s[1]]]);
+			staat.push([1, summary, this.full_res, (this.full_res+this.partial_res[s[1]]*this.sgn[s[1]])%this.mod]);
+			staat.push([3, 'full_res', this.full_res, (this.full_res+this.partial_res[s[1]]*this.sgn[s[1]])%this.mod]);
 			staat.push([0, summary, 0, 1]);
 		}
 
@@ -175,26 +206,26 @@ class Iep extends Algorithm{
 
 	StatementComprehension(){
 		var l=this.lees.length;
-		var s=this.lees[l-1];
-		var intersect=function(x, t){
-			var str_res="{", exist=0, i;
+		var s=this.lees[l-1], x=s[1], eq=`&equiv;`;
+		var intersect=function(x, t, sep=',', start='{', end='}'){
+			var str_res=start, exist=0, i;
 			for (i=0; i<t; i++){
 				if ((x&(1<<i))>0) {
-					if (exist==1) str_res+=",";
+					if (exist==1) str_res+=sep;
 					exist=1;
 					str_res+=`A<sub>${i}</sub>`;
 				}
 			}
-			str_res+="}"
+			str_res+=end;
 			return str_res;
 		}
 
-		if (s[0]==0) return `In the beginning of the mechanism, starting values for x=0 are constructed (leftmost bit, amount of bits and sum of marked by bit representation a<sub>i</sub>), the values for empty set are not used in formula, so they are not used in calculations (though it could be used, if one knows what he wants to do).`;
-		if (s[0]==1) return `Next intersection of sets is chosen. It's represented by number x=${s[1]}, its bit representation is shown next to it. As one can see, it represents intersection of sets ${intersect(s[1], this.t)} (or set of all multisets, which have more than a<sub>i</sub> elements from all those types)`;
-		if (s[0]==2) return `Amount of sets A<sub>i</sub> in this intersection is bits(x)=${this.amount_of_bits[s[1]]}, thus sign, with which the resulting size of intersection will be added to the resulting sum is (-1)<sup>${this.amount_of_bits[s[1]]+1}</sup>=${this.sgn[s[1]]}`;
-		if (s[0]==3) return `The leftmost bit allows to calculate sum of sizes of sets this intersection in O(1), by formula sum(x)=sum(x^2<sup>leftmost_bit(x)</sup>)+a<sub>leftmost_bit(x)</sub> (where ^ represents xor), so sum(${s[1]})=sum(${s[1]}^${1<<this.leftmost_bit[s[1]]})+${this.a[this.leftmost_bit[s[1]]]}=${this.summa[s[1]]}</sub>`;
-		if (s[0]==4) return `The size of this subset - number of multisets - is calculated as Cn(n+t-1-sum(x)-bits(x), t-1)=Cn(${this.n}+${this.t}-1-${this.summa[s[1]]}-${this.amount_of_bits[s[1]]}, ${this.t}-1)=Cn(${this.n+this.t-1-this.summa[s[1]]-this.amount_of_bits[s[1]]}, ${this.t-1})=${Math.abs(this.partial_res[s[1]])}. This result is immediately multiplied by sgn(${s[1]})=${this.sgn[s[1]]} and added to penultimate result in that form.`
-		if (s[0]==100) return `In the end, resulting number of multisets, which don't belong to any A<sub>i</sub> is obtained by substracting obtained sum ${this.full_res} of sizes of intersection of sets from number of multisets of size ${this.n} of ${this.t} types: Cn(${this.n}+${this.t}-1, ${this.t}-1)=Cn(${this.n+this.t-1},${this.t-1})=${this.base_ender}, resulting in ${this.base_ender}-${this.full_res}=${this.base_ender-this.full_res}`;
+		if (s[0]==0) return `In the beginning of the mechanism, starting values for x=0 are constructed (leftmost bit, amount of bits and sum of a<sub>i</sub>s marked by bit representation), the values for empty set are not used in formula, so they are not used in calculations (though it could be used, if one knows what he wants to do).`;
+		if (s[0]==1) return `Next intersection of sets is chosen. It's represented by number x=${x}, its bit representation is shown next to it. As one can see, it represents intersection of sets ${intersect(x, this.t)} (or set of all multisets, which have more than a<sub>i</sub> elements from all those types)`;
+		if (s[0]==2) return `Amount of sets A<sub>i</sub> in this intersection is bits(x)=bits(x/2)+x%2, in this case, bits(${x})=bits(${x>>1})+${x%2}=${this.amount_of_bits[x>>1]}+${x%2}=${this.amount_of_bits[x]}, thus sign, with which the resulting size of intersection will be added to the resulting sum is (-1)<sup>${this.amount_of_bits[s[1]]+1}</sup>=${this.sgn[s[1]]}`;
+		if (s[0]==3) return `The leftmost bit allows to calculate sum of sizes of sets this intersection in O(1), leftmost bit can be calculated as left(x)=left(x/2)+1, in this case, left(${x})=left(${x>>1})+1=${this.leftmost_bit[x>>1]}+1=${this.leftmost_bit[x]+1}, and sum by formula sum(x)=sum(x^2<sup>leftmost_bit(x)</sup>)+a<sub>leftmost_bit(x)</sub> (where ^ represents xor), so sum(${x})=sum(${x}^${1<<this.leftmost_bit[x]})+${this.a[this.leftmost_bit[x]]}=sum(${s[1]^(1<<this.leftmost_bit[x])})+${this.a[this.leftmost_bit[x]]}=${this.summa[x]}</sub>`;
+		if (s[0]==4) return `The size of this subset - number of multisets, which belong to ${intersect(x, this.t, `&cap;`, '', '')} - is calculated as Cn(n+t-1-sum(x)-bits(x), t-1)=Cn(${this.n}+${this.t}-1-${this.summa[x]}-${this.amount_of_bits[x]}, ${this.t}-1)=Cn(${this.n+this.t-1-this.summa[x]-this.amount_of_bits[x]}, ${this.t-1})${eq}${Math.abs(this.partial_res[x])} (mod 10<sup9</sup>+7). This result is immediately multiplied by sgn(${s[1]})=${this.sgn[s[1]]} and added to penultimate result in that form.`
+		if (s[0]==100) return `In the end, resulting number of multisets, which don't belong to any A<sub>i</sub> is obtained by substracting obtained |A<sub>0</sub> &cup; A<sub>1</sub> &cup; ... &cup; A<sub>t-1</sub>| equivalent to ${this.full_res} from number of multisets of size ${this.n} of ${this.t} types: Cn(${this.n}+${this.t}-1, ${this.t}-1)=Cn(${this.n+this.t-1},${this.t-1})${eq}${this.base_ender} (mod 10<sup>9</sup>+7), resulting in ${this.base_ender}-${this.full_res}${eq}${this.shapeshift(this.base_ender-this.full_res)} (mod 10<sup>9</sup>+7)`;
 	}
 
 	NextState(){
@@ -211,4 +242,4 @@ class Iep extends Algorithm{
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var eg1=new Iep(feral, 5, 12, [5, 3, 6, 2, 4]);
+var eg1=new Iep(feral, 4, 12, [3, 2, 5, 7]);

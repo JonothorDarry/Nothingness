@@ -136,7 +136,7 @@ class Algorithm{
 		}
 		var olden;
 		if (only_bg==1) olden=btn.style.color;
-		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12) btn.style.color="#FFFFFF";
+		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14) btn.style.color="#FFFFFF";
 		else btn.style.backgroundColor="#FFFFFF";
 
 		if (col==0) btn.style.backgroundColor="#440000";
@@ -149,7 +149,11 @@ class Algorithm{
 		else if (col==10) btn.style.backgroundColor="#0000FF";
 		else if (col==11) btn.style.backgroundColor="#222200";
 		if (col==12) btn.style.backgroundColor="#FF3333";
-		if (col==9) btn.style.backgroundColor="#FFFF00"
+		if (col==9) btn.style.backgroundColor="#FFFF00";
+
+		//Colors for additional post-green
+		if (col==13) btn.style.backgroundColor="#669900";
+		if (col==14) btn.style.backgroundColor="#00B359";
 
 		if (col==7){
 			btn.style.border="1px solid";
@@ -301,6 +305,14 @@ class NTMath{
 		for (;b>0;b=b/2n){
 			if (b%2n==1n) res=(res*a)%m;
 			a=(a*a)%m;
+		}
+		return res;
+	}
+	static mul(a, b, m=1000000007){
+		var res=0;
+		for (;b>0;b=Math.floor(b/2)){
+			if (b%2==1) res=(res+a)%m;
+			a=(a+a)%m;
 		}
 		return res;
 	}
