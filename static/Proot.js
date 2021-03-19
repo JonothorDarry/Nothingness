@@ -518,7 +518,7 @@ class Proot extends Algorithm{
 		else if (last[0]==6 && last[1]==0) return `The primitive root for p=${p} is already found; `+this.Last_Exit_For_The_Lost();
 		else if (last[0]==6 && last[1]==1 && (this.finito==0 || this.m%2!=0)) return `The primitive root for p<sup>k</sup>=${this.m%2!=0?this.m:Math.floor(this.m/2)} is either equal to g=${this.current_candidate} or g+p=${this.current_candidate+p}, where g is primitive root of p - this follows from second case of existential proof of primitive root. As g<sup>&#x03D5;(p)</sup> ${this.current_result>p?`&equiv;`:`&#8802;`} 1 (mod p<sup>2</sup>), then primitive root mod p<sup>k</sup> is ${this.current_result<p?`g`:`g+p`}=${this.current_result} `+this.Last_Exit_For_The_Lost();
 		else if (last[0]==6){
-			var olden=this.current_result>Math.floor(this.m/2)?this.current_result+Math.floor(this.m/2):this.current_result, newer, sup;
+			var olden=this.current_result>Math.floor(this.m/2)?this.current_result-Math.floor(this.m/2):this.current_result, newer, sup;
 			newer=olden+Math.floor(this.m/2);
 			sup=(this.m-p>p)?`<sup>k</sup>`:``;
 			return `The primitive root for 2p${sup}=${this.m} is either equal to g=${olden} or g+p${sup}=${newer}, depending on whether 2 divides g: as one can see, 2${olden%2==0?`|`:`&nmid;`}g - and so, primitive root modulo 2p${sup} is ${olden%2==0?`g+p${sup}`:`g`}=${this.current_result}. `+this.Last_Exit_For_The_Lost();

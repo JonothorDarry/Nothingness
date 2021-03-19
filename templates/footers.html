@@ -1,0 +1,8 @@
+{% macro script_toc() %}
+	<script src="{{url_for('static', filename='System/toc.js')}}"></script>
+{% endmacro %}
+
+
+{% macro full_lower(name, type) %}
+	{{ script_toc() }}
+{% endmacro %}

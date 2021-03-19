@@ -341,7 +341,7 @@ class ExtendedEuclidGcd extends EuclidGcd{
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-feral.check=document.getElementById('Nothingness');
+feral.check=document.getElementById('Nothingness1');
 var eg1=new EuclidGcd(feral, 84, 35);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));

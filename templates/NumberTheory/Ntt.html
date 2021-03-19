@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
 
 <html lang="en">
 	<head>
@@ -11,7 +13,7 @@
 	</head>
 
 	<body>
-		{{ headers.header('Number Theoretic Transform', 'NumberTheory') }}
+		{{ headers.full_upper('Number Theoretic Transform', 'NumberTheory') }}
 		<h3>First problem statement and definitions</h3>
 		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_o\) and \(b_0, b_1, \dots, b_m\) of two polynominals \(A(x), B(x)\), \(1 \le o,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{o+m}\) such that \(A(x)B(x)=(a_0+a_1x+a_2x^2+\dots+a_ox^o)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+o}x^{m+o})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \gt m+o\) and \(2 \nmid x\)</p>
 		<h3>First solution</h3>
@@ -27,7 +29,7 @@
 				</span>
 				What follows, 
 				<span class="central">\(A(x)=A_0(x^2)+xA_1(x^2)\)</span>
-				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the values of \(A(x)\) taht can be easily calculated are \(A(x_i^{1/2})\) and \(A(-x_i^{1/2})\) - so one needs to find suitable points for evaluating polynominal for subsequent iterations. </li><br>
+				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the values of \(A(x)\) that can be easily calculated are \(A(x_i^{1/2})\) and \(A(-x_i^{1/2})\) - so one needs to find suitable points for evaluating polynominal for subsequent iterations. </li><br>
 			<li>Let \(w_n^k=f^{\frac{kg}{n}}\), where \(f^g\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynominal will be calculated.
 				<span class="central">\(h \lt \frac{n}{2} \implies A(w_n^h)=A_0(w_n^{2h})+w_n^hA_1(w_n^{2h})=A_0(w_{n/2}^h)+w_n^hA_1(w_{n/2}^h)\)</span>
 				Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); <b>this leads to establish \(w_n^{n/2}=-1\), and \(f^g=w_n^n=1\);</b> then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynominal \(A(x)\) in \(n\) points if values of \(A_0(x), A_1(x)\) in certain \(\frac{n}{2}\) points were calculated.
@@ -201,10 +203,10 @@
 			<li>\(n\) has an inverse \(\frac{1}{n}\) in real numbers (then also in complex numbers).</li>
 			<li>Let \(w_n^k=e^{2\pi k/n}\) - then \(w_n^n=e^{2 \pi n/n}=e^{2 \pi}=cos(2\pi)+i*sin(2\pi)=1+i*0=1\)</li>
 			<li>\(w_n^{n/2}=e^{2\pi n/(2n)}=e^{\pi}=cos(\pi)+i*sin(\pi)=-1+i*0=-1\)</li>
-			<li>The roots \(w_n^k\) are distinct, because:
+			<li>The roots \(w_n^k\) are distinct, which is implied by \(\lt sin(x), cos(x) \gt\) being diffrent for all \(x \in \lt 0;2\pi \gt \) - by contradiction:
 			<ul>
 				<li>Functions \(sin(x)\) and \(cos(x)\) have different pair of signs in each quarter - so if \(x \neq y \land sin(x)=sin(y) \land cos(x)=cos(y)\), then they must lie in the same quarter.</li>
-				<li>Functions \(sin(x)\) and \(cos(x)\) are monotonically increasing/decreasing in single quarter - so if \(x \neq y \land sin(x)=sin(y) \land cos(x)=cos(y)\), then they must lie in different quarters</li>
+				<li>Functions \(sin(x)\) and \(cos(x)\) are monotonically increasing/decreasing in single quarter - so if \(x \neq y \land sin(x)=sin(y) \land cos(x)=cos(y)\), then they must lie in different quarters, which contradicts above.</li>
 				<li>For \(sin(x)\) and \(cos(x)\) in points \(0, \frac{\pi}{2}, \pi, \frac{3\pi}{2}\) one can check property himself.</li>
 			</ul>
 			</li>
@@ -242,5 +244,6 @@
 
 		<script src="{{url_for('static', filename='Ntt.js')}}"></script>
 		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
 	</body>
 </html>

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
 
 <html lang="en">
 	<head>
@@ -11,7 +13,7 @@
 	</head>
 
 	<body>
-		{{ headers.header('Divisors', 'NumberTheory') }}
+		{{ headers.full_upper('Divisors', 'NumberTheory') }}
 
 		<h3>Problem statement and definitions</h3>
 		<p>Suppose You are given \(n (n \le 10^6)\) numbers \(p_i, q_i (p_i,q_i \le 10^9)\) and Your aim is to evaluate number of divisors of \(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\) and present result \(mod\ 10^{9}+7\)</p>
@@ -51,6 +53,6 @@
 
 		</p>
 		-->
-
+		{{ footers.full_lower() }}
 	</body>
 </html>

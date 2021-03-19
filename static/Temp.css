@@ -19,6 +19,9 @@ h2{
 }
 
 textarea{height:100px;}
+a.toc {text-decoration: none;}
+a.algo {color: #B35900;}
+a.shower {color: #800055;}
 
 .breakAlgo{height:2px;}
 

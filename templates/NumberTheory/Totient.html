@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
 
 <html lang="en">
 	<head>
@@ -11,7 +13,7 @@
 		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 	</head>
 	<body>
-		{{ headers.header('Totient fucntion', 'NumberTheory') }}
+		{{ headers.full_upper('Totient function', 'NumberTheory') }}
 		<h3>First problem statement and definitions</h3>
 		<p>
 			Suppose You are given following problem: For a given number \(m, y (1 \le m, y \le 10^{13})\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
@@ -244,5 +246,6 @@
 		<script src="{{url_for('static', filename='Sieve.js')}}"></script>
 		<script src="{{url_for('static', filename='Totient.js')}}"></script>
 		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
 	</body>
 </html>

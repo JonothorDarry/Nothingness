@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
 
 <html lang="en">
 	<head>
@@ -12,9 +14,9 @@
 	</head>
 
 	<body>
-		{{ headers.header('Sieve of Erastothenes', 'NumberTheory') }}
+		{{ headers.full_upper('Sieve of Erastothenes', 'NumberTheory') }}
 
-		<h3>First Problem statement and definitions</h3>
+		<h2>First Problem statement and definitions</h2>
 		<p id="Theory">
 		Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime?<br>
 		To solve this problem, first let's formulate certain defininition:</p>
@@ -27,10 +29,12 @@
 				<span class="central">\(x=p_1p_2 \dots p_m\)</span>
 				Where \(p_i \in P\). One can also represent it as:
 				<span class="central">\(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\)</span>
-				Where \(q_i \ge 0\) are certain exponents and \(p_i\) are distinct. For example, \(100\) can be represented as \(100=2*2*5*5=2^25^2\). One can also consider infinite vector \(v_x=(q_1, q_2, \dots)\) such that \(x=p_1^{q_1} p_2^{q_2} \dots\), where \(p_i\) is the \(i\)-th prime number a factorization of \(x\). A prime factoriztion of \(x\) is unique if there is only one \(v_x\).
+				Where \(q_i \ge 0\) are certain exponents and all \(p_i\) are distinct. For example, \(100\) can be represented as \(100=2*2*5*5=2^25^2\). One can also consider infinite vector \(v_x=(q_1, q_2, \dots)\) such that \(x=p_1^{q_1} p_2^{q_2} \dots\), where \(p_i\) is the \(i\)-th prime number a factorization of \(x\). A prime factoriztion of \(x\) is unique if there is only one \(v_x\) - it will be shown later, that any number has unique prime factorization.
 			</li>
 		<br>
 		</ol>
+
+		<h2>Algorithms</h2>
 		<h3>First Solution</h3>
 		<p id="sol1">One can check whether \(a_i\) is prime by checking whether any integer \(x \in \lt 2;a_i-1 \gt\) is it's divisor: if it is, then \(a_i\) is not prime. This solution works in \(O(q*max(a_i))\), which is obvious if all numbers given in queries are prime - q numbers needs to be checked whether they have third divisor, and single check works in \(O(a_i)\)
 		</p><br>
@@ -68,7 +72,9 @@
 
 		Secondly, for given \(x\), no composite number \(y \lt x^2\) has lowest divisor \(d \gt 1\) greater or equal to \(x\), which was shown in 2nd solution to this problem - and so, marking can start from \(x^2\)
 		</p>
-			<h3>Complexity proof #1</h3>
+
+		<h2>Sieve properties and complexity</h2>
+		<h3>Complexity proof #1</h3>
 		<p id="Complexity">
 		It can be easily proven, that sieve, even without any optimizations works in \(O(n*log(n))\): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marks numbers. Marking numbers works in \(O(n*log(n))\), because it's sum of iterations on the table with difference equal to some prime: when sieve marks numbers divisible by \(2\), it passes at most \(\frac{n}{2}\) numbers; when it marks numbers divisible by \(3\), it passes at most \(\frac{n}{3}\) numbers, etc. So, algorith works in:
 			<br>
@@ -136,7 +142,7 @@
 				<li>Direct consequence of euclid's lemma: \(p|v_1v_2 \dots v_k \implies p|v_1 \lor p|v_2v_3...v_k \implies \dots \implies p|v_1 \lor p|v_2 \lor p|v_3 \lor \dots \lor p|v_k\)</li>
 				<li>Any prime number \(p\) has an unique factorization into primes: \(p=p\) - by definition it cannot be shown as product of different primes. Number \(1\) can be shown as \(p^0\) for any prime \(p\) - so factorization is unique.</li>
 				<li>Existence of factorization: suppose integer \(y \in N^+\) is a minimal number not having any factorization into primes: so, \(y\) cannot be a prime number (otherwise, its factorization would be \(y\)). Therefore, it can be shown as \(y=kl\), where \(k,l \ge 2\), but \(k=p_1^{g_1}p_2^{g_2} \dots p_n^{g_n}\) and \(l=p_1^{h_1}p_2^{h_2} \dots p_n^{h_n}\) (where \(h_i, g_i \ge 0\)) as they have some factorization, so, \(y=kl=p_1^{h_1+g_1}p_2^{h_2+g_2} \dots p_n^{h_n+g_n}\), which contradicts assumption - so, any natural number have a factorization into primes.</li>
-				<li>Uniqueness of factorization: suppose integer \(y \in N^+\) is a minimal number having at least two factorizations into primes: then, \(y=p_1^{q_1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\). From euclid's lemma consequences, \(p_1|r_1 \lor p_1|r_2 \lor \dots \lor p_1|r_n\) - without loss of generality, suppose, that \(p_1|r_1\) - then, \(\frac{y}{p_1}=p_1^{q_1-1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1-1}r_2^{s_2} \dots r_m^{s_m}\). But \(\frac{y}{p_1}\) have one factorization, which contradicts assumption and finishes the proof.</li>
+				<li>Uniqueness of factorization: suppose integer \(y \in N^+\) is a minimal number having at least two factorizations into primes: then, \(y=p_1^{q_1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\). From euclid's lemma consequences, \(p_1|r_1 \lor p_1|r_2 \lor \dots \lor p_1|r_m\) - without loss of generality, suppose, that \(p_1|r_1\) - then, \(\frac{y}{p_1}=p_1^{q_1-1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1-1}r_2^{s_2} \dots r_m^{s_m}\). But \(\frac{y}{p_1}\) have one factorization, which contradicts assumption and finishes the proof.</li>
 
 
 			</ol>
@@ -198,8 +204,9 @@
 		
 		<br><br>
 		<div id="Algo2" class="pureAlgo" style="position:sticky">
+			<h2>Enchanced Sieve and factorization</h2>
 			<div id="sieveSection">
-				<h2>Enchanced Sieve</h2>
+				<p>Enchanced Sieve</p>
 				<p>Input format: One number \(n\) is the maximal number, for which a minimal divisor has to be found:<br>
 				\(n\)
 				</p>
@@ -219,7 +226,7 @@
 
 
 			<div id="querySection">
-				<h2>Factorization query</h2>
+				<p>Factorization query</p>
 				<p>Input format: One number \(v\) is the value to factorize<br>
 				\(v\)
 				</p>
@@ -244,13 +251,13 @@
 			<li>One can check a single number \(x\) whether it is prime by checking, whether it has any divisor \(2 \le d \le \sqrt{x}\) - this solution works in \(O(\sqrt{x})\).</li>
 			<li>One can check for any number in range \(\lt 1;n \gt\) whether it is prime with <b>sieve of Erastothnes</b>, using fact, that a number is prime if it is not divisible by any other prime; this algorithm runs in \(O(nlog(n))\)</li>
 			<li>One can estimate sum in form \(\sum_{i=1}^{n} \frac{1}{n}+\frac{2}{n}+\dots+\frac{n}{n}=O(log(n))\); from this follows thesis, that sum of amount of divisors of all numbers in range \(\lt 1;n \gt\) can be estimated by \(O(nlog(n))\)
-			<li><b>Euclid's lemma</b> states that for \(p \in P\) occurs: \(p|ab \implies (p|a \land p|b)\) furthermore, \(p|a_1a_2 \dots a_n \implies (p|a_1 \lor p|a_2 \lor \dots \lor p|a_n)\)</li>
+			<li><b>Euclid's lemma</b> states that for \(p \in P\) occurs: \(p|ab \implies (p|a \lor p|b)\) furthermore, \(p|a_1a_2 \dots a_n \implies (p|a_1 \lor p|a_2 \lor \dots \lor p|a_n)\)</li>
 			<li><b>Fundamental theorem of arithmetic</b> states that every number \(x \in N^+\) has one unique factorization into prime numbers.</li>
 			<li>Sieve can be utilized to find factorization of all numbers in range \(\lt 1;n \gt\).</li>
 		</ol>
 		<h2>Problems</h2>
 		<p id="Summary">
-		Sieves allow solving multitude of problems, including also finding Euler totient function or applying includion/exclusion principle on greatest common divisors (GCD). Example problems regarding sieves from codeforces: <a href="https://codeforces.com/contest/300/problem/E">Empire Strikes Back</a>, <a href="https://codeforces.com/problemset/problem/73/E">Morrowindows</a>, <a href="https://codeforces.com/problemset/problem/839/D">Winter is Here</a>
+		Sieves allow solving multitude of problems, including among others finding Euler totient function or applying includion/exclusion principle on divisors. Example problems regarding sieves from codeforces: <a href="https://codeforces.com/contest/300/problem/E">Empire Strikes Back</a>, <a href="https://codeforces.com/problemset/problem/73/E">Morrowindows</a>, <a href="https://codeforces.com/problemset/problem/839/D">Winter is Here</a>
 		</p>
 		<div id="problems"></div>
 		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
@@ -258,5 +265,6 @@
 		<script src="{{url_for('static', filename='Sieve.js')}}"></script>
 		<script src="{{url_for('static', filename='Primes.js')}}"></script>
 		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
 	</body>
 </html>

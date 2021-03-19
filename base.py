@@ -218,7 +218,6 @@ def show_error(name, error):
             alls=['login', 'pass', 'email']
         for x in alls:
             strval.find(id=x)['value']=req.form[x]
-
     return strval.prettify()
 
 
@@ -227,7 +226,6 @@ def getBSFileByName(name):
     with open(f'./templates/{name}') as x_file:
         strval=BeautifulSoup(x_file.read(), 'html.parser')
     return strval
-
 
 
 def Router(htmlName, olden=None):

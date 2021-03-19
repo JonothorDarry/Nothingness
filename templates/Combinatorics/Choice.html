@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
 {% import 'algo.html' as algo %}
 
 <html lang="en">
@@ -12,7 +13,7 @@
 	</head>
 
 	<body>
-		{{ headers.header('Choice', 'Combinatorics') }}
+		{{ headers.full_upper('Choice', 'Combinatorics') }}
 
 		<h3>The notion of combinatorics</h3>
 		<ol>
@@ -347,6 +348,6 @@
 
 		<script src="{{url_for('static', filename='Choice.js')}}"></script>
 		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
 	</body>
-
 </html>

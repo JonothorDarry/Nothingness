@@ -46,7 +46,7 @@ class Iep extends Algorithm{
 		this.add_button_to_reality(1, ``, 4);
 		for (i=this.t-1; i>=0; i--){
 			this.add_button_to_reality(0, `a<sub>${i}</sub>`, 5);
-			this.add_button_to_reality(1, `${this.a[i]}`, 5);
+			this.add_button_to_reality(1, `${this.a[i]}`, 0);
 		}
 		this.add_button_to_reality(0, `n`, 5);
 		this.add_button_to_reality(1, `${this.n}`, 8);
@@ -92,7 +92,7 @@ class Iep extends Algorithm{
 		}
 		for (i=0; i<this.pl_sum; i++) this.add_button_to_reality(pows+3, '', 4);
 		
-		this.add_button_to_reality(pows+3, 0, 4);
+		this.add_button_to_reality(pows+3, 0, 8);
 		this.base_ender=NTMath.mul(this.calculate_postfac(this.n+this.t-1, this.t-1, this.mod), this.inversed, this.mod);
 		this.add_button_to_reality(pows+3, this.shapeshift(this.base_ender-full_summa), 4);
 		this.last_in_line=pows+3;
@@ -175,6 +175,7 @@ class Iep extends Algorithm{
 
 			staat.push([0, this.btn_list[(s[1]>>1)+3][this.pl_leftmost], 0, 14]);
 			staat.push([0, this.btn_list[(s[1]^(1<<this.leftmost_bit[s[1]]))+3][this.pl_leftmost+1], 0, 13]);
+			staat.push([0, this.btn_list[1][this.t-this.leftmost_bit[s[1]]], 0, 13]);
 			staat.push([0, this.btn_list[(s[1]>>1)+3][this.pl_amount], 14, 0]);
 
 			staat.push([0, this.btn_list[s[1]+3][this.pl_leftmost], 4, 1]);
@@ -188,6 +189,7 @@ class Iep extends Algorithm{
 			staat.push([0, this.btn_list[s[1]+3][this.pl_leftmost+1], 1, 0]);
 			staat.push([0, this.btn_list[(s[1]>>1)+3][this.pl_leftmost], 14, 0]);
 			staat.push([0, this.btn_list[(s[1]^(1<<this.leftmost_bit[s[1]]))+3][this.pl_leftmost+1], 13, 0]);
+			staat.push([0, this.btn_list[1][this.t-this.leftmost_bit[s[1]]], 13, 0]);
 			//Odrodzenie
 			staat.push([0, this.btn_list[s[1]+3][this.pl_sum], 4, 1]);
 			staat.push([1, summary, this.full_res, (this.full_res+this.partial_res[s[1]]*this.sgn[s[1]])%this.mod]);

@@ -7,3 +7,18 @@
 			<h1>{{ name }}</h1>
 		</header>
 {% endmacro %}
+
+{% macro table_of_contents() %}
+	<table>
+		<thead>
+			<tr><td>Table of Contents</td></tr>
+		</thead>
+		<tbody id="toc_list">
+		</tbody>
+	</table>
+{% endmacro %}
+
+{% macro full_upper(name, type) %}
+	{{ header(name, type) }}
+	{{ table_of_contents() }}
+{% endmacro %}

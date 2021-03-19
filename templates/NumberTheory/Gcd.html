@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
 
 <html lang="en">
 	<head>
@@ -10,12 +12,9 @@
 		<script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 	</head>
 	<body>
-		{{ headers.header('Greatest Common Divisor', 'NumberTheory') }}
-		<h3>First problem statement and definitions</h3>
-		<p>
-		<!--\(\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}\)-->
-		Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le 10^{18}\)?</p>
-		<p>To answer this question, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
+		{{ headers.full_upper('Greatest Common Divisor', 'NumberTheory') }}
+		<h2>Introduction</h2>
+		<p>While simplest problems from number theory usually involve sieves, it seems easier to start describing number theory from the notion of greatest common divisor. How to calculate it rapidly for large numbers? How to find \(p,q\) solving equations in form \(px+qy=g\) for given \(x,y,g\)? To answer those question, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
 		<ol>
 			<li><b>Divisor</b> An integer \(d \in Z\) is a divisor of an integer \(x \in Z\) (which is often denoted by \(d|x\)), if and only if:<br>
 				<span class="central">\(d|x \iff \exists_{k \in Z}dk=x\)</span><br>
@@ -27,7 +26,7 @@
 			<li><b>Least common multiple (lcm)</b>: An integer \(l \in N^+\) is lcm of numbers \(w, v\) if and only if:<br>
 				<span class="central">\(l=lcm(w, v) \iff w|l \land v|l \land !\exists_h (w|h \land v|h \land h&lt;l)\)</span><br>
 			</li>
-			<li><b>Remainder from dividing</b> number \(x\) by number \(m\), denoted later by \(x\%m\), is equal to:<br>
+			<li><b>Remainder from dividing</b> number \(x\) by number \(m \in N^+\), denoted later by \(x\%m\), is equal to:<br>
 				<span class="central">\(m \gt x\%m=x-\lfloor \frac{x}{m} \rfloor m \ge 0\)</span><br>
 			</li>
 			<li><b>Two integers \(a\), \(b\) are equivalent modulo m</b>, if:<br>
@@ -36,40 +35,31 @@
 			</li>
 		</ol>
 
-		<p>In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\). First solution not being absolute brute force (checking all integers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:</p>
-		<h3>Distribution of all divisors of a number and their upper estimate</h3>
+		<p>In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\).</p>
+		<h2>Problem I: Finding \(gcd(a,b)\)</h2>
+		<p>Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le n=10^{18}\)? First solution not being absolute brute force (checking all integers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:</p>
+		<h3>First sane idea: \(O(q\sqrt{n})\)</h3>
+		<h4>Distribution of all divisors of a number and their upper estimate</h4>
 		<p>If \(d\) is a divisor of \(x\), where \(d,x \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction is trivial: if \(d|x\) then, there exists such integer \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\) occurs \(|\{d:d|x \land d \ge 1\}| \le 2\sqrt{x}\) - because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
 		</p>
-		<h3>First solution</h3>
+		<h4>First solution</h4>
 		<p>
-		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this solution will work in \(O(q*\sqrt{w})\).
+		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this solution will work in \(O(q*\sqrt{n})\).
 		</p>
-		<h3>Second Solution</h3>
+
+		<h3>Viable solution: Euclidean algorithm in \(O(qlog(n))\)</h3>
 		<p>
 		Let's create arrays \(a_i\) and \(b_i\) such that \(a_0=w\), \(b_0=v\). One can define these arrays for \(i &gt; 0\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\%b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
 
 		</p>
-		<div id="Algo1" class="pureAlgo">
-			<h2>Euclidean algorithm</h2>
+		{{ algo.algorithm(1, 'Euclidean Algorithm', '
 			<p>Input format: Two numbers \(w, v\), specifying values, for which \(gcd(w,v)\) has to be calculated.<br>
 			\(w, v\)
-			<div id="Inputter">
-				<form>
-					<input class="inputter" id="Erasto" name="Erasto" value="84 35">
-				</form>
-				<button id="Sender" class="sender">Begin</button>
-				<button id="Prever" class="previous">Previous Move</button>
-				<button id="Nexter" class="next">Next Move</button>
-				<button id="Finisher" class="finish">Finish</button>
-				<input type="checkbox" id="Nothingness" name="shower"><label for="Nothingness">Show only table</label>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez" class="primez"></div>
-			<div id="Comprehend" class="comprehend"></div>
-		</div>
+			</p>
+		'
+		, '84 35', 'input', 'algo', 'checkbox', 'Nothingness') }}
 
-		<h2>Proofs</h2>
-		<h3>Correctness proof</h3>
+		<h4>Correctness proof</h4>
 		<p>
 			Thesis: for each \(i,\ gcd(a_i, b_i)\) is equal to gcd(\(w\), \(v\)).<br>
 			Proof by induction: For \(i=0\) \(gcd(a_i, b_i)=gcd(w, v)\), because \(a_0=w, b_0=v\). So: \(\exists_i gcd(a_i, b_i)=gcd(w, v)\). To finish proof is to show that for any \(i\) either \(gcd(a_i, b_i)=gcd(a_{i+1}, b_{i+1})\), or \(b_i=0\)<br>
@@ -81,7 +71,7 @@
 			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\%b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\%b_i, b_i)=gcd(b_i, a_i\%b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any integer divides \(0\), and so any number that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of a number \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Furthermore, it shows, that every divisor of both \(w, v\) is also a divisor of \(gcd(w,v)\)
 
 		</p>
-		<h3>Complexity proof</h3>
+		<h4>Complexity proof</h4>
 		<p>
 			It can be assumed without loss of generality, that \(a_i &gt; b_i\) - it is true after first iteration. Furthermore, 
 			<br><span class="central">\(b_i + a_i\%b_i &lt; b_i+b_i=2b_i\)</span><br>
@@ -92,9 +82,11 @@
 			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} = \frac{a_i+b_i}{b_i+a_i-b_i} = \frac{a_i+b_i}{a_i} = 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
 			And so, maximum number of operations can be bounded by \(O(q*log(min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after second iteration \(b_2 \lt a_2 \le min(w,v)\), and after \(k\) iterations sum \(a_k+b_k\) becomes lower at least \((\frac{3}{2})^{k-1}\) times than \(a_0+b_0\).
 		</p>
-		<h3>Second Problem</h3>
+		<h2>Second Problem</h2>
 		<p>
-			Let's say that sole \(gcd(w,v)\) is not enough: You want to find such numbers \(x, y\) such that: \(wx+vy=gcd(w,v)\). One can use same mechanism to solve this problem, but calculate also arrays \(p, q\), such that for each \(i\) following stands:
+		Let's say that sole \(gcd(w,v)\) is not enough: You want to find such numbers \(x, y\) such that: \(wx+vy=gcd(w,v)\).
+		<h3>Solution - Extending eclidean algorithm</h3>
+		One can use same mechanism to solve this problem, but calculate also arrays \(p, q\), such that for each \(i\) following stands:
 			<br><span class="central">\(p_iw+q_iv=b_i\)<br>
 				\(p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1\)<br>
 				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}\)<br></span>
@@ -103,29 +95,44 @@
 				\(b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z_i(p_iw + q_iv)= w(p_{i-1} - z_ip_i)+ v(q_{i-1} - z_iq_i)\)</span>
 			And so, \(p_{i+1}=p_{i-1}-z_ip_i\) and \(q_{i+1}=q_{i-1}-z_iq_i\). The existence of solution to this equation is called bezout's identity.
 		</p>
-		<div id="Algo2" class="pureAlgo">
-			<h2>Extended Euclidean Algorithm</h2>
+		{{ algo.algorithm(2, 'Extended Euclidean Algorithm', '
 			<p>Input format: Two numbers \(w, v\), specifying values, for which extended euclid algorithm will be run.<br>
 			\(w, v\)
 			</p>
-			<div id="Inputter2">
-				<form>
-					<input class="inputter" id="Erasto2" name="Erasto" value="84 35">
-				</form>
-				<button id="Sender2" class="sender">Begin</button>
-				<button id="Prever2" class="previous">Previous Move</button>
-				<button id="Nexter2" class="next">Next Move</button>
-				<button id="Finisher2" class="finish">Finish</button>
-				<input type="checkbox" id="Nothingness2" name="shower"><label for="Nothingness2">Show only table</label>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez2" class="primez"></div>
-			<div id="Comprehend2" class="comprehend"></div>
-		</div>
+		'
+		, '84 35', 'input', 'algo', 'checkbox', 'Nothingness') }}
 
-		<h3>First proof - Solution with different g</h3>
+			<h4>Proof concerning Extended Euclid overflow - estimation of \(p_i, q_i\)</h4>
+			<p>Die-hard utilitarist may notice, that \(p_i, q_i\) may overflow regardless of value of \(gcd(w,v)\) - this concern will be addressed below.</p>
+			<p>First, one can see, that \(sgn(p_i) \neq sgn(p_{i+1})\) and \(sgn(q_i) \neq sgn(q_{i+1})\) - it is because:</p>
+			<ol>
+				<li>\(p_0=1, p_1=0\), also \(q_0=0, q_1=1\) - as inductive step is exactly same for \(p\) and \(q\), it'll be shown only for \(p\)</li>
+				<li>Proving lemma by induction, \(p_i=p_{i-2}-zp_{i-1}\) - \(z\) is positive (as it is equal to \(\lfloor \frac{b_{i-2}}{b_{i-1}} \rfloor\)) - so it does not change sign of \(p_{i-1}\), and as \(sgn(p_{i-1}) \neq sgn(p_{i-2})\), then:
+					<ul>
+						<li>If \(p_{i-2}\) is \(0\) - then \(p_{i-1}\) cannot be \(0\), and \(-zp_{i-1}\) have different sign than \(p_{i-1}\), so \(sgn(p_i)=sgn(-p_{i-1}) \neq 0\), which implies \(sgn(p_i) \neq sgn(p_{i-1})\)</li>
+						<li>If \(p_{i-2}\) is not zero, then \(-zp_{i-1}\) either is equal to \(0\) - or \(-zp_{i-1}\) have same sign as \(p_{i-2}\), in both cases, \(sgn(p_{i-2})=sgn(p_i) \neq sgn(p_{i-1})\)</li>
+					</ul>
+				</li>
+			</ol>
+			{% set z="\\lfloor \\frac{b_{i-1}}{b_i} \\rfloor " %}
+			{% set z2="\\lfloor \\frac{b_{i-2}}{b_{i-1}} \\rfloor " %}
+			<p>One can also notice, that \(|p_{i-1}b_i-p_ib_{i-1}|=v\), and also \(|q_{i-1}b_i-q_ib_{i-1}|=w\) - proof is same for both, so inductive step will be shown only for \(p_i\)
+			<ol>
+				<li>(1) \(|p_0b_1-p_1b_0|=|b_1-0|=v\), also \(|q_0b_1-q_1b_0|=|0-b_0|=w\)</li>
+				<li>(2) \(|p_ib_{i+1}-p_{i+1}b_i|=|p_i(b_{i-1}-{{z}} b_i)-(p_{i-1}-{{z}} p_i)b_i|=|p_ib_{i-1}-{{z}} p_ib_i-p_{i-1}b_i+{{z}} p_ib_i|=|p_{i-1}b_i-p_ib_{i-1}|=v\)</li>
+			</ol>
+			</p>
+			<p>These two lemmas show, that:</p>
+			<ol>
+				<li>Values of \(|p_i|, |q_i|\) for \(i \ge 2\) are not decreasing, as \(|p_i|=|p_{i-2}-{{z2}}p_{i-1}|=|p_{i-2}|+|{{z2}}p_{i-1}| \ge |p_{i-2}|+|p_{i-1}|\) and since \(i=3\) occurs \(a_{i-1}=b_{i-2} \ge b_{i-1}\)</li>
+				<li>In the last (\(k\)-th) iteration of the algorithm, \(b_k=0, b_{k-1}=gcd(w, v)\) - and so \(v=|p_{k-1}b_k-p_kb_{k-1}|=|p_kgcd(w, v)|\), and \(|p_k|=\frac{v}{gcd(v, w)}\). Also, \(w=|q_{k-1}b_k-q_kb_{k-1}|=|q_kgcd(w, v)|\) - and so, \(|q_k|=\frac{w}{gcd(w,v)}\)</li>
+			</ol>
+			<p>This shows, tha always \(|p_i| \le \frac{v}{gcd(v,w)}\) and \(|q_i| \le \frac{w}{gcd(v,w)}\), which gives upper estimate on sizes of \(p_i, q_i\).
+
+
+		<h3>Proof I - Solution with different \(g\)</h3>
 		<p id="FinishingTouches1">
-			There are two important questions concerning extended gcd: firstly, whether is there any positive natural \(h &lt; gcd(w,v)=g\) such that there exist integers \(x, y\) such that \(wx+vy=h\)? I'll prove opposite by contradiction: <br>
+			There are two important questions concerning extended gcd: firstly, whether is there any positive natural \(h &lt; gcd(w,v)=g\) such that there exist integers \(x, y\) such that \(wx+vy=h\)? One can prove the opposite by contradiction: <br>
 			<span class="central">
 				\(wx+vy=h\)<br>
 				\(gkx+gly=h\)<br>
@@ -133,7 +140,7 @@
 			</span>
 			So, \(h\) must simultaneously fulfill: \(g|h\) and \(g &gt; h &gt; 0\). It is impossible, which finishes the proof. Furthermore, it shows, that for any \(x, y\) occurs \(gcd(w,v)|wx+vy\) <br>
 		</p>
-			<h3>Second proof - different x, y</h3>
+		<h3>Proof II - different \(p, q\) and the notion of \(lcm\)</h3>
 		<p>
 			Secondly, how many there are solutions \(x, y\), fulfilling equation \(wx+vy=g\)?
 			<span class="central">
@@ -168,32 +175,8 @@
 			</span>
 			And maximal number \(c\) dividing both \(w\) and \(v\) is \(c=gcd(v, w)\). So, \(s=|rw|=lcm(w, v)=\frac{wv}{gcd(w, v)}\). What follows, \(|r_1|=\frac{v}{gcd(w,v)}\) and \(|r_2|=\frac{w}{gcd(w,v)}\).<br><br>
 		</p>
-			<h3>Third proof - estimation of \(a_i, b_i\)</h3>
-			<p>First, one can see, that \(sgn(p_i) \neq sgn(p_{i+1})\) and \(sgn(q_i) \neq sgn(q_{i+1})\) - it is because:</p>
-			<ol>
-				<li>\(p_0=1, p_1=0\), also \(q_0=0, q_1=1\) - as inductive step is exactly same for \(p\) and \(q\), it'll be shown only for \(p\)</li>
-				<li>Proving lemma by induction, \(p_i=p_{i-2}-zp_{i-1}\) - \(z\) is positive (as it is equal to \(\lfloor \frac{b_{i-2}}{b_{i-1}} \rfloor\)) - so it does not change sign of \(p_{i-1}\), and as \(sgn(p_{i-1}) \neq sgn(p_{i-2})\), then:
-					<ul>
-						<li>If \(p_{i-2}\) is \(0\) - then \(p_{i-1}\) cannot be \(0\), and \(-zp_{i-1}\) have different sign than \(p_{i-1}\), so \(sgn(p_i)=sgn(-p_{i-1}) \neq 0\), which implies \(sgn(p_i) \neq sgn(p_{i-1})\)</li>
-						<li>If \(p_{i-2}\) is not zero, then \(-zp_{i-1}\) either is equal to \(0\) - or \(-zp_{i-1}\) have same sign as \(p_{i-2}\), in both cases, \(sgn(p_{i-2})=sgn(p_i) \neq sgn(p_{i-1})\)</li>
-					</ul>
-				</li>
-			</ol>
-			{% set z="\\lfloor \\frac{b_{i-1}}{b_i} \\rfloor " %}
-			{% set z2="\\lfloor \\frac{b_{i-2}}{b_{i-1}} \\rfloor " %}
-			<p>One can also notice, that \(|p_{i-1}b_i-p_ib_{i-1}|=v\), and also \(|q_{i-1}b_i-q_ib_{i-1}|=w\) - proof is same for both, so inductive step will be shown only for \(p_i\)
-			<span class="central">(1) \(|p_0b_1-p_1b_0|=|b_1-0|=v\), also \(|q_0b_1-q_1b_0|=|0-b_0|=|w|\)</span>
-			<span class="central">(2) \(|p_ib_{i+1}-p_{i+1}b_i|=|p_i(b_{i-1}-{{z}} b_i)-(p_{i-1}-{{z}} p_i)b_i|=|p_ib_{i-1}-{{z}} p_ib_i-p_{i-1}b_i+{{z}} p_ib_i|=|p_{i-1}b_i-p_ib_{i-1}|=v\)</span>
-			</p>
-			<p>These two lemmas show, that:</p>
-			<ol>
-				<li>Values of \(|p_i|, |q_i|\) for \(i \ge 2\) are not decreasing, as \(|p_i|=|p_{i-2}-{{z2}}p_{i-1}|=|p_{i-2}|+|{{z2}}p_{i-1}| \ge |p_{i-2}|+|p_{i-1}|\) and since \(i=3\) occurs \(a_{i-1}=b_{i-2} \ge b_{i-1}\)</li>
-				<li>In the last (\(k\)-th) iteration of the algorithm, \(b_k=0, b_{k-1}=gcd(w, v)\) - and so \(v=|p_{k-1}b_k-p_kb_{k-1}|=|p_kgcd(w, v)|\), and \(|p_k|=\frac{v}{gcd(v, w)}\). Also, \(w=|q_{k-1}b_k-q_kb_{k-1}|=|q_kgcd(w, v)|\) - and so, \(|q_k|=\frac{w}{gcd(w,v)}\)</li>
-			</ol>
-			<p>This shows, tha always \(|p_i| \le \frac{v}{gcd(v,w)}\) and \(|q_i| \le \frac{w}{gcd(v,w)}\), which gives upper estimate on sizes of \(p_i, q_i\).
 
-
-		<h3>Third Problem</h3>
+		<h2>Third Problem</h2>
 		<p>Suppose you have to find all solutions \(x\) satisfying: \(ax \equiv c \pmod m\) for given \(1 \le a, c, m \le 10^9\)</p>
 		<h3>Solution</h3>
 		<p>
@@ -226,7 +209,7 @@
 			<li>\(gcd(w, v)\) can be calculated in \(O(log(min(v,w)))\) with <b>Euclidean algortithm</b>, using fact, that \(gcd(w, v)=gcd(w\%v, v)\).</li>
 			<li>One can find pair \((x, y)\) solving equation \(wx+vy=gcd(w,v)\) also called <b>bezout's identity</b> using <b>extended Euclidean algorithm</b>. Also, for any \(p, q\) occurs \(gcd(w,v)|wp+vq\).</li>
 			<li>\(lcm(v, w)=\frac{vw}{gcd(v,w)}\)</li>
-			<li>If \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) - then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
+			<li>If pair \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) - then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
 			<li>All integers \(x, y\) produced by extended Euclidean algorithm are not exceeding those given as input.</li>
 			<li>Equation \(ax \equiv c \pmod m\) has any solutions if and only if \(c|gcd(a,m)\). Solutions have form \(\frac{pc}{gcd(a, m)}+k\frac{lcm(a, m)}{a}\) for some integer \(k\), where \(ap+ml=gcd(a, m)\) for some integer \(l\).</li>
 			<li>If \(gcd(m, a)=1\), then integer \(p\) solving \(ap+mq=1\) is called <b>modular multiplicative inverse of \(a\) modulo \(m\)</b>, also \(ap \equiv 1 \pmod m\)</li>
@@ -235,11 +218,13 @@
 		<h3>Problems</h3>
 		<p>Problems concerning GCD rely on finding multiplicative inverse, and so on. Example problems involving gcds are: <br>
 			<a href="https://codeforces.com/problemset/problem/200/E">Tractor College</a>, 
-			<a href="https://codeforces.com/problemset/problem/919/E">Congruence Equation</a>
+			<a href="https://codeforces.com/problemset/problem/919/E">Congruence Equation</a>,
+			<a href="https://codeforces.com/problemset/problem/585/C">Alice, Bob, Oranges and Apples</a>
 		</p>
 		<div id="problems"></div>
 		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>	
 		<script src="{{url_for('static', filename='Gcd.js')}}"></script>
 		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
 	</body>
 </html>

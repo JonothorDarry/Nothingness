@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
 {% import 'algo.html' as algo %}
 
 <html lang="en">
@@ -11,7 +12,7 @@
 		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 	</head>
 	<body>
-		{{ headers.header('Binary Exponentation', 'NumberTheory') }}
+		{{ headers.full_upper('Binary Exponentation', 'NumberTheory') }}
 
 		<h3>First problem statement</h3>
 		<p>
@@ -27,7 +28,6 @@
 		<span class="central">3) \(a=(a*a)\ mod\ m\)</span>
 		Until \(b &gt; 0\) - this makes process iterative.
 		</p>
-
 
 
 		{{ algo.algorithm(1, 'Binary Exponentation', '
@@ -117,5 +117,6 @@
 
 		<script src="{{url_for('static', filename='BinaryExpo.js')}}"></script>
 		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
 	</body>
 </html>

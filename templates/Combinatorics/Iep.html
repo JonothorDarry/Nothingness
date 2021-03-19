@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
 {% import 'algo.html' as algo %}
 
 <html lang="en">
@@ -12,7 +13,7 @@
 	</head>
 
 	<body>
-		{{ headers.header('Inclusion-Exclusion Principle', 'Combinatorics') }}
+		{{ headers.full_upper('Inclusion-Exclusion Principle', 'Combinatorics') }}
 		<h3>Problem statement and definitions</h3>
 		<p>Suppose You have to create a multiset of \(n\) elements (\(n \le 10^{14}\)), where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of \(i\)-th type. In how many ways this multiset can be created? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
 		<h3>The posited question</h3>
@@ -89,5 +90,6 @@
 
 		<script src="{{url_for('static', filename='Iep.js')}}"></script>
 		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
 	</body>
 </html>
