@@ -14,13 +14,22 @@
 	</head>
 	<body>
 		{{ headers.full_upper('Totient function', 'NumberTheory') }}
-		<h3>First problem statement and definitions</h3>
+		<h2>Introduction</h2>
+		<p>This article describes the properties of totient function and its consequences, among them euler theorem. The definitions used later in this article are:</p>
+		<ol>
+			<li><b>Totient function</b> \(\phi\) is defined on natural positive numbers as:
+				<span class="central">\(\phi(x) = |\{a: 1 \le a \le x \land gcd(a, x)=1\}|\)</span><br>
+				In other words, \(\phi(x)\) defines number of natural positive numbers not higher than \(x\) coprime to \(x\).
+			</li>
+		</ol>
+		<h2>Problem I</h2>
 		<p>
-			Suppose You are given following problem: For a given number \(m, y (1 \le m, y \le 10^{13})\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
+			Suppose You are given following problem: For given numbers \(m, y\ (1 \le m, y \le 10^{13})\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
 		</p>
-		<h3>Special case Solution: theory</h3>
-		<p>
-		It is approprite to solve problem for \(y=1\) before proceeding to general case. Let's define function \(\phi(a)\) as number of numbers \(1 \le k \le a\) coprime to \(a\): \(\phi(a)=|\{k: 1 \le k \le a \land gcd(k,a)=1\}|\). What can be said about such a function? <br>
+		<h3>Special case</h3>
+		<p>It is approprite to solve problem for \(y=1\) (where the solution is denoted by totient function) before proceeding to general case. What can be said about totient function? </p>
+
+		<h4>Properties of totient</h4>
 		<ol type="I">
 			<li>For prime \(p: \phi(p^k)=p^{k-1}(p-1)\) - because \(gcd(x, p^k) \gt 1 \iff p|x\), and all numbers \(x|p \land x \le p^k\) are: \(p, 2p, 3p, ... p^{k-1}p\). What follows, \(\phi(p^k)=p^k-p^{k-1}=p^{k-1}(p-1)\) </li>
 
@@ -35,10 +44,10 @@
 			\end{cases}
 		\)
 		</span>
-		from chinese remainder theorem, for coprime \(a, b\) pair \(c_1, c_2\) uniquely determines number \(x \in &lt;0;ab-1&gt;\)
+		from chinese remainder theorem, for coprime \(a, b\) pair \(c_1, c_2\) uniquely determines number \(x \in &lt;0;ab-1&gt;\).
 					</li>
-					<li> From Euclid's algorithm \(gcd(w, v)=gcd(w\ mod\ v, v)\). And so, \(gcd(x, a)=gcd(x\ mod\ a, a)=gcd(c_1, a)\), analogously \(gcd(x, b)=gcd(c_2, b)\).</li>
-					<li> From Euclid's lemma \(p|ab \implies p|b \lor p|a\). And if there is no \(p: (p|a \land p|x) \lor (p|b \land p|x)\), then there is no \(p: p|ab \land p|x\). And so, if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(gcd(x, ab)=1\) </li>
+					<li> From Euclid's algorithm \(gcd(x, a)=gcd(x\ mod\ a, a)=gcd(c_1, a)\), analogously \(gcd(x, b)=gcd(c_2, b)\).</li>
+					<li> \((gcd(a,x)=1 \land gcd(b, x)=1) \implies gcd(ab, x)=1\) - this follows from Euclid's lemma.</li>
 					<li> If each pair \(c_1, c_2\) uniquely defines \(x \in &lt;0;ab-1&gt;\), then one can prove theorem combinatorically: \(gcd(x, ab)=1 \iff (gcd(c_1, a)=1 \land gcd(c_2, b)=1)\). How many there are numbers \(c_1\), such that \(gcd(a, c_1)=1\) and \(c_1 \le a\)? \(\phi(a)\). Analogously for \(b\). And so, there are \(\phi(a) \phi(b)\) pairs \(c_1, c_2\) identifying \(x: gcd(x, ab)=1\), which finishes the proof.</li>
 				</ol>
 			</li>
@@ -60,18 +69,19 @@
 			\)
 		</span>
 		</p>
-		<h3>Special case Solution: factorization</h3>
+		<h4>Consequence of properties: factorization</h4>
 		<p>	
 		What follows, if one can factorise \(x=p_1^{q_2} p_1^{q_2} \dots p_n^{q_n}\), then \(\phi (x) = \phi (p_1^{q_1} p_1^{q_1} \dots p_n^{q_n}) = \phi (p_1^{q_1}) \phi(p_2^{q_2} \dots p_n^{q_n})= \dots =\phi (p_1^{q_1}) \phi(p_2^{q_2}) \dots \phi(p_n^{q_n})=(p_1-1)p_1^{q_1-1}(p_2-1)p_2^{q_2-1} \dots (p_n-1)p_n^{q_n-1}=p_1^{q_1}* \frac{p_1-1}{p_1}* p_2^{q_2}* \frac{p_2-1}{p_2}* \dots p_n^{q_n}* \frac{p_n-1}{p_n}=x*\frac{(p_1-1)}{p_1}* \frac{(p_2-1)}{p_2}* \dots \frac{(p_n-1)}{p_n}\).
 		</p>
 		<h3>Full solution</h3>
 		<p>
+			First, if \(y \nmid m\), then there cannot be a solution.
 			To solve full problem, one can observe, that if \(y|m \land y \gt 0\):
 			<ol>
 				<li>\(gcd(m, x)=y \iff gcd(\frac{m}{y}, \frac{x}{y})=1\)</li>
 				<li>\(x \le m \iff \frac{x}{y} \le \frac{m}{y}\) </li>
 			</ol>
-			And so, \( |\{x:\ gcd(x, m)=y\}|=\phi(\frac{m}{y}) \). One can solve problem by factorizing \(\frac{m}{y}\) and using pattern above: complexity will be \(O(\sqrt{\frac{m}{y}})\).
+			<p>And so, \( |\{x:\ gcd(x, m)=y\}|=\phi(\frac{m}{y}) \). One can solve problem by factorizing \(\frac{m}{y}\) and using formula above: complexity will be \(O(\sqrt{\frac{m}{y}})\).</p>
 		</p>
 		<h3>Consequence #1</h3>
 		<p>It's worth noting, that every number \(x \le m\) has \(gcd(x, m) \in \lt 1;m \gt \). What follows, \(\sum_{d:\ d|m} \phi(\frac{m}{d})=m\)</p>
@@ -79,57 +89,48 @@
 		<!--<h3>Consequence #2</h3>
 		<p>Furthermore, </p>-->
 
-		<h3>Sieve algorithm for finding totient</h3>
-		<p>To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve</p>
+		<h2>Problem II</h2>
+		<p>What if there are \(q\ (q \le 5*10^5)\) queries, and you have to solve identical problem as above with different constraints: for \(m, y\ (1 \le m, y \le n=5*10^6)\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
+		<h3>Solution with sieve for finding totient</h3>
+		<p>Note that in practice it is enough to find totient for each number in range \(\lt 1; 5*10^6\gt\) before processing queries and be able to find \(gcd\) in \(O(log(m+y))\) - for example using Euclid's algorithm - in order to solve this problem in satisfying \(O(n\log(\log(n))+q\log(n))\). To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve.</p>
 
-		<div id="Algo1" class="pureAlgo">
-			<h2>Totient calculation</h2>
+		{{ algo.algorithm(1, 'Totient sieve', '
 			<p>Input format: One number \(n\) is the size of the sieve used to find totients.<br>
 			\(n\)
 			</p>
-			<div id="Inputter">
-				<form>
-					<input type="number" class="inputter" id="Erasto" name="Erasto" value="99">
-				</form>
-				<button id="Sender" class="sender">Begin</button>
-				<button id="Prever" class="previous">Previous Move</button>
-				<button id="Nexter" class="next">Next Move</button>
-				<button id="Finisher" class="finish">Finish</button>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez" class="primez"></div>
-			<div id="Comprehend" class="comprehend"></div>
-		</div>
+		'
+		, '99') }}
 
-		<h3>Second problem statement</h3>
+		<h2>Problem III</h2>
 		<p> Suppose You are given numbers \(2 \le a_0, a_1, .. a_{n-1}, m \le 10^9+7, n \le 10^5\) and have to find value of such expression:
 		<span class="central" style="font-size:20px;">$$a_0^{ ({a_1} ^{( {a_2} ^ {(\dots a_{n-1})})})} mod\ m$$</span>
-		<h3>First observations (possibly useless)</h3>
-		<p>To solve this problem, one may first solve value of exponent, and then evaluate full expression: \(a_0^{c} \equiv x\ (mod\ m)\). Exponent can be calculated in the same way, until end of sequence is reached... but modulo what? It is rather impossible to store whole number as exponent or do any calculations on such arduous numbers. To calculte c, it would be wise to know such a number \(x\), such that \(a^b \equiv a^{b+x}\ (mod\ m)\) - at least for coprime \(a, m\). Such number must exist, because number of possible values of \(a^b\) is finite (equal to \(m\), to be precise), and so, from pigeonhole principle, there exist such \(s_1 \lt s_2\), such that \(a^{s_1} \equiv a^{s_2}\ (mod\ m)\). What follows, \(x=s_2-s_1\) (there must be more solutions, perhaps some are lower). Then, 
+		<h3>Observations concerning the essence of this problem</h3>
+		<p>To solve this problem, one may first find value of exponent, and then evaluate full expression: \(a_0^{c} \equiv x\ (mod\ m)\). Exponent can be calculated in the same way, until end of sequence is reached... but modulo what? It is rather impossible to store whole number as exponent or do any calculations on such arduous numbers. To calculte c, it would be wise to know such a number \(x\), such that \(a^b \equiv a^{b+x}\ (mod\ m)\) - at least for coprime \(a, m\). Such number must exist, because number of possible values of \(a^b \pmod m\) is finite (not higher than \(m\), to be precise), and so, from pigeonhole principle, there exist such \(s_1 \lt s_2\), such that \(a^{s_1} \equiv a^{s_2}\ (mod\ m)\). What follows, \(x=s_2-s_1\) (there must be more solutions, perhaps some are lower). Then, 
 		<span class="central">\( a^b \equiv a^{b+x}\ (mod\ m)\) <br>
 			\( a^b \equiv a^ba^x\ (mod\ m)\ \ \ //*(a^b)^{-1}\) - it exists, because \(gcd(a, m)=1\)<br>
 			\( 1 \equiv a^x\ (mod\ m)\)<br>
 		</span>
 		And so, \(a^c \equiv a^{c\ mod\ x}\ (mod\ m)\). Let's denote \(a\) as \(a_i\), \(x\) as \(x_i\). For all numbers coprime to \(m\): \(a_1, a_2 \dots a_{\phi(n)}\) there is \(x_j\), such  that \(a_j^{x_j} \equiv 1\). Let \(f(m)=lcm(x_1, x_2, \dots, x_{\phi(m)})\). Then, \(\forall_j a_j^{f(m)} \equiv 1\ (mod\ m)\). And so, for any \(m\) there exist function \(f\), such that \(\forall_{x: gcd(x, m)=1} x^{f(m)} \equiv 1\ (mod\ m)\). Now, the problem is: what function can be \(f\)?
 		</p>
+
 		<h3>Euler's Theorem</h3>
 		<p>
 		Let \(a_1, a_2, \dots, a_{\phi(m)}\) be a sequence of all numbers \(y:\ gcd(y, m)=1 \land y \le m \), such that \(\forall_{i,j} a_i \neq a_j\). Let \(b=a_i\) for some \(i\). Then:
-		<span class="central">\(a_1, a_2, \dots, a_{\phi(m)}\ \ //*b\)<br>
-			\(ba_1, ba_2, \dots, ba_{\phi(m)} \mod m\)
+		<span class="central">\(a_1, a_2, \dots, a_{\phi(m)} \pmod m\ \ //*b\)<br>
+			\(ba_1, ba_2, \dots, ba_{\phi(m)} \pmod m\)
 		</span>
 		Let's take two numbers from second sequence: are they distinct? By contradiction:
 		<span class="central">\(ba_i \equiv ba_j\pmod m\ \ //*b^{-1}\) - modular inverse must exist, for \(gcd(b, m)=1\)<br>
 			\(a_i \equiv a_j\pmod m\)
 		</span>
-		But from definition \(a_i \neq a_j\), both being lower than \(m\), so they are distinct. And so, both sequnces consist only of numbers coprime to \(m\), have distinct elements modulo \(m\), and have same elements: \(\{x:\ gcd(x, m)=1 \land x \le m\}\). What follows, one is permutation of the second. And so, 
+		But from definition \(a_i \neq a_j\), both being lower than \(m\), so they are distinct. And so, both sequnces consist only of numbers coprime to \(m\), size of both sequences is \(\phi(m)\), each sequence have pairwise distinct elements modulo \(m\), and both sequences consist of set of same elements. In other words sequence \(a\) is permutation of the sequence \(b\). And so, 
 		<span class="central">\(a_1a_2 \dots a_{\phi(m)} \equiv ba_1ba_2 \dots ba_{\phi(m)} \pmod m\)<br>
 			\(a_1a_2 \dots a_{\phi(m)} \equiv b^{\phi(m)}a_1a_2 \dots a_{\phi(m)} \pmod m\ \ //*a_1^{-1}a_2^{-1}...a_{\phi(m)}^{-1}\)  - modular inverse exists, for all numbers are coprime to \(m\)<br>
 			\(1 \equiv b^{\phi(m)} \pmod m\)
 		</span>
 		And so, lo, behold, function was found, \(f=\phi\): \(\forall_{x: gcd(x, m)=1} x^{\phi(m)} \equiv 1\ (mod\ m)\)
 		</p>
-		<h3>Generalized Euler's theorem</h3>
+		<h4>Generalized Euler's theorem</h4>
 		<p>
 		The question arises: what if one wants to find \(a^{huge} \bmod m\) with \(gcd(a, m) \gt 1\)? one can represent \(m, a\), for \(v, w \in N \land p_1p_2...p_n|m \land p_1p_2...p_n|a\) (where \(p_1...p_n\) are only common prime divisors of \(m, a\)) in such way:
 		<span class="central">\(m=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}v\)</span>
@@ -158,17 +159,13 @@
 		<span class="central">\(a^z \bmod m = a^{\phi(m)}*a^{(z-\phi(m))\ mod\ \phi(m)} = a^{\phi(m)+z\ mod\ \phi(m)}\)</span>
 		But, for \(\phi(m) \gt z \ge \lfloor log_2(m) \rfloor, a^{z} \equiv a^{\phi(m)+z} \equiv a^{\phi(m)+z\ mod\ \phi(m)} \pmod m\). What follows, for all \(z \ge \lfloor log_2(m) \rfloor\) the above holds.
 		</p>
-		<h3>Additional analysis</h3>
+		<h4>Additional analysis</h4>
 		<p>
 			There are still some unresolved things, however.
 			<ol>
 				<li>
 					For \(a^z, z \lt\) minimal \(c: a^c \equiv a^{c\ mod\ \phi(m)+\phi(m)} \pmod m\), is there such \(h \gt 0\), such that \(a^z \equiv a^{z+h} \pmod m\)?<br>
-					There isn't: if \(gcd(a^z, m) \neq gcd(a^{z+1}, m)\), but \(\forall_{i \in N_+} gcd(a^i, m) \le gcd(a^{i+1}, m)\) - because \(g|a \implies \forall_{k \in N_+} g|ka\), then there is no such \(h \in N_+\), such that \(gcd(a^{z+h}, m)=gcd(a^z, m)\). But from first lemma in generalized euler, for\(g=gcd(a^{z+h}, m), g|a^{z+h} \land g|m \implies g|(a^{z+h} \bmod m)\). But \(g \nmid a^z\), and \(g|m \land g \nmid x \implies g \nmid x \bmod m\). Proof by contradiction, where \(c=x \bmod m=gc', m=gm'\):
-					<span class="central">\(x-gm'=gc'\)</span>
-					<span class="central">\(x=gc'+gm'=g(c'+m')\)</span>
-					<span class="central">\(g|x\)</span>
-					Which contradicts assumptions. What follows, \(\forall_{h \in N_+} \exists_{g \in N_+} (g|a^{z+h} \bmod m \land g \nmid a^z \bmod m)\). This proves, that \(\forall_{h \in N_+} a^z \bmod m \neq a^{z+h} \bmod m\) for \(z \le \) minimal \(c\).
+					There isn't: if \(gcd(a^z, m) \neq gcd(a^{z+1}, m)\), and \(\forall_{i \in N_+} gcd(a^i, m) \le gcd(a^{i+1}, m)\) - because \(g|a \implies \forall_{k \in N_+} g|ka\), then there is no such \(h \in N_+\), such that \(gcd(a^{z+h}, m)=gcd(a^z, m)\) - and because mod operation preserves \(gcd\), then \(a^z \not \equiv a^{z+h} \pmod m\).
 				</li>
 				<li>
 					Why \(\phi(m) \ge \lfloor log_2(m) \rfloor \)? Proof is somewhat ultramagical:
@@ -196,29 +193,17 @@
 			</ol>
 		</p>
 
-		<div id="Algo2" class="pureAlgo">
-			<h2>Power Tower</h2>
-			<div id="Inputter2">
-				<p>Input format: values \(n, m\), and then \(n\) values \(a_i\), such that an expression \(a_1^{(a_2^{(\dots a^n)})} \pmod m\) is evaluated.<br>
-				\(n, m\)<br>
-				\(a_1, \dots, a_n\)
-				</p>
-				<form>
-					<textarea class="inputter" id="Totient2" name="Totient">6 107&#10;2 7 3 12 43 25</textarea>
-				</form>
-				<button id="Sender2" class="sender">Begin</button>
-				<button id="Prever2" class="previous">Previous Move</button>
-				<button id="Nexter2" class="next">Next Move</button>
-				<button id="Finisher2" class="finish">Finish</button>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez2" class="primez"></div>
-			<div id="Comprehend2" class="comprehend"></div>
-		</div>
+		{{ algo.algorithm(2, 'Power Tower', '
+			<p>Input format: values \(n, m\), and then \(n\) values \(a_i\), such that an expression \(a_1^{(a_2^{(\dots a^n)})} \pmod m\) is evaluated.<br>
+			\(n, m\)<br>
+			\(a_1, \dots, a_n\)
+			</p>
+		'
+		, '6 107&#10;2 7 3 12 43 25', 'textarea') }}
 
-		<h3>Complexity</h3>
+		<h4>Complexity</h4>
 		<p>
-		By \(\phi_i(x)\) I denoted \(\phi(\phi_{i-1}(x))\), furthermore \(\phi_0(x)\) denotes \(x\).<br>
+		\(\phi_i(x)\) denotes value of \(\phi(\phi_{i-1}(x))\), furthermore \(\phi_0(x)\) denotes \(x\).<br>
 			There are some important points in analysing complexity of the algorithm above:
 			<ol type="I">
 				<li>In each move, one has to calculate \(\phi_i(m)\) - it's the only problematic point of the algorithm: one can estimate complexity by \(O(n \sqrt{m})\). But, it's worth noting, that \(\forall_{i \gt 0} \phi_{i+1}(m) \le \frac{\phi_i(m)}{2} \lor \phi_i(m)=1\). Proof:
@@ -229,10 +214,18 @@
 					</ol>	
 				</li>
 				<li>What follows, only in at most \(\lceil log_2(m) \rceil\) iterations one needs to calculate \(\phi_i(m)\) - and so, maximial complexity goes down to \(O(min(n, log_2(m)) \sqrt{m}+nlog_2(m))\) (second element comes from binary exponentation)</li>
-				<li><!--But one could also use the fact, that \(2*\sqrt{m}+\sqrt{\frac{m}{2}}+ \dots +\sqrt{\frac{m}{2^i}}=\sqrt{m}+\)-->One could also use geometric sum to prove, that in fact complexity will be like, \(O(nlog_2(m)+\sqrt{m})\), because sum \(\sqrt{m}+\sqrt{\frac{m}{2}}+ \dots +\sqrt{\frac{m}{2^i}}=\sqrt{m} \frac{1-(\frac{1}{2^{log_2(m)}})^{log_2{m}}}{1-\frac{1}{\sqrt{2}}} \le \sqrt{m}\frac{1}{\frac{\sqrt{2}-1}{\sqrt{2}}} = \sqrt{m} \frac{\sqrt{2}}{\sqrt{2}-1} \le 4 \sqrt{m}\) - this follows from sum of geometric sequence - and so, finding next totients will work in \(O(\sqrt{m})\)</li>
+				<li><!--But one could also use the fact, that \(2*\sqrt{m}+\sqrt{\frac{m}{2}}+ \dots +\sqrt{\frac{m}{2^i}}=\sqrt{m}+\)-->One could also use geometric sum to prove, that in fact complexity will be, like, \(O(\sqrt{m}+nlog_2(m))\), because sum \(\sqrt{m}+\sqrt{\frac{m}{2}}+ \dots +\sqrt{\frac{m}{2^i}}=\sqrt{m} \frac{1-(\frac{1}{2^{log_2(m)}})^{log_2{m}}}{1-\frac{1}{\sqrt{2}}} \le \sqrt{m}\frac{1}{\frac{\sqrt{2}-1}{\sqrt{2}}} = \sqrt{m} \frac{\sqrt{2}}{\sqrt{2}-1} \le 4 \sqrt{m}\) - this follows from sum of geometric sequence - and so, finding next totients will work in \(O(\sqrt{m})\)</li>
 				<li>Finally, talking about binary exponentation to the power of 0 is nonsense - one does only need to consider exponentation at most \(\lceil log_2(m) \rceil\) times. So, overall complexity is something like \(O(log_2^2(m)+\sqrt{m}+n)\) - \(n\) is to read the sequence and possibly count \(log_2(a^b)\) - at most \(log_2log_2(m)\) times</li>
 			</ol>
 
+		<h2>Summary</h2>
+		<ol>
+			<li>Totient is a multiplicative function: that is, \(\phi(ab)=\phi(a)\phi(b)\) for coprime \(a, b\).</li>
+			<li>For factorization \(x=p_1^{q_1}p_2^{q_2} \dots p_m^{q_m}\) one can (or cannot) notice, that \(\phi(p_1^{q_1}p_2^{q_2} \dots p_m^{q_m})=(p_1-1)(p_2-1)\dots (p_m-1) p_1^{q_1-1}p_2^{q_2-1}\dots p_1^{q_m-m}=x\frac{(p_1-1)(p_2-1) \dots (p_m-1)}{p_1p_2 \dots p_m}\).</li>
+			<li>Totients in a range can be found using standard sieve.</li>
+			<li>By <b>Euler's Theorem</b> if  \(a, m\) are coprime, then \(a^{\phi(m)} \equiv 1 \pmod m\)</li>
+			<li>In general, for not necessarilly coprime \(a, m\) and \(c \ge \lfloor \log_2(m) \rfloor\) holds: \(a^{c \pmod {\phi(m)} + \phi(m)} \equiv a^c \pmod m\). Notice that \(gcd(a^c, m)\) grows up to some value \(c\), which has to be lower than \(log_2(m)\) - thus it hold for all \(c \ge \lfloor \log_2(m) \rfloor\).</li>
+		</ol>
 		<h3>Problems</h3>
 		<p>Most problems where Euler's totient function is useful are those, when one needs to find multiplicative inverse of some large prime number, problems involving pure totient are rare. Examples:<br>
 		<a href="https://codeforces.com/problemset/problem/1114/F">Please, another Queries on Array</a>, 

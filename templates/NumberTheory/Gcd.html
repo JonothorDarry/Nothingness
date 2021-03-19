@@ -191,9 +191,22 @@
 			\(ar \equiv c-ax \equiv 0 \pmod m\)<br>
 			\(ar=km\)</span>
 		What follows, \(s=|ar|\) is minimal such integer, such that \(m|s \land a|s\) - then, \(|ar|=lcm(a, m)\), and so, \(r=\frac{lcm(a, m)}{a}\). Therefore, all solutions have form \(\frac{pc}{gcd(a, m)}+k\frac{lcm(a, m)}{a}\) for some integer \(k\).
+		</p>
 
+		<h3>Modulo operation preserves \(gcd\)</h3>
+		<p>While it comes straight from definition, it might be wise to emphasize certain propery of equivalence modulo; namely,
+		<span class="central">\(x \equiv y \pmod m \implies gcd(x, m) = gcd(y, m)\)</span>
+		If one denotes \(g=gcd(x, m)\) and \(h=gcd(y, m)\), then proof can go as follows:
+		<span class="central">\(x-km = y\)</span>
+		<span class="central">\(gx'-gkm' = y\)</span>
+		<span class="central">\(gcd(x, m)|y \implies gcd(y, m) \ge gcd(x, m)\)</span>
+		<span class="central">\(x = y+km\)</span>
+		<span class="central">\(x = hy'+hkm'\)</span>
+		<span class="central">\(gcd(y, m)|x \implies gcd(x, m) \ge gcd(y, m)\)</span>
+		<span class="central">\((gcd(x, m) \ge gcd(y, m) \land gcd(x, m) \le gcd(y, m)) \implies gcd(y, m)=gcd(x, m)\)</span>
 
 		</p>
+
 		<h3>The notion of modular inverse</h3>
 		<p>
 		An integer \(p\) is called a <b>modular multiplicative inverse</b> of \(a\) modulo \(m\) (where \(gcd(a, m)=1\)), if
@@ -212,6 +225,7 @@
 			<li>If pair \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) - then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
 			<li>All integers \(x, y\) produced by extended Euclidean algorithm are not exceeding those given as input.</li>
 			<li>Equation \(ax \equiv c \pmod m\) has any solutions if and only if \(c|gcd(a,m)\). Solutions have form \(\frac{pc}{gcd(a, m)}+k\frac{lcm(a, m)}{a}\) for some integer \(k\), where \(ap+ml=gcd(a, m)\) for some integer \(l\).</li>
+			<li>If \(x \equiv y \pmod m\), then \(gcd(x, m)=gcd(y, m)\)</li>
 			<li>If \(gcd(m, a)=1\), then integer \(p\) solving \(ap+mq=1\) is called <b>modular multiplicative inverse of \(a\) modulo \(m\)</b>, also \(ap \equiv 1 \pmod m\)</li>
 		</ol>
 
