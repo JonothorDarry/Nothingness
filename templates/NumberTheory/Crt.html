@@ -32,9 +32,9 @@
 			\end{cases}
 			\)
 			</span>
-			where \(0 \le c_i \lt s_i \le 10^9 \land lcm(s_1, s_2, \dots, s_m)=v \le 10^{18}\) The problem is: find \(x\) satisfying these equations
+			where \(0 \le c_i \lt s_i \le 10^9 \land lcm(s_1, s_2, \dots, s_m) \le 10^{18}\) The problem is: find \(x\) satisfying these equations
 		</p>
-		<h3>The reasonable solution in \(O(m\log(v))\)</h3>
+		<h3>The reasonable solution in \(O(m\log(\max(s_i)))\)</h3>
 		<h4>The first thesis</h4>
 		<p id="Solution">
 			If it is possible to show equivalent equation for two different equations, then one can reduce number of equations by one:<br>
@@ -80,7 +80,7 @@
 			for certain integers \(a,\ b\). What follows, <br>
 			<span class="central">\(s_1a+c_1 = s_2b+c_2\)</span>
 			<span class="central">\(s_1a-s_2b=c_2-c_1\)</span><br>
-			One can solve equation \(s_1k+s_2l=gcd(s_1, s_2)\) in \(O(\log(min(s_1, s_2)))\) using extended euclid; If \(gcd(s_1,s_2) \nmid (c_2-c_1)\), then one can go out and solve different problems, for there are no integer solutions: <br>
+			One can solve equation \(s_1k+s_2l=gcd(s_1, s_2)\) in \(O(\log(\min(s_1, s_2)))\) using extended euclid; If \(gcd(s_1,s_2) \nmid (c_2-c_1)\), then one can go out and solve different problems, for there are no integer solutions: <br>
 			<span class="central">\(s_1a-s_2b=c_2-c_1\)</span>
 			<span class="central">\(gcd(s_1,s_2)|(s_1a-s_2b)\)</span>
 			<span class="central">\(gcd(s_1,s_2) \nmid (c2-c1)\)</span>
@@ -118,7 +118,7 @@
 					v|s_2 \\
 				\end{cases}
 			\)</span><br>
-		And so, \(|v|=lcm(s_1, s_2)=\frac{s_1s_2}{gcd(s_1,s_2)}\), which finishes problem, if \(s_{1,2}=lcm(s_1,s_2)\) and \(c_{1,2}=s_1k\frac{c_2-c_1}{gcd(s_1,s_2)}+c_1\) from second paragraph. That solves whole problem in \(O(m\log(v))\)
+		And so, \(|v|=lcm(s_1, s_2)=\frac{s_1s_2}{gcd(s_1,s_2)}\), which finishes problem, if \(s_{1,2}=lcm(s_1,s_2)\) and \(c_{1,2}=s_1k\frac{c_2-c_1}{gcd(s_1,s_2)}+c_1\) from second paragraph. That solves whole problem in \(O(m\log(\max(s_i)))\)
 		</p>
 
 		{{ algo.algorithm(1, 'System of congruence equations', '
@@ -145,7 +145,7 @@
 		<div>
 			<h2>Summary</h2>
 			<ol>
-				<li>System of \(m\) congruential equations in form \(x \equiv c_i \pmod {s_i}\) can be solved in \(O(m\log(lcm(s_1, s_2, \dots s_m)))\)</li>
+				<li>System of \(m\) congruential equations in form \(x \equiv c_i \pmod {s_i}\) can be solved in \(O(m\log(\max(s_i)))\)</li>
 				<li>Worth noting consequence of Euclid's lemma: \(gcd(a, c)=1 \land gcd(b, c)=1 \implies gcd(ab, c)=1\).</li>
 				<li><b>Chimese Remainder Theorem</b> states, that if all \(s_i\) are distinct, then there is exactly one solution \(\pmod {\prod s_i}\)</li>
 			</ol>

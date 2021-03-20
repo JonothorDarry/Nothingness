@@ -43,27 +43,15 @@
 		</p>
 		
 
-		<div id="Algo1" class="pureAlgo">
-			<h2>Finding Diameter</h2>
+		{{ algo.algorithm(1, 'Finding Diameter', '
 			<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree.<br>
 			\(n\)<br>
 			\(a_1, b_1\)<br>
 			\(\dots\)<br>
 			\(a_{n-1}, b_{n-1}\)
 			</p>
-			<div id="Inputter">
-				<form>
-					<textarea class="inputter" id="TreeBasics" name="TreeBasics" style="height:140px;">8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;</textarea>
-				</form>
-				<button id="Sender" class="sender">Begin</button>
-				<button id="Prever" class="previous">Previous Move</button>
-				<button id="Nexter" class="next">Next Move</button>
-				<button id="Finisher" class="finish">Finish</button>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez" class="primez"></div>
-			<div id="Comprehend" class="comprehend"></div>
-		</div>
+		'
+		, '8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;', 'textarea', 'algo') }}
 
 		<h3>Second problem</h3>
 		<p>
@@ -88,8 +76,7 @@
 		</p>
 
 		
-		<div id="Algo2" class="pureAlgo">
-			<h2>Finding maximal distance to marked point</h2>
+		{{ algo.algorithm(2, 'Finding maximal distance to marked point', '
 			<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree. \(m\) is the amount of marked vertices, \(c_i\) are marked vertices<br>
 			\(n\)<br>
 			\(a_1, b_1\)<br>
@@ -98,19 +85,8 @@
 			\(m\)<br>
 			\(c_1, \dots, c_m\)
 			</p>
-			<div id="Inputter2">
-				<form>
-					<textarea class="inputter" id="TreeBasics2" name="TreeBasics" style="height:140px;">8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;3&#10;3 7 2&#10;</textarea>
-				</form>
-				<button id="Sender2" class="sender">Begin</button>
-				<button id="Prever2" class="previous">Previous Move</button>
-				<button id="Nexter2" class="next">Next Move</button>
-				<button id="Finisher2" class="finish">Finish</button>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez2" class="primez"></div>
-			<div id="Comprehend2" class="comprehend"></div>
-		</div>
+		'
+		, '8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;3&#10;3 7 2&#10;', 'textarea', 'algo') }}
 
 		<div id="problems"></div>
 		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>

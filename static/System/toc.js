@@ -19,6 +19,7 @@ function make_toc(){
 		console.log(lst[i].className=='shower');
 		if (lst[i].className=='shower') refer.classList.add("shower"); //Dubious - prevent 2nd class
 		if (lst[i].className=='algo') refer.classList.add("algo");
+		if (lst[i].className=='querier') refer.classList.add("querier");
 		refer.href=`#${lst[i].id}`;
 
 		refer.innerHTML=title;

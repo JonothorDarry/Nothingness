@@ -26,11 +26,12 @@
 
 					{% if add_on=='radio' %}
 						{% set y=added_elements[0] %}
-						<input type="radio" id="{{y}}" name="algoType"><label for="{{y}}">{{y}}</label>
+						<input type="radio" id="{{y}}" name="algoType" checked><label for="{{y}}">{{y}}</label>
 						{% for x in added_elements[1:] %}
 							<input type="radio" id="{{x}}" name="algoType"><label for="{{x}}">{{x}}</label>
 						{% endfor %}
 					{% endif %}
+
 					{% if add_on=='checkbox' %}
 						<input type="checkbox" id="{{added_elements}}{{id}}" name="shower"><label for="{{added_elements}}{{id}}">Show only table</label> <!--GCD-targeted-->
 					{% endif %}

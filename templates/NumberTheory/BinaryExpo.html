@@ -14,11 +14,12 @@
 	<body>
 		{{ headers.full_upper('Binary Exponentation', 'NumberTheory') }}
 
-		<h3>First problem statement</h3>
-		<p>
-			Suppose You have three numbers: \(0 &lt; a, b, m &le; 10^9+7\), and are asked to find \(x: a^b \equiv x (mod\ m)\). To solve this problem with algorithm different than brute force (multiply \(a\ b\) times modulo \(m\) - complexity \(O(b)\) - it can be assumed, that multiplication modulo \(m\) works in \(O(1)\)), one can use binary exponentation.
-		</p>
-		<h3>Solution</h3>
+		<h2>Introduction</h2>
+		<p>This article shows quick method for solving equations in form \(a^b \equiv x \pmod m\) and how to use it in order to find \(k\)-th element of a linear recursive equation with constant coefficients.</p>
+
+		<h2>Problem I: solving \(a^b \equiv x \pmod m\)</h2>
+		<p>Suppose You have three numbers: \(0 &lt; a, b, m &le; 10^9+7\), and are asked to find \(x: a^b \equiv x \pmod m\). To solve this problem with algorithm different than brute force (multiply \(a\ b\) times modulo \(m\) - complexity \(O(b)\) - it can be assumed, that multiplication modulo \(m\) works in \(O(1)\)), one can use binary exponentation.</p>
+		<h3>Solution in \(O(log(b))\)</h3>
 		<p>
 		\(a^b\) can be shown as: 
 		<span class="central">\(a^b=a^{2 \lfloor \frac{b}{2} \rfloor +b\ mod\ 2}=a^{2 \lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2} = (a^2)^{\lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2}\)</span>
@@ -26,7 +27,7 @@
 		<span class="central">1) \(res=res*a^{b\ mod\ 2}\ mod\ m\)</span>
 		<span class="central">2) \(b=\lfloor \frac{b}{2} \rfloor\)</span>
 		<span class="central">3) \(a=(a*a)\ mod\ m\)</span>
-		Until \(b &gt; 0\) - this makes process iterative.
+		Until \(b=0\) - this makes process iterative.
 		</p>
 
 
@@ -39,15 +40,18 @@
 		
 		<p>This animation shows, why method is called binary exponentation: if \(b\) is shown as \(b=2^{i_1}+2^{i_2}+...+2^{i_k}\), where \(\forall_{w,v} i_w \neq i_v\), then \(res=a^{2^{i_1}}*a^{2^{i_2}}*...*a^{2^{i_k}}\).
 		<h3>Further analysis</h3>
-		<p>
-			The method above also allows multiplication modulo \(m\), but \(res=0\) on the beginning - for \(0\) is neutral element of addition. One can utilize this method to raise matrices to power, because matrix multiplication is associative (i.e \((A*B)*C=A*(B*C)\)). This allows raising square matrices to \(k\)-th power within \(O(n^3log(k))\) time complexity, where \(n\) is matrix size.
-		</p>
-		<h3>Finding \(n\)-th value of a recursive sequence</h3>
-		<p>
-			Suppose a recursive sequence is given in form: 
+		<p>The method above also allows multiplication modulo \(m\), but \(res=0\) on the beginning - for \(0\) is neutral element of addition. One can utilize this method to raise matrices to power, because matrix multiplication is associative (i.e \((A*B)*C=A*(B*C)\)). This allows raising square matrices to \(n\)-th power within \(O(k^3log(n))\) time complexity, where \(k\) is matrix size.</p>
+		<h2>Problem II: Finding \(n\)-th element of linear recursive equation of \(k\)-th degree</h2>
+		<p>Suppose a recursive sequence is given in form: 
 			<span class="central">\(f_n=c_1f_{n-1}+c_2f_{n-2}+...+c_kf_{n-k}+c_0\)</span>
 			And thine purpose is to find \(f_n\ mod\ m\), \(f_i, c_i, m, n &lt; 10^9, k &lt; 100\), where \(c_i, f_i\) for \(i &le; k\) are given.
-			Standard brute-force dp solution would solve this problem in \(O(nk)\). But, there is certain property of recursive sequences, that can be utilized. Namely:
+		</p>
+		<h3>Brutal solution in \(O(nk)\)</h3>
+		<p>Standard brute-force dp solution would solve this problem in \(O(nk)\) - by calculating \(n\)-th element with previous \(k\) elements kept in memory, plugged into equation.</p>
+
+		<h3>Matrix power solution in \(O(k^3log(n))\)</h3>
+		<p>
+			But, there is certain property of recursive sequences, that can be utilized. Namely:
 			<span class="central">
 			$$
 			\begin{bmatrix}
@@ -79,7 +83,7 @@
 			\end{bmatrix}
 			$$
 			</span>
-			So, such matrix as above transforms vector having \(k\) subsequent elements ending on \(n\) to vector having \(k\) subsequent elements ending on \(n+1\). What follows, multiplying vector by such matrix \(v\) times would result in a vector ending on \(n+v\).
+			So, such matrix as above transforms vector having \(k\) subsequent elements ending on \(f_n\) to vector having \(k\) subsequent elements ending on \(f_{n+1}\). What follows, multiplying vector by such matrix \(v\) times would result in a vector ending on \(f_{n+v}\).
 			<span class="central">
 			$$
 			\begin{bmatrix}
@@ -104,6 +108,12 @@
 			And so, this allows computing value of a recursive sequence in \(O(k^3log(n))\). Notably, one can use this trick also to solve recurrences using index of a sequence, power of some value, and so on as long as one can find transformation matrix from a vector to next vector of elements; sometimes one can logarithm a sequence to obtain feasible sequence.
 		</p>
 
+		<h2>Summary</h2>
+		<ol>
+			<li>One can use equation \(a^b=(a^2)^{\lfloor \frac{b}{2} \rfloor}*a^{b \% 2}\) in order to calculate value \(a^b \equiv x \pmod m\) in \(O(\log(b))\)</li>
+			<li>One can notice, that binary exponentation may be used to power matrices of size \(k\) to the power of \(n\) in the same way in \(O(k^3\log(n))\)</li>
+			<li>\(n\)-th elements of certain linear recurrence equations of \(k\)-th degree can be calculated in \(O(k^3\log(n))\). In order to solve it a map from one vector of solutions \([f_i, f_{i+1} \dots f_{i+n-1}]\) to next vector \([f_2, f_3, \dots f_{i+n}]\) may come in handy.</li>
+		</ol>
 		<h3>Problems</h3>
 		<p>Problems involving binary exponentation can be found literally everywhere, most interesting ones usually involve sequence trick or number of paths in a graph of certain length.<br>
 		<a href="https://codeforces.com/problemset/problem/226/C">Anniversary</a>, 

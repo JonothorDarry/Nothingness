@@ -16,27 +16,27 @@
 	<body>
 		{{ headers.full_upper('Sieve of Erastothenes', 'NumberTheory') }}
 
-		<h2>First Problem statement and definitions</h2>
+		<h2>Introduction</h2>
 		<p id="Theory">
-		Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime?<br>
-		To solve this problem, first let's formulate certain defininition:</p>
+		This article will cover sieving technique and it's complexity, showing it's use in solving primes-related problems. To approach those problems, first let's formulate certain definitions:</p>
 		<ol>
 			<li><b>Prime number</b>: a number \(p \in N^+\) is prime (or \(p \in P\), where \(P\) is set of all primes), if and only if<br>
 			<span class="central">\(p \in P \iff |\{d:d|p \land d \ge 1\}|=2\)<br></span>
-			In other words, \(k\) needs to have exactly \(2\) different positive divisors - one and itself (note that \(1\) is not a prime, as it has only \(1\) divisor). For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A <b>composite number</b> is a number which is neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number. The first solution that can be discussed is absolute brute force
+			In other words, \(p\) needs to have exactly \(2\) different positive divisors - one and itself (note that \(1\) is not a prime, as it has only \(1\) divisor). For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A <b>composite number</b> is a number which is neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number.
 			</li>
 			<li><b>Factorization of a number \(x\) into primes</b> is representation of a number as a product of prime numbers:
 				<span class="central">\(x=p_1p_2 \dots p_m\)</span>
 				Where \(p_i \in P\). One can also represent it as:
 				<span class="central">\(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\)</span>
-				Where \(q_i \ge 0\) are certain exponents and all \(p_i\) are distinct. For example, \(100\) can be represented as \(100=2*2*5*5=2^25^2\). One can also consider infinite vector \(v_x=(q_1, q_2, \dots)\) such that \(x=p_1^{q_1} p_2^{q_2} \dots\), where \(p_i\) is the \(i\)-th prime number a factorization of \(x\). A prime factoriztion of \(x\) is unique if there is only one \(v_x\) - it will be shown later, that any number has unique prime factorization.
+				Where \(q_i \ge 0\) are certain exponents and all \(p_i\) are distinct. For example, \(100\) can be represented as \(100=2*2*5*5=2^25^2\). One can also consider infinite sequence \(v_x=(q_1, q_2, \dots)\) such that \(x=p_1^{q_1} p_2^{q_2} \dots\), where \(p_i\) is the \(i\)-th prime number a factorization of \(x\). A prime factoriztion of \(x\) is unique if there is only one \(v_x\) - it will be shown later, that any number has unique prime factorization.
 			</li>
 		<br>
 		</ol>
 
-		<h2>Algorithms</h2>
+		<h2>Problem I</h2>
+		<p>Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime?</p>
 		<h3>First Solution</h3>
-		<p id="sol1">One can check whether \(a_i\) is prime by checking whether any integer \(x \in \lt 2;a_i-1 \gt\) is it's divisor: if it is, then \(a_i\) is not prime. This solution works in \(O(q*max(a_i))\), which is obvious if all numbers given in queries are prime - q numbers needs to be checked whether they have third divisor, and single check works in \(O(a_i)\)
+		<p id="sol1">This algorithm contains depictions of absolute brutality. One can check whether \(a_i\) is prime by checking whether any integer \(x \in \lt 2;a_i-1 \gt\) is it's divisor: if it is, then \(a_i\) is not prime. This solution works in \(O(q*max(a_i))\), which is obvious if all numbers given in queries are prime - \(q\) numbers needs to be checked whether they have third divisor, and single check works in \(O(a_i)\)
 		</p><br>
 
 		<h3>Second Solution</h3>
@@ -44,27 +44,16 @@
 		</p><br>
 
 		<h3>Third Solution - sieve</h3>
-		<p id="sol3">However, problem can be solved with preprocessing and answering query in O(1) by creating array of all elements, initially marked as primes, then taking subsequent prime numbers (the lowest marked as prime number) starting from 2 and marking all numbers divisible by it except itself as non-primes; then going to the next prime number (3), repeat procedure, and so on, as on animation:
+		<p id="sol3">However, problem can be solved with preprocessing and answering query in O(1) by creating array of all elements, initially marked as primes, then taking subsequent prime numbers (the lowest marked as prime number) starting from 2 and marking all numbers divisible by it except itself as non-primes; then going to the next prime number (3), repeat procedure, and so on, as on visualization:
 		</p>
 		
-		<div id="Algo1" class="pureAlgo">
-			<h2>Sieve</h2>
+
+		{{ algo.algorithm(1, 'Sieve', '
 			<p>Input format: One number \(n\) is the size of the sieve.<br>
 			\(n\)
 			</p>
-			<div id="Inputter">
-				<form>
-					<input type="number" class="inputter" id="Erasto" name="Erasto" value="99">
-				</form>
-				<button id="Sender" class="sender">Begin</button>
-				<button id="Prever" class="previous">Previous Move</button>
-				<button id="Nexter" class="next">Next Move</button>
-				<button id="Finisher" class="finish">Finish</button>
-			</div>
-			<div class="breakAlgo"></div>
-			<div id="Primez" class="primez"></div>
-			<div id="Comprehend" class="comprehend"></div>
-		</div>
+		'
+		, '99') }}
 
 		<p id="Anime-Descr">
 		Begin starts the sieve with a given limit. Next move moves forward current sieve, Previous move moves backward. This sieve has 2 optimizations: first, if a number is marked as non-prime, then all numbers it could mark were already marked by it's divisor. Proof:<br><br>
@@ -73,8 +62,7 @@
 		Secondly, for given \(x\), no composite number \(y \lt x^2\) has lowest divisor \(d \gt 1\) greater or equal to \(x\), which was shown in 2nd solution to this problem - and so, marking can start from \(x^2\)
 		</p>
 
-		<h2>Sieve properties and complexity</h2>
-		<h3>Complexity proof #1</h3>
+		<h4>Sieve complexity proof</h4>
 		<p id="Complexity">
 		It can be easily proven, that sieve, even without any optimizations works in \(O(n*log(n))\): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marks numbers. Marking numbers works in \(O(n*log(n))\), because it's sum of iterations on the table with difference equal to some prime: when sieve marks numbers divisible by \(2\), it passes at most \(\frac{n}{2}\) numbers; when it marks numbers divisible by \(3\), it passes at most \(\frac{n}{3}\) numbers, etc. So, algorith works in:
 			<br>
@@ -129,6 +117,14 @@
 			<br>
 			Furthermore, the second inequality in this proof also shows, that sum of number of divisors over all numbers in a range \(&lt;1; n&gt;\) can be estimated by \(O(n*logn)\) - because every divisor \(d\) has exactly \(\lfloor \frac{n}{d} \rfloor\) numbers divisible by it, and this sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*logn)\).
 		</p>
+				
+				
+				
+			<h2>Problem II</h2>
+			<p id="ZwieteProbleme">
+				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(q\ (q\le10^6)\) numbers \(a_i (1 \le a_i \le n=10^6)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). First question, that shoul be addressed before solving problem itself - is such factorization unique?
+			</p>
+
 			<h3>Fundamental theorem of arithmetic</h3>
 			<p>One can prove, that each number \(x \in N^+\) has unique factorization: if \(x\) is shown as \(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\), where \(p_i \in P \land q_i \in N \land p_i \lt p_{i+1}\) (it is always possible to show \(x\) in such manner - this will also be proven) and also as \(x=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\), where \(r_i \in P \land s_i \in N^+ \land r_i \lt r_{i+1}\), then \(m=n \land \forall_i (p_i=r_i \land s_i=q_i)\). It may be wise to prove certain lemmas first:</p>
 			<ol>
@@ -143,13 +139,58 @@
 				<li>Any prime number \(p\) has an unique factorization into primes: \(p=p\) - by definition it cannot be shown as product of different primes. Number \(1\) can be shown as \(p^0\) for any prime \(p\) - so factorization is unique.</li>
 				<li>Existence of factorization: suppose integer \(y \in N^+\) is a minimal number not having any factorization into primes: so, \(y\) cannot be a prime number (otherwise, its factorization would be \(y\)). Therefore, it can be shown as \(y=kl\), where \(k,l \ge 2\), but \(k=p_1^{g_1}p_2^{g_2} \dots p_n^{g_n}\) and \(l=p_1^{h_1}p_2^{h_2} \dots p_n^{h_n}\) (where \(h_i, g_i \ge 0\)) as they have some factorization, so, \(y=kl=p_1^{h_1+g_1}p_2^{h_2+g_2} \dots p_n^{h_n+g_n}\), which contradicts assumption - so, any natural number have a factorization into primes.</li>
 				<li>Uniqueness of factorization: suppose integer \(y \in N^+\) is a minimal number having at least two factorizations into primes: then, \(y=p_1^{q_1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\). From euclid's lemma consequences, \(p_1|r_1 \lor p_1|r_2 \lor \dots \lor p_1|r_m\) - without loss of generality, suppose, that \(p_1|r_1\) - then, \(\frac{y}{p_1}=p_1^{q_1-1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1-1}r_2^{s_2} \dots r_m^{s_m}\). But \(\frac{y}{p_1}\) have one factorization, which contradicts assumption and finishes the proof.</li>
-
-
 			</ol>
 
-			<h3>Complexity proof #2</h3>
+			<h3>Enchanced Sieve of Erastothenes</h3>
+			<p>Marking each number with it's lowest divisor (instead of sole information whether it's prime) leads to solving this problem in the same way as problem above, in complexity \(O(nlog(n)+qlog(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)</p>
+		<br><br>
+
+		<div id="Algo2" class="pureAlgo" style="position:sticky">
+			<h4 class="querier">Enchanced Sieve and factorization</h4>
+			<div id="sieveSection">
+				<p>Enchanced Sieve</p>
+				<p>Input format: One number \(n\) is the maximal number, for which a minimal divisor has to be found:<br>
+				\(n\)
+				</p>
+				<div id="Inputter2">
+					<form>
+						<input type="number" id="Erasto2" class="inputter" name="Erasto2" value="99">
+					</form>
+					<button id="Sender2" class="sender">Begin</button>
+					<button id="Prever2" class="previous">Previous Move</button>
+					<button id="Nexter2" class="next">Next Move</button>
+					<button id="Finisher2" class="finish">Finish</button>
+				</div>
+				<div class="breakAlgo"></div>
+				<div id="Primez2" class="primez"></div>
+				<div id="Comprehend2" class="comprehend"></div>
+			</div>
+
+
+			<div id="querySection">
+				<p>Factorization query</p>
+				<p>Input format: One number \(v\) is the value to factorize<br>
+				\(v\)
+				</p>
+				<div id="Inputter3">
+					<form>
+						<input type="number" id="Querier" class="inputter" name="query" value="99">
+					</form>
+					<button id="Sender3" class="sender">Begin</button>
+					<button id="Prever3" class="previous">Previous Move</button>
+					<button id="Nexter3" class="next">Next Move</button>
+					<button id="Finisher3" class="finish">Finish</button>
+				</div>
+				<div class="breakAlgo"></div>
+				<div class="primez"></div>
+				<div id="Query_output" class="comprehend">
+					In order to start query You need to finish the sieve
+				</div>
+			</div>
+		</div>
+		<h4>Different complexity proof of a sieve using fundamental theorem</h4>
 			<p>
-				But there is also simpler proof with assumption, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
+				There is also simpler proof with assumption, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
 			<br><br>
 			<span class="central">(I) If \(x\) can be shown as 
 				\(
@@ -193,59 +234,8 @@
 			<p id="gutSieve">
 				Query answering can be done in \(O(q)\), because for each query \(a_i\) one only needs to look whether it is marked as prime or not - that can be done in \(O(1)\). So total complexity for a given task is at most \(O(n*log(n)+q)\), where \(n\) is number, for which we run sieve, that is \(n \ge max(a_i)\). 
 			</p>
-				
-				
-				
-			<h3>Second problem</h3>
-			<p id="ZwieteProbleme">
-				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(n\ (n\le10^6)\) numbers \(a_i (1 \le a_i \le 10^6)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). Such representation is unique for each number. If You'll mark each number with it's lowest divisor (instead of sole information whether it's prime) then You'll be able to solve this problem in the same way as above, in complexity \(O(nlog(n)+qlog(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)
-
-		</p>
-		
-		<br><br>
-		<div id="Algo2" class="pureAlgo" style="position:sticky">
-			<h2>Enchanced Sieve and factorization</h2>
-			<div id="sieveSection">
-				<p>Enchanced Sieve</p>
-				<p>Input format: One number \(n\) is the maximal number, for which a minimal divisor has to be found:<br>
-				\(n\)
-				</p>
-				<div id="Inputter2">
-					<form>
-						<input type="number" id="Erasto2" class="inputter" name="Erasto2" value="99">
-					</form>
-					<button id="Sender2" class="sender">Begin</button>
-					<button id="Prever2" class="previous">Previous Move</button>
-					<button id="Nexter2" class="next">Next Move</button>
-					<button id="Finisher2" class="finish">Finish</button>
-				</div>
-				<div class="breakAlgo"></div>
-				<div id="Primez2" class="primez"></div>
-				<div id="Comprehend2" class="comprehend"></div>
-			</div>
 
 
-			<div id="querySection">
-				<p>Factorization query</p>
-				<p>Input format: One number \(v\) is the value to factorize<br>
-				\(v\)
-				</p>
-				<div id="Inputter3">
-					<form>
-						<input type="number" id="Querier" class="inputter" name="query" value="99">
-					</form>
-					<button id="Sender3" class="sender">Begin</button>
-					<button id="Prever3" class="previous">Previous Move</button>
-					<button id="Nexter3" class="next">Next Move</button>
-					<button id="Finisher3" class="finish">Finish</button>
-				</div>
-				<div class="breakAlgo"></div>
-				<div class="primez"></div>
-				<div id="Query_output" class="comprehend">
-					In order to start query You need to finish the sieve
-				</div>
-			</div>
-		</div>
 		<h2>Summary</h2>
 		<ol>
 			<li>One can check a single number \(x\) whether it is prime by checking, whether it has any divisor \(2 \le d \le \sqrt{x}\) - this solution works in \(O(\sqrt{x})\).</li>
@@ -255,7 +245,7 @@
 			<li><b>Fundamental theorem of arithmetic</b> states that every number \(x \in N^+\) has one unique factorization into prime numbers.</li>
 			<li>Sieve can be utilized to find factorization of all numbers in range \(\lt 1;n \gt\).</li>
 		</ol>
-		<h2>Problems</h2>
+		<h3>Problems</h3>
 		<p id="Summary">
 		Sieves allow solving multitude of problems, including among others finding Euler totient function or applying includion/exclusion principle on divisors. Example problems regarding sieves from codeforces: <a href="https://codeforces.com/contest/300/problem/E">Empire Strikes Back</a>, <a href="https://codeforces.com/problemset/problem/73/E">Morrowindows</a>, <a href="https://codeforces.com/problemset/problem/839/D">Winter is Here</a>
 		</p>

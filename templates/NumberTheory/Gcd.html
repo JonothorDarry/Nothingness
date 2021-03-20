@@ -36,18 +36,18 @@
 		</ol>
 
 		<p>In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\).</p>
-		<h2>Problem I: Finding \(gcd(a,b)\)</h2>
-		<p>Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le n=10^{18}\)? First solution not being absolute brute force (checking all integers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*min(w,v))\)) is discussed below:</p>
-		<h3>First sane idea: \(O(q\sqrt{n})\)</h3>
+		<h2>Problem I: Finding \(gcd(w,v)\)</h2>
+		<p>Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le n=10^{18}\)? First solution not being absolute brute force (checking all integers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*\min(w,v))\)) is discussed below:</p>
+		<h3>First sane idea: \(O(q\sqrt{\min(w,v)})\)</h3>
 		<h4>Distribution of all divisors of a number and their upper estimate</h4>
 		<p>If \(d\) is a divisor of \(x\), where \(d,x \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction is trivial: if \(d|x\) then, there exists such integer \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\) occurs \(|\{d:d|x \land d \ge 1\}| \le 2\sqrt{x}\) - because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
 		</p>
 		<h4>First solution</h4>
 		<p>
-		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this solution will work in \(O(q*\sqrt{n})\).
+		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this solution will work in \(O(q*\sqrt{\min(w,v)})\).
 		</p>
 
-		<h3>Viable solution: Euclidean algorithm in \(O(qlog(n))\)</h3>
+		<h3>Viable solution: Euclidean algorithm in \(O(q\log(\min(w,v)))\)</h3>
 		<p>
 		Let's create arrays \(a_i\) and \(b_i\) such that \(a_0=w\), \(b_0=v\). One can define these arrays for \(i &gt; 0\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\%b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
 
@@ -80,7 +80,7 @@
 			<br><span class="central">(1) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} &gt; \frac{a_i+b_i}{2b_i} &ge; \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span>
 
 			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} = \frac{a_i+b_i}{b_i+a_i-b_i} = \frac{a_i+b_i}{a_i} = 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
-			And so, maximum number of operations can be bounded by \(O(q*log(min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after second iteration \(b_2 \lt a_2 \le min(w,v)\), and after \(k\) iterations sum \(a_k+b_k\) becomes lower at least \((\frac{3}{2})^{k-1}\) times than \(a_0+b_0\).
+			And so, maximum number of operations can be bounded by \(O(q*\log(\min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after second iteration \(b_2 \lt a_2 \le min(w,v)\), and after \(k\) iterations sum \(a_k+b_k\) becomes lower at least \((\frac{3}{2})^{k-1}\) times than \(a_0+b_0\).
 		</p>
 		<h2>Second Problem</h2>
 		<p>
@@ -219,7 +219,7 @@
 		<h2>Summary</h2>
 		<ol>
 			<li>\((d|x \land d \ge 1 \land x \ge 1) \implies (d \le \sqrt{x} \lor \frac{x}{d} \le \sqrt{x})\). Also, \(|\{d: d|x \land d \ge 1 \land x \ge 1\}| \le 2\sqrt{x}\)</li>
-			<li>\(gcd(w, v)\) can be calculated in \(O(log(min(v,w)))\) with <b>Euclidean algortithm</b>, using fact, that \(gcd(w, v)=gcd(w\%v, v)\).</li>
+			<li>\(gcd(w, v)\) can be calculated in \(O(\log(\min(v,w)))\) with <b>Euclidean algortithm</b>, using fact, that \(gcd(w, v)=gcd(w\%v, v)\).</li>
 			<li>One can find pair \((x, y)\) solving equation \(wx+vy=gcd(w,v)\) also called <b>bezout's identity</b> using <b>extended Euclidean algorithm</b>. Also, for any \(p, q\) occurs \(gcd(w,v)|wp+vq\).</li>
 			<li>\(lcm(v, w)=\frac{vw}{gcd(v,w)}\)</li>
 			<li>If pair \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) - then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>

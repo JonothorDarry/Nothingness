@@ -14,14 +14,16 @@
 
 	<body>
 		{{ headers.full_upper('Number Theoretic Transform', 'NumberTheory') }}
-		<h3>First problem statement and definitions</h3>
+		<h2>Introduction</h2>
+		<p>This article describes techniques of multiplying two polynominals of size \(o, m\) in \(O((o+m)\log(o+m))\) and use of those techniques for solving problems regarding generating functions.</p>
+		<h2>Problem I - multiplying polynominals</h2>
 		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_o\) and \(b_0, b_1, \dots, b_m\) of two polynominals \(A(x), B(x)\), \(1 \le o,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{o+m}\) such that \(A(x)B(x)=(a_0+a_1x+a_2x^2+\dots+a_ox^o)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+o}x^{m+o})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \gt m+o\) and \(2 \nmid x\)</p>
 		<h3>First solution</h3>
 		<p>One can multiply each element in the first bracket with element from second bracket, then add resulting \(om\) elements to correct coefficient \(c_i\); this solution works in \(O(om)\)
-		<h3>Threshold of transformation</h3>
+		<h3>Threshold of transformation - solution in \(O((o+m)\log(o+m))\)</h3>
 		<ol>
 			<li>If \(m+o=k\), then let \(n\) be minimal number, such that \(n \gt k \land \exists_{l \in Z} n=2^l\). Then, the result will be calculated as \(n\) coefficients, and polynominals \(A(x), B(x)\) will be used as if they had \(n\) coefficients (The additional coefficients, say, for \(A(x)\) they will be \(a_{o+1}, a_{o+2} \dots a_{n-1}\) will be evaluated to \(0\))</li>
-			<li>One may change the methodology of obtaining a polynominal a little bit: instead of directly finding the coefficients of \(C(x)\), one may find \(n\) values \(x_i\), obtain values of both \(A(x_i)\) and \(B(x_i)\) in those points, then multiply values \(A(x_i)B(x_i)=C(x_i)=y_i\), and transform \(n\) values of polynominal \(C(x)\) in points \(x_i: C(x_i)=y_i\) into its coefficients - this process is called interpolation of a polynominal.</li>
+			<li>One may change the methodology of obtaining a polynominal a little bit: instead of directly finding the coefficients of \(C(x)\), one may find \(n\) values \(x_i\), obtain values of both \(A(x_i)\) and \(B(x_i)\) in those points, then multiply values \(A(x_i)B(x_i)=C(x_i)=y_i\), and transform \(n\) values of polynominal \(C(x)\) in points \(x_i: C(x_i)=y_i\) into its coefficients \(c_i\) - this process is called interpolation of a polynominal.</li>
 			<li>Let 
 				<span class="central">\(A(x)=a_0+a_1x+ \dots + a_{n-1}x^{n-1}\)<br>
 					\(A_1(x)=a_1+a_3x+a_5x^2+ \dots a_{n-1}x^{n/2-1}\)<br>
@@ -29,12 +31,12 @@
 				</span>
 				What follows, 
 				<span class="central">\(A(x)=A_0(x^2)+xA_1(x^2)\)</span>
-				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the values of \(A(x)\) that can be easily calculated are \(A(x_i^{1/2})\) and \(A(-x_i^{1/2})\) - so one needs to find suitable points for evaluating polynominal for subsequent iterations. </li><br>
+				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the values of \(A(x)\) that can be easily calculated are \(A(x_i^{1/2})\) and \(A(-(x_i^{1/2}))\) - so one needs to find suitable points for evaluating polynominal for subsequent iterations. </li><br>
 			<li>Let \(w_n^k=f^{\frac{kg}{n}}\), where \(f^g\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynominal will be calculated.
 				<span class="central">\(h \lt \frac{n}{2} \implies A(w_n^h)=A_0(w_n^{2h})+w_n^hA_1(w_n^{2h})=A_0(w_{n/2}^h)+w_n^hA_1(w_{n/2}^h)\)</span>
 				Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); <b>this leads to establish \(w_n^{n/2}=-1\), and \(f^g=w_n^n=1\);</b> then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynominal \(A(x)\) in \(n\) points if values of \(A_0(x), A_1(x)\) in certain \(\frac{n}{2}\) points were calculated.
 				<span class="central">\(h=\frac{n}{2}+s\ge \frac{n}{2} \implies A(w_n^h)=A_0(w_n^{2h})+w_n^hA_1(w_n^{2h})=A_0(w_n^{2(n/2+s)})+w_n^hA_1(w_n^{2(n/2+s)})=A_0(w_n^nw_n^{2s})+w_n^hA_1(w_n^nw_n^{2s})=A_0(w_n^{2s})+w_n^hA_1(w_n^{2s})=A_0(w_{n/2}^s)+w_n^hA_1(w_{n/2}^s)\)</span>
-				All roots \(w_n^k\) have to be different, otherwise the last part of the algorithm will not work (because many polynominals of degree \( \le n\) can have same values in \(\le n\) points and the result would be ambiguous).</li><br>
+				All roots \(w_n^k\) have to be different, otherwise the last part of the algorithm will not work (because many polynominals of degree \( \lt n\) can have same values in \(\lt n\) points and the result would be ambiguous).</li><br>
 
 			<li>It may be beneficial to get rid of recursion before things start getting messy; to find value of \(A(x)\) in \(n\) points, one needs to find values of \(A_0(x)=a_0+a_2x+\dots+a_{n-2}x^{n/2-1}\) and \(A_1(x)=a_1+a_3x+\dots+a_{n-1}x^{n/2-1}\) in \(\frac{n}{2}\) points. Then, to find values of \(A_0(x)\) one needs to find values of \(a_0+a_4x+a_8x^2+\dots+a_{n-4}x^{n/4}\) and \(a_2+a_6x+a_{10}x^2+\dots+a_{n-2}x^{n/4}\) in \(\frac{n}{4}\) points, etc.<br><br>
 
@@ -171,7 +173,7 @@
 			</li>
 		</ol>
 
-		<h3>The conditions on roots and \(n\) for subsequent algorithms</h3>
+		<h4>The conditions on roots and \(n\) for subsequent algorithms</h4>
 		<p>The rules below concern: when is it possible to proceed with transformation as described above?</p>
 		<ol>
 			<li>\(n\) must have an inverse.</li>
@@ -181,7 +183,7 @@
 
 		</ol>
 
-		<h3>The sequence of roots I: NTT</h3>
+		<h4>The sequence of roots I: NTT</h4>
 		<p>Last question needed to ultimately solve the problem is: what is \(w_n^1\)? In the second version of the problem, the coefficients have to be calculated \(\pmod m\). If \(m\) have a primitive root \(p\), then:</p>
 		<ol>
 			<li>One can find some primitive root \(p\) rather rapidly.</li>
@@ -197,7 +199,7 @@
 			<li>Furthermore, \(n\) must have an inverse \(\pmod m\) - as \(n=2^k\), then \(gcd(2, m)=1\)</li>
 		</ol>
 
-		<h3>The sequence of roots II: FFT</h3>
+		<h4>The sequence of roots II: FFT</h4>
 		<p>In the first version of the problem, the coefficients are calculated as they are. Instead of finding primitive root, Euler's identity: \(e^{2\pi x}=cos(x)+i*sin(x)\) is used, and calculations are executed using complex numbers.</p>
 		<ol>
 			<li>\(n\) has an inverse \(\frac{1}{n}\) in real numbers (then also in complex numbers).</li>
@@ -212,8 +214,7 @@
 			</li>
 		</ol>
 
-		<div id="Algo1" class="pureAlgo">
-			<h2>Number Theoretic Transform</h2>
+		{{ algo.algorithm(1, 'Transformation', '
 			<p>Input format: two sequences of \(o+1, m+1\) numbers denoting coefficients of polynominals \(A(x), B(x)\); then if NTT is chosen, also \(q\) - number modulo which those coefficients will be found. (\(q\) is not parsed if FFT is chosen)<br>
 			\(o\)<br>
 			\(a_0, a_1, \dots, a_o\)<br>
@@ -221,26 +222,9 @@
 			\(b_0, b_1, \dots, b_m\)<br>
 			\(q\)<br>
 			</p>
+		'
+		, '6&#10;2 7 3 12 43 25 19&#10;7&#10;4 6 7 1 2 3 4 132&#10;257', 'textarea', 'algo', 'radio', ['NTT', 'FFT']) }}
 
-			<div id="Inputter">
-				<form>
-					<textarea class="inputter" id="Totient2" name="Totient">6&#10;2 7 3 12 43 25 19&#10;7&#10;4 6 7 1 2 3 4 132&#10;257
-					</textarea>
-				</form>
-			</div>
-			<div id="Buttons" style="position:sticky; top:0; z-index:1; display:inline-block;">
-				<button id="Sender" class="sender">Begin</button>
-				<button id="Prever" class="previous">Previous Move</button>
-				<button id="Nexter" class="next">Next Move</button>
-				<button id="Finisher" class="finish">Finish</button>
-			</div>
-				<input type="radio" id="NTT" name="algoType" checked><label for="NTT">NTT</label>
-				<input type="radio" id="FFT" name="algoType"><label for="FFT">FFT</label>
-
-			<div class="breakAlgo"></div>
-			<div id="Primez" class="primez"></div>
-			<div id="Comprehend" class="comprehend" style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"></div>
-		</div>
 
 		<script src="{{url_for('static', filename='Ntt.js')}}"></script>
 		<form id="page" style="display:none"></form>
