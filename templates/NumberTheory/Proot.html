@@ -74,7 +74,7 @@
 			<li>Then, let \(g(x)=f(x)-a_k(x-z_1)\dots(x-z_k)\). Clearly, every zero of \(f(x)\) is also a zero of \(g(x)\) - so, \(g(x)\) has at least \(k\) zeros - but \(g(x)\) has lower degree than \(f(x)\) - however, by <b>inductive step</b> \(g(x)\) can have at most \(k-1\) zeros or be zero polynominal. What follows, \(g(x) \equiv 0 \pmod p\), so \(f(x) \equiv a_k(x-z_1)\dots(x-z_k) \pmod p\)</li>
 			<li>Suppose \(f(x)\) has at least \(k+1\) zeros, let \(z_{k+1}\) be \(k+1\)-st zero. \(f(z_{k+1})=a_k(z_{k+1}-z_1)\dots(z_{k+1}-z_k)\). None of brackets (neither \(a_k\)) is equal to \(0\), because \(\forall_{1 \le i \le k}z_{k+1} \neq z_i\). What follows, \(p\) does not divide any bracket of \(f(z_k)\), so \(p\) does not divide \(f(z_k)\), and so, \(z_{k+1}\) is not a solution of this equation, which finishes lemma.</li>
 		</ol>
-		<p>It may seem worth a note that this lemma cannot work for not prime modulus - for example, \((x-3)(x-4) \pmod {12}\) has 0, 3, 4 and 7 as its zeros - in case of \(7\) despite \(12\) does not divide any bracket directly, it divides their product - which is possible, because it is not prime, and so \(12\) can be shown as product of certin numbers greater than \(1\). Prime can be shown only as one bracket</p>
+		<p>It may seem worth a note that this lemma cannot work for not prime modulus - for example, \((x-3)(x-4) \pmod {12}\) has 0, 3, 4 and 7 as its zeros - in case of \(7\) despite \(12\) does not divide any bracket directly, it divides their product - which is possible, because it is not prime, and so \(12\) can be shown as product of certain numbers greater than \(1\). Prime can be shown only as one bracket</p>
 		<h5>2nd Lemma: for any \(d:d|\phi(p)=p-1\) equation \(x^d-1 \equiv 0 \pmod p\) has \(d\) solutions</h5>
 		<ol>
 			<li>Every number \(x: 1 \le x \le p-1\) fulfills: \(x^{\phi(p)} \equiv 1 \pmod p\). And so, \(x^{\phi(p)}-1 \equiv 0 \pmod p\) has \(p-1\) solutions.</li>
@@ -173,63 +173,11 @@
 		<h3>Fourth algorithm</h3>
 		<p>One can, instead of rushing towards finding primitive root, check, whether it can exist by checking factorization of \(m\) - this will change complexity of algorithm to \(O(\sqrt{m}+Ans*log(m)*log(m))\), but will allow efficient runtime for numbers not having primitive root. Furthermore, for numbers in form \(xp^k\), where \(x=1 \lor x=2\), one can find only primitive root \(\pmod p\), and then, using formulas from proofs find primitive root for \(xp^k\) - this will make complexity for \(k \ge 2\) lower (or even acceptable), and allow for very specific optimization in the last algorithm.</p>
 		<h3>Reject determinism, embrace probability - last algorithm</h3>
-		<p>One can after factorization find primitive roots of \(p\) by subsequently choosing random numbers from interval \(\lt 1;p-1 \gt\) and checking them for being primitive roots in \(O(log^2(p))\). This method is independent of distribution of primitive roots over interval \(\lt 1;p-1 \gt\). Probability that random number from given range is primitive root is \(\frac{\phi(\phi(p))}{p-1}=\frac{\phi(p-1)}{p-1}\). If prime factorization of \(p-1\) is \(f_1^{l_1} \dots f_n^{l_n}\), then \(\frac{\phi(p-1)}{p-1}=\frac{(f_1-1)f_1^{l_1-1} \dots (f_n-1)f_n^{l_n-1}}{f_1^{l_1} \dots f_n^{l_n}}=\frac{(f_1-1) \dots (f_n-1)}{f_1 \dots f_n}\). Algorithm will be slowest, when ratio is minimal. So, when is the ratio minimal?</p>
-		<ol>
-			<li>Exponents \(l_i\) does not influence the ratio</li>
-			<li>The lower prime \(f_i\), the lower the ratio - that's because \(\frac{f_i-1}{f_i}-\frac{f_i}{f_i+1}=\frac{(f_i-1)(f_i+1)-f_if_i}{f_i(f_i+1)}=\frac{f_i^2-1-f_i^2}{f_i(f_i+1)}=\frac{-1}{f_i(f_i+1)} \lt 0 \implies \frac{f_i-1}{f_i} \lt \frac{f_i}{f_i+1}\).
-			<li>Multiplying \(p-1\) by any prime \(f_{n+1}\) lowers the ratio - for \(\frac{f_{n+1}-1}{f_{n+1}} \lt 1\) 
-		</ol>
-		<p>Then, lowest possible ratio \(\frac{\phi(m)}{m}\) for any \(m\) with \(n\) prime divisors is product of \(n\) first primes. While the expression is non-trivial to estimate generally, one can just check, for maximal \(n\) such that product of first \(n\) primes is lower than \(p\), what is minimal possible ratio of number having \(n\) primes - and calculate, how many random numbers are needed, so that probability of choosing at least one primitive root among them is higher than, let's say, \(1-2^{-30}\)</p>
-		<table>
-			<thead>
-				<tr>
-					<td>\(n\)</td>
-					{%for i in range(1, 17) %}
-						<td>\({{i}}\)</td>
-					{% endfor %}
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>Result \(m\) of multiplying \(n\) subsequent primes</td>
-					{% set primes=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47, 53, 57] %}
-					{% set anaprimes=[2] %}
-					{% for i in range(1, 17) %}
-						<!--{{ anaprimes.append(primes[i]*anaprimes[i-1]) }}-->
-						{% set y=ji_expo(anaprimes[i-1]) %}
-
-						{% if y[1]==-1 %}
-							<td>\({{y[0]}}\)</td>
-						{% else %}
-							<td>\({{y[0]}}^{ {{y[1]}} }\)</td>
-						{% endif %}
-					{% endfor %}
-				</tr>
-				<tr>
-					<td>Probability, that random number will be primitive root</td>
-					{% set negata=[1] %}
-					{% for i in range(1, 17) %}
-						<!--{{ negata.append((primes[i]-1)*negata[i-1]) }}-->
-						<td>\({{ji_formatter(negata[i-1]/anaprimes[i-1], 4)}}\)</td>
-					{% endfor %}					
-				</tr>
-				<tr>
-					<td>After drawing how many numbers probability of obtaining no primitive roots will be lower than \(2^{-30}\)</td>
-					{% for i in range(1, 17) %}
-						{% set f=(1-negata[i]/anaprimes[i]) %}
-						<td>\({{ji_formatter((-30*jilog(2))/jilog(f), 4)}}\)</td>
-					{% endfor %}					
-				</tr>
-			</tbody>
-		</table>
-		<p>Number of draws after which probability of not obtaining any primitive root will be lower than \(2^{-l}\) was calculated in the following way (\(l=30\) in table above):
-		<span class="central">\((1-\frac{\phi(m)}{m})^k \lt 2^{-l}\)</span>
-		<span class="central">\(k*ln(1-\frac{\phi(m)}{m}) \lt -l*ln(2)\) //note that \(ln(1-\frac{\phi(m)}{m}) \lt 0\) </span>
-		<span class="central">\(k \gt \frac{-l*ln(2)}{ln(1-\frac{\phi(m)}{m})}\)</span>
-		Therefore, one can almost certainly find a primitive root of \(m \le 10^{18}\) in \(150*O(log^2(m))+O(\sqrt{m})\) operations, which should be enough for \(m \le 10^9\). It's worth noting that - thanks to only using algorithm for prime numbers - one always draws number coprime to \(m\).</p>
+		<p>One can after factorization find primitive roots of \(p\) by subsequently choosing random numbers from interval \(\lt 1;p-1 \gt\) and checking them for being primitive roots in \(O(log^2(p))\). This method is independent of distribution of primitive roots over interval \(\lt 1;p-1 \gt\). Probability that random number from given range is primitive root is \(\frac{\phi(\phi(p))}{p-1}=\frac{\phi(p-1)}{p-1}\).</p>
 		<p>One can show, that \(2\frac{\phi(n)}{n} \ge \frac{1}{\log_2(n)}\), or \(\phi(n)\log_2(n) \ge \frac{n}{2}\):
 		<span class="central">\(\phi(n)\log_2(n)= n\frac{(p_1-1)(p_2-1) \dots (p_m-1)}{p_1p_2 \dots p_m}*log_2(n) \ge n\frac{(p_1-1)(p_2-1) \dots (p_m-1)}{p_1p_2 \dots p_m}*m \ge \frac{1*2 \dots m}{2*3 \dots (m+1)} m = n\frac{m}{m+1} \ge \frac{n}{2}\)</span>
-		This allows to estimate expected number of operations of given algorithm by \(O(log^3(m))\) without factorization, and the algorithm will terminate with probability \(2^{-l}\) in expected number of steps being at most \(O(l*\log^3(n))\).
+		<p>So, probability, that drawn number is a primitive root is not lower than \(\frac{1}{2\log_2(n)}\). After how many moves the probability of drawing primitive root will be higher than \(\frac{1}{2}\)? When probability, that no primitive root was drawn in last \(k\) moves will be lower than \(\frac{1}{2}\). This probability after \(k\) moves is lower than \((\frac{2log_2(n)-1}{2log_2(n)})^k\). To do anything with this equation, it is wise to know the cult-classic definition of Euler number.</p>
+		<p>As \(\lim_{n -\gt \infty} (\frac{n-1}{n})^n=\frac{1}{e} \lt \frac{1}{2}\), this allows to estimate expected number of operations of given algorithm by \(O(log^3(m))\) without factorization, and the algorithm will terminate with probability \(2^{-l}\) in expected number of steps being at most \(O(l*\log^3(n))\) (note that if probability, that in \(kl\) random numbers there will be no primitive roots is \(p^{kl}\) - and if probability, that after \(k\) steps there will be no primitive root found is \(\le \frac{1}{2}\), then the probability of not finding primitive root in \(kl\) steps is \((p^k)^l \le (\frac{1}{2})^l\)).</p>
 
 
 		{{ algo.algorithm(2, 'Primitive root finding', '

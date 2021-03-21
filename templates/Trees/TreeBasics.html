@@ -14,8 +14,8 @@
 
 	<body>
 		{{ headers.full_upper('Tree Walk', 'Trees') }}
-		<h3>First Problem statement and definitions</h3>
-		<p>Suppose You want to solve following problem: a tree of \(n\) vertices is given, \(n \le 10^6\), and You have to find length of the longest simple path in this tree (also called diameter). To solve following problem, some definitions have to be stated:
+		<h2>Introduction</h2>
+		<p>In this article two techniques of solving tree related problems will be shown - penetrating the tree from bottom to top in order to get information from the subtree, and penetrating tree twice from bottom to top and then from top to bottom in order to get some information about whole tree in every vertex of a tree. To avoid misconceptions, some definitions have to be stated:</p>
 		<ol>
 			<li><b>Simple path</b> is a path in a graph that passes through any edge at most once.</li>
 			<li><b>Tree</b> is an undirected graph, such that between each two vertices there is exactly one simple path. This implies that the graph is acyclic (because cycle allows to move from one vertex to another in more than one way) and connected (because there is a way to move from any vertex to another). It is crucial to show, that such graph have \(n-1\) edges, where \(n\) is number of vertexes. One can consider tree a generalization of a sequence.</li>
@@ -26,6 +26,9 @@
 			<li><b>Subtree</b> of vertex \(x\) is a set of all verices that are descendants of vertex \(x\) including \(x\)</li>
 			<li><b>Overtree</b> of vertex \(x\) is a set of all verices in a tree that does not belong to its subtree (name is used in this article only for convenience). </li>
 		</ol>
+
+		<h2>First Problem statement and definitions</h2>
+		<p>Suppose You want to solve following problem: a tree of \(n\) vertices is given, \(n \le 10^6\), and You have to find length of the longest simple path in this tree (also called diameter).</p>
 
 		<h3>Solution idea</h3>
 		<p>One could solve this problem with absolute brute force, by counting longest distance from any point in tree, for example with standard Breadth First Search - solution works in \(O(n^2)\). However, one can see, that each path in the tree moves through some vertex with lowest depth - if a path would lead through distinct vertexes \(x, y\) with same depth then path must move through parent of \(x\) (because it must lie on a path \(x-y\)). What follows, if one can aggregate longest paths starting from all sons of a vertex \(x\) and going down their subtree, then one can find longest path whose point with lowest depth is \(x\). Or, in other words: if \(d_0(x), d_1(x)\) are currently 1st and 2nd longest paths starting at \(x\) whose endpoint lies in subtree of \(x\), then after processing son of \(x\), that is, \(y\), \(d_1(x)\) needs to be changed to \(d_0(y)+1\) - longest path starting at \(y\), with addition of additional edge \(x-y\) - if \(d_0(y)+1 \gt d_1(x)\), and swap \(d_0(x), d_1(x)\) if \(d_1(x) \gt d_0(x)\): then, in vertex \(x\) there will always be two longest paths starting at \(x\). And so, the longest path moving through \(x\) as its vertex with lowest depth is \(d_0(x)+d_1(x)\). Then, \(diameter=max\{x \in V: d_0(x)+d_1(x)\}\). Initially, \(d_0(x)=d_1(x)=0\) for each vertex \(x\).
@@ -53,7 +56,7 @@
 		'
 		, '8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;', 'textarea', 'algo') }}
 
-		<h3>Second problem</h3>
+		<h2>Second problem</h2>
 		<p>
 		Suppose, however, that another problem is given. You are given a tree of \(n\) vertices with \(m\) vertices marked (\(1 \le m \le n \le 10^6\)), and Your objective is to find for each vertex maximal distance from it to any marked vertex.
 		</p>

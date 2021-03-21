@@ -14,9 +14,11 @@
 
 	<body>
 		{{ headers.full_upper('Inclusion-Exclusion Principle', 'Combinatorics') }}
-		<h3>Problem statement and definitions</h3>
+		<h2>Introduction</h2>
+		<p>In this article a technique allowing to calculate sum of sets given intersections of all subsets of a set will be shown, its optimization and generalization.</p>
+		<h2>Problem I - Basic inclusion-exclusion principle</h2>
 		<p>Suppose You have to create a multiset of \(n\) elements (\(n \le 10^{14}\)), where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of \(i\)-th type. In how many ways this multiset can be created? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
-		<h3>The posited question</h3>
+		<h3>Better formulation of the question</h3>
 		<p>To solve problem, it may be crucial to create well-formulated question on what has to be found, and then find an answer. One can, for example, notice, that \(t \le 20\) allows to create a solution working in \(O(t2^t)\). Then, one can observe, that question can be formulated in different way: let \(b_i\) describe number of elements of \(i\)-th type in a multiset. Then let proper multiset be defined as multiset, in which \(\forall_i b_i \le a_i\). All multisets, that can be found satisfying those constraints are all multisets consisting of elements of \(t\) types (possible to calculate as \(\binom{n+t-1}{t-1}\) - standard combination with repetitions) except those, that are not proper. The question arises: what is the number of not proper multisets? let \(A_1, A_2, \dots, A_t\) be defined as such multisets, such that \(X \in A_i \iff b_i \gt a_i\) in multiset \(X\). Then, the searched result can be represented as \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\). The remaining question is: how to find \(|A_1 \cup A_2 \cup \dots \cup A_t|\).</p>
 		<h3>The principle of inclusion and exclusion</h3>
 		<ol>
@@ -80,7 +82,12 @@
 		'
 		, '4 12&#10;3 2 5 7', 'textarea') }}
 
-		<h2>Problems</h2>
+		<h2>Summary</h2>
+		<ol>
+			<li>Inclusion-exclusion principle states, that {{ iep('n') }}</li>
+
+		</ol>
+		<h3>Problems</h3>
 		<p>
 		Inclusion-exclusion principle can be used to solve variety of problems, most of which involve bitmasks, though multitude of tasks rely on reducing standard inclusion-exclusion exponential mechanism to something polynominal.
 			<a href="https://codeforces.com/problemset/problem/451/E">Devu and Flowers</a>, 

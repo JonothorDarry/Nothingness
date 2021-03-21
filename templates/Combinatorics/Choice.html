@@ -15,6 +15,7 @@
 	<body>
 		{{ headers.full_upper('Choice', 'Combinatorics') }}
 
+		<h2>Intoduction</h2>
 		<h3>The notion of combinatorics</h3>
 		<ol>
 			<li>Combinatorics is concerned with counting objects - or asking question "how many unique &lt;Insert some structure(set, sequence, partition etc.)&gt; there exist with elements from a certain multiset of objects satisfying certain conditions"</li>
@@ -73,6 +74,7 @@
 		<p>The second statement instantaneously implies, that if one has to create sequence of \(k\) elements, each of which belongs to one of \(t\) types, he can do it in \(t*t*t*t\dots*t=t^k\) ways - let number of sequences be described as \(dp(t,k)\). A sequence of \(0\) elements can be chosen in \(1\) way (so \(dp(t,0)=1\)), and sequence of \(k\) elements - by rule of product - can be chosen in one of \(dp(t,k)=dp(t,k-1)*t\) ways - thus \(dp(t,k)=dp(t,k-1)t=dp(t,k-2)t^2=\dots=t^k\).</p>
 		<p>The pattern above - also called variation with repetitions - is one of the most fundamental ones in combinatorics, and its consequence is the fact, that there are \(2^k\) subsets of \(k\)-element set - one can assingn each element of set either \(0\) or \(1\) (there are \(2^k\) ways to do this), and then, subset consists of elements with \(1\) assigned.</p>
 
+		<h2>Problem I: Permutation</h2>
 		<h3>Permutation</h3>
 		<p>Question: How many sequences of size \(n\) of \(n\) distinct elements exist? For example, for \(n=3\) there are: \([1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]\) - and so, there are \(6\) such sequences.</p>
 		<p>Solution: Let's denote a solution to this problem for a given \(n\) as \(dp(n)\). Then, \(dp(0)=1\) - because empty sequence is a valid solution. One can observe, that each solution for \(n\) is some solution for \(n-1\) with one element added at some point in sequence: for example, for \(n=4\) and solution \([2,3,1]\) for \(n-1=3\), next solutions obtained from this solution are \([4,2,3,1],[2,4,3,1],[2,3,4,1],[2,3,1,4]\). It's worth noting that solutions obtained from single, smaller solution have unique order of elements between \(1;n-1\) - so, all new solutions are unique. There are \(n\) possible points in the sequence, where one can insert an element - this leads to establish \(dp(n)=dp(n-1)*n\). One can see, that 
@@ -115,7 +117,8 @@
 		'
 		, '3&#10;3 2 1', 'textarea') }}
 
-		<h3>Mystical ways of combination</h3>
+		<h2>Problem II: Combination</h2>
+		<h3>The notion of combination</h3>
 		<p>Question: How many there are subsets \(T\) of size \(k\) containing elements from set \(S\) of size \(n\)? For example, for set of \(3\) elements \(\{1,2,3\}\) its subsets of size \(2\) are: \(\{1,2\}, \{1,3\}, \{2,3\}\) - so there are \(3\) subsets of size \(2\) from set of \(3\) elements.</p>
 		<p>Solution: already stated. If one puts elements from set \(S\) in some sequence - say \(Y\), then every subset \(T\) of elements of \(Y\) of size \(k\) can be represented as a sequence \(s\) of \(n-k\) zeros and \(k\) ones, where \(1\) on \(i\)-th indice means, that the element \(Y_i\) was chosen as element of \(T\). For example, </p>
 		<span class="central">Y=[1,2,5,7,9]</span>
@@ -249,7 +252,7 @@
 			\binom{m}{0} & \binom{m-1}{0} & \binom{m-2}{0} & \cdots & \binom{0}{0}\\
 			\end{bmatrix}
 		$$</span>
-		<p>To use both properties above it may be appropriate to define <b>Hockey stick identity</b> first: if one has to choose \(k+1\) elements out of sequence of \(n+1\) elements, then one of chosen elements will be the one with largest index - say \(i\)-th - and then \(k\) elements have to be chosen out of previous \(i\) elements. Thus: </p>
+		<p>To use both properties above it may be appropriate to define <b>Hockey stick identity</b> first: if one has to choose \(k+1\) elements out of sequence of \(n+1\) elements, then one of chosen elements will be the one with largest index - say \(i\)-th - and then \(k\) elements have to be chosen out of previous \(i-1\) elements. Thus: </p>
 		<span class="central">$$\sum_{i=0}^{n}\binom{i}{k}=\sum_{i=k}^{n}\binom{i}{k}=\binom{n+1}{k+1}$$</span>
 		<p>This identity can be shown in elegant way using Pascal's triangle</p>
 		{{ algo.algorithm(4, 'Hockey Stick identity', '
@@ -313,7 +316,7 @@
 		<h3>Useful identities III: Hypercube equation</h3>
 		<p>Question: how to calculate value of \(\sum_{k=0}^{n}k^x\binom{n}{k}\) (where \(x \le 5000\))?</p>
 		<p>General identity: To solve this problem, one can find an equation binding \(k^x\binom{n}{k}\) with something easy to calculate. To put it bluntly, one can posit question: in how many ways one can choose two not intersecting subsets (sets are not intersecting when there is no same element in both sets) out of a single set, where size of one set is fixed? Let's say set has size \(n\), fixed size of one subset is \(d\). One can choose \(d\) elements out of \(n\) elements - in one of \(\binom{n}{d}\) ways, and then choose any subset of the remaining elements in \(2^{n-d}\) ways - this leads to establish \(2^{n-d}\binom{n}{d}\) as first part of identity. Furthermore, one can solve problem by choosing subsequent \(k\)'s - sizes of sum of both subsets, and then, choosing \(k\) elements out of \(n\) - elements belonging to one of those subsets; and then choosing \(d\) elements out of \(k\) elements. This can be represented as \(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}\). And so, this leads to identity:</p>
-		<span class="central">\(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=2^{n-d}\binom{n}{d}\)</span>
+		<span class="central">$$\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=2^{n-d}\binom{n}{d}$$</span>
 		<p>Solution: for given \(n\), for \(d=0\), the left part of equation can be calculated as \(\sum_{k=d}^{n}\binom{n}{k}\) - which is equal to \(2^n\). For \(d=1\), left part will be \(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=\sum_{k=0}^{n}\binom{n}{k}k\). For any \(d\):</p>
 		<span class="central">$$\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=\sum_{k=0}^{n}\binom{n}{k}\frac{k(k-1) \dots (k-d)}{d!}=2^{n-d}\binom{n}{d}$$</span>
 		<span class="central">$$\sum_{k=0}^{n}\binom{n}{k}k(k-1) \dots (k-d+1) = \sum_{k=0}^{n}k^d\binom{n}{k}+\sum_{k=0}^{n}c_{d-1}k^{d-1}\binom{n}{k} + \dots + \sum_{k=0}^{n}c_0\binom{n}{k} = \sum_{k=0}^{n}k^d\binom{n}{k}+c_{d-1}\sum_{k=0}^{n}k^{d-1}\binom{n}{k} + \dots + c_0\sum_{k=0}^{n}\binom{n}{k} = 2^{n-d}\binom{n}{d}d!$$</span>
@@ -338,7 +341,20 @@
 		'
 		, '5 3', 'input', 'shower') }}
 
-		<h2>Problems</h2>
+		<h2>Summary</h2>
+		<ol>
+			<li>Number of <b>Permutations</b> of a set of length \(n\) is equal to \(n!\).</li>
+			<li>Number of <b>Permutations with repetition</b> of a multiset of length \(n\) and number of subsequent elements equal to \(a_1, a_2, \dots a_m\) is equal to \(\binom{n}{a_1, a_2, \dots a_m}=\frac{n!}{a_1!a_2! \dots a_m!}\).</li>
+			<li>Number of <b>Combinations</b> - \(k\)-element subsets of \(n\)-element set is equal to \(\binom{n}{k}=\frac{n!}{(n-k)!k!}\).</li>
+			<li><b>Pascal's Identity</b> states, that \(\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}\).</li>
+			<li><b>Pascal's Triangle</b> is a representation of all values of combinations - in \(n\)-th row and \(k\)-th column it has value \(\binom{n}{k}\) written in it.</li>
+			<li><b>Binomial Theorem</b> states, that \((a+b)^n=\sum_{i=0}^n \binom{n}{i} a^ib^{n-i}\).</li>
+			<li><b>Hockey stick identity</b> states, that \(\binom{n+1}{k+1}=\sum_{i=0}^n \binom{i}{k}\).</li>
+			<li><b>Hypercube equation</b> states, that \(\sum_{k=0}^{n}\binom{n}{k}\binom{k}{d}=2^{n-d}\binom{n}{d}\).</li>
+			<li><b>Vandermonde identity</b> states, that \(\sum_{i=0}^{r}\binom{n}{i}\binom{m}{r-i}=\binom{n+m}{r}\).</li>
+			<li>The number of <b>Combinations with repetitions</b> - multisets of \(n\) elements, each belonging to one of \(t\) types is equal to \(\binom{n+t-1}{t-1}\).</li>
+		</ol>
+		<h3>Problems</h3>
 		<p>
 		Most combinatorical problems can be solved solely with knowledge of practical number theory, dynamic programming and techniques described above. Problem aiming specificallly at topics described above are, for example:
 			<a href="https://codeforces.com/problemset/problem/837/F">Prefix Sums</a>, 
