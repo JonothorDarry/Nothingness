@@ -1,3 +1,13 @@
+{% macro meta(index=false) %}
+	<meta charset = "UTF-8">
+
+	{% if index==false %}
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
+		<script src="{{url_for('static', filename='Temp.js')}}"></script>
+	{% endif %}
+	<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+{% endmacro %}
+
 {% macro header(name, type) %}
 		<header class="{{type}}">
 			<div class="utilsBar {{type}}">

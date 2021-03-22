@@ -6,10 +6,7 @@
 <html lang="en">
 	<head>
 		<title>Number Theoretic Transform</title>
-		<meta charset = "UTF-8">
-		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
-		<script src="{{url_for('static', filename='Temp.js')}}"></script>
-		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+		{{headers.meta() }}
 	</head>
 
 	<body>
@@ -224,6 +221,16 @@
 			</p>
 		'
 		, '6&#10;2 7 3 12 43 25 19&#10;7&#10;4 6 7 1 2 3 4 132&#10;257', 'textarea', 'algo', 'radio', ['NTT', 'FFT']) }}
+
+		<h2>Problem II - more-or-less standard knapsack dp</h2>
+		<p>Joshua has sequence \(S\) of \(n\) candies. \(i\)-th candy has some number \(s_i\) written on it. In how many ways Joshua can chose some subset of his candies in such way that sum of numbers written on candies in this set is equal to \(d\)? Two ways are different if there is \(k\), such that one set contains \(k\)-th candie while the second don't. $$ n, d, \sum_{i=1}^{n} s_i \le 10^5 $$</p>
+		<h3>Standard dp solution</h3>
+		<ol>
+		<li>The sum of values on candies in a set will be called later set sum</li>
+		<li>One can notice, that if one can find a number of ways to create subset of set sum with elements of sequence \(S\) up to index \(i\), then one can find number of ways to create subset of any set sum with elements up to index \(i+1\) using fact, that either an element is not chosen (then set sum stays the same) or chosen (then set sum gets larger by \(s_{i+1}\))</li>
+		<li>Let \(dp[k][x]\) denote number of ways to chose subset with set sum equal to \(x\) using first \(k\) candies. Then \(dp[k][x]=dp[k-1][x]+dp[k-1][x-s_k]\) provided, that \(x-s_k \ge 0\) - subset with set sum \(x\) can be created by not adding anything to existing set or adding \(s_k\) to a set with set sum equal to \(x-s_k\). At the beginning, \(dp[0][0]=1\) - one can create set of value 0 out of empty set in exactly one way.</li>
+		<li>One can lower the amount of memory needed to solve this task - as only value of \(dp[n][d]\) is interesting, first dimension is not needed. One can remove it without temporary array by updating values from highest to lowest: \(dp[x]=dp[x]+dp[x-s_k]\) for \(x\) from \(d\) to \(s_k\), because one always uses only information present iteration before.</li>
+		<li>This method works in \(O(nd)\), which is unsatisfying - however, it is more flexible than solution that soon will be introduced.</li>
 
 
 		<script src="{{url_for('static', filename='Ntt.js')}}"></script>
