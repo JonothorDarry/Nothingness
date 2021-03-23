@@ -51,13 +51,22 @@
 	\item {[1, button, innerHTML1, innerHTML2]} - changes innerHTML of a button from innerHTML1 to innerHTML2.
 	\item {[2, list, element]} - appends element to a list.
 	\item {[3, 'variable\_name', value1, value2]} - changes this.variable\_name from value1 to value2.
+	\item {[5, fun, inv\_fun, args]} - execute fun on arguments args; in order to reverse changes, uses inv\_fun on same arguments.
 \end{enumerate}
+
 \section{On The Unmaker, II: Inner works}
 \begin {enumerate}
 	\item Unmaker reverts changes done by state maker, that ought to be reversed (examples of changes, that shall not be reversed are variables changed only once and used only since then or innerHTML that may be constant during whole execution).
-	\item Unmaker can paint, pop from list, change value or innerHTML to previous value. It executes in reversed order compared to StateMaker.
+	\item Unmaker can paint, pop from list, change value or innerHTML to previous value or execute certain function with given arguments. It executes in reversed order compared to StateMaker.
 	\item StateMaker has array staat, in which changes to "this" that ought to be reversed and changes to buttons are kept in format described above. The values of "this" variables don't change until the end of a function.
 \end {enumerate}
+
+\section{On The Maker and Unmaker, III: Use}
+\begin {enumerate}
+	\item Unmaker actions depend on clicking "Previous" button, they're coded in Temp.js, so one does not have to do anything in code of an algorithm.
+	\item Maker has to execute at its end this.transformator(staat) (staat is just a convention).
+\end {enumerate}
+
 
 \section{Primitive Root}
 \begin{enumerate}

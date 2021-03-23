@@ -37,7 +37,6 @@ class Ntt extends Algorithm{
 		this.is_fft=this.fft.checked;
 
 		var fas=this.input.value;
-		this.dead=0;
 		this.a=[];
 		this.b=[];
 		this.y=[];
@@ -162,6 +161,7 @@ class Ntt extends Algorithm{
 		}
 	}
 
+	//Show values of ntt, fft, change innerHTML
 	show_number(btn, value){
 		if (this.is_ntt)
 			btn.innerHTML=value;
@@ -530,11 +530,146 @@ class Ntt extends Algorithm{
 	}
 }
 
+class SumNtt extends Algorithm{
+	constructor(block, n, lst){
+		super(block);
+	}
+
+	BeginningExecutor(){
+		this.starter();
+		var fas=this.input.value, c, i, j, ij, double_butt, add_butt;
+		c=this.dissolve_input(fas);
+		this.s=[];
+
+		this.pass_to_next_state=[];
+		this.reducts=[]; //Polynominal buttons
+		this.poly=[];
+		var poly=this.poly;
+
+		this.n=c.get_next();
+		for (i=0;i<this.n;i++) this.s.push(c.get_next());
+		this.bs_butt_width="45px";
+		this.bs_butt_height="45px";
+
+
+		this.layers=Math.ceil(Math.log2(this.n))+1;
+
+		//Creating subsequent polynominals
+		for (i=0; i<this.layers; i++){
+			this.poly.push([]);
+			if (i==0){
+				for (j=0; j<this.n; j++){
+					poly[i].push([]);
+					for (ij=0; ij<=this.s[j]; ij++) poly[i][j].push(0);
+					poly[i][j][0]=poly[i][j][this.s[j]]=1;
+				}
+				continue;
+			}
+
+			for (j=0; j<poly[i-1].length; j+=2){
+				if (j==poly[i-1].length-1)
+					poly[i].push(poly[i-1][j]);
+				else
+					poly[i].push(NTMath.multiply_polynominals(poly[i-1][j], poly[i-1][j+1]));
+			}
+		}
+
+		this.divsCreator();
+
+		//Creating content within layers: layer, polynominal, coeff
+		for (ij=0; ij<this.layers; ij++){
+			this.reducts.push([]);
+			for (i=0; i<this.poly[ij].length; i++){
+				this.reducts[ij].push([]);
+				for (j=0; j<this.poly[ij][i].length; j++){
+					double_butt=super.doubleButtCreator(null, super.buttCreator.bind(this));
+					if (ij==0){
+						super.Painter(double_butt[1], 101);
+						super.Painter(double_butt[2], 0);
+					}
+					double_butt[0].style.height="45px";
+					double_butt[0].style.width="45px";
+
+					double_butt[2].style.height="45px";
+					double_butt[2].style.width="45px";
+					double_butt[2].style.paddingTop="10px";
+					double_butt[2].style.verticalAlign="bottom";
+
+					double_butt[1].style.width="20px";
+					double_butt[1].style.right="0";
+					double_butt[1].style.zIndex="2";
+
+					double_butt[2].innerHTML=poly[ij][i][j];
+					double_butt[1].innerHTML=j;
+
+					this.reducts[ij][i].push([double_butt[1], double_butt[2]]);
+					this.zdivs[ij][1].appendChild(double_butt[0]);
+				}
+
+				for (j=0; j<(1<<(ij+1))-1; j++){
+					add_butt=super.buttCreator();
+					this.zdivs[ij][1].appendChild(add_butt);
+				}
+			}
+		}
+		this.lees.push([0]);
+	}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], i=0, n=this.n, v1=s[1], v2=s[2], passer=[];
+		var staat=this.pass_to_next_state.slice();
+
+		if (s[0]==1){
+			for (i=0; i<this.poly[v1][v2].length; i++){
+				staat.push([0, this.reducts[v1][v2][i][0], 4, 101]);
+				staat.push([0, this.reducts[v1][v2][i][1], 4, 1]);
+
+				if (v1!=this.layers-1) passer.push([0, this.reducts[v1][v2][i][1], 1, 0]); //Problem dependant - don't overwrite, if search is for all elements
+			}
+		}
+
+		if (s[0]==100){
+			if (this.dead==1) return;
+			staat.push([3, 'dead', 0, 1]);
+			for (i=0; i<this.poly[this.layers-1][0].length; i++){
+				staat.push([0, this.reducts[this.layers-1][0][i][1], 1, 8]);
+			}
+		}
+
+		staat.push([3, "pass_to_next_state", this.pass_to_next_state, passer]);
+		this.transformator(staat);
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		if (s[0]>=100) return;
+
+		if (s[0]==0) this.lees.push([1, 1, 0]);
+		if (s[0]==1){
+			if (s[2]==this.poly[s[1]].length-1 && s[1]==this.poly.length-1) this.lees.push([100]);
+			else if (s[2]==this.poly[s[1]].length-1) this.lees.push([1, s[1]+1, 0]);
+			else this.lees.push([1, s[1], s[2]+1]);
+		}
+	}
+
+	divsCreator(){
+		var i, s=this.layers, titles=[];
+		for (i=0; i<s; i++) titles.push(`pol<sub>${i}</sub>`);
+		
+		super.divsCreator(5, s, titles);
+	}
+}
+
 
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 feral.radio_n=document.getElementById('NTT');
 feral.radio_f=document.getElementById('FFT');
 var eg1=new Ntt(feral, 6, [2, 7, 3, 12, 43, 25, 19], 7, [4, 6, 7, 1, 2, 3, 4, 132]);
+
+var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+var eg2=new SumNtt(feral2, 6, [2, 3, 5, 4, 2, 3]);
 // 998244353
 //8,40,68,117,19,208,60,143,188,128,70,179,35,195,0,0

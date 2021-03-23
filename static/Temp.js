@@ -79,7 +79,7 @@ class Algorithm{
 		var p=this.StatementComprehension();
 		var l=this.wisdom;
 		l.innerHTML=p;
-	} 
+	}
 
 	dissolve_input(str){
 		var lst=[], j=0, i=0, x, a=0;
@@ -103,6 +103,7 @@ class Algorithm{
 		this.state_transformation=[];
 		this.place.innerHTML='';
 		this.finito=false;
+		this.dead=0;
 	}
 
 	StateUnmaker(){
@@ -150,6 +151,8 @@ class Algorithm{
 		else if (col==11) btn.style.backgroundColor="#222200";
 		if (col==12) btn.style.backgroundColor="#FF3333";
 		if (col==9) btn.style.backgroundColor="#FFFF00";
+
+		if (col==101) btn.style.backgroundColor="#804000";
 
 		//Colors for additional post-green
 		if (col==13) btn.style.backgroundColor="#669900";
@@ -232,14 +235,14 @@ class Algorithm{
 		}
 	}
 
-	//mode: 1 - buttons, 2 - midian button, 4 - text, midian - width of middle
+	//mode: 1 - buttons, 2 - midian button, 4 - text (logical or), midian - width of middle
 	divsCreator(mode, number_of_rows, title_list, midian){
 		var divs=[], zdivs=[], i, j, mode_title=(((mode&4)>0)?1:0), mode_single=(((mode&2)>0)?1:0), mode_butts=mode&1;
 		var title_id=0, single_id=mode_title, butts_id=mode_title+mode_single;
 
 		for (i=0;i<number_of_rows;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
 		for (i=0;i<number_of_rows;i++){
-			divs[i].style.height="40px";
+			divs[i].style.height=this.bs_butt_height;
 			//zdivs - inside div: 0 is write-up, 1 is button
 			for (j=0; j<butts_id+mode_butts; j++) {
 				zdivs[i].push(document.createElement("DIV"));
@@ -377,6 +380,19 @@ class NTMath{
 		if (2*p<x && NTMath.pow(y, p-1, p*p)!=1) y=y+p;
 		if (x%2==0 && y%2==0) y=y+(x>>1);
 		return y;
+	}
+
+	//It's shit in n^2 - make it NTT or FFT
+	static multiply_polynominals(p1, p2, M=998244353){
+		var p3=[], size=p1.length+p2.length, p2_size=p2.length, p1_size=p1.length, res=0;
+		for (i=0; i<size-1; i++) p3.push(0);
+		for (i=0; i<p1_size; i++){
+			for (j=0; j<p2_size; j++){
+				p3[i+j]=(p3[i+j]+p2[j]*p1[i])%M;
+			}
+		}
+		console.log(p1, p2, p3);
+		return p3;
 	}
 }
 

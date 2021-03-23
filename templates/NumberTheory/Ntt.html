@@ -223,15 +223,55 @@
 		, '6&#10;2 7 3 12 43 25 19&#10;7&#10;4 6 7 1 2 3 4 132&#10;257', 'textarea', 'algo', 'radio', ['NTT', 'FFT']) }}
 
 		<h2>Problem II - more-or-less standard knapsack dp</h2>
-		<p>Joshua has sequence \(S\) of \(n\) candies. \(i\)-th candy has some number \(s_i\) written on it. In how many ways Joshua can chose some subset of his candies in such way that sum of numbers written on candies in this set is equal to \(d\)? Two ways are different if there is \(k\), such that one set contains \(k\)-th candie while the second don't. $$ n, d, \sum_{i=1}^{n} s_i \le 10^5 $$</p>
+		<p>Joshua has sequence \(S\) of \(n\) candies. \(i\)-th candy has some number \(s_i\) written on it. In how many ways Joshua can chose some subset of his candies in such way that sum of numbers written on candies in this set is equal to \(d\)? Two ways are different if there is \(k\), such that one set contains \(k\)-th candie while the second don't. Output result \(\pmod {998244353}\) $$ n, d, \sum_{i=0}^{n-1} s_i \le 10^5 $$</p>
 		<h3>Standard dp solution</h3>
 		<ol>
-		<li>The sum of values on candies in a set will be called later set sum</li>
-		<li>One can notice, that if one can find a number of ways to create subset of set sum with elements of sequence \(S\) up to index \(i\), then one can find number of ways to create subset of any set sum with elements up to index \(i+1\) using fact, that either an element is not chosen (then set sum stays the same) or chosen (then set sum gets larger by \(s_{i+1}\))</li>
-		<li>Let \(dp[k][x]\) denote number of ways to chose subset with set sum equal to \(x\) using first \(k\) candies. Then \(dp[k][x]=dp[k-1][x]+dp[k-1][x-s_k]\) provided, that \(x-s_k \ge 0\) - subset with set sum \(x\) can be created by not adding anything to existing set or adding \(s_k\) to a set with set sum equal to \(x-s_k\). At the beginning, \(dp[0][0]=1\) - one can create set of value 0 out of empty set in exactly one way.</li>
-		<li>One can lower the amount of memory needed to solve this task - as only value of \(dp[n][d]\) is interesting, first dimension is not needed. One can remove it without temporary array by updating values from highest to lowest: \(dp[x]=dp[x]+dp[x-s_k]\) for \(x\) from \(d\) to \(s_k\), because one always uses only information present iteration before.</li>
-		<li>This method works in \(O(nd)\), which is unsatisfying - however, it is more flexible than solution that soon will be introduced.</li>
+			<li>The sum of values on candies in a set will be called later set sum</li>
+			<li>One can notice, that if one can find a number of ways to create subset of set sum with elements of sequence \(S\) up to index \(i\), then one can find number of ways to create subset of any set sum with elements up to index \(i+1\) using fact, that either an element is not chosen (then set sum stays the same) or chosen (then set sum gets larger by \(s_{i+1}\))</li>
+			<li>Let \(dp[k][x]\) denote number of ways to chose subset with set sum equal to \(x\) using first \(k\) candies. Then \(dp[k][x]=dp[k-1][x]+dp[k-1][x-s_k]\) provided, that \(x-s_k \ge 0\) - subset with set sum \(x\) can be created by not adding anything to existing set or adding \(s_k\) to a set with set sum equal to \(x-s_k\). At the beginning, \(dp[0][0]=1\) - one can create set of value 0 out of empty set in exactly one way.</li>
+			<li>One can lower the amount of memory needed to solve this task - as only value of \(dp[n][d]\) is interesting, first dimension is not needed. One can remove it without temporary array by updating values from highest to lowest: \(dp[x]=dp[x]+dp[x-s_k]\) for \(x\) from \(d\) to \(s_k\), because one always uses only information present iteration before.</li>
+			<li>This method works in \(O(nd)\), which is unsatisfying - however, it is more flexible than solution that soon will be introduced.</li>
+		</ol>
+		<h3>Generating functions</h3>
+		<p>One can notice, that it the formula above is in fact polynominal multiplication, where \(dp\) represents a polynominal multiplied by \(x^{s_k}+1\).</p>
+		<p>Let coefficients \(a_i\) and \(b_i\) of polynominal \(a_mx^m+a_{m-1}x^{m-1}+\dots+a_0\) and \(b_lx^l+b_{l-1}x^{l-1}+\dots+b_0\) represent number of ways to create subsets of set sum equal to \(i\) for two disjoint sets \(A, B\). Then, multiplying those polynominals leads to:
+		<span class="central">$$(\sum_{i=0}^{m} a_ix^i) (\sum_{j=0}^{l} b_jx^j) = \sum_{i=0}^{m} \sum_{j=0}^{l} a_ib_jx^{i+j}$$</span>
+		Thus:
+		<ol>
+			<li>Value of coefficient by \(x^k\) is equal to \(\sum_{i=0}^{k} a_ib_{k-i}\) assuming, that \(\forall_{v \gt m} a_v=0\) and \(\forall_{w \gt l} b_w=0\). It is equal to number of ways to choose certain amount of elements with given set sum from set \(A, B\) in such way, such that the sum of their set sums is equal to \(k\)</li>
+			<li>By rule of product, number of ways to choose \(i\) elements from set \(A\) and \(k-i\) elements from set \(B\) is equal to \(a_ib_{k-i}\)</li>
+			<li>To choose \(k\) elements from both sets one has to choose some elements from set \(A\) and some from set \(B\) (perhaps 0, but not more than \(k\) from any set).</li>
+			<li>What follows, the coefficient by \(x^k\) is equal to number of ways to choose some elements from set \(A\) and some from set \(B\) in such way, that the sum set of union of those subsets is equal to \(k\).</li>
+		</ol>
+		</p>
+		<p>So, one can represent solution to the stated problem as follows:
+		<span class="central">$$(x^{s_0}+1)(x^{s_1}+1) \dots (x^{s_{n-1}}+1)$$</span>
+		And coefficient by \(x^d\) in resulting polynominal is answer to the problem
+		</p>
+		<h3>Proper utilization of forementioned observation - replacing dp with NTT</h3>
+		<p>There is still one obstacle one has to remove in order to bathe his problem solutions in glorious capabilities of NTT: how to multiply polynominals, so that complexity will become significantly lower than for dp approach? Multipying them one by one will result in disastrous \(O(n\log(n)(\sum_{i=0}^{n}s_i))\) without better estimation.</p>
+		<p>Before constructing lemma, let \(m=\sum_{i=0}^{n-1}s_i\)</p>
+		<p>Then, what if the polynominals are multiplied in layers, in such way, that:</p>
+		<ol>
+			<li>\(pol_{level,i}=pol_{level-1, 2i}*pol_{level-1, 2i+1}\) (or \(pol_{level,i}=pol_{level-1, 2i}\) for odd number of polynominals in previous layer in the last polynominal).</li>
+			<li>At layer 0, all polynominals have form \(pol_{0,i} x^{s_i}+1\).</li>
+			<li>There will be at most \(\lceil log_2(n) \rceil+1\) layers, as in each layer number of polynominals decreases two times (possibly without one element).</li>
+			<li>On layer \(x\), number of operations can be estimated by<br>
+				<span class="central">\((s_0+s_1+\dots+s_{2^x-1})\log(s_0+s_1+\dots+s_{2^x-1})+(s_{2^x}+s_{2^x+1}+\dots+s_{2*2^x-1})\log(s_{2^x}+s_{2^x+1}+\dots+s_{2^x-1})+\dots+(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1})\log(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1}) \le\)</span>
+				<span class="central">\(\le (s_0+s_1+\dots+s_{2^x-1})\log(m)+(s_{2^x}+s_{2^x+1}+\dots+s_{2*2^x-1})\log(m)+\dots+(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1})\log(m)=\)</span>
+				<span class="central">\(= (s_0+s_1+\dots+s_{2^x}+s_{2^x+1}+ \dots + s_{n-1})log_2(m)\)</span>
+				<span class="central">\(= mlog_2(m)\)</span>
+			</li>
+			<li>Adding this information to estimation of number of layers, one can conclude, that this algorithm works in \(O(m\log_2(m)\log_2(n))\), which is compelling solution for given problem.</li>
+		</ol>
 
+		{{ algo.algorithm(2, 'Sum of elements', '
+			<p>Input format: value \(n\) and sequence of \(n\) values \(s_i\) - numbers written on each candy.<br>
+			\(n\)<br>
+			\(s_0, s_1, \dots, s_{n-1}\)<br>
+			</p>
+		'
+		, '6&#10;2 3 5 4 2 3', 'textarea', 'algo') }}
 
 		<script src="{{url_for('static', filename='Ntt.js')}}"></script>
 		<form id="page" style="display:none"></form>
