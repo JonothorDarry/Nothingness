@@ -54,7 +54,7 @@ class BinaryExpo extends Algorithm{
 		}
 		this.reality=z-1;
 		//Controversial - there must be a better way than hardcoding width
-		this.place.style.width=`${(z+1)*this.bs_butt_width_h+200}px`;
+		this.place.style.width=`max-content`;
 	}
 
 	StateMaker(){

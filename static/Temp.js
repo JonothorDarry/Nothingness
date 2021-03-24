@@ -384,14 +384,13 @@ class NTMath{
 
 	//It's shit in n^2 - make it NTT or FFT
 	static multiply_polynominals(p1, p2, M=998244353){
-		var p3=[], size=p1.length+p2.length, p2_size=p2.length, p1_size=p1.length, res=0;
+		var p3=[], size=p1.length+p2.length, p2_size=p2.length, p1_size=p1.length, res=0, i, j;
 		for (i=0; i<size-1; i++) p3.push(0);
 		for (i=0; i<p1_size; i++){
 			for (j=0; j<p2_size; j++){
 				p3[i+j]=(p3[i+j]+p2[j]*p1[i])%M;
 			}
 		}
-		console.log(p1, p2, p3);
 		return p3;
 	}
 }

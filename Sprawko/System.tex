@@ -45,7 +45,9 @@
 \date{\vspace{-10ex}}
 \maketitle
 
-\section{On The Unmaker, I: elements}
+\section {Inner sanctum}
+\subsection {On the Unmaker}
+\subsubsection{On The Unmaker, I: elements}
 \begin {enumerate}
 	\item {[0, button, color1, color2]} - paints button from color1 to color2.
 	\item {[1, button, innerHTML1, innerHTML2]} - changes innerHTML of a button from innerHTML1 to innerHTML2.
@@ -54,14 +56,14 @@
 	\item {[5, fun, inv\_fun, args]} - execute fun on arguments args; in order to reverse changes, uses inv\_fun on same arguments.
 \end{enumerate}
 
-\section{On The Unmaker, II: Inner works}
+\subsubsection{On The Unmaker, II: Inner works}
 \begin {enumerate}
 	\item Unmaker reverts changes done by state maker, that ought to be reversed (examples of changes, that shall not be reversed are variables changed only once and used only since then or innerHTML that may be constant during whole execution).
 	\item Unmaker can paint, pop from list, change value or innerHTML to previous value or execute certain function with given arguments. It executes in reversed order compared to StateMaker.
 	\item StateMaker has array staat, in which changes to "this" that ought to be reversed and changes to buttons are kept in format described above. The values of "this" variables don't change until the end of a function.
 \end {enumerate}
 
-\section{On The Maker and Unmaker, III: Use}
+\subsubsection{On The Maker and Unmaker, III: Use}
 \begin {enumerate}
 	\item Unmaker actions depend on clicking "Previous" button, they're coded in Temp.js, so one does not have to do anything in code of an algorithm.
 	\item Maker has to execute at its end this.transformator(staat) (staat is just a convention).
@@ -88,4 +90,41 @@
 	\item Ending (After interpolating C(x))- multiply by inversion
 \end {enumerate}
 
+\section{Legitimate criticism}
+\begin {enumerate}
+	\item Refactor - prever, finito -> 5 days
+	\item Rethink colors:
+	\begin{enumerate}
+		\item Painter -> mechanism to write -> 1 day
+		\item Showing past which lead to present -> 1 day (green from IEP?)
+		\item One last gold -> Use gold only for ending -> 1 day
+	\end{enumerate}
+	\item Add all Temp.js to this file -> 1 day
+	\item Refactor dict in base - It's shit -> 2 days
+	\item Rethink what to show, and what not to - use of NTT, BinSear etc.
+	\item Buttons and SCompreh move with scroll -> 1 day
+	\item Divide NT from system -> 0.5 day
+	\item statics system -> 0.5 day
+	\item Variable naming convention -> 2 days
+\end{enumerate}
+
+\section{Future}
+\begin{enumerate}
+	\item Batch one:
+	\begin {enumerate}
+		\item Finish generating functions -> 1 day
+		\item Add Mobius -> 5 days
+		\item Add basic factor for own use somewhere -> 1 day
+		\item Add Totient genral -> 1 day
+		\item Add IEP generalization -> 4 days
+		\item Add DLog -> 8 days
+		\item Add Partitions -> 10 days
+	\end{enumerate}
+
+	\item Batch two:
+	\begin {enumerate}
+		\item Add los catalanos -> 5 days
+		\item Add prime counting -> 7 days
+	\end{enumerate}
+\end{enumerate}
 \end{document}

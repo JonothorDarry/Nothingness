@@ -4,6 +4,7 @@ function make_toc(){
 	var contents=[], numbers=[0, 0, 0, 0, 0, 0], Limit=4;
 	var title="";
 
+	console.log(lst);
 	for (i=0; i<lst.length; i++){
 		lst[i].id=`${i}.${lst[i].innerHTML}`;
 		numbers[lst[i].tagName[1]-1]++;
@@ -31,7 +32,6 @@ function make_toc(){
 		toc.appendChild(td);
 		title="";
 	}
-	console.log(lst);
 }
 
 make_toc();
