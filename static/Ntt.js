@@ -709,7 +709,7 @@ class SumNtt extends Algorithm{
 				var p2=`${polynominalize(this.poly[s[1]-1][2*s[2]+1])}`;
 				var pres=`${polynominalize(this.poly[s[1]][s[2]])}`;
 
-				return `Now, polynominals representing two solutions to smaller subproblems (namely polynominals ${show_poly(s[1]-1, s[2]*2)} and ${show_poly(s[1]-1, s[2]*2+1)}) have to be multiplied in order to solve larger subproblem (represented by polynominal ${show_poly(s[1], s[2])}) of finding set sums: <b>(${p1})(${p2}) &#8801; ${pres} (mod ${M})</b>. Note that complexity of shown algorithm depends on choice of algorithm for polynominal multiplication: for classical dp approach, it will be O(nm), while for multiplication using NTT it will be O(nlog(n)log(m).`;
+				return `Now, polynominals representing two solutions to smaller subproblems (namely polynominals ${show_poly(s[1]-1, s[2]*2)} and ${show_poly(s[1]-1, s[2]*2+1)}) have to be multiplied in order to solve larger subproblem (represented by polynominal ${show_poly(s[1], s[2])}) of finding set sums: <b>(${p1})(${p2}) &#8801; ${pres} (mod ${M})</b>. Note that complexity of shown algorithm depends on choice of algorithm for polynominal multiplication: for classical dp approach, it will be O(nm), while for multiplication using NTT it will be O(nlog(n)log(m)).`;
 			}
 		}
 

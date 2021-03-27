@@ -1,4 +1,4 @@
-{% macro algorithm(id, header_text, input_format, start_value, input_type='input', algo_type='algo', add_on=none, added_elements=none) %}
+{% macro algorithm(id, header_text, input_format, start_value, input_type='input', algo_type='algo', add_on=none, added_elements=none, vehement=false) %}
 		<div id="Algo{{id}}" class="pureAlgo">
 			<h4 class={{algo_type}}>{{header_text}}</h4>
 
@@ -43,6 +43,10 @@
 
 			<div class="breakAlgo"></div>
 			<div id="Primez{{id}}" class="primez"></div>
-			<div id="Comprehend{{id}}" class="comprehend"></div>
+			<div id="Comprehend{{id}}" class="comprehend"
+						   {% if vehement==true %}
+							   style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"
+						   {% endif %}
+			></div>
 		</div>
 {% endmacro %}

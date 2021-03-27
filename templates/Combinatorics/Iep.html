@@ -12,7 +12,64 @@
 	<body>
 		{{ headers.full_upper('Inclusion-Exclusion Principle', 'Combinatorics') }}
 		<h2>Introduction</h2>
-		<p>In this article a technique allowing to calculate sum of sets given intersections of all subsets of a set will be shown, its optimization and generalization.</p>
+		<p>In this article a technique allowing to calculate sum of sets given intersections of all subsets of a set will be shown, its optimization and generalization. As such problems frequently involve bitmasks, several definitions regarding them shall be stated.</p>
+		<p>There are no divisors (and thus symbol \(x\)) in this article; used symbols are:</p>
+		<ol>
+			<li>\(\oplus\) or ^ denotes XOR operation: exclusive or of bits.</li>
+			<li>| denotes OR opertation: or on bits.</li>
+			<li>\(\&\) dentotes AND operation: and on bits</li>
+		</ol>
+		<!--
+		<p>The operations above have following meaning, if applied to two bits \(a, b\):</p>
+		<table>
+			<thead>
+				<tr>
+					<td>\(a\)</td>
+					<td>\(b\)</td>
+					<td>\(a|b\)</td>
+					<td>\(a \oplus b\)</td>
+					<td>\(a\&b\)</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>\(0\)</td>
+					<td>\(0\)</td>
+					<td>\(0\)</td>
+					<td>\(0\)</td>
+					<td>\(0\)</td>
+				</tr>
+				<tr>
+					<td>\(1\)</td>
+					<td>\(0\)</td>
+					<td>\(1\)</td>
+					<td>\(1\)</td>
+					<td>\(0\)</td>
+				</tr>
+				<tr>
+					<td>\(0\)</td>
+					<td>\(1\)</td>
+					<td>\(1\)</td>
+					<td>\(1\)</td>
+					<td>\(0\)</td>
+				</tr>
+				<tr>
+					<td>\(1\)</td>
+					<td>\(1\)</td>
+					<td>\(1\)</td>
+					<td>\(0\)</td>
+					<td>\(1\)</td>
+				</tr>
+
+			</tbody>
+		</table>
+		-->
+		<p>All operations on numbers are applied bit by bit: for example, \(12 \oplus 55=(001100)_2 \oplus (110111)_2=(111011)_2=59\), where \((x)_b\) denotes number \(x\) in positional system under base \(b\).</p>
+		<p>Other definitions used include:</p>
+		<ol>
+			<li>A bit \(h\) of number \(x\) is said to be <b>set</b> if and only if \(x|2^h=x\)</li>
+		</ol>
+
 		<h2>Problem I - Basic inclusion-exclusion principle</h2>
 		<p>Suppose You have to create a multiset of \(n\) elements (\(n \le 10^{14}\)), where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of \(i\)-th type. In how many ways this multiset can be created? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
 		<h3>Better formulation of the question</h3>
@@ -28,9 +85,9 @@
 				$$\sum_{1 \le i \le t}|A_i|-\sum_{1 \le i \lt j \le t}|A_i \cap A_j|+\dots+(-1)^{t+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_t \le t}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_t}|$$
 			Each multiset \(S\) such that \(S \in A_1 \cup A_2 \cup \dots \cup A_t\) is calculated
 			$$\binom{m}{1}-\binom{m}{2}+\dots +(-1)^{t+1}\binom{m}{t}=\sum_{k=1}^{t}(-1)^{k+1}\binom{m}{k}=1$$
-			times for \(m=|\{A_i: S \in A_i\}|\). Note that as this holds, because \(t \ge m \ge 1\) (there is at least one set \(A_i\), to which \(S\) belongs) - otherwise, expression above would be \(0\) (which holds for all multisets not belonging to any \(A_i\)). And so, finally, 
-			{% macro iep(x, beg='$$') %}
-			{{beg}} \sum_{1 \le i \le {{x}} } |A_i|-\sum_{1 \le i \lt j \le {{x}} }|A_i \cap A_j|+\dots+(-1)^{ {{x}}+1 }\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{ {{x}} } \le {{x}} }|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{ {{x}} } }|=|A_1 \cup A_2 \cup \dots \cup A_{ {{x}} }|$$
+			times for \(m=|\{A_i: S \in A_i\}|\). Note that this holds, because \(t \ge m \ge 1\) (there is at least one set \(A_i\), to which \(S\) belongs) - otherwise, expression above would be \(0\) (which holds for all multisets not belonging to any \(A_i\)). And so, finally, 
+			{% macro iep(x, beg='$$', name='A') %}
+			{{beg}} \sum_{1 \le i \le {{x}} } |{{name}}_i|-\sum_{1 \le i \lt j \le {{x}} }|{{name}}_i \cap {{name}}_j|+\dots+(-1)^{ {{x}}+1 }\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{ {{x}} } \le {{x}} }|{{name}}_{j_1} \cap {{name}}_{j_2} \cap \dots \cap {{name}}_{j_{ {{x}} } }|=|{{name}}_1 \cup {{name}}_2 \cup \dots \cup {{name}}_{ {{x}} }|$$
 			{% endmacro %}
 			{{iep('t')}}
 			</li>
@@ -68,7 +125,7 @@
 			<li>Then, \(\sum_{i=0}^{amount\_of\_bits(i)}a_{j_i}\) described by number \(x\) is equal to \(summa(x)=summa(x\oplus2^{leftmost\_bit(x)})+a_{leftmost\_bit(x)}\) - using results computed previously, this result - and all previous results - can be calculated in \(O(2^t)\).</li>
 			<li>At last, calculate \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}=\binom{n+t-1-summa(x)}{t-1}=\frac{(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)}{(t-1)!}=(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)*((t-1)!)^{-1}\). As result has to be calculated \(\pmod {10^9+7}\), the last part (\((t-1)!^{-1} \pmod {10^9+7}\)) can be calculated beforehand, using Fermat's little theorem or Euclid algorithm. The remaining part shall be calculated by multiplying those \(t-1\) elements leading to complexity \(O(t2^t)\) - \(2^t\) times one has to multiply \(t-1\) numbers.</li>
 			<li>Finally, sum above shall be added to result with positive sign, if \(amount\_of\_bits(x) \equiv 1 \pmod 2\), or negative otherwise.</li>
-			<li>After all sizes of intersections were calculated, the final result is equal to amount of multisets not belonging to \(A_1 \cup A_2 \cup \dots \cup A_t\) - and so, it is equal \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_n|\) - second obtained after dealing with intersections.</li>
+			<li>After all sizes of intersections were calculated, the final result is equal to amount of multisets not belonging to \(A_1 \cup A_2 \cup \dots \cup A_t\) - and so, it is equal \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\) - second obtained after dealing with intersections.</li>
 		</ol>
 
 		{{ algo.algorithm(1, 'Inclusion-exclusion principle', '
@@ -78,6 +135,85 @@
 			</p>
 		'
 		, '4 12&#10;3 2 5 7', 'textarea') }}
+		<h2>Problem 2: IEP over all subsets complexity reduction</h2>
+		<p>Suppose You are given \(n\) numbers \(a_i\). For each number \(x:\ 0 \le x \le L\) calculate number of values \(a_i\), such that \(a_i | x=x\), where | denotes bitwise or. In othere words, for each \(x\) find \(\{a_i: a_i|x=x\}\). \(1 \le n \le 10^6\), \(0 \le a_i, L \lt 2^{20}\).</p>
+		<h3>Absolutely brutal solution</h3>
+		<p>For each \(x\) one can check each \(a_i\), whether statement is correct, leading to complexity \(O(nL)\)</p>
+		<h3>Somewhat more refined solution</h3>
+		<p>First of all, it may be wise to operate on more structured sequence \(a_i\): Let \(count_s=|\{a_i: a_i=s\}|\). Then, our aim for each number - dentoted as \(res_x\) can be formulated as 
+			<span class="central">$$\forall_{x} res_x = \sum_{s: s | x=x} count_s$$</span>
+		</p>
+		<p>What numbers fulfill \(x|s=x\)?</p>
+		<ol>
+			<li>\(x|s \ge x \land x|s \ge s\) - because logical or always sets all bits present in both numbers</li>
+			<li>\(s\) cannot have any bit set, that is not set in \(x\) - because \(x|s\) would have a bit not present in \(x\) set, leading to \(x|s \neq x\)</li>
+		</ol>
+		<p>Thus, all numbers, whose set bits belong to set of set bits of \(x\) meet the constraints for \(s\); for example, for \(x=(10010)_2\) proper \(s\) are \(s \in \{(00000)_2, (00010)_2, (10000)_2, (10010)_2\}\). Later, proper \(s\) for \(x\) will be referred to as submasks of \(x\)</p>
+		<p>How to efficintly move over all submasks of \(x\)? One can notice, that:</p>
+		<ol>
+			<li>0 has one submask - 0.</li>
+			<li>A submask of \(x\) either has bit \(leftmost_x\) set or not.</li>
+			<li>If \(s\) is a submask of \(x\) then \(s | 2^{leftmost_x}\) is also a submask of \(x\).</li>
+			<li>If a submask \(s\) has bit \(leftmost_x\) set, then \(s \oplus 2^{leftmost_x}\) is also a submask of \(s\).</li>
+			<li>Thus, number all submasks of \(x\) are submasks of \(x \oplus 2^{leftmost_x}\) and the same submasks with bit \(leftmost_x\) set.</li>
+		</ol>
+		<p>For example, for \(x=42=(101010)_2\) subsequently calculated submasks may be, starting from 0 and doing things iteratively:</p>
+		<ol>
+			<li>\((000000)_2\)</li>
+			<li>\((000000)_2, (000010)_2\)</li>
+			<li>\((000000)_2, (000010)_2, (001000)_2, (001010)_2\)</li>
+			<li>\((000000)_2, (000010)_2, (001010)_2, (001010)_2, (100000)_2, (100010)_2, (101010)_2, (101010)_2\)</li>
+		</ol>
+		<p>Where all subsequent layers \(i\) (indexed from 0) are constructed by appending to elements \(s\) from previous layer elements \(s|2^b\), where \(b\) is \(i\)-th from left bit of number \(x\). In the beginning, layer 0 consists of 1 element - namely 0.</p>
+		<p>This allows to calculate all submasks of one element in \(O(2^{bits_x})\).</p>
+		<h4>Complexity of this approach</h4>
+		<p>In range from \(0\) to \(2^m-1\), how many there are numbers \(x\) with \(bits_x=h\)? \(\binom{m}{h}\), because this number is equal to number of ways to choose \(h\) bits, that will be set out of \(m\) bits representing all numbers in this range. Thus, complexity of algorithm moving through all submasks can be calculated as:</p>
+		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}2^i$$</span>
+		One can show, that \(\sum_{i=0}^{m} \binom{m}{i}2^i=3^m\) - by induction, at start, for \(m=0\):
+		<span class="central">$$\binom{0}{0}2^0=1=3^0$$</span>
+		Then, assuming, that for some \(m\) true is, that: \(\sum_{i=0}^{m} \binom{m}{i}2^i=3^m\):
+		<span class="central">$$\sum_{i=0}^{m+1} \binom{m+1}{i}2^i = \sum_{i=0}^{m+1}(\binom{m}{i}2^i+\binom{m}{i-1}2^i) = \sum_{i=0}^{m+1}(\binom{m}{i}2^i+\binom{m}{i}2^{i+1}) = 3*\sum_{i=0}^{m+1}\binom{m}{i}2^i=3*3^{m-1}=3^m$$</span>
+		<p>So, finally, algorithm moving through all submasks \(s\) of a number \(x\) and calculating sum of \(count_s\) for those submasks - where \(count_s\) is calculated at the beginning, so it can be accessed in \(O(1)\) - works in \(O(3^{log(L)})\) - in case of this problem, \(3^{20} \approx 3*10^9\) - which is not very good.</p>
+		<h5>Moving complexity proof further</h5>
+		<p>One can moved even further with this complexity proof, and show, that, for fixed \(s, l\):
+		<span class="central">$$\sum_{i=0}^{m+1} \binom{m+1}{i}s^{il} = \sum_{i=0}^{m+1}(\binom{m}{i}s^{il}+\binom{m}{i-1}s^{il}) = \sum_{i=0}^{m+1}(\binom{m}{i}s^i+\binom{m}{i}s^{(i+1)l}) = (1+s^l)*\sum_{i=0}^{m+1}\binom{m}{i}s^{il}$$</span>
+		As for any \(s, l\) for \(m=0\) the equation \(\binom{0}{0} s^{0l}=1\), this results in:
+		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}s^{il} = (1+s^l)^m$$</span>
+		</p>
+		<h3>Dubious approach involving inclusion-exclusion principle</h3>
+		<p>For given \(x\), let \(b_i\) denote its \(i\)-th set bit, indexed from 1. Let \(S_i\) denote set of all numbers \(a_i\), that:</p>
+		<ol>
+			<li>All of its set bits are equal to some \(b_i\): in other words, \(\forall_{s \in S_i} s|x=x\)</li>
+			<li>Have bit \(b_i\) not set.</li>
+		</ol>
+		<p>Then, how the problem can be formulated in another way?:</p>
+		<ol>
+			<li>First, notice, that \(|S_i|=res_{x \oplus 2^{b_i}}\). Also, \(|S_{i_1} \cap S_{i_2} \cap \dots \cap S_{i_k}|=res_{x \oplus 2^{b_{i_1}} \oplus 2^{b_{i_2}} \oplus \dots \oplus 2^{b_{i_k}}}\) - because it counts all submasks of \(x\) with bits \(b_{i_1}, \dots b_{i_k}\) not set.</li>
+			<li>Aim of the problem is calculating \(\sum_{s:s|x=x} count_s\), in other words \(count_s\) over all submasks of \(x\). All submasks of \(x\) either have at least one of bits \(b_1, b_2, \dots b_l\) not set - so they can be denoted by set \(S_1 \cup S_2 \cup \dots \cup S_l\) (assuming \(x\) has \(l\) bits set), or are equal to \(x\).</li>
+			<li>What follows, the answer to this problem can be denoted as \(|S_1 \cup S_2 \cup \dots \cup S_l|+count_x\). The first part can be calculated as:
+				{{ iep('l', '$$', 'S') }}
+				Which leads to, using property established in first point:
+				$$|S_1 \cup S_2 \cup \dots \cup S_l|=\sum_{0 \lt i \le l} res_{x \oplus 2^b_i} - \sum_{0 \lt i \lt j \le l} res_{x \oplus 2^{b_i} \oplus 2^{b_j}} + \dots +(-1)^{k+1} \sum_{0 \lt i_1 \lt i_2 \lt \dots \lt i_k \le l} res_{x \oplus 2^{b_{i_1}} \oplus 2^{b_{i_2}} \oplus \dots \oplus 2^{b_{i_k}}}$$
+			This, again, leads to a soltion with same complexity as above - but shows, that Inclusion-Exclusion can be used in some way to attain certain result.
+			</li>
+		</ol>
+		<h3>Proper approach using inclusion-exclusion principle</h3>
+		<p>For simplicity, let \(y_i=2^{b_i}\).</p>
+		<p>How to calculate \(res_x\) knowing values \(res_z\) for all \(z \lt x\), particuralry value \(res_{x \oplus y_1}\)? As
+		$$ res_x=\sum_{s: s|x=x} count_s = res_{x \oplus y_1} + \sum_{s: (s|x=x \land s|y_1=s)} count_s$$
+		Because \(res_{x \oplus y_1}\) calculates all numbers, that have bit \(b_1\) not set, the remaining sum has to calculate only \(2^{l-1}\) numbers, that have bit \(b_1\) set. And how to calculate \(res_x\) knowing also \(res_{x \oplus y_2}\) and \(res_{x \oplus y_1 \oplus y_2}\)?
+		$$ res_x= res_{x \oplus y_1} + res_{x \oplus y_2} - res_{x \oplus y_1 \oplus y_2} + \sum_{s: (s|x=x \land s|y_1|y_2=s)} count_s$$
+		Because \(res_{x \oplus y_1}+res_{x \oplus y_2}-res_{x \oplus y_1 \oplus y_2}\) calculates all numbers, that have either bit \(b_1\) or \(b_2\) not set, thus remaining sum has to calculate only \(2^{l-2}\) numbers, that have both \(b_1\) and \(b_2\) bits set.</p>
+		<p>The later part of the algorithm is consequence of applying idea above for sets \(y_1, y_2, \dots y_{l/2}\):
+		$$ res_x= \sum_{0 \lt i \le l/2} res_{x \oplus y_i} - \sum_{0 \lt i \lt j \le l/2} res_{x \oplus y_i \oplus y_j} + \dots + (-1)^{k+1} \sum_{0 \lt i_1 \lt i_2 \dots \lt i_k \le l/2} res_{x \oplus y_{i_1} \oplus y_{i_2} \oplus \dots \oplus y_{i_k}} + \sum_{s: (s|x=x \land s|y_1|y_2| \dots |y_{l/2}=s)} count_s$$
+		</p>
+		<h4>Complexity of such approach</h4>
+		<p>This solution, excluding constants, will work in:
+		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}2^{i/2}$$</span>
+		Thus, from lemma showing, that 
+		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}s^{lk}=(1+s^l)^m$$</span>
+		One can conclude, that complexity of this algorithm is \(O((1+\sqrt{2})^{log(L)})\) - in this case number of steps of an algorithm can be approximated by \(2.42^{20} \approx 4.8*10^7\) - which is not bad at all.
+		</p>
 
 		<h2>Summary</h2>
 		<ol>
@@ -88,8 +224,6 @@
 		<p>
 		Inclusion-exclusion principle can be used to solve variety of problems, most of which involve bitmasks, though multitude of tasks rely on reducing standard inclusion-exclusion exponential mechanism to something polynominal.
 			<a href="https://codeforces.com/problemset/problem/451/E">Devu and Flowers</a>, 
-			<!--<a href="https://codeforces.com/problemset/problem/785/D">Anton and School - 2</a>, 
-			<a href="https://codeforces.com/problemset/problem/932/E">Team Work</a>, -->
 		</p>
 
 		<script src="{{url_for('static', filename='Iep.js')}}"></script>
