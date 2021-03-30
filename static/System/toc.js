@@ -4,7 +4,6 @@ function make_toc(){
 	var contents=[], numbers=[0, 0, 0, 0, 0, 0], Limit=4;
 	var title="";
 
-	console.log(lst);
 	for (i=0; i<lst.length; i++){
 		lst[i].id=`${i}.${lst[i].innerHTML}`;
 		numbers[lst[i].tagName[1]-1]++;
@@ -17,7 +16,6 @@ function make_toc(){
 
 		var refer=document.createElement("A");
 		refer.classList.add("toc");
-		console.log(lst[i].className=='shower');
 		if (lst[i].className=='shower') refer.classList.add("shower"); //Dubious - prevent 2nd class
 		if (lst[i].className=='algo') refer.classList.add("algo");
 		if (lst[i].className=='querier') refer.classList.add("querier");

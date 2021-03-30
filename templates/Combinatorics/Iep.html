@@ -199,7 +199,7 @@
 			This, again, leads to a solution with same complexity as the previous algorithm - but shows, that inclusion-exclusion can be used in some way to attain certain result.
 			</li>
 		</ol>
-		<h3>Proper approach using inclusion-exclusion principle</h3>
+		<h3>Better approach using inclusion-exclusion principle</h3>
 		<p>How to calculate \(res_x\) knowing values \(res_z\) for all \(z \lt x\), particuralry value \(res_{x \oplus y_1}\)? As
 		$$ res_x=\sum_{s: s|x=x} count_s = res_{x \oplus y_1} + \sum_{s: (s|x=x \land s|y_1=s)} count_s$$
 		Because \(res_{x \oplus y_1}\) calculates all numbers, that have bit \(b_1\) not set, the remaining sum has to calculate only \(2^{l-1}\) numbers, that have bit \(b_1\) set. And how to calculate \(res_x\) knowing also \(res_{x \oplus y_2}\) and \(res_{x \oplus y_1 \oplus y_2}\)?
@@ -210,15 +210,27 @@
 		</p>
 		<h4>Complexity of such approach</h4>
 		<p>This solution, excluding constants, will work in:
-		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}2^{i/2}$$</span>
+		<span class="central">$$O(\sum_{i=0}^{log_2(L)} \binom{log_2(L)}{i}2^{i/2})$$</span>
 		Thus, from lemma showing, that 
 		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}s^{lk}=(1+s^l)^m$$</span>
-		One can conclude, that complexity of this algorithm is \(O((1+\sqrt{2})^{log(L)})\) - in this case number of steps of an algorithm can be approximated by \(2.42^{20} \approx 4.8*10^7\) - which is not bad at all.
+		One can conclude, that complexity of this algorithm is \(O((1+\sqrt{2})^{log(L)}) \approx O(2^{log_2(2.42)*log(L)}) \approx O(L^{5/4})\) - in this case number of steps of an algorithm can be approximated by \(2.42^{20} \approx 4.8*10^7\) - which is not bad, but perhaps it can be optimized even further (Hovewer, variants of this approach may turn out to be very useful - for example with tight limits on memory, or when \(count_x=0\) for \(x\) having, for example, more than \(s\) bits). 
 		</p>
 		<h4>Notes on implementation</h4>
-		<p>
+		<ol>
+			<li>It may be wise to calculate beforehand \(sgn_x\) and \(leftmost_x\) before proceeding with calculating \(res_x\).</li>
+			<li>Let sequence \(c\) consisting of elements \(c_i\) denote all such elements, that \(count_{c_i}\) will be added to \(res_x\). Using equation for \(res_x\), \(c_i\) has to have all bits \(b_1, b_2, \dots, b_{l/2}\) set - let \(B2=y_1+y_2+\dots+y_{l/2}\), and then, let sequence \(c'\) will denote all submasks of \(x \oplus B2\); then each \(c_i\) can be represented as \(c'_i | B2\).</li>
+			<li>Let sequence \(r\) consisting of elements \(r_i\) denote all such elements, that \(res_{r_i}\) will be added with some sign to \(res_x\). Using equation for \(res_x\), \(r_i\) has to have all bits \(b_{l/2+1}, b_{l/2+2}, \dots, b_{l}\) set (because only bits \(b_1, \dots, b_{l/2}\) were xor'ed at some point) - let \(B1=y_{l/2+1}+y_{l/2+2}+\dots+y_l\), and then, let sequence \(r'\) will denote all submasks of \(x \oplus B1\); then each \(r_i\) can be represented as \(r'_i | B1\). However, notice, that one \(r_i\) - namely one equal to \(x\) - was never used in equation for \(res_x\) - it has to be omitted in calculations.</li>
+			<li>Notice, that to calculate sequences \(r\) and \(c\) one can use same procedure with different arguments - this simplifies implementation.</li>
+			<li>There is one remaining problem - calculating sign, with which \(res_{r_i}\) will be added to \(res_x\). From formula to calculate \(res_x\), this depends on number of bits, that are set in \(x\) and not set in \(r_i\) - if this number is odd, sign is \(1\), if even, sign is \(-1\) (note that if bit is set in \(r_i\) it has to be set in \(x\)). This can be calculated as \(sgn_{x \oplus r_i}\), where \(sgn_z=1\) for \(z\) with odd number of bits, \(sgn_z=-1\) otherwise.</li>
+		</ol>
+		{{ algo.algorithm(2, 'Inclusion-exclusion on subsets', '
+			<p>Input format: \(n\) - number of elements, \(a_i\) - elements of sequence.<br>
+			\(n\)<br>
+			\(a_1, a_2, \dots, a_n\)
+			</p>
+		'
+		, '6 15&#10;4 5 2 6 7 12', 'textarea') }}
 
-		</p>
 
 		<h2>Summary</h2>
 		<ol>
@@ -228,7 +240,11 @@
 		<h3>Problems</h3>
 		<p>
 		Inclusion-exclusion principle can be used to solve variety of problems, most of which involve bitmasks, though multitude of tasks rely on reducing standard inclusion-exclusion exponential mechanism to something polynominal.
-			<a href="https://codeforces.com/problemset/problem/451/E">Devu and Flowers</a>, 
+		<ol>
+			<li><a href="https://codeforces.com/problemset/problem/451/E">Devu and Flowers</a></li>
+			<li><a href="https://codeforces.com/problemset/problem/383/E">Vowels</a></li>
+			<li><a href="https://codeforces.com/problemset/problem/1228/E">Another Filling the Grid</a></li>
+		</ol>
 		</p>
 
 		<script src="{{url_for('static', filename='Iep.js')}}"></script>

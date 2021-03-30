@@ -43,14 +43,14 @@ class BinaryExpo extends Algorithm{
 				else if (j==2) btn=this.buttCreator(mylst[z-i-1], i==(z-1)?'#004400':'#440000');
 				else btn=this.buttCreator();
 				this.btlist[j].push(btn);	
-				this.zdivs[j][2].appendChild(btn);
+				this.zdivs[j].buttons.appendChild(btn);
 			}
 			if (j==1) btn=this.buttCreator(a);
 			if (j==2) btn=this.buttCreator(b);
 			if (j==0) btn=this.buttCreator(1);
 			
 			this.utilbts.push(btn);
-			this.zdivs[j][1].appendChild(btn);
+			this.zdivs[j].midian.appendChild(btn);
 		}
 		this.reality=z-1;
 		//Controversial - there must be a better way than hardcoding width

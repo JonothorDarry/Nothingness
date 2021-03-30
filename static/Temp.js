@@ -48,6 +48,7 @@ class Algorithm{
 
 	constructor(block){
 		this.lees=[];
+		this.logic={};
 		this.place=block.primePlace;
 		this.wisdom=block.output;
 		this.input=block.input;
@@ -65,6 +66,7 @@ class Algorithm{
 		return false;
 	}
 
+	//Default action after finish
 	FinishingSequence(){
 		while (!this.isFinished()){
 			this.NextState();
@@ -81,6 +83,7 @@ class Algorithm{
 		l.innerHTML=p;
 	}
 
+	//reading input
 	dissolve_input(str){
 		var lst=[], j=0, i=0, x, a=0;
 		lst.iter=-1;
@@ -98,6 +101,7 @@ class Algorithm{
 		return lst;
 	}
 
+	//Operations starting BeginningExecutor
 	starter(){
 		this.lees=[];
 		this.state_transformation=[];
@@ -106,6 +110,7 @@ class Algorithm{
 		this.dead=0;
 	}
 
+	//Reversing operation
 	StateUnmaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], n=this.n, i, elem;
@@ -222,6 +227,7 @@ class Algorithm{
 		return [dv, butt1, butt2];
 	}
 
+	//Execute changes in the last state
 	transformator(staat){
 		this.state_transformation.push(staat);
 		var x, i;
@@ -235,33 +241,42 @@ class Algorithm{
 		}
 	}
 
-	//mode: 1 - buttons, 2 - midian button, 4 - text (logical or), midian - width of middle
-	divsCreator(mode, number_of_rows, title_list, midian){
-		var divs=[], zdivs=[], i, j, mode_title=(((mode&4)>0)?1:0), mode_single=(((mode&2)>0)?1:0), mode_butts=mode&1;
-		var title_id=0, single_id=mode_title, butts_id=mode_title+mode_single;
 
+	//mode: 1 - buttons, 2 - midian button, 4 - text (logical or), midian - width of middle
+	static title_id='title';
+	static single_id='midian'
+	static buttons_id='buttons';
+	divsCreator(mode, number_of_rows, title_list, midian, elements=['divs', 'zdivs']){
+		var divs=[], zdivs=[], i, j, mode_title=(((mode&4)>0)?1:0), mode_single=(((mode&2)>0)?1:0), mode_butts=mode&1;
+		var elems=[];
+		if (mode_title==1) elems.push(Algorithm.title_id);
+		if (mode_single==1) elems.push(Algorithm.single_id);
+		if (mode_butts==1) elems.push(Algorithm.buttons_id);
+
+		var full_div=document.createElement("DIV");
 		for (i=0;i<number_of_rows;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
 		for (i=0;i<number_of_rows;i++){
 			divs[i].style.height=this.bs_butt_height;
 			//zdivs - inside div: 0 is write-up, 1 is button
-			for (j=0; j<butts_id+mode_butts; j++) {
-				zdivs[i].push(document.createElement("DIV"));
+			for (j of elems) {
+				zdivs[i][j]=document.createElement("DIV");
 				zdivs[i][j].style.margin="0";
 				zdivs[i][j].style.padding="0";
 				zdivs[i][j].style.display="inline-block";
 				divs[i].appendChild(zdivs[i][j]);
 			}
 			if (mode_title==1) {
-				zdivs[i][title_id].innerHTML=title_list[i];
-				zdivs[i][title_id].style.width="200px";
+				zdivs[i][Algorithm.title_id].innerHTML=title_list[i];
+				zdivs[i][Algorithm.title_id].style.width="200px";
 			}
-			if (mode_single==1) zdivs[i][single_id].style.width=midian;
-			if (mode_butts==1) zdivs[i][butts_id].style.position="relative";
+			if (mode_single==1) zdivs[i][Algorithm.single_id].style.width=midian;
+			if (mode_butts==1) zdivs[i][Algorithm.buttons_id].style.position="relative";
 
 			this.place.appendChild(divs[i]);
 		}
-		this.divs=divs;
-		this.zdivs=zdivs;
+		this.place.appendChild(full_div);
+		this[elements[0]]=divs;
+		this[elements[1]]=zdivs;
 	}
 
 
@@ -300,6 +315,7 @@ class Partial extends Algorithm{
 		return dick;
 	}
 }
+
 
 
 class NTMath{
@@ -393,6 +409,32 @@ class NTMath{
 		}
 		return p3;
 	}
+}
+
+class Bitmasks{
+	//Up to ln: sgn, lmost, bits
+	static calculate_standard_bmasks(ln){
+		var lmost=[-1], sgn=[-1], bits=[0], i;
+		for (i=1; i<ln; i++){
+			lmost.push(lmost[Math.floor(i/2)]+1);
+			bits.push(bits[Math.floor(i/2)]+i%2);
+			sgn.push(bits[i]%2==0?(-1):1);
+		}
+		return {'leftmost':lmost, 'sgn':sgn, 'bits':bits};
+	}
+
+	//All bitmasks up to 2^bits-1 inclusive
+	static list_all_bitmasks(bits){
+		var all_bitmasks=[], pows=[], pw=1<<bits, i, j;
+		for (i=0; i<bits; i++) pows.push(1<<i);
+
+		for (i=0; i<pw; i++){
+			console.log(pows[2]&i);
+			all_bitmasks.push(pows.map(function(e){return ((e&i)>0)?1:0;}));
+		}
+		return all_bitmasks;
+	}
+
 }
 
 class Complex{

@@ -126,7 +126,7 @@ class PowerTower extends Algorithm{
 				else if (i==1) btn=this.buttCreator(lees[j]);
 				else btn=this.buttCreator();
 				console.log(i, j);
-				this.zdivs[i][1].appendChild(btn);
+				this.zdivs[i].buttons.appendChild(btn);
 			}
 		}
 	}
@@ -155,7 +155,7 @@ class PowerTower extends Algorithm{
 				else if (i==1) btn=this.buttCreator(this.dt[j]);
 				else btn=this.buttCreator();
 				this.btnlist[i].push(btn);
-				this.zdivs[i][1].appendChild(btn);
+				this.zdivs[i].buttons.appendChild(btn);
 			}
 		}
 	}
@@ -282,29 +282,9 @@ class PowerTower extends Algorithm{
 	}
 
 	divsCreator(){
-		var divs=[], zdivs=[], i, j;
 		var title_list=["i", "a<sub>i</sub>", "Current &#x03D5;", "Result", "Is low"];
-
-		for (i=0;i<5;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<5;i++){
-			divs[i].style.width="100%";
-			divs[i].style.height="40px";
-			for (j=0;j<2;j++) {
-				zdivs[i].push(document.createElement("DIV"));
-				zdivs[i][j].style.margin="0";
-				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline-block";
-				divs[i].appendChild(zdivs[i][j]);
-			}
-			zdivs[i][0].innerHTML=title_list[i];
-			zdivs[i][0].style.width="200px";
-
-			this.place.appendChild(divs[i]);
-		}
-		this.divs=divs;
-		this.zdivs=zdivs;
+		super.divsCreator(5, 5, title_list);
 	}
-	
 }
 
 

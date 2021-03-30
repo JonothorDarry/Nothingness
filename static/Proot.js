@@ -191,10 +191,10 @@ class Proot extends Algorithm{
 
 				else if (i==1) btn=super.buttCreator();
 				else btn=super.buttCreator();
-				if (i!=5) this.zdivs[i][1].appendChild(btn);
-				else this.zdivs[i][1].appendChild(butt_container);
+				if (i!=5) this.zdivs[i].buttons.appendChild(btn);
+				else this.zdivs[i].buttons.appendChild(butt_container);
 				this.btnlist[i].push(btn);
-				if (i==0) this.zdivs[i][1].appendChild(btn2);
+				if (i==0) this.zdivs[i].buttons.appendChild(btn2);
 				if (i==0 || i==5) this.btnlist[i].push(btn2);
 			}
 		}

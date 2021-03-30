@@ -21,7 +21,7 @@ class Ntt extends Algorithm{
 			for (j=0;j<this.n;j++){
 				btn=super.buttCreator();
 				this.btnlist[i].push(btn);
-				this.zdivs[i][2].appendChild(btn);
+				this.zdivs[i].buttons.appendChild(btn);
 
 				this.btnlist[i][j].innerHTML=(i==0?j:(i==1?a[j]:b[j]));
 				this.Painter(this.btnlist[i][j], 0);
@@ -140,7 +140,7 @@ class Ntt extends Algorithm{
 			if (i==3 || i==this.endet-1){
 				btn=super.buttCreator();
 				this.btnlist[i].push(btn);
-				this.zdivs[i-ite][1].appendChild(btn);
+				this.zdivs[i-ite].midian.appendChild(btn);
 				ite++;
 				continue;
 			}
@@ -156,7 +156,7 @@ class Ntt extends Algorithm{
 						btn=super.doubleButtCreator(null, super.buttCreator.bind(this))[0];
 				}
 				this.btnlist[i].push(btn);
-				this.zdivs[i-ite][2].appendChild(btn);
+				this.zdivs[i-ite].buttons.appendChild(btn);
 			}
 		}
 	}
@@ -595,12 +595,12 @@ class SumNtt extends Algorithm{
 					double_butt[1].innerHTML=j;
 
 					this.reducts[ij][i].push([double_butt[1], double_butt[2]]);
-					this.zdivs[ij][1].appendChild(double_butt[0]);
+					this.zdivs[ij].buttons.appendChild(double_butt[0]);
 				}
 
 				for (j=0; j<(1<<(ij+1))-1; j++){
 					add_butt=super.buttCreator();
-					this.zdivs[ij][1].appendChild(add_butt);
+					this.zdivs[ij].buttons.appendChild(add_butt);
 				}
 			}
 		}

@@ -21,4 +21,4 @@ SNAME=127.0.0.1:5000
 Or You can use Heroku platform: https://algos.herokuapp.com/
 
 
-Application manifesto is shown in Sprawko/Sprawko.pdf
+Application manifesto is shown in Sprawko/System.pdf

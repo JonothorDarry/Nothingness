@@ -10,7 +10,7 @@ function g_grid_constructor(obj, all_rows, width){
 		for (j=0; j<width; j++){
 			bt=obj.buttCreator();
 			bt.innerHTML='';
-			obj.zdivs[i][0].appendChild(bt);
+			obj.zdivs[i].buttons.appendChild(bt);
 			tmp_lst.push(bt);
 		}
 	}
@@ -477,23 +477,23 @@ class Pascal_base extends Algorithm{
 
 		btn=this.buttCreator("n\\k");
 		this.Painter(btn, 8);
-		this.zdivs[0][0].append(btn);
+		this.zdivs[0].buttons.append(btn);
 
 		for (i=0; i<=this.n; i++){
 			btn=this.buttCreator(i); 
 			this.Painter(btn, 5);
-			this.zdivs[0][0].append(btn);
+			this.zdivs[0].buttons.append(btn);
 		}
 		for (i=0; i<=this.n; i++){
 			btn=this.buttCreator(i); 
 			this.Painter(btn, 5);
-			this.zdivs[i+1][0].append(btn);
+			this.zdivs[i+1].buttons.append(btn);
 			this.btnlist.push([]);
 
 			for (j=0; j<=i; j++){
 				btn=this.buttCreator(this.pascal[i][j]);
 				this.Painter(btn, color);
-				this.zdivs[i+1][0].append(btn);
+				this.zdivs[i+1].buttons.append(btn);
 				this.btnlist[i].push(btn);
 			}
 		}
