@@ -517,8 +517,15 @@ class Generalized_Iep extends Algorithm{
 				this.pass_color(this.btn_list[i+this.offset][this.pl_count]);
 			}
 		}
-		if (s[0]==1) this.pass_color(this.btn_list[s[1]+this.offset][this.pl_leftmost]);
-		if (s[0]==2) this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sgn]);
+		if (s[0]==1) {
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_leftmost]);
+			this.pass_color(this.btn_list[Math.floor(s[1]/2)+this.offset][this.pl_leftmost]);
+		}
+		if (s[0]==2){
+			if (s[1]!=0)
+				this.pass_color(this.btn_list[(s[1]^(1<<this.logic.leftmost_bit[s[1]]))+this.offset][this.pl_sgn]);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sgn]);
+		}
 		if (s[0]==3){
 			var cor_column=this.logic.max_bits-s[2];
 			this.pass_color(this.btn_list[s[1]+this.offset][cor_column], 0, 1, 0);
@@ -602,9 +609,70 @@ class Generalized_Iep extends Algorithm{
 		if  (s[0]==8 && s[2]+1<this.logic.botched_res[s[1]].length) this.lees.push([7, s[1], s[2]+1]);
 		else if (s[0]==8 && s[1]<this.logic.L) this.lees.push([1, s[1]+1])
 
-
-
 		else if (s[0]==8) this.lees.push([100, 0]);
+	}
+
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], x=s[1];
+		function sub(x){return `<sub>${x}</sub>`}
+
+		if (s[0]==0) return `First, count array informing, how many there are elements a<sub>i</sub> with value x for each x is created, and all elements of array a added to it.`;
+		if (s[0]==1 && s[1]==0) return `Value of leftmost<sub>${s[1]}</sub>=-1 is calculated to simplify further calculations. Notice that as 0 doesn't have any bits set, this is convenient value for its leftmost bit.`;
+		if (s[0]==1) return `Notice, that res${sub(s[1]-1)} was not added to res${sub(s[1]-1)} - because it was not present in the formula, and because it would lead to meaningless equation. Value of leftmost<sub>${s[1]}</sub>=leftmost<sub>${s[1]}/2</sub>+1=leftmost<sub>${s[1]>>1}</sub>+1=${this.logic.leftmost_bit[s[1]]} is calculated to simplify further calculations. Notice that this formula works, because multiplying number by 2 leads to obtaining same number shifted by one bit to the left.`;
+		if (s[0]==2 && s[1]==0) return `sgn<sub>x</sub> denotes, whether number of bits of x is odd; for 0, this is not the case, so sgn<sub>0</sub>=-1`;
+		if (s[0]==2) return `Value of sgn<sub>${s[1]}</sub>=-sgn<sub>${s[1]}^2<sup>leftmost${sub(s[1])}</sup></sub>=-sgn${sub(s[1]^(1<<this.logic.leftmost_bit[s[1]]))}=${this.logic.sgn[s[1]]} is calculated to simplify further calculations. sgn<sub>x</sub> denotes, whether number of bits of a number is odd or even; and number of bits of same number without one bit has different parity.`;
+
+		if (s[0]==3) return `To calculate res${sub(s[1])}, subsequent set bits of ${s[1]} shall be found; now, the aim is to check, whether ${s[1]} has bit ${s[2]} set. In order to find an answer, one may check, whether ${s[1]}&(1<<${s[2]})=${s[1]&(1<<s[2])}>0; ${((1<<s[2])&s[1])>0?`${s[2]} is thus one of the bits of ${s[1]}, and so, 2<sup>${s[2]}</sup>=${1<<s[2]} is added to list y${sub(s[1])} representing subsequent masks of single bits of ${s[1]}`:`${s[2]} is thus not set in ${s[1]}`}.`;
+
+		if (s[0]==4){
+			var allez=this.logic.partial_pows[s[1]].length;
+			return `Set of y${sub('i')} is divided into two parts of size differing at most by one in order to calculate res${sub(s[1])} as sum of some res${sub('x')} and some count${sub('z')} - most importantly, amount of used previous values is limited by O(2<sup>bits${sub(s[1])}/2</sup>). As there are ${allez} bits set in ${s[1]}, subsequent sets get ${allez>>1} and ${(allez>>1)+(allez&1)} elements.`;
+		}
+
+		if (s[0]==5){
+			var lft=this.logic.leftmost_bit[s[2]], pos_y=(this.logic.partial_pows[s[1]].length>>1)+lft, is_continued=((1<<lft)!=s[2]);
+			return `In order to calculate still not present value count${sub('x')} in current sequence, one can calculate logical or (or just addition) of ${is_continued?`last used`:`new`} y${sub('i')} - ${this.logic.partial_pows[s[1]][pos_y]} and ${is_continued?`still not added to this value next element existing in sequence`:`first element of existing sequence`} - ${this.logic.botched_count[s[1]][s[2]-(1<<lft)]} resulting in ${this.logic.botched_count[s[1]][s[2]]}`;
+		}
+		if (s[0]==6) return `Value of count${sub(this.logic.botched_count[s[1]][s[2]])}=${this.logic.counts[this.logic.botched_count[s[1]][s[2]]]} is added to res${sub(s[1])}.`;
+
+		if (s[0]==7){
+			var lft=this.logic.leftmost_bit[s[2]], pos_y=lft, is_continued=((1<<lft)!=s[2]);
+			return `In order to calculate still not present value res${sub('x')} in current sequence, one can calculate logical or (or just addition) of ${is_continued?`last used`:`new`} y${sub('i')} - ${this.logic.partial_pows[s[1]][pos_y]} and ${is_continued?`still not added to this value next element existing in sequence`:`first element of existing sequence`} - ${this.logic.botched_res[s[1]][s[2]-(1<<lft)]} resulting in ${this.logic.botched_res[s[1]][s[2]]}`;
+		}
+
+		if (s[0]==8){
+			var bres=this.logic.botched_res[s[1]][s[2]], sgn_cor=bres^s[1];
+			return `Value of res${sub(bres)}=${this.logic.res[bres]} multiplied by sgn<sub>${s[1]}^${bres}</sub>=sgn${sub(sgn_cor)}=${this.logic.sgn[sgn_cor]} is added to res${sub(s[1])}. Notice, that ${s[1]}^${bres} has exactly those bits set, that are set in ${s[1]}, but not in ${bres}`;
+		}
+
+		if (s[0]==10){
+			var all_y=this.logic.partial_pows[s[1]].length, pos_y=(this.logic.partial_pows[s[1]].length>>1), execution_1=``, execution_2=``, finale=``;
+			for (i=0; i<pos_y; i++){
+				execution_1+=`y${sub(i)}`;
+				execution_2+=`${this.logic.partial_pows[s[1]][i]}`;
+				if (i<pos_y-1) execution_1+='|', execution_2+='|';
+			}
+			if (execution_1.length>0) finale=`${execution_1}=${execution_2}=${this.logic.botched_count[s[1]][0]}`;
+			else finale=`0`;
+
+			return `Each count${sub('x')} has subset of bits always set; it can be represented as ${finale}. Also, it's one of the numbers, for which count${sub('x')} has to be added to res${sub(s[1])}.`;
+		}
+
+		if (s[0]==11){
+			var all_y=this.logic.partial_pows[s[1]].length, pos_y=(this.logic.partial_pows[s[1]].length>>1), execution_1=``, execution_2=``, finale=``;
+			for (i=pos_y; i<all_y; i++){
+				execution_1+=`y${sub(i)}`;
+				execution_2+=`${this.logic.partial_pows[s[1]][i]}`;
+				if (i<all_y-1) execution_1+='|', execution_2+='|';
+			}
+			if (execution_1.length>0) finale=`${execution_1}=${execution_2}=${this.logic.botched_res[s[1]][0]}`;
+			else finale=`0`;
+
+			return `Each res${sub('x')} has subset of bits always set; it can be represented as ${finale}. Also, it's one of the numbers, for which res${sub('x')} has to be added with sign to res${sub(s[1])}.`;
+		}
+
+		if (s[0]==100) return `All values res${sub('x')} were calculated, in the end, resulting table is ${this.logic.res}`;
 	}
 }
 
