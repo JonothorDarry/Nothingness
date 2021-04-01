@@ -451,7 +451,7 @@ class Generalized_Iep extends Algorithm{
 			[`sgn`, this.pl_sgn, this.logic.sgn],
 			[`left`, this.pl_leftmost, this.logic.leftmost_bit],
 			[`cnt`, this.pl_count, this.logic.counts],
-			[`res`, this.pl_res, []]];
+			[`res`, this.pl_res, this.logic.sgn.map(e => 0), 8]];
 		
 		var ln=all_bitmasks[0].length-1;
 		for (i=ln; i>=0; i--){
@@ -499,8 +499,18 @@ class Generalized_Iep extends Algorithm{
 
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+		var s=this.lees[l-1], staat=[], i, point=s[2];
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0]==1 && s[1]>0){
+			var last=s[1]-1;
+			for (i=0; i<this.logic.partial_pows[last].length; i++)
+				staat.push([0, this.buttons.yi[i], 0, 4]);
+			for (i=0; i<this.logic.botched_count[last].length; i++)
+				staat.push([0, this.buttons.sum_count[i], 0, 4]);
+			for (i=0; i<this.logic.botched_res[last].length; i++)
+				staat.push([0, this.buttons.sum_res[i], 0, 4]);
+		}
 
 		if (s[0]==0){
 			for (i=0; i<=this.logic.L; i++){
@@ -514,7 +524,7 @@ class Generalized_Iep extends Algorithm{
 			this.pass_color(this.btn_list[s[1]+this.offset][cor_column], 0, 1, 0);
 
 			if (((1<<s[2])&s[1])>0){
-				var point=s[3]+1;
+				point=s[3]+1;
 				staat.push([1, this.buttons.yi[point], this.buttons.yi[point].innerHTML, this.logic.partial_pows[s[1]][point]]);
 				this.pass_color(this.buttons.yi[point]);
 			}
@@ -525,21 +535,48 @@ class Generalized_Iep extends Algorithm{
 				staat.push([0, this.buttons.yi[i], 0, 12]);
 			}
 		}
-
+		if (s[0]==5 || s[0]==10){
+			staat.push([1, this.buttons.sum_count[point], this.buttons.sum_count[point].innerHTML, this.logic.botched_count[s[1]][point]]);
+			staat.push([0, this.buttons.sum_count[point], 4, 1]);
+		}
 		if (s[0]==5){
-			staat.push([1, this.buttons.sum_count[s[2]], this.buttons.sum_count[s[2]], this.logic.botched_count[s[1]][s[2]]]);
-			staat.push([0, this.buttons.sum_count[s[2]], 4, 1]);
+			var lft=this.logic.leftmost_bit[s[2]];
+			this.pass_color(this.buttons.sum_count[s[2]-(1<<lft)], 0, 14, 0);
+			this.pass_color(this.buttons.yi[(this.logic.partial_pows[s[1]].length>>1)+lft], 0, 13, 0);
+		}
+
+		if (s[0]==10){
+			for (i=0; i<(this.logic.partial_pows[s[1]].length>>1); i++)
+				this.pass_color(this.buttons.yi[i], 12, 1, 12);
 		}
 
 		if (s[0]==6){
-			staat.push([0, this.btn_list[this.logic.botched_count[s[1]][s[2]]+this.offset][this.pl_count], 0, 1]);
-			passer.push([0, this.buttons.sum_count[s[2]], 1, 0]);
+			this.pass_color(this.btn_list[this.logic.botched_count[s[1]][point]+this.offset][this.pl_count], 0, 14);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_res], 8, 1, 8);
+			staat.push([1, this.btn_list[s[1]+this.offset][this.pl_res], this.btn_list[s[1]+this.offset][this.pl_res].innerHTML, this.logic.subsequent_answers[s[1]][s[2]]]);
+			passer.push([0, this.buttons.sum_count[point], 1, 0]);
 		}
 
+		if (s[0]==7 || s[0]==11){
+			staat.push([1, this.buttons.sum_res[point], this.buttons.sum_res[point].innerHTML, this.logic.botched_res[s[1]][point]]);
+			staat.push([0, this.buttons.sum_res[point], 4, 1]);
+		}
 		if (s[0]==7){
-			staat.push([1, this.buttons.sum_res[s[2]], this.buttons.sum_res[s[2]], this.logic.botched_res[s[1]][s[2]]]);
-			staat.push([0, this.buttons.sum_res[s[2]], 4, 1]);
-			passer.push([0, this.buttons.sum_res[s[2]], 1, 0]);
+			var lft=this.logic.leftmost_bit[s[2]];
+			this.pass_color(this.buttons.sum_res[s[2]-(1<<lft)], 0, 14, 0);
+			this.pass_color(this.buttons.yi[lft], 12, 13, 12);
+		}
+		if (s[0]==11){
+			for (i=(this.logic.partial_pows[s[1]].length>>1); i<this.logic.partial_pows[s[1]].length; i++)
+				this.pass_color(this.buttons.yi[i], 0, 1, 0);
+		}
+
+		if (s[0]==8){
+			this.pass_color(this.btn_list[(s[1]^this.logic.botched_res[s[1]][point])+this.offset][this.pl_sgn], 0, 14);
+			this.pass_color(this.btn_list[this.logic.botched_res[s[1]][point]+this.offset][this.pl_res], 8, 14, 8);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_res], 8, 1, 8);
+			staat.push([1, this.btn_list[s[1]+this.offset][this.pl_res], this.btn_list[s[1]+this.offset][this.pl_res].innerHTML, this.logic.subsequent_answers[s[1]][this.logic.botched_count[s[1]].length+s[2]]]);
+			passer.push([0, this.buttons.sum_res[point], 1, 0]);
 		}
 	}
 
@@ -554,15 +591,19 @@ class Generalized_Iep extends Algorithm{
 		if (s[0]==3 && s[2]+1<this.logic.max_bits) this.lees.push([3, s[1], s[2]+1, s[3]+((((1<<s[2])&s[1])>0)?1:0)]);
 		else if (s[0]==3) this.lees.push([4, s[1]]);
 
-		if (s[0]==4) this.lees.push([5, s[1], 0]);
+		if (s[0]==4) this.lees.push([10, s[1], 0]);
 
-		if (s[0]==5) this.lees.push([6, s[1], s[2]]);
+		if (s[0]==5 || s[0]==10) this.lees.push([6, s[1], s[2]]);
 		if  (s[0]==6 && s[2]+1<this.logic.botched_count[s[1]].length) this.lees.push([5, s[1], s[2]+1]);
-		else if (s[0]==6) this.lees.push([7, s[1], 0]);
+		else if (s[0]==6 && this.logic.botched_res[s[1]].length>0) this.lees.push([11, s[1], 0]);
+		else if (s[0]==6) this.lees.push([1, s[1]+1]);
 
-		if (s[0]==7) this.lees.push([8, s[1], s[2]]);
-		if  (s[0]==8 && s[2]<=this.logic.botched_res[s[1]].length) this.lees.push([7, s[1], s[2]+1]);
+		if (s[0]==7 || s[0]==11) this.lees.push([8, s[1], s[2]]);
+		if  (s[0]==8 && s[2]+1<this.logic.botched_res[s[1]].length) this.lees.push([7, s[1], s[2]+1]);
 		else if (s[0]==8 && s[1]<this.logic.L) this.lees.push([1, s[1]+1])
+
+
+
 		else if (s[0]==8) this.lees.push([100, 0]);
 	}
 }
