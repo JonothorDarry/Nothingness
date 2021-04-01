@@ -164,7 +164,6 @@ class Iep extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		this.read_data();
 		this.caress_style();
 		this.palingnesia();
@@ -173,7 +172,8 @@ class Iep extends Algorithm{
 
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+		var s=this.lees[l-1], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
 			staat.push([0, this.btn_list[0+this.offset][0], 4, 5]);
@@ -246,8 +246,6 @@ class Iep extends Algorithm{
 			staat.push([0, this.btn_list[this.last_in_line][this.pl_set_size], 1, 0]);
 			staat.push([0, this.btn_list[this.last_in_line][this.pl_set_size+1], 4, 8]);
 		}
-
-		this.transformator(staat);
 	}
 
 	StatementComprehension(){
@@ -292,20 +290,193 @@ class Iep extends Algorithm{
 
 
 class Generalized_Iep extends Algorithm{
-	//Add button at the start to a system
-	add_button_to_reality(div_nr, name, color){
-		var btn=this.buttCreator(name);
-		this.Painter(btn, color);
+	calculate_counts(){
+		this.logic.counts=[];
+		var i=0;
+		for (i=0; i<=this.logic.L; i++) this.logic.counts.push(0);
+		for (i=0; i<this.logic.a.length; i++){
+			if (this.logic.L>=this.logic.a[i])
+				this.logic.counts[this.logic.a[i]]++;
+		}
+	}
+
+	create_partial_system(left_list, right_list){
+		var i=0, basis=0, limit=1, x;
+		for (i=0; i<left_list.length; i++) basis|=left_list[i];
+		var res_list=[basis];
+
+		for (x of right_list){
+			for (i=0; i<limit; i++){
+				res_list.push(res_list[i]|x);
+			}
+			limit*=2;
+		}
+		return res_list;
+	}
+
+	//Magical (1+sqrt(2))^m
+	calculate_cut_iep(){
+		var i=0, j, pows=[];
+		this.logic.partial_pows=[];
+
+		this.logic.botched_count=[];
+		this.logic.botched_res=[];
+
+		for (i=1; i<=this.logic.L; i*=2) pows.push(i);
+		for (i=0; i<=this.logic.L; i++){
+			this.logic.partial_pows.push([]);
+			for (j=0; j<pows.length; j++){
+				if ((pows[j]|i)==i){
+					this.logic.partial_pows[i].push(pows[j]);
+				}
+			}
+			var ln=this.logic.partial_pows[i].length;
+			var ln2=ln>>1;
+			var part1=this.logic.partial_pows[i].slice(0, ln2), part2=this.logic.partial_pows[i].slice(ln2, ln);
+
+			this.logic.botched_count.push(this.create_partial_system(part1, part2));
+			this.logic.botched_res.push(this.create_partial_system(part2, part1));
+			this.logic.botched_res[i].pop();
+		}
+	}
+
+	recalculate_trivialities(bmask){
+		this.logic.sgn=bmask.sgn;
+		this.logic.leftmost_bit=bmask.leftmost;
+		this.logic.bits=bmask.bits;
+	}
+
+	formulate_answers(){
+		var i, j, tmp_res=0, x;
+		this.logic.res=[];
+		this.logic.subsequent_answers=[];
+
+		for (i=0; i<=this.logic.L; i++){
+			this.logic.subsequent_answers.push([]);
+			tmp_res=0;
+			for (x of this.logic.botched_count[i]){
+				tmp_res+=this.logic.counts[x];
+				this.logic.subsequent_answers[i].push(tmp_res);
+			}
+			for (x of this.logic.botched_res[i]){
+				tmp_res+=this.logic.res[x]*this.logic.sgn[i^x];
+				this.logic.subsequent_answers[i].push(tmp_res);
+			}
+			this.logic.res.push(tmp_res);
+		}
+	}
+
+	logical_box(){
+		this.calculate_counts();
+		var bmasks=Bitmasks.calculate_standard_bmasks(this.logic.L+1);
+		this.calculate_cut_iep();
+		this.recalculate_trivialities(bmasks);
+		this.formulate_answers();
+	}
+	
+
+	//From 0 to n-1 - m elements
+	create_grid(n, m){
+		var i, j;
+		for (i=0; i<n; i++){
+			for (j=0; j<m; j++){
+				this.add_button_to_reality(i);
+			}
+		}
+	}
+	//Add button at the start to a system within div_nr row
+	add_button_to_reality(div_nr){
+		var btn=this.buttCreator();
 		this.zdivs[div_nr].buttons.append(btn);
 		this.btn_list[div_nr].push(btn);
 	}
+	//button defined by row & column - change of iHTML and color
+	reform_button_in_reality(row, column, iHTML, color){
+		this.Painter(this.btn_list[row][column], color);
+		this.btn_list[row][column].innerHTML=iHTML;
+	}
+	//Column: name, place, list
+	fill_column(column, offset){
+		this.reform_button_in_reality(0, column[1], column[0], 5);
+
+		var i;
+		for (i=0; i<column[2].length; i++){
+			this.reform_button_in_reality(i+offset, column[1], column[2][i], ((column.length<=3)?4:column[3]));
+		}
+	}
+
+	//It'z shiet - make it better
+	correct_lower_divs(){
+		var f1=this.logic.max_bits, f2=1<<((f1>>1)+(f1&1)), btn, i;
+		this.buttons={'yi':[], 'sum_count':[], 'sum_res':[]};
+		for (i=0; i<f1; i++) {
+			btn=this.buttCreator();
+			this.lower_div[0].buttons.appendChild(btn);
+			this.buttons.yi.push(btn);
+		}
+		for (i=0; i<f2; i++){
+			btn=this.buttCreator();
+			this.lower_div[1].buttons.appendChild(btn);
+			this.buttons.sum_count.push(btn);
+
+			btn=this.buttCreator();
+			this.lower_div[2].buttons.appendChild(btn);
+			this.buttons.sum_res.push(btn);
+		}
+	}
 
 	palingnesia(){
-		var bmasks=Bitmasks.calculate_standard_bmasks(this.L);
-		console.log(bmasks);
+		this.logical_box();
+
+		var i, all_those_bits;
+		this.logic.max_bits=Math.ceil(Math.log(this.logic.L)/Math.log(2));
+		var all_bitmasks=Bitmasks.list_all_bitmasks(this.logic.max_bits);
+		this.offset=1;
+
+		this.pl_leftmost=this.logic.max_bits+2;
+		this.pl_sgn=this.pl_leftmost+1;
+		this.pl_count=this.pl_sgn+2;
+		this.pl_res=this.pl_count+1;
+
+		var num_rows=this.logic.L+this.offset+2;
+		this.divsCreator(1, num_rows);
+		this.btn_list=[];
+		for (i=0; i<num_rows; i++) this.btn_list.push([]);
+
+		this.create_grid(num_rows, this.pl_res+1);
+
+		var ints=[];
+		for (i=0; i<=this.logic.L; i++) ints.push(i);
+		var order_of_destiny=[[`x`, 0, ints, 5],
+			[`sgn`, this.pl_sgn, this.logic.sgn],
+			[`left`, this.pl_leftmost, this.logic.leftmost_bit],
+			[`cnt`, this.pl_count, this.logic.counts],
+			[`res`, this.pl_res, []]];
+		
+		var ln=all_bitmasks[0].length-1;
+		for (i=ln; i>=0; i--){
+			all_those_bits=all_bitmasks.map(e => e[i]);
+			order_of_destiny.push([`bit<sub>${i}</sub>`, 1+ln-i, all_those_bits.slice(0, this.logic.L+1), 0]);
+		}
+
+		for (var order of order_of_destiny){
+			this.fill_column(order, this.offset);
+		}
+		this.divsCreator_part();
+		this.correct_lower_divs();
 	}
+
+	divsCreator_part(){
+		var titles=['y<sub>i</sub>: ', 'Sum with count:', 'Sum with res:'];
+		this.divsCreator(5, 3, titles, null, ['nothing', 'lower_div']);
+	}
+
 	constructor(block, n, L, a){
 		super(block);
+		this.logic.n=n;
+		this.logic.L=L
+		this.logic.a=a;
+		this.palingnesia();
 	}
 
 	read_data(){
@@ -314,18 +485,86 @@ class Generalized_Iep extends Algorithm{
 		this.logic.n=c.get_next();
 		this.logic.L=c.get_next();
 		this.logic.a=[];
-		for (var i=0; i<this.logic.t; i++){
+		for (var i=0; i<this.logic.n; i++){
 			this.logic.a.push(c.get_next());
 		}
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		this.read_data();
 		this.palingnesia();
+		this.lees.push([0]);
 	}
 
-	StateMaker(){}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], staat=[], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0]==0){
+			for (i=0; i<=this.logic.L; i++){
+				this.pass_color(this.btn_list[i+this.offset][this.pl_count]);
+			}
+		}
+		if (s[0]==1) this.pass_color(this.btn_list[s[1]+this.offset][this.pl_leftmost]);
+		if (s[0]==2) this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sgn]);
+		if (s[0]==3){
+			var cor_column=this.logic.max_bits-s[2];
+			this.pass_color(this.btn_list[s[1]+this.offset][cor_column], 0, 1, 0);
+
+			if (((1<<s[2])&s[1])>0){
+				var point=s[3]+1;
+				staat.push([1, this.buttons.yi[point], this.buttons.yi[point].innerHTML, this.logic.partial_pows[s[1]][point]]);
+				this.pass_color(this.buttons.yi[point]);
+			}
+		}
+
+		if (s[0]==4){
+			for (i=0; i<(this.logic.partial_pows[s[1]].length>>1); i++){
+				staat.push([0, this.buttons.yi[i], 0, 12]);
+			}
+		}
+
+		if (s[0]==5){
+			staat.push([1, this.buttons.sum_count[s[2]], this.buttons.sum_count[s[2]], this.logic.botched_count[s[1]][s[2]]]);
+			staat.push([0, this.buttons.sum_count[s[2]], 4, 1]);
+		}
+
+		if (s[0]==6){
+			staat.push([0, this.btn_list[this.logic.botched_count[s[1]][s[2]]+this.offset][this.pl_count], 0, 1]);
+			passer.push([0, this.buttons.sum_count[s[2]], 1, 0]);
+		}
+
+		if (s[0]==7){
+			staat.push([1, this.buttons.sum_res[s[2]], this.buttons.sum_res[s[2]], this.logic.botched_res[s[1]][s[2]]]);
+			staat.push([0, this.buttons.sum_res[s[2]], 4, 1]);
+			passer.push([0, this.buttons.sum_res[s[2]], 1, 0]);
+		}
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+		if (s[0]==0) this.lees.push([1, 0]);
+		if (s[0]==1) this.lees.push([2, s[1]]);
+		if (s[0]==2) this.lees.push([3, s[1], 0, -1]);
+
+		if (s[0]==3 && s[2]+1<this.logic.max_bits) this.lees.push([3, s[1], s[2]+1, s[3]+((((1<<s[2])&s[1])>0)?1:0)]);
+		else if (s[0]==3) this.lees.push([4, s[1]]);
+
+		if (s[0]==4) this.lees.push([5, s[1], 0]);
+
+		if (s[0]==5) this.lees.push([6, s[1], s[2]]);
+		if  (s[0]==6 && s[2]+1<this.logic.botched_count[s[1]].length) this.lees.push([5, s[1], s[2]+1]);
+		else if (s[0]==6) this.lees.push([7, s[1], 0]);
+
+		if (s[0]==7) this.lees.push([8, s[1], s[2]]);
+		if  (s[0]==8 && s[2]<=this.logic.botched_res[s[1]].length) this.lees.push([7, s[1], s[2]+1]);
+		else if (s[0]==8 && s[1]<this.logic.L) this.lees.push([1, s[1]+1])
+		else if (s[0]==8) this.lees.push([100, 0]);
+	}
 }
 
 

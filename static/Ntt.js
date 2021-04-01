@@ -30,7 +30,6 @@ class Ntt extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		this.btnlist=[];
 		this.utilbts=[];
 		this.is_ntt=this.ntt.checked;
@@ -197,7 +196,7 @@ class Ntt extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], j, btn, value, i=0, n=this.n;
-		var staat=[];
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 		if (l>1 && (this.lees[l-2][0]==7 || this.lees[l-2][0]==6)) this.no_more_colors(this.lees[l-2], staat);
 
 		if (s[0]==0){
@@ -217,13 +216,13 @@ class Ntt extends Algorithm{
 			if (this.is_ntt){
 				this.proot=NTMath.find_proot(this.q);
 				if (this.proot){
-					staat=[[0, this.btnlist[3][0], 4, 1]];
+					staat.push([0, this.btnlist[3][0], 4, 1]);
 					this.btnlist[3][0].innerHTML=this.proot;
 				}
 			}
 			else {
 				this.proot=new Complex(Math.cos(2*Math.PI/this.n), Math.sin(2*Math.PI/this.n));
-				staat=[[0, this.btnlist[3][0], 4, 1]];
+				staat.push([0, this.btnlist[3][0], 4, 1]);
 				this.btnlist[3][0].innerHTML=this.proot;
 			}
 		}
@@ -240,9 +239,9 @@ class Ntt extends Algorithm{
 			}
 
 			this.w=beg;
-			staat=[[0, this.btnlist[4][0], 4, 1],
-				[0, this.btnlist[4][1], 4, 1],
-				[0, this.btnlist[3][0], 1, 0]];
+			staat.push([0, this.btnlist[4][0], 4, 1]);
+			staat.push([0, this.btnlist[4][1], 4, 1]);
+			staat.push([0, this.btnlist[3][0], 1, 0]);
 
 			this.show_number(this.btnlist[4][1], beg);
 		}
@@ -260,8 +259,8 @@ class Ntt extends Algorithm{
 				this.roots[1]=this.w;
 				starter=new Complex(this.w.real, this.w.img);
 			}
-			staat=[[0, this.btnlist[4][0], 1, 0], 
-				[0, this.btnlist[4][1], 1, 0]];
+			staat.push([0, this.btnlist[4][0], 1, 0]);
+			staat.push([0, this.btnlist[4][1], 1, 0]);
 
 			for (i=2;i<this.n;i++){
 				if (this.is_ntt){
@@ -411,11 +410,8 @@ class Ntt extends Algorithm{
 		}
 
 		if (s[0]==101){
-			if (this.dead==1) return;
-			staat.push([3, 'dead', 0, 1]);
 			staat.push([0, this.btnlist[this.endet-1][0], 1, 0]);
 		}
-		this.transformator(staat);
 	}
 
 
@@ -613,7 +609,6 @@ class SumNtt extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		var n, s=[];
 		this.pass_to_next_state=[];
 
@@ -630,7 +625,7 @@ class SumNtt extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], i=0, n=this.n, v1=s[1], v2=s[2], passer=[];
-		var staat=this.pass_to_next_state.slice();
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==1){
 			for (i=0; i<this.poly[v1][v2].length; i++){
@@ -645,15 +640,10 @@ class SumNtt extends Algorithm{
 
 
 		if (s[0]==101){
-			if (this.dead==1) return;
-			staat.push([3, 'dead', 0, 1]);
 			for (i=0; i<this.poly[this.layers-1][0].length; i++){
 				staat.push([0, this.reducts[this.layers-1][0][i][1], 1, 8]);
 			}
 		}
-
-		staat.push([3, "pass_to_next_state", this.pass_to_next_state, passer]);
-		this.transformator(staat);
 	}
 
 	NextState(){

@@ -5,7 +5,6 @@ class Tree extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.place.innerHTML="";
 		this.treeConstructor();
 	}
 
@@ -309,7 +308,6 @@ class DiamFinder extends Tree{
 		this.ans_snapshot=[0];
 		var dimension, x, y, x2;
 
-		this.lees=[];
 		this.lees.push([0, 1]);
 		this.ij=[0];
 		this.companion=[0];
@@ -428,7 +426,7 @@ class DiamFinder extends Tree{
 			para=this.par[seminal[1]];
 		}
 
-		this.lees.pop();
+		super.StateUnmaker();
 		a=seminal[1];
 		if (seminal[0]==3) a=this.par[seminal[1]];
 		if (seminal[0]!=4) this.ij[a]-=1;

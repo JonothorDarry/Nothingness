@@ -119,7 +119,6 @@ class Choice extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
 		this.n=c.get_next();
@@ -152,8 +151,8 @@ class Choice extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
-		var staat=[], i, presentation, permutations;
-		if (this.finito==true) return;
+		var i, presentation, permutations;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
 			this.reformulate_reality(this.presentation, staat, 1);
@@ -170,13 +169,11 @@ class Choice extends Algorithm{
 		}
 
 		if (s[0]==100){
-			staat.push([3, 'finito', false, true]);
 			this.reformulate_reality(this.presentation, staat, 1);
 			presentation=this.make_presentation(this.permutations, 1);
 			this.reformulate_reality(presentation, staat, 0, 0);
 		}
 		staat.push([3, 'presentation', this.presentation, presentation]);
-		this.transformator(staat);
 	}
 }
 
@@ -351,10 +348,6 @@ class Perm_rep extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.lees=[];
-		this.state_transformation=[];
-		this.place.innerHTML='';
-		this.finito=false;
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
 
@@ -400,8 +393,8 @@ class Perm_rep extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
-		var staat=[], i, presentation, permutations;
-		if (this.finito==true) return;
+		var i, presentation, permutations;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
 			presentation=this.make_presentation(this.permutations, 0);
@@ -423,15 +416,12 @@ class Perm_rep extends Algorithm{
 		}
 
 		if (s[0]==100){
-			staat.push([3, 'finito', false, true]);
-			this.finito=true;
 			this.reformulate_reality(this.presentation, staat, this.a[this.t-1], 1);
 			presentation=this.make_presentation(this.permutations, 0);
 			this.reformulate_reality(presentation, staat, 0, 0, 1);
 		}
 
 		staat.push([3, 'presentation', this.presentation, presentation]);
-		this.transformator(staat);
 	}
 }
 
@@ -458,7 +448,6 @@ class Pascal_base extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		this.btnlist=[];
 		this.read_data();
 
@@ -520,9 +509,9 @@ class Pascal_triangle extends Pascal_base{
 
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[];
+		var s=this.lees[l-1];
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
-		if (this.finito==true) return;
 		if (s[0]==0){
 			staat.push([0, this.btnlist[s[1]][0], 4, 1]);
 			if (s[1]>1){
@@ -540,12 +529,10 @@ class Pascal_triangle extends Pascal_base{
 			if (s[2]!=s[1]) staat.push([0, this.btnlist[s[1]-1][s[2]], 0, 1]);
 		}
 		if (s[0]==100) {
-			staat.push([3, 'finito', false, true]);
 			staat.push([0, this.btnlist[this.n][this.n], 1, 0]);
 			if (this.n>0) staat.push([0, this.btnlist[this.n-1][this.n-1], 1, 0]);
 			
 		}
-		this.transformator(staat);
 	}
 
 	NextState(){
@@ -600,9 +587,9 @@ class Hockey_stick extends Pascal_base{
 
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[];
+		var s=this.lees[l-1];
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
-		if (this.finito==true) return;
 		if (s[0]==0){
 			staat.push([3, 'str_cn', this.str_cn, this.str_cn+`${this.str_num.length==0?'':'+'}`+`Cn(${s[1]},${this.k-1})`]);
 			staat.push([3, 'str_num', this.str_num, this.str_num+`${this.str_num.length==0?'':'+'}`+`${this.pascal[s[1]][this.k-1]}`]);
@@ -617,9 +604,7 @@ class Hockey_stick extends Pascal_base{
 
 			staat.push([0, this.btnlist[this.k-1][this.k-1], 0, 1]);
 			if (this.k<this.n) staat.push([0, this.btnlist[this.k][this.k], 1, 0]);
-			staat.push([3, 'finito', false, true]);
 		}
-		this.transformator(staat);
 	}
 
 	NextState(){

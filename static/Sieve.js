@@ -145,7 +145,7 @@ class Sieve extends Algorithm{
 			if (s[0]==1)	this.Darken(s[2]);
 			if (s[0]==0)	this.PrimeColor(s[2], s[3]);
 		}
-		this.lees.pop();
+		super.StateUnmaker();
 	}
 
 	//Create Button

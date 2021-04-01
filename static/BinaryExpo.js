@@ -11,10 +11,8 @@ class BinaryExpo extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		this.btlist=[];
 		this.utilbts=[];
-		this.dead=0;
 		var fas=this.input.value;
 		var a=0, b=0, x, i=0, c, m;
 		
@@ -60,7 +58,7 @@ class BinaryExpo extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], col, vl, lst;
-		var staat=[];
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 		var a=s[1], b=s[2], res=s[3], m=s[4], i=0;
 
 		if (s[0]==0){
@@ -88,8 +86,6 @@ class BinaryExpo extends Algorithm{
 		}
 
 		else if (s[0]>=100){
-			if (this.dead==1) return;
-			staat.push([3, 'dead', 0, 1]);
 			lst=this.lees[l-2];
 			staat.push([0, this.btlist[1][this.reality], 1, 0]);
 			staat.push([0, this.btlist[2][this.reality], 1, 0]);
@@ -97,8 +93,6 @@ class BinaryExpo extends Algorithm{
 			staat.push[1, this.utilbts[1], lst[1], (lst[1]*lst[1])%lst[4]];
 			staat.push[1, this.utilbts[2], lst[2], 0];
 		}
-
-		this.transformator(staat);
 	}
 
 

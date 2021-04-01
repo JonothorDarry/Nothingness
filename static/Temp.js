@@ -17,8 +17,8 @@ class Algorithm{
 		//Beginning button & sequence
 		this.inbut.addEventListener('click', function(){
 			var zis=Algorithm.alldict[this.id];
-			zis.BeginningExecutor();
-			zis.StateMaker();
+			zis.post_beginning_executor();
+			zis.post_state_maker();
 			zis.ChangeStatement();
 		});
 
@@ -26,7 +26,7 @@ class Algorithm{
 		this.nextbut.addEventListener('click', function(){
 			var zis=Algorithm.alldict[this.id];
 			zis.NextState();
-			zis.StateMaker();
+			zis.post_state_maker();
 			zis.ChangeStatement();
 		});
 
@@ -70,9 +70,34 @@ class Algorithm{
 	FinishingSequence(){
 		while (!this.isFinished()){
 			this.NextState();
-			this.StateMaker();
+			this.post_state_maker();
 			this.ChangeStatement();
 		}
+	}
+
+	post_beginning_executor(){
+		this.starter();
+		this.BeginningExecutor();
+	}
+
+	post_state_maker(){
+		if (this.finito==true) return;
+		this.before_state_maker();
+		this.StateMaker();
+		this.after_state_maker();
+	}
+
+	before_state_maker(){
+		this.ephemeral.staat=this.pass_to_next_state.slice();
+		this.ephemeral.passer=[];
+	}
+	after_state_maker(){
+		if (this.isFinished()==true) 
+			this.ephemeral.staat.push([3, "finito", false, true]);
+
+		this.ephemeral.staat.push([3, "pass_to_next_state", this.pass_to_next_state, this.ephemeral.passer]);
+		this.transformator(this.ephemeral.staat);
+		this.ephemeral={'staat':null, 'passer':null};
 	}
   
 	
@@ -107,16 +132,16 @@ class Algorithm{
 		this.state_transformation=[];
 		this.place.innerHTML='';
 		this.finito=false;
-		this.dead=0;
+		this.ephemeral={'staat':null, 'passer':null};
+		this.pass_to_next_state=[];
 	}
 
 	//Reversing operation
 	StateUnmaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], n=this.n, i, elem;
+		var l=this.lees.length, i, elem;
 
 		if (this.state_transformation.length==0) return;
-		//Back to times of Splendor: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field
+		//Back to times of Splendor: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field, 5 - fun
 		var x=this.state_transformation[this.state_transformation.length-1];
 		for (i=x.length-1;i>=0;i--){
 			elem=x[i];
@@ -239,6 +264,11 @@ class Algorithm{
 			if (x[0]==3) this[x[1]]=x[3];
 			if (x[0]==5) x[1](...x[3]);
 		}
+	}
+	//Specific change - passing colors between states
+	pass_color(btn, col_before=4, col_mid=1, col_after=0){
+		this.ephemeral.staat.push([0, btn, col_before, col_mid]);
+		this.ephemeral.passer.push([0, btn, col_mid, col_after]);
 	}
 
 
@@ -428,10 +458,8 @@ class Bitmasks{
 		var all_bitmasks=[], pows=[], pw=1<<bits, i, j;
 		for (i=0; i<bits; i++) pows.push(1<<i);
 
-		for (i=0; i<pw; i++){
-			console.log(pows[2]&i);
+		for (i=0; i<pw; i++)
 			all_bitmasks.push(pows.map(function(e){return ((e&i)>0)?1:0;}));
-		}
 		return all_bitmasks;
 	}
 

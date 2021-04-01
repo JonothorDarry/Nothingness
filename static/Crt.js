@@ -16,10 +16,8 @@ class CrtSolver extends Algorithm{
 	}
 	
 	BeginningExecutor(){
-		this.lees=[];
 		this.solstack=[];
 		var fas=this.input.value, resp;
-		this.place.innerHTML='';
 		this.btn1=this.btn2=null;
 		this.dt=[];
 		var n, c, d, i=0, dis, vd, lst;
@@ -111,7 +109,7 @@ class CrtSolver extends Algorithm{
 			var vah=this.divs[1].getElementsByTagName("span");
 			this.divs[1].removeChild(vah[vah.length-1]);
 		}
-		if (s[0]!=0 || this.ite!=1) this.lees.pop();
+		super.StateUnmaker();
 	}
 
 

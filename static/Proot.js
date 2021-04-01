@@ -166,7 +166,6 @@ class Proot extends Algorithm{
 		this.last_index=-1;
 		this.falsify=0;
 		this.finito=0;
-		this.dead=0;
 		this.current_exponent=-1;
 
 		this.btnlist=[];
@@ -203,7 +202,7 @@ class Proot extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x, expo, base, old_base, old_expo;
-		var staat=[];
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 		var point=this.amount_of_primes_m*2;
 		//var last_expo=(this.exponents.length>0?this.exponents[this.exponents.length-1]:-1);
 		if (s[0]==0){
@@ -369,18 +368,9 @@ class Proot extends Algorithm{
 			base=this.btnlist[0][point];
 			expo=this.btnlist[0][point+1];
 
-			if (this.dead==1) return;
-
-			staat.push([3, 'dead', this.dead, 1]);
 			if (this.current_exponent==1) staat.push([0, base, 1, 0]);
 			staat.push([0, expo, 1, 0]);
 		}
-
-		if (s[0]==100){
-			if (this.dead==1) return;
-			staat.push([3, 'dead', this.dead, 1]);
-		}
-		this.transformator(staat);
 	}
 
 	NextState(){

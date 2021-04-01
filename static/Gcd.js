@@ -56,11 +56,6 @@ class EuclidGcd extends Algorithm{
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], col;
-
-		if (s[0]==100){
-			if (this.dead==1) return;
-			staat.push([3, 'dead', 0, 1]);
-		}
 		var a=s[1], b=s[2], i=0;
 
 		if ((s[0]==2 || s[0]==1) && this.shower){}
@@ -131,14 +126,12 @@ class EuclidGcd extends Algorithm{
 			for (i=0;i<a;i++) this.divs[0].getElementsByTagName("button")[i].style.backgroundColor='#440000';
 		}
 
-		if (s[0]!=0)	this.lees.pop();
+		super.StateUnmaker();
 	}
 
 	BeginningExecutor(){
 		this.shower=this.check.checked;
-		this.lees=[]
-		this.place.innerHTML='';
-		this.dead=0;
+		this.starter();
 		var fas=this.input.value;
 		var a=0, b=0, x, i=0, c;
 		

@@ -50,6 +50,8 @@
 	\item \textbf{Isolate logic from presentation.} Parts of logic shall be changed only during the beginning - in state maker it shall only be read.
 \end{enumerate}
 \section {Inner sanctumm - Temp.js and its contents}
+
+
 \subsection {On the Unmaker}
 \subsubsection{On The Unmaker, I: elements}
 \begin {enumerate}
@@ -72,6 +74,15 @@
 	\item Unmaker actions depend on clicking "Previous" button, they're coded in Temp.js, so one does not have to do anything in code of an algorithm.
 	\item Maker has to execute at its end this.transformator(staat) (staat is just a convention).
 \end {enumerate}
+\subsection {Ephemeral variables}
+\begin{enumerate}
+	\item Ephemeral variables - this.ephemeral. ..., have no memory - their value at the end of state is always equal to null. Also, in the beginning they are null -> thus, they don't need to participate in transformator.
+	\item Their aim is to simplify access to variables (particularly staat and passer) within the StateMaker.
+	\item At the beginning of StateMaker one has to write\\
+	staat=this.ephemeral.staat\\
+	passer=this.ephemeral.passer
+\end{enumerate}
+
 
 \section{Animations - states and/or description}
 \subsection{Primitive Root}
@@ -95,6 +106,7 @@
 \end {enumerate}
 
 \section{Legitimate criticism}
+\subsection{General}
 \begin {enumerate}
 	\item Add full list of concerns regarding content and its backend to this Sprawko -> 3 days
 	\item Refactor - prever, finito -> 5 days
@@ -113,6 +125,14 @@
 	\item statics system -> 0.5 day
 	\item Variable naming convention -> 2 days
 	\item Refactor - division of logic and presentation - 6 days
+	\item Add one function for double transformation of btn and systematic built-in mechanism for handling next move - 2 days
+	\item returning 2 list - state and next from StateMaker, also NextState+BeginningExecutor - list - 2 days 
+	\item Finishers to usability - 0.5 day
+\end{enumerate}
+\subsection{Specific}
+\begin {enumerate}
+	\item Proot - What the hell was I thinking when I wrote stateless finisher? -> 0.5 day
+	\item Perm rep, no rep - problematic height - one during start, second during finish; also, too big start - reps. -> 0.5 day
 \end{enumerate}
 
 \section{Future}

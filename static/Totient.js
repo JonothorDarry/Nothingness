@@ -214,7 +214,7 @@ class PowerTower extends Algorithm{
 		if (s[0]==100){
 			this.Painter(this.btnlist[4][0], 1);
 		}
-		this.lees.pop();
+		super.StateUnmaker();
 	}
 
 	NextState(){

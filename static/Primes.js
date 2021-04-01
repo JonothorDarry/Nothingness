@@ -70,14 +70,15 @@ class Querier extends Algorithm{
 	constructor(value, block, assocSieve){
 		super(block)
 		this.sieve=assocSieve;
+		this.post_lees=[];
 	}
 
 	BeginningExecutor(){
-		for (var j=0;j<this.lees.length;j++){
-			if (this.lees[j][0]==0) this.sieve.MarkNormally(this.lees[j][1]);
+		for (var j=0;j<this.post_lees.length;j++){
+			if (this.post_lees[j][0]==0) this.sieve.MarkNormally(this.post_lees[j][1]);
 		}
+		this.post_lees=[];
 
-		this.lees=[];
 		var fas=this.input.value;
 		var ts=this.sieve.lees;
 		
@@ -85,7 +86,7 @@ class Querier extends Algorithm{
 		this.place.textContent=fas+" : ";
 
 		this.lees.push([0, fas]);
-
+		this.post_lees=this.lees.slice();
 	}
 	
 	//Go to the next state of the algorithm
@@ -108,8 +109,7 @@ class Querier extends Algorithm{
 			this.Painter(this.sieve.place.getElementsByClassName("divisNumb")[prv[1]], 11, 1);
 			this.Painter(this.sieve.place.getElementsByClassName("fullNumb")[prv[1]], 11, 1)
 		}
-
-
+		this.post_lees=this.lees.slice();
 		//Debug line
 		//document.getElementById('debug').innerHTML=this.lees;
 	}
@@ -128,11 +128,11 @@ class Querier extends Algorithm{
 			}
 			this.place.textContent=tex.slice(0, i+1);
 		}
-
 		this.Painter(this.sieve.place.getElementsByClassName("divisNumb")[prv[1]], 10, 1);
 		this.Painter(this.sieve.place.getElementsByClassName("fullNumb")[prv[1]], 10, 1);
 	
-		this.lees.pop();
+		super.StateUnmaker();
+		this.post_lees=this.lees.slice();
 	}
 
 
