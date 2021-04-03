@@ -230,6 +230,23 @@
 			</p>
 		'
 		, '6 15&#10;4 5 2 6 7 12', 'textarea') }}
+		<h3>Proper dp solution in \(O(L\log(L))\)</h3>
+		<p>Last solution used sets, that were not disjoint; for this reason inclusion-exclusion principle with its complexity was applied to solve the problem. However, what if those sets will be made explicitly disjoint in some way?</p>
+		<p>Aim of the problem for single \(x\) is to sum some function over all submasks of \(x\). Previously, some answers \(res_z\) with 1 bit less, some with two bits less, some with three bits less etc. were used. Let \(m\) denote number of set bits of \(x\). What if, instead, exactly one aggregated sum of values \(count_{falka}\) with mask having \(m-1\) bits set will be used, exactly one having \(m-2\) bits set etc., in such way, that all submasks used in counting are disjoint? For example, sums aggregating all \(count_{\delta}\) having \(\delta\) with:
+		<span class="central">\(b_1\) not set</span>
+		<span class="central">\(b_1\) set, \(b_2\) not set</span>
+		<span class="central">\(b_1, b_2\) set, \(b_3\) not set</span>
+		<span class="central">\(\dots\)</span>
+		<span class="central">\(b_1, b_2, \dots b_{m-1}\) set, \(b_m\) not set</span>
+		Then, all results over all submasks will be counted - except \(count_x\), which can be added explicitly. Let \(dp_{x, h}\) denote sum of counts over all submasks of \(x\) with bits \(b_1, \dots b_y\) set. Note, that \(dp_{x, 0}=res_x\). How to calculate \(dp_{x,h}\) from previous results? Notational nuissance used in next part: \(2^{b_i}=y_i\):</p>
+		<ol>
+			<li>Certainly, \(dp_{x, m}=count_x\) - because this is the only \(count_{whatever}\) with all bits of \(x\) (and only them) set.</li>
+			<li>Sum over all \(count_z\) for \(z\) denoting submask of \(x\) with bits \(b_1, \dots b_h\) set and bit \(b_{h+1}\) not set can be denoted as \(dp_{x \oplus y_{i+1}, h}\). </li>
+			<li>As \(dp_{x,h}\) denotes sum over all \(count_z\) for \(z|x=x\) with bits \(b_1, \dots, b_h\) set and bits \(b_{h+1} \dots b_m\) possibly set, then, for \(h \lt m\), \(dp_{x,h}=dp_{x,h+1}+dp_{x \oplus y_{h+1}, h}\) - \(dp_{x,h+1}\) sums \(count\) over all submasks with bit \(b_{h+1}\) set, \(dp_{x \oplus y_{h+1}, h}\) over all submasks with bit \(b_{h+1}\) not set.</li>
+			<li>Thus, one can calculate all \(dp_{x,h}\) starting from \(dp_{x, m}\) and then calculating \(dp_{x, m-1}, dp_{x, m-2}, \dots dp_{x, 0}\) from previously obtained results.</li>
+		</ol>
+		<p>This leads to quite trivial solution working in \(O(L\log(L))\) (because number \(\le L\) can have at most \(\log(L)\) bits set - thus, \(m \le \lceil \log(L) \rceil\) for all \(x \le L\) .
+		</p>
 
 
 		<h2>Summary</h2>

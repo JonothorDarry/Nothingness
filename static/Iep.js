@@ -519,11 +519,12 @@ class Generalized_Iep extends Algorithm{
 		}
 		if (s[0]==1) {
 			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_leftmost]);
-			this.pass_color(this.btn_list[Math.floor(s[1]/2)+this.offset][this.pl_leftmost]);
+			if (s[1]!=0)
+				this.pass_color(this.btn_list[Math.floor(s[1]/2)+this.offset][this.pl_leftmost], 0);
 		}
 		if (s[0]==2){
 			if (s[1]!=0)
-				this.pass_color(this.btn_list[(s[1]^(1<<this.logic.leftmost_bit[s[1]]))+this.offset][this.pl_sgn]);
+				this.pass_color(this.btn_list[(s[1]^(1<<this.logic.leftmost_bit[s[1]]))+this.offset][this.pl_sgn], 0);
 			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sgn]);
 		}
 		if (s[0]==3){
