@@ -289,7 +289,8 @@ class Iep extends Algorithm{
 }
 
 
-class Generalized_Iep extends Algorithm{
+//Universal methods for all solutions
+class Lord_of_the_combinatorics_trilogy extends Algorithm{
 	calculate_counts(){
 		this.logic.counts=[];
 		var i=0;
@@ -300,6 +301,44 @@ class Generalized_Iep extends Algorithm{
 		}
 	}
 
+	recalculate_trivialities(bmask){
+		this.logic.sgn=bmask.sgn;
+		this.logic.leftmost_bit=bmask.leftmost;
+		this.logic.bits=bmask.bits;
+	}
+
+	constructor(block, n, L, a){
+		super(block);
+		this.version=3;
+		this.logic.n=n;
+		this.logic.L=L
+		this.logic.a=a;
+		this.palingnesia();
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.logic.n=c.get_next();
+		this.logic.L=c.get_next();
+		this.logic.a=[];
+		for (var i=0; i<this.logic.n; i++){
+			this.logic.a.push(c.get_next());
+		}
+	}
+
+	BeginningExecutor(){
+		this.read_data();
+		this.palingnesia();
+		this.lees.push([0]);
+	}
+
+	scompreh_strings={
+		'count':`First, count array informing, how many there are elements a<sub>i</sub> with value x for each x is created, and all elements of array a added to it.`
+	}
+}
+
+class Generalized_iep extends Lord_of_the_combinatorics_trilogy{
 	create_partial_system(left_list, right_list){
 		var i=0, basis=0, limit=1, x;
 		for (i=0; i<left_list.length; i++) basis|=left_list[i];
@@ -471,32 +510,6 @@ class Generalized_Iep extends Algorithm{
 		this.divsCreator(5, 3, titles, null, ['nothing', 'lower_div']);
 	}
 
-	constructor(block, n, L, a){
-		super(block);
-		this.logic.n=n;
-		this.logic.L=L
-		this.logic.a=a;
-		this.palingnesia();
-	}
-
-	read_data(){
-		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
-		this.logic.n=c.get_next();
-		this.logic.L=c.get_next();
-		this.logic.a=[];
-		for (var i=0; i<this.logic.n; i++){
-			this.logic.a.push(c.get_next());
-		}
-	}
-
-	BeginningExecutor(){
-		this.read_data();
-		this.palingnesia();
-		this.lees.push([0]);
-	}
-
-
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], staat=[], i, point=s[2];
@@ -618,7 +631,7 @@ class Generalized_Iep extends Algorithm{
 		var s=this.lees[l-1], x=s[1];
 		function sub(x){return `<sub>${x}</sub>`}
 
-		if (s[0]==0) return `First, count array informing, how many there are elements a<sub>i</sub> with value x for each x is created, and all elements of array a added to it.`;
+		if (s[0]==0) return this.scompreh_strings.count;
 		if (s[0]==1 && s[1]==0) return `Value of leftmost<sub>${s[1]}</sub>=-1 is calculated to simplify further calculations. Notice that as 0 doesn't have any bits set, this is convenient value for its leftmost bit.`;
 		if (s[0]==1) return `Notice, that res${sub(s[1]-1)} was not added to res${sub(s[1]-1)} - because it was not present in the formula, and because it would lead to meaningless equation. Value of leftmost<sub>${s[1]}</sub>=leftmost<sub>${s[1]}/2</sub>+1=leftmost<sub>${s[1]>>1}</sub>+1=${this.logic.leftmost_bit[s[1]]} is calculated to simplify further calculations. Notice that this formula works, because multiplying number by 2 leads to obtaining same number shifted by one bit to the left.`;
 		if (s[0]==2 && s[1]==0) return `sgn<sub>x</sub> denotes, whether number of bits of x is odd; for 0, this is not the case, so sgn<sub>0</sub>=-1`;
@@ -677,9 +690,247 @@ class Generalized_Iep extends Algorithm{
 	}
 }
 
+class Dp_iep extends Lord_of_the_combinatorics_trilogy{
+	construct_dp(){
+		var i=0, j=0, v, value;
+		var dp_end=[];
+
+		for (i=0; i<=this.logic.L; i++){
+			dp_end.push([]);
+
+			for (v=i, j=0; v>0; v=v^(1<<this.logic.leftmost_bit[v]), j++){
+				value=dp_end[i^(1<<this.logic.leftmost_bit[v])][j];
+				dp_end[i].push(value);
+			}
+			dp_end[i].push(this.logic.counts[i]);
+			j-=1;
+
+			for (; j>=0; j--){
+				dp_end[i][j]=dp_end[i][j]+dp_end[i][j+1];
+			}
+		}
+
+		this.logic.dp=dp_end;
+	}
+
+	logical_box(){
+		this.calculate_counts();
+		var bmasks=Bitmasks.calculate_standard_bmasks(this.logic.L+1);
+
+		this.logic.max_bits=Math.ceil(Math.log(this.logic.L)/Math.log(2));
+		this.logic.all_bitmasks=Bitmasks.list_all_bitmasks(this.logic.max_bits);
+		this.logic.all_bits=Bitmasks.list_all_bits(this.logic.all_bitmasks);
+
+		this.logic.max_bits=Math.ceil(Math.log(this.logic.L)/Math.log(2));
+		this.recalculate_trivialities(bmasks);
+		this.construct_dp();
+	}
+	
+	//From 0 to n-1 - m elements
+	create_grid(n, m){
+		var i, j, list_of_btns=[];
+		for (i=0; i<n; i++){
+			list_of_btns.push([]);
+			for (j=0; j<m; j++){
+				this.add_button_to_reality(i, list_of_btns[i]);
+			}
+		}
+		return list_of_btns;
+	}
+
+	//Add button at the start to a system within div_nr row
+	add_button_to_reality(div_nr, list_of_btns){
+		var btn=this.buttCreator();
+		this.zdivs[div_nr].buttons.append(btn);
+		list_of_btns.push(btn);
+	}
+	
+	//button defined by row & column - change of iHTML and color
+	reform_button_in_reality(btn, iHTML, color){
+		this.Painter(btn, color);
+		btn.innerHTML=iHTML;
+	}
+
+	//System: name, list of values, (opt: color)
+	fill_system(system, buttons, starter){
+		if (starter!=null){
+			this.reform_button_in_reality(starter, system[0], 5);
+		}
+		var i;
+
+		for (i=0; i<buttons.length; i++){
+			this.reform_button_in_reality(buttons[i], system[1][i], ((system.length<=2)?4:system[2]));
+		}
+	}
+
+
+	grid_to_buttons(name, rows, cols, grid, index=false){
+		var my_buttons=[];
+		if (index==false) this.buttons[name]=my_buttons;
+		else this.buttons[name].push(my_buttons);
+
+		var ln=0;
+		if (ArrayUtils.is_iterable(rows)) ln=rows.length;
+		if (ArrayUtils.is_iterable(cols)) ln=cols.length;
+
+		for (var i=0; i<ln; i++){
+			my_buttons.push(grid[ArrayUtils.get_elem(rows, i)][ArrayUtils.get_elem(cols, i)]);
+		}
+	}
+
+	constructor(block, n, L, a){
+		super(block, n, L, a);
+		this.version=4;
+	}
+
+	palingnesia(){
+		this.logical_box();
+		var i;
+		this.offset=1;
+		this.buttons={};
+
+		var pl_amount=this.logic.max_bits+2;
+		var pl_count=pl_amount+1;
+		var pl_dp=pl_count+2;
+
+		var num_rows=this.logic.L+this.offset+2;
+		this.divsCreator(1, num_rows);
+		var ints=ArrayUtils.range(0, this.logic.L);
+		var grid=this.create_grid(num_rows, pl_dp+this.logic.max_bits+1);
+		var _range_all_cols=ArrayUtils.range(1, this.logic.L+1);
+
+		var order_of_destiny=[
+			[[`x`, ints, 5], 0, 'x'],
+			[[`bits`, this.logic.bits, 4], pl_amount, 'amount_of_bits'],
+			[[`cnt`, this.logic.counts, 4], pl_count, 'counts']
+		];
+		
+		for (var order of order_of_destiny){
+			this.grid_to_buttons(order[2], _range_all_cols, order[1], grid);
+			this.fill_system(order[0], this.buttons[order[2]], grid[0][order[1]]);
+		}
+
+		//Chujowo - powtarza się całość - na razie zostaw
+		var _range_bits=ArrayUtils.range(this.logic.max_bits, 1, -1);
+		var _range_dp=ArrayUtils.range(pl_dp, pl_dp+this.logic.max_bits);
+
+		this.buttons['bits']=[];
+		this.buttons['dp']=[];
+		for (i=0; i<=this.logic.L; i++){
+			this.grid_to_buttons('bits', i+this.offset, _range_bits, grid, true);
+			this.fill_system(['', this.logic.all_bitmasks[i], 0], this.buttons.bits[i]);
+		}
+		for (i=0; i<=this.logic.L+1; i++) 
+			this.grid_to_buttons('dp', i+this.offset, _range_dp, grid, true);
+
+		for (i=0; i<this.logic.max_bits; i++)
+			this.reform_button_in_reality(grid[0][1+i], `bit<sub>${this.logic.max_bits-i-1}</sub>`, 5);
+
+		for (i=0; i<=this.logic.max_bits; i++)
+			this.reform_button_in_reality(grid[0][pl_dp+i], `dp<sub>x,${i}</sub>`, 5);
+	}
+
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], staat=[], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0]==0){
+			for (i=0; i<=this.logic.L; i++){
+				this.pass_color(this.buttons.counts[i], 0, 1);
+			}
+		}
+
+		if (s[0]==1) {
+			this.pass_color(this.buttons.amount_of_bits[s[1]]);
+			if (s[1]!=0){
+				this.pass_color(this.buttons.amount_of_bits[Math.floor(s[1]/2)], 0, 14);
+				this.pass_color(this.buttons.bits[s[1]][0], 0, 14);
+			}
+		}
+
+		if (s[0]==4){
+			var last_bit=this.logic.bits[s[1]];
+			this.pass_color(this.buttons.dp[s[1]][last_bit]);
+			staat.push([1, this.buttons.dp[s[1]][last_bit], 0, this.logic.dp[s[1]][last_bit]]);
+			this.pass_color(this.buttons.counts[s[1]], 0, 14);
+		}
+
+		if (s[0]==5){
+			var old_col=(s[2]==0?8:0);
+			var used=this.logic.all_bits[s[1]][this.logic.bits[s[1]]-s[2]-1];
+			var eld=s[1]^(1<<used);
+
+			//All below is highly controversial
+			this.pass_color(this.buttons.bits[s[1]][used], 0, 13, 0);
+			this.pass_color(this.buttons.bits[eld][used], 0, 13, 0);
+			for (i=0; i<this.logic.max_bits; i++){
+				if (i==used) continue;
+				this.pass_color(this.buttons.bits[s[1]][i], 0, 15, 0);
+				this.pass_color(this.buttons.bits[eld][i], 0, 15, 0);
+			}
+			//*************************
+
+			this.pass_color(this.buttons.dp[eld][s[2]], old_col, 13, old_col);
+			this.pass_color(this.buttons.dp[s[1]][s[2]]);
+			staat.push([1, this.buttons.dp[s[1]][s[2]], 0, this.logic.dp[s[1]][s[2]]]);
+			this.pass_color(this.buttons.dp[s[1]][s[2]+1], 0, 14);
+		}
+
+		//Na końcu - nadpisze poprzednie zmiany; kolor na złoty iff result
+		if ((s[0]==4 && s[1]==0) || (s[0]==5 && s[2]==0)){
+			passer.push([0, this.buttons.dp[s[1]][0], 0, 8]);
+		}
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+		if (s[0]==0) return [1, 0];
+
+		//if (s[0]==1 && s[1]!=0) return [2, s[1], 0];
+		if (s[0]==1) return [4, s[1]];
+
+		if (s[0]==4 && s[1]!=0) return [5, s[1], this.logic.bits[s[1]]-1];
+		if (s[0]==4 && this.logic.L>0) return [1, s[1]+1];
+		if (s[0]==4) return [100];
+
+		if (s[0]==5 && s[2]>0) return [5, s[1], s[2]-1];
+		if (s[0]==5 && s[1]==this.logic.L) return [100];
+		if (s[0]==5) return [1, s[1]+1];
+	}
+
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], x=s[1];
+
+		if (s[0]==0) return this.scompreh_strings.count;
+		if (s[0]==1 && s[1]==0) return `Number of bits of 0 is equal to 0.`;
+		if (s[0]==1) return `Number of bits of ${s[1]} - denoted by bits<sub>${s[1]}</sub> - is calculated using fact, that number of bits of a number is equal to sum of number of bits of this number except its last bit - this number can be obtained as ${s[1]}>>1=${s[1]>>1} - and 1, if its last bit is set (one may check whether last bit is set by checking whether ${s[1]}&1 is equal to one). In this case, bits<sub>${s[1]}</sub> = bits<sub>${s[1]>>1}</sub>+${s[1]}&1 = ${this.logic.bits[s[1]>>1]}+${s[1]&1} = ${this.logic.bits[s[1]]}`;
+
+		if (s[0]==4) return `Now, the aim is to obtain dp<sub>${s[1]},b</sub>, where b denotes number of bits of ${s[1]}. As this number denotes sum of values of count<sub>&sigma;</sub> for &sigma; with all bits of ${s[1]} set (and only bits of ${s[1]} set - so only ${s[1]} satisfies this constraint), and as b=${this.logic.bits[s[1]]}, then dp<sub>${s[1]},${this.logic.bits[s[1]]}</sub>=count<sub>${s[1]}</sub>=${this.logic.counts[s[1]]}`;
+		if (s[0]==5){
+			var used=this.logic.all_bits[s[1]][this.logic.bits[s[1]]-s[2]-1];
+			var bitty=this.logic.dp[s[1]][s[2]+1];
+			var bitless=this.logic.dp[s[1]^(1<<used)][s[2]];
+			var res=this.logic.dp[s[1]][s[2]];
+
+			return `First of all, b<sub>${s[2]+1}</sub>=${used} for ${s[1]}. dp<sub>${s[1]},${s[2]}</sub> is defined as sum of counts of numbers with all previous bits (b<sub>f</sub> for f &le; ${s[2]}) set, and all further bits possibly set. b<sub>${s[2]+1}</sub> is either set or not set; in the first case, sum of all relevant count<sub>&sigma;</sub> is equal to dp<sub>${s[1]}^(1&lt;&lt;b<sub>${s[2]+1}</sub>),${s[2]}</sub> = dp<sub>${s[1]^(1<<used)},${s[2]}</sub>=${bitless}; in the second, sum of all relevant count<sub>&sigma;</sub> with bit b<sub>${s[2]+1}</sub> set is equal to dp<sub>${s[1]},${s[2]}+1</sub>=${bitty}. Overall, dp<sub>${s[1]},${s[2]}</sub> = dp<sub>${s[1]^(1<<used)},${s[2]}</sub> + dp<sub>${s[1]},${s[2]+1}</sub>=${bitty}+${bitless}=${res}`;
+		}
+
+		if (s[0]==100) return `All values dp<sub>x,0</sub> were calculated, in the end, resulting table is ${this.logic.dp.map(function(e){return e[0]})}`;
+	}
+
+}
+
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new Iep(feral, 4, 12, [3, 2, 5, 7]);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var eg2=new Generalized_Iep(feral2, 6, 15, [4, 5, 2, 6, 7, 12]);
+var eg2=new Generalized_iep(feral2, 6, 15, [4, 5, 2, 6, 7, 12]);
+
+var feral3=Algorithm.ObjectParser(document.getElementById('Algo3'));
+var eg3=new Dp_iep(feral3, 6, 15, [4, 5, 2, 6, 7, 12]);

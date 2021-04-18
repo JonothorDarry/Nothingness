@@ -12,8 +12,8 @@
 	<body>
 		{{ headers.full_upper('Inclusion-Exclusion Principle', 'Combinatorics') }}
 		<h2>Introduction</h2>
-		<p>In this article a technique allowing to calculate sum of sets given intersections of all subsets of a set will be shown, its optimization and generalization. As problems involving this method frequently involve bitmasks, several definitions regarding them shall be stated.</p>
-		<p>There are no divisors (and thus symbol \(x\)) in this article; used symbols are:</p>
+		<p>In this article a technique allowing to calculate size of union of sets \(|S_1 \cup S_2 \cup \dots \cup S_n|\) given sizes of all set intersections in form \(|S_{j_1} \cap S_{j_2} \cap \dots \cap S_{j_k}|\) will be shown, its different variants and generalization. As problems involving this method frequently involve bitmasks, several definitions regarding them shall be stated.</p>
+		<p>There are no divisors (and thus symbol \(|\)) in this article; used symbols are:</p>
 		<ol>
 			<li>\(\oplus\) or ^ denotes XOR operation: exclusive or of bits.</li>
 			<li>| denotes OR opertation: or on bits.</li>
@@ -69,26 +69,29 @@
 		<ol>
 			<li>A bit \(h\) of number \(x\) is said to be <b>set</b> if and only if \(x|2^h=x\)</li>
 			<li>\(h\) is said to be <b>leftmost bit</b> of \(x\) (denoted later as \(leftmost_x\)) if and only if \(x|2^h=x \land \forall_{g \gt h} x|2^g \neq x\). For 0, for convenience it is assumed, that \(leftmost_0=-1\)</li>
+			<li>\(s\) is said to be <b>submask</b> of \(x\) if and only if \(x|s=x\).</li>
 		</ol>
+		<p>Besides, note, that logical or on different powers of \(2\) is equivalent to their addition.</p>
 
 		<h2>Problem I - Basic inclusion-exclusion principle</h2>
-		<p>Suppose You have to create a multiset of \(n\) elements (\(n \le 10^{14}\)), where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of \(i\)-th type. In how many ways this multiset can be created? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
+		<p>Suppose You are give some elements, where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of \(i\)-th type. A multiset is called <i>proper</i> if it has at most \(a_i\) elements of \(i\)-th type. How many there are different proper multisets containing \(n\) elements (\(n \le 10^{14}\))? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
 		<h3>Better formulation of the question</h3>
-		<p>To solve problem, it may be crucial to create well-formulated question on what has to be found, and then find an answer. One can, for example, notice, that \(t \le 20\) allows to create a solution working in \(O(t2^t)\). Then, one can observe, that question can be formulated in different way: let \(b_i\) describe number of elements of \(i\)-th type in a multiset. Then let proper multiset be defined as multiset, in which \(\forall_i b_i \le a_i\). All multisets, that can be found satisfying those constraints are all multisets consisting of elements of \(t\) types (possible to calculate as \(\binom{n+t-1}{t-1}\) - standard combination with repetitions) except those, that are not proper. The question arises: what is the number of not proper multisets? let \(A_1, A_2, \dots, A_t\) be defined as such multisets, such that \(X \in A_i \iff b_i \gt a_i\) in multiset \(X\). Then, the searched result can be represented as \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\). The remaining question is: how to find \(|A_1 \cup A_2 \cup \dots \cup A_t|\).</p>
+		<p>To solve problem, it may be crucial to create well-formulated question on what has to be found, and then find an answer. One can, for example, notice, that \(t \le 20\) allows to create a solution working in exponential complexity - for example, \(O(t2^t)\). One can observe, that question can be formulated in different way; number of all proper multisets of size \(n\) is equal to number of all multisets of size \(n\) consisting of elements of \(t\) types (possible to calculate as \(\binom{n+t-1}{t-1}\) - standard combination with repetitions) except those, that are not proper. The question arises: what is the number of not proper multisets? </p>
+		<p>Let \(b_i\) describe number of elements of \(i\)-th type in a multiset; let \(A_1, A_2, \dots, A_t\) be defined as such sets containing multisets, that \(X \in A_i \iff b_i \gt a_i\) in multiset \(X\). Then, the answer to this problem can be represented as \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\). The remaining question is: how to find \(|A_1 \cup A_2 \cup \dots \cup A_t|\).</p>
 		<h3>The principle of inclusion and exclusion</h3>
 		<ol>
-			<li>For each type \(i\), each possible multiset \(S\) with \(k\) elements of \(t\) types either belongs to \(A_i\) or belongs to \(A_i'\), but not both. Thus, for \(S\) there exists exactly one such set \(A_1^F \cap A_2^F \cap \dots \cap A_t^F\), where \(F\) denotes set itself or its complement, such that \(S \in A_1^F \cap A_2^F \cap \dots \cap A_t^F\) - this set is obtained for $$A_i^F=\begin{cases}A_i \iff S \in A_i \\A_i' \text{ otherwise}\end{cases}$$ where \('\) denotes set complement</li>
-			<li>Let \(G=A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_m}\) denote intersection of all elements of \(\{A_1^F, A_2^F, \dots A_t^F\}\), for which \(A_i^F=A_i\) holds. How many times elements of this set will be calculated in expression \(V_1=\sum_{i=1}^t|A_i|\)? \(\binom{m}{1}\) times, because there are exactly \(m\) such sets \(A_i\), such that \(G \subseteq A_i\) - those are sets \(A_{j_1}, A_{j_2} \dots A_{j_m}\). How many times elements of this set will be calculated in expression \(V_2=\sum_{1 \le i \lt j \le t}|A_i \cap A_j|\)? \(\binom{m}{2}\) times, because this is the number of pairs of two sets (all pairs of sets from \(\{A_{j_1}, A_{j_2}, \dots A_{j_m}\}\)), such that \(G \subseteq A_i \cap A_j\). This holds for all further \(V_k=\sum_{1 \le i_1 \lt i_2 \lt \dots \lt i_k \le t}|A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}|\), where \(G \subseteq A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}\) occurs \(\binom{m}{k}\) times for the same reasons.</li>
+			<li>For each type \(i\), each possible multiset \(S\) with \(k\) elements of \(t\) types either belongs to \(A_i\) or belongs to \(A_i'\), but not both. Thus, for \(S\) there exists exactly one such set \(B_1 \cap B_2 \cap \dots \cap B_t\), where \(B_i\) denotes \(A_i\) or \(A_i'\), such that \(S \in B_1 \cap B_2 \cap \dots \cap B_t\) - this set is obtained for $$B_i=\begin{cases}A_i \iff S \in A_i \\A_i' \text{ otherwise}\end{cases}$$</li>
+			<li>For some multiset \(S\), let \(m\) denote number of sets \(B_i\), such that \(B_i=A_i\). How many times multiset \(S\) will be counted in expression \(V_1=\sum_{i=1}^t|A_i|\)? \(\binom{m}{1}\) times, because there are exactly \(m\) such sets \(A_i\), that \(S \subseteq A_i\). How many times \(S\) will be counted in expression \(V_2=\sum_{1 \le i \lt j \le t}|A_i \cap A_j|\)? \(\binom{m}{2}\) times, because this is the number of pairs of two sets \(A_i, A_j\), such that \(S \subseteq A_i \cap A_j\). This holds for all further \(V_k=\sum_{1 \le i_1 \lt i_2 \lt \dots \lt i_k \le t}|A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}|\), where \(S \subseteq A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}\) occurs \(\binom{m}{k}\) times for the same reasons.</li>
 			<li>For any \(n \ge 1\) occurs:$$\sum_{k=0}^{n}(-1)^{k+1}\binom{n}{k}=-\binom{n}{0}+\binom{n}{1}-\dots+(-1)^{n+1}\binom{n}{k}=-\binom{n-1}{0}+(\binom{n-1}{0}+\binom{n-1}{1})-(\binom{n-1}{1}+\binom{n-1}{2})+\dots +(-1)^{n}(\binom{n-1}{n-2}+\binom{n-1}{n-1})+(-1)^{n+1}\binom{n-1}{n-1}=$$
 			$$=-\binom{n-1}{0}+\binom{n-1}{0}+\binom{n-1}{1}-\binom{n-1}{1}-\dots +(-1)^n\binom{n-1}{n-1}+(-1)^{n+1}\binom{n-1}{n-1}=0$$</li>
 			Also, \(\sum_{k=1}^{n}(-1)^{k+1}\binom{n}{k}=\sum_{k=0}^{n}(-1)^{k+1}\binom{n}{k}+\binom{n}{0}=0+1=1\). This equation holds for \(n \ge 1\).
 			<li>What follows from two points above, in the following equation
 				$$\sum_{1 \le i \le t}|A_i|-\sum_{1 \le i \lt j \le t}|A_i \cap A_j|+\dots+(-1)^{t+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_t \le t}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_t}|$$
-			Each multiset \(S\) such that \(S \in A_1 \cup A_2 \cup \dots \cup A_t\) is calculated
+			Each multiset \(S\) such that \(S \in A_1 \cup A_2 \cup \dots \cup A_t\) is counted
 			$$\binom{m}{1}-\binom{m}{2}+\dots +(-1)^{t+1}\binom{m}{t}=\sum_{k=1}^{t}(-1)^{k+1}\binom{m}{k}=1$$
 			times for \(m=|\{A_i: S \in A_i\}|\). Note that this holds, because \(t \ge m \ge 1\) (there is at least one set \(A_i\), to which \(S\) belongs) - otherwise, expression above would be \(0\) (which holds for all multisets not belonging to any \(A_i\)). And so, finally, 
 			{% macro iep(x, beg='$$', name='A') %}
-			{{beg}} \sum_{1 \le i \le {{x}} } |{{name}}_i|-\sum_{1 \le i \lt j \le {{x}} }|{{name}}_i \cap {{name}}_j|+\dots+(-1)^{ {{x}}+1 }\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{ {{x}} } \le {{x}} }|{{name}}_{j_1} \cap {{name}}_{j_2} \cap \dots \cap {{name}}_{j_{ {{x}} } }|=|{{name}}_1 \cup {{name}}_2 \cup \dots \cup {{name}}_{ {{x}} }|$$
+			{{beg}} \sum_{1 \le i \le {{x}} } |{{name}}_i|-\sum_{1 \le i \lt j \le {{x}} }|{{name}}_i \cap {{name}}_j|+\dots+(-1)^{ {{x}}+1 }|{{name}}_{1} \cap {{name}}_{2} \cap \dots \cap {{name}}_{ {{x}} }|=|{{name}}_1 \cup {{name}}_2 \cup \dots \cup {{name}}_{ {{x}} }|$$
 			{% endmacro %}
 			{{iep('t')}}
 			</li>
@@ -97,40 +100,40 @@
 				fully expresses the glory of inclusion-exclusion principle.
 			</li>
 		</ol>
-		<h3>Other Proof of Inclusion-Exclusion princliple</h3>
+		<h3>Other Proof of Inclusion-Exclusion principle</h3>
 		<ol>
 			<li>\(|A_1|=|A_1|\), furthermore, \(|A_1 \cup A_2|=|A_1|+|A_2|-|A_1 \cap A_2|\) - because each element belonging to \(A_1 \cap A_2'\) or \(A_1' \cap A_2\) will be counted once, elements belonging to \(A_1' \cap A_2'\) won't be counted, and elements belonging to \(A_1 \cap A_2\) are counted \(1+1-1=1\) time.</li>
 			<li>Therefore, there exists such \(n\), such that for any sets \(A_1, A_2, \dots A_n\) occurs:
 				{{iep('n')}}
 			</li>
 			<li>Then, one can start inductive step as follows:
-				$$|A_1 \cup A_2 \cup \dots \cup (A_n \cup A_{n+1})|=\sum_{1 \le i \le n-1} |A_i|+|A_n \cup A_{n+1}|-\sum_{1 \le i \lt j \le n-1}|A_i \cap A_j|-\sum_{1 \le i \le n-1}|A_i \cap (A_n \cup A_{n+1})|+\dots+(-1)^{n+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{n-1} \le n-1}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{n-1}} \cap (A_{n} \cup A_{n+1})|$$
+				$$|A_1 \cup A_2 \cup \dots \cup (A_n \cup A_{n+1})|=\sum_{1 \le i \le n-1} |A_i|+|A_n \cup A_{n+1}|-\sum_{1 \le i \lt j \le n-1}|A_i \cap A_j|-\sum_{1 \le i \le n-1}|A_i \cap (A_n \cup A_{n+1})|+\dots+(-1)^{n+1}|A_{1} \cap A_{2} \cap \dots \cap A_{n-1} \cap (A_{n} \cup A_{n+1})|$$
 			</li>
 			<li>Additionally, 
 				$$X \cap (Y \cup Z) = (X \cap Y) \cup (X \cap Z)$$
-			From second part of checking equality at the start, 
+			From second part of inductive assumption:
 			$$|(X \cap Y) \cup (X \cap Z)|=|X \cap Y| + |X \cap Z| - |X \cap Y \cap Z|$$
 			<li>What follows:
 				$$|A_1 \cup A_2 \cup \dots \cup (A_n \cup A_{n+1})|=\sum_{1 \le i \le n-1} |A_i|+|A_n|+|A_{n+1}|-|A_n \cap A_{n+1}|-\sum_{1 \le i \lt j \le n-1}|A_i \cap A_j|-\sum_{1 \le i \le n-1}|A_i \cap A_n|-\sum_{1 \le i \le n-1}|A_i \cap A_{n+1}|+\sum_{1 \le i \le n-1}|A_i \cap A_n \cap A_{n+1}|+\dots +$$
-				$$+(-1)^{n+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{n-1} \le n-1}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{n-1}} \cap A_n|+(-1)^{n+1}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{n-1} \le n-1}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{n-1}} \cap A_{n+1}|+(-1)^{n+2}\sum_{1 \lt j_1 \lt j_2 \lt \dots \lt j_{n-1} \le n-1}|A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_{n-1}} \cap A_n \cap A_{n+1}|=$$
+				$$+(-1)^{n+1}|A_1 \cap A_2 \cap \dots \cap A_{n-1} \cap A_n|+(-1)^{n+1}|A_{1} \cap A_{2} \cap \dots \cap A_{n-1} \cap A_{n+1}|+(-1)^{n+2}|A_1 \cap A_2 \cap \dots \cap A_{n-1} \cap A_n \cap A_{n+1}|=$$
 				{{iep('n+1', '$$=')}}
 			Which proves inclusion-exclusion principle in another way.
 			</li>
 		</ol>
 		<h3>Original problem solution</h3>
-		<p>One can, for each of \(2^t-1\) sets \(A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_k}\) find its size as equal to \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}\) - where the number of multisets having overabundance of elements of types \(j_i\) and some additional elements of each type (possibly also \(j_i\)) is calculated. Then, add sizes of those sets (mutiplied by \(-1\), iff \(k \equiv 0 \pmod 2\)) and print result. Thus, solution can consist of subsequent steps:</p>
+		<p>One can, for each of \(2^t-1\) sets \(A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_k}\) find its size as equal to \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}\) - where the number of multisets having overabundance of elements of types \(j_i\) (represented as \(a_{j_i}+1\)) and some additional elements of each type (possibly also \(j_i\)) is calculated. Then, add sizes of those sets (mutiplied by \(-1\), iff \(k%2=0\) and print result. Thus, solution can consist of subsequent steps:</p>
 		<ol>
 			<li>For each number in range \(\lt 1;2^t-1 \gt\) calculate its number of bits, and amount of multisets in sets corresponding to bits: for example, for \(t=5\) and number \(01011\), it can represent \(A_1 \cap A_2 \cap A_4\), thus one has to find \(\binom{n+t-1-(a_1+1+a_2+1+a_4+1)}{t-1}\) and substract it from result, if number of bits is divisible by 2 or add it otherwise (in this case it shall be added).</li>
-			<li>It's worth noting that \(amount\_of\_bits(0)=0, amount\_of\_bits(x)=amount\_of\_bits(x \gt \gt 1)+x\%2\), where \(\%\) denotes modulus operation and \(\gt \gt\) denotes right bitshift - this equality is true because right bitshift always gives smaller number (for which \(amount\_of\_bits\) was already calculated), and the only possible difference between those two numbers can be a result only of a bit that disappered after shift.</li>
+			<li>It's worth noting that \(amount\_of\_bits(0)=0, amount\_of\_bits(x)=amount\_of\_bits(x \gt \gt 1)+x\%2\), where \(\%\) denotes modulus operation and \(\gt \gt\) denotes right bitshift - this equality is useful because right bitshift always gives smaller number (for which \(amount\_of\_bits\) was already calculated), and the only possible difference between those two numbers can be a result only of a bit that disappears after shift.</li>
 			<li>One can also calculate leftmost bit of a number as \(leftmost\_bit(0)=-1, leftmost\_bit(x)=leftmost\_bit(x \gt\gt 1)+1\)</li>
 			<li>Then, \(\sum_{i=0}^{amount\_of\_bits(i)}a_{j_i}\) described by number \(x\) is equal to \(summa(x)=summa(x\oplus2^{leftmost\_bit(x)})+a_{leftmost\_bit(x)}\) - using results computed previously, this result - and all previous results - can be calculated in \(O(2^t)\).</li>
 			<li>At last, calculate \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}=\binom{n+t-1-summa(x)}{t-1}=\frac{(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)}{(t-1)!}=(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)*((t-1)!)^{-1}\). As result has to be calculated \(\pmod {10^9+7}\), the last part (\((t-1)!^{-1} \pmod {10^9+7}\)) can be calculated beforehand, using Fermat's little theorem or Euclid algorithm. The remaining part shall be calculated by multiplying those \(t-1\) elements leading to complexity \(O(t2^t)\) - \(2^t\) times one has to multiply \(t-1\) numbers.</li>
-			<li>Finally, sum above shall be added to result with positive sign, if \(amount\_of\_bits(x) \equiv 1 \pmod 2\), or negative otherwise.</li>
-			<li>After all sizes of intersections were calculated, the final result is equal to amount of multisets not belonging to \(A_1 \cup A_2 \cup \dots \cup A_t\) - and so, it is equal \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\) - second obtained after dealing with intersections.</li>
+			<li>Finally, sum above shall be added to resulting \(|A_1 \cup \dots \cup A_t|\) with positive sign, if \(amount\_of\_bits(x) \equiv 1 \pmod 2\), or negative otherwise.</li>
+			<li>After all sizes of intersections were calculated, the final result is equal to amount of multisets not belonging to \(A_1 \cup A_2 \cup \dots \cup A_t\) - and so, it is equal to \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\)</li>
 		</ol>
 
 		{{ algo.algorithm(1, 'Inclusion-exclusion principle', '
-			<p>Input format: \(t\) - number of types, \(n\) - number of elements in resulting multisets, \(a_i\) - maximal possible number of elements to withdraw from \(i\)-th type<br>
+			<p>Input format: \(t\) - number of types, \(n\) - number of elements in resulting multisets, \(a_i\) - maximal possible number of elements from \(i\)-th type in any proper multiset.<br>
 			\(t\ n\)<br>
 			\(a_1, a_2, \dots, a_n\)
 			</p>
@@ -142,21 +145,21 @@
 		<p>For each pair \(x, a_i\) one can check, whether \(a_i|x=x\), leading to complexity \(O(nL)\).</p>
 		<h3>Somewhat more refined solution</h3>
 		<p>First of all, it may be wise to operate on more structured data instead of sequence \(a\): Let \(count_s=|\{i: a_i=s\}|\). Then, the result for each number - dentoted as \(res_x\) can be formulated as 
-			<span class="central">$$\forall_{x} res_x = \sum_{s: s | x=x} count_s$$</span>
+			<span class="central">$$res_x = \sum_{s: s | x=x} count_s$$</span>
 		</p>
-		<p>What numbers fulfill \(x|s=x\)? To answer this question, one may observe, that:</p>
+		<p>What numbers \(s\) fulfill \(x|s=x\)? To answer this question, one may observe, that:</p>
 		<ol>
 			<li>\(x|s \ge x \land x|s \ge s\) - because logical or always sets all bits present in both numbers.</li>
 			<li>\(s\) cannot have any bit set, that is not set in \(x\) - because otherwise \(x|s\) would have a bit not present in \(x\) set, leading to \(x|s \neq x\)</li>
 		</ol>
-		<p>Thus, all numbers, whose set bits belong to set of set bits of \(x\) meet the constraints for \(s\); for example, for \(x=(10010)_2\) proper \(s\) are \(s \in \{(00000)_2, (00010)_2, (10000)_2, (10010)_2\}\). Later, proper \(s\) for \(x\) will be referred to as submasks of \(x\)</p>
-		<p>How to efficintly move over all submasks of \(x\)? One can notice, that:</p>
+		<p>Thus, all numbers, whose set bits belong to set of set bits of \(x\) meet the constraints for \(s\); for example, for \(x=(10010)_2\) proper \(s\) are \(s \in \{(00000)_2, (00010)_2, (10000)_2, (10010)_2\}\). Later, proper \(s\) for \(x\) will be referred to as submasks of \(x\).</p>
+		<p>How to efficintly iterate over all submasks of \(x\)? One can notice, that:</p>
 		<ol>
 			<li>0 has one submask - 0.</li>
 			<li>A submask of \(x\) either has bit \(leftmost_x\) set or not.</li>
 			<li>If \(s\) is a submask of \(x\) then \(s | 2^{leftmost_x}\) is also a submask of \(x\).</li>
 			<li>If a submask \(s\) has bit \(leftmost_x\) set, then \(s \oplus 2^{leftmost_x}\) is also a submask of \(s\).</li>
-			<li>Thus, number all submasks of \(x\) are submasks of \(x \oplus 2^{leftmost_x}\) and the same submasks with bit \(leftmost_x\) set.</li>
+			<li>Thus, all submasks of \(x\) are either submasks of \(x \oplus 2^{leftmost_x}\) or the same submasks with bit \(leftmost_x\) set.</li>
 		</ol>
 		<p>For example, for \(x=42=(101010)_2\) subsequently calculated submasks may be, starting from 0 and adding submasks iteratively:</p>
 		<ol start=0>
@@ -165,22 +168,16 @@
 			<li>\((000000)_2, (000010)_2, (001000)_2, (001010)_2\)</li>
 			<li>\((000000)_2, (000010)_2, (001010)_2, (001010)_2, (100000)_2, (100010)_2, (101010)_2, (101010)_2\)</li>
 		</ol>
-		<p>Where all subsequent layers \(i\) (indexed from 0) are constructed by appending to elements \(s\) from previous layer elements \(s|2^b\), where \(b\) is \(i\)-th from left bit of number \(x\). In the beginning, layer 0 consists of 1 element - namely 0.</p>
-		<p>This allows to calculate and iterate over all submasks of \(x\) in \(O(2^{bits_x})\).</p>
+		<p>Where all subsequent layers \(i\) (indexed from 0) are constructed by appending to elements \(p\) from previous layer elements \(p|2^{b_i}\), where \(b_i\) is \(i\)-th bit of number \(x\). In the beginning, layer 0 consists of 1 element - namely 0.</p>
+		<p>This allows to iterate over all submasks of \(x\) in \(O(2^{bits_x})\).</p>
 		<h4>Complexity of this approach</h4>
 		<p>In range from \(0\) to \(2^m-1\), how many there are numbers \(x\) with \(bits_x=h\)? \(\binom{m}{h}\), because this number is equal to number of ways to choose \(h\) bits, that will be set out of \(m\) bits representing all numbers in this range. Thus, complexity of algorithm moving through all submasks can be calculated as:
 		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}2^i$$</span>
-		One can show, that \(\sum_{i=0}^{m} \binom{m}{i}2^i=3^m\) - by induction, at start, for \(m=0\):
-		<span class="central">$$\binom{0}{0}2^0=1=3^0$$</span>
-		Then, assuming, that for some \(m\) true is, that: \(\sum_{i=0}^{m} \binom{m}{i}2^i=3^m\):
-		<span class="central">$$\sum_{i=0}^{m+1} \binom{m+1}{i}2^i = \sum_{i=0}^{m+1}(\binom{m}{i}2^i+\binom{m}{i-1}2^i) = \sum_{i=0}^{m+1}(\binom{m}{i}2^i+\binom{m}{i}2^{i+1}) = 3*\sum_{i=0}^m\binom{m}{i}2^i=3*3^m=3^{m+1}$$</span>
-		</p><p>So, finally, algorithm moving through all submasks \(s\) of a number \(x\) and calculating sum of \(count_s\) for those submasks - where \(count_s\) is calculated at the start of the algorithm, so it can be accessed in \(O(1)\) - works in \(O(3^{log(L)})\) - in case of this problem, \(3^{20} \approx 3*10^9\) - which is not very good.</p>
-		<h5>Moving complexity proof further</h5>
-		<p>One can moved even further with this complexity proof, and show, that, for fixed \(s, l\):
-		<span class="central">$$\sum_{i=0}^{m+1} \binom{m+1}{i}s^{il} = \sum_{i=0}^{m+1}(\binom{m}{i}s^{il}+\binom{m}{i-1}s^{il}) = \sum_{i=0}^m(\binom{m}{i}s^i+\binom{m}{i}s^{(i+1)l}) = (1+s^l)*\sum_{i=0}^m\binom{m}{i}s^{il}$$</span>
-		As for any \(s, l\) for \(m=0\) the equation \(\binom{0}{0} s^{0l}=1\), this results in:
-		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}s^{il} = (1+s^l)^m$$</span>
+		One can notice, that this can be shown using binomial theorem as:
+		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}2^i=(1+2)^m=3^m$$</span>
+		</p><p>So, algorithm moving through all submasks \(s\) of a number \(x\) and calculating sum of \(count_s\) for those submasks - where \(count_s\) is calculated at the start of the algorithm, so it can be accessed in \(O(1)\) - works in \(O(3^{log(L)})\) - in case of this problem, \(3^{20} \approx 3*10^9\) - which is not very good.</p>
 		</p>
+
 		<h3>Dubious approach involving inclusion-exclusion principle</h3>
 		<p>For given \(x\), let \(b_i\) denote its \(i\)-th set bit, indexed from 1. For simplicity, let \(y_i=2^{b_i}\).</p>
 		<p>Let \(S_i\) denote set of all such numbers \(a_i\), such that:</p>
@@ -211,14 +208,14 @@
 		<h4>Complexity of such approach</h4>
 		<p>This solution, excluding constants, will work in:
 		<span class="central">$$O(\sum_{i=0}^{log_2(L)} \binom{log_2(L)}{i}2^{i/2})$$</span>
-		Thus, from lemma showing, that 
-		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}s^{lk}=(1+s^l)^m$$</span>
-		One can conclude, that complexity of this algorithm is \(O((1+\sqrt{2})^{log(L)}) \approx O(2^{log_2(2.42)*log(L)}) \approx O(L^{5/4})\) - in this case number of steps of an algorithm can be approximated by \(2.42^{20} \approx 4.8*10^7\) - which is not bad, but perhaps it can be optimized even further (Hovewer, variants of this approach may turn out to be very useful - for example with tight limits on memory, or when \(count_x=0\) for \(x\) having, for example, more than \(s\) bits). 
+		From binomial theorem:
+		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}2^{i/2}=\sum_{i=0}^{m} \binom{m}{i}(\sqrt{2})^i=(1+\sqrt{2})^{m}$$</span>
+		One can conclude, that complexity of this algorithm is \(O((1+\sqrt{2})^{log(L)}) \approx O(2^{log_2(2.42)*log(L)}) \approx O(L^{5/4})\) - in this case number of steps of an algorithm can be approximated by \(2.42^{20} \approx 4.8*10^7\) - which is not bad, but perhaps it can be optimized even further (however, variants of this approach may turn out to be very useful - for example with tight limits on memory, or when \(count_x=0\) for \(x\) having, for example, more than \(3\) bits).
 		</p>
 		<h4>Notes on implementation</h4>
 		<ol>
 			<li>It may be wise to calculate beforehand \(sgn_x\) and \(leftmost_x\) before proceeding with calculating \(res_x\).</li>
-			<li>Let sequence \(c\) consisting of elements \(c_i\) denote all such elements, that \(count_{c_i}\) will be added to \(res_x\). Using equation for \(res_x\), \(c_i\) has to have all bits \(b_1, b_2, \dots, b_{l/2}\) set - let \(B2=y_1+y_2+\dots+y_{l/2}\), and then, let sequence \(c'\) will denote all submasks of \(x \oplus B2\); then each \(c_i\) can be represented as \(c'_i | B2\).</li>
+			<li>Let sequence \(c\) consisting of elements \(c_i\) denote all such elements, that \(count_{c_i}\) will be added to \(res_x\). Using equation for \(res_x\), \(c_i\) has to have all bits \(b_1, b_2, \dots, b_{l/2}\) set - let \(B2=y_1+y_2+\dots+y_{l/2}\), and then, let sequence \(c'\) will denote all submasks of \(x \oplus B2\); then each \(c_i\) can be represented as \(c_i=c'_i | B2\).</li>
 			<li>Let sequence \(r\) consisting of elements \(r_i\) denote all such elements, that \(res_{r_i}\) will be added with some sign to \(res_x\). Using equation for \(res_x\), \(r_i\) has to have all bits \(b_{l/2+1}, b_{l/2+2}, \dots, b_{l}\) set (because only bits \(b_1, \dots, b_{l/2}\) were xor'ed at some point) - let \(B1=y_{l/2+1}+y_{l/2+2}+\dots+y_l\), and then, let sequence \(r'\) will denote all submasks of \(x \oplus B1\); then each \(r_i\) can be represented as \(r'_i | B1\). However, notice, that one \(r_i\) - namely one equal to \(x\) - was never used in equation for \(res_x\) - it has to be omitted in calculations.</li>
 			<li>Notice, that to calculate sequences \(r\) and \(c\) one can use same procedure with different arguments - this simplifies implementation.</li>
 			<li>There is one remaining problem - calculating sign, with which \(res_{r_i}\) will be added to \(res_x\). From formula to calculate \(res_x\), this depends on number of bits, that are set in \(x\) and not set in \(r_i\) - if this number is odd, sign is \(1\), if even, sign is \(-1\) (note that if bit is set in \(r_i\) it has to be set in \(x\)). This can be calculated as \(sgn_{x \oplus r_i}\), where \(sgn_z=1\) for \(z\) with odd number of bits, \(sgn_z=-1\) otherwise.</li>
@@ -232,26 +229,44 @@
 		, '6 15&#10;4 5 2 6 7 12', 'textarea') }}
 		<h3>Proper dp solution in \(O(L\log(L))\)</h3>
 		<p>Last solution used sets, that were not disjoint; for this reason inclusion-exclusion principle with its complexity was applied to solve the problem. However, what if those sets will be made explicitly disjoint in some way?</p>
-		<p>Aim of the problem for single \(x\) is to sum some function over all submasks of \(x\). Previously, some answers \(res_z\) with 1 bit less, some with two bits less, some with three bits less etc. were used. Let \(m\) denote number of set bits of \(x\). What if, instead, exactly one aggregated sum of values \(count_{falka}\) with mask having \(m-1\) bits set will be used, exactly one having \(m-2\) bits set etc., in such way, that all submasks used in counting are disjoint? For example, sums aggregating all \(count_{\delta}\) having \(\delta\) with:
+		<p>Aim of the problem for single \(x\) is to calculate sum \(\sum_{s:s|x=x}count_s\) for each \(x\) in some range. Let \(m\) denote number of set bits of \(x\). What about calculating sum of \(count_s\) for \(s\) with certain bits set, certain not set, and certain possibly set? For example, sums aggregating all \(\sum_{\delta} count_{\delta}\) having \(\delta\) with:
 		<span class="central">\(b_1\) not set</span>
 		<span class="central">\(b_1\) set, \(b_2\) not set</span>
 		<span class="central">\(b_1, b_2\) set, \(b_3\) not set</span>
 		<span class="central">\(\dots\)</span>
 		<span class="central">\(b_1, b_2, \dots b_{m-1}\) set, \(b_m\) not set</span>
-		Then, all results over all submasks will be counted - except \(count_x\), which can be added explicitly. Let \(dp_{x, h}\) denote sum of counts over all submasks of \(x\) with bits \(b_1, \dots b_y\) set. Note, that \(dp_{x, 0}=res_x\). How to calculate \(dp_{x,h}\) from previous results? Notational nuissance used in next part: \(2^{b_i}=y_i\):</p>
+		With all other bits \(b_i\) possibly set and bits that are not set in \(x\) not set. Then, all results over all submasks of \(x\) will be counted - except \(count_x\), which can be added explicitly. Let \(dp_{x, h}\) denote sum of counts over all submasks of \(x\) with bits \(b_1, \dots b_y\) set. Note, that \(dp_{x, 0}=res_x\). How to calculate \(dp_{x,h}\) from previous results? Notational nuissance used in next part: \(2^{b_i}=y_i\):</p>
 		<ol>
-			<li>Certainly, \(dp_{x, m}=count_x\) - because this is the only \(count_{whatever}\) with all bits of \(x\) (and only them) set.</li>
-			<li>Sum over all \(count_z\) for \(z\) denoting submask of \(x\) with bits \(b_1, \dots b_h\) set and bit \(b_{h+1}\) not set can be denoted as \(dp_{x \oplus y_{i+1}, h}\). </li>
-			<li>As \(dp_{x,h}\) denotes sum over all \(count_z\) for \(z|x=x\) with bits \(b_1, \dots, b_h\) set and bits \(b_{h+1} \dots b_m\) possibly set, then, for \(h \lt m\), \(dp_{x,h}=dp_{x,h+1}+dp_{x \oplus y_{h+1}, h}\) - \(dp_{x,h+1}\) sums \(count\) over all submasks with bit \(b_{h+1}\) set, \(dp_{x \oplus y_{h+1}, h}\) over all submasks with bit \(b_{h+1}\) not set.</li>
+			<li>Certainly, \(dp_{x, m}=count_x\) - because this \(x\) is the only number with all bits of \(x\) (and only them) set.</li>
+			<li>Sum over all \(count_z\) for \(z\) denoting submask of \(x\) with bits \(b_1, \dots b_h\) set and bit \(b_{h+1}\) not set can be denoted as \(dp_{x \oplus y_{h+1}, h}\). </li>
+			<li>As \(dp_{x,h}\) denotes sum over all \(count_z\) for \(z|x=x\) with bits \(b_1, \dots, b_h\) set and bits \(b_{h+1} \dots b_m\) possibly set, then, for \(h \lt m\), \(dp_{x,h}=dp_{x,h+1}+dp_{x \oplus y_{h+1}, h}\), where \(dp_{x,h+1}\) sums \(count\) over all submasks with bit \(b_{h+1}\) set, \(dp_{x \oplus y_{h+1}, h}\) over all submasks with bit \(b_{h+1}\) not set.</li>
 			<li>Thus, one can calculate all \(dp_{x,h}\) starting from \(dp_{x, m}\) and then calculating \(dp_{x, m-1}, dp_{x, m-2}, \dots dp_{x, 0}\) from previously obtained results.</li>
 		</ol>
 		<p>This leads to quite trivial solution working in \(O(L\log(L))\) (because number \(\le L\) can have at most \(\log(L)\) bits set - thus, \(m \le \lceil \log(L) \rceil\) for all \(x \le L\) .
 		</p>
+		<h4>Notes on implementation</h4>
+		<p>There are three things, that should be touched before proceeding to implementation:</p>
+		<ol>
+			<li>To solve problem in a way described above, one can calculate \(dp_{x,y}\) for each \(x\) starting from \(dp_{x, amount_x}\) where \(amount_x\) describes amount of set bits in \(x\). This value will be equal to \(count_x\); Then, calculate values \(dp_{x,y}\) for \(y \lt amount_x\) from the formula.</li>
+			<li>To find \(i\)-th set bit of \(x\), one can just check for each value \(i\) from 0 to \(\lfloor log_2(L) \rfloor\), whether \(2^i \& x \gt 0\) - this can be done in \(O(log_2(L))\)</li>
+			<li>One can notice, that \(amount_x = amount_{x/2}+x \& 1\) - because \(\lfloor \frac{x}{2} \rfloor\) has at most one bit less set than \(x\) - the last one; if last bit of \(x\) equal to 1, then \(x \& 1\) will be equal to 1.</li>
+
+		</ol>
+		{{ algo.algorithm(3, 'DP on subsets', '
+			<p>Input format: \(n\) - number of elements, \(a_i\) - elements of sequence.<br>
+			\(n\)<br>
+			\(a_1, a_2, \dots, a_n\)
+			</p>
+		'
+		, '6 15&#10;4 5 2 6 7 12', 'textarea') }}
 
 
 		<h2>Summary</h2>
 		<ol>
 			<li>Inclusion-exclusion principle states, that {{ iep('n') }}</li>
+			<li>One can construct all submasks of \(x\) in \(O(ln(x))\), where \(ln(x)\) denotes number of all submasks of \(x\). Furhermore, \(\sum_{i=0}^{2^n} ln(i)=3^n\), which allows to estimate the amount of operations when iterating over all submasks of all numbers in a range.</li>
+			<li>In some cases one can use inclusion-exclusion principle instead of iterating over submasks to obtain some aggregate result from submasks, which, correctly applied may lead to complexity \(O((1+\sqrt{2})^n)\) instead of \(O(3^n)\) - and while it can be usually optimized yet further, this technique allows solving some not very typical problems.</li>
+			<li>Using disjoint sets allows to construct a solution to a problem that doesn't use inclusion-exclusion principle and its complexity - which may turn out to be more effective (or may not, depending on sets, sometimes it may not even be possible).</li>
 
 		</ol>
 		<h3>Problems</h3>

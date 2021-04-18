@@ -25,7 +25,12 @@ class Algorithm{
 		//Next value
 		this.nextbut.addEventListener('click', function(){
 			var zis=Algorithm.alldict[this.id];
-			zis.NextState();
+			if (zis.version>=4){
+				zis.new_next_state();
+			}
+			else{
+				zis.NextState();
+			}
 			zis.post_state_maker();
 			zis.ChangeStatement();
 		});
@@ -53,6 +58,7 @@ class Algorithm{
 		this.wisdom=block.output;
 		this.input=block.input;
 		this.Creato(block);
+		this.version=1;
 
 		//Button style
 		this.bs_butt_width="40px";
@@ -69,7 +75,12 @@ class Algorithm{
 	//Default action after finish
 	FinishingSequence(){
 		while (!this.isFinished()){
-			this.NextState();
+			if (this.version>=4){
+				this.new_next_state();
+			}
+			else{
+				this.NextState();
+			}
 			this.post_state_maker();
 			this.ChangeStatement();
 		}
@@ -99,6 +110,13 @@ class Algorithm{
 		this.transformator(this.ephemeral.staat);
 		this.ephemeral={'staat':null, 'passer':null};
 	}
+
+	new_next_state(){
+		var next_state=this.NextState();
+		if (next_state!=null){
+			this.lees.push(next_state);
+		}
+	};
   
 	
 	//Printing statement on the output
@@ -167,7 +185,7 @@ class Algorithm{
 		}
 		var olden;
 		if (only_bg==1) olden=btn.style.color;
-		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14) btn.style.color="#FFFFFF";
+		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14 || col==15) btn.style.color="#FFFFFF";
 		else btn.style.backgroundColor="#FFFFFF";
 
 		if (col==0) btn.style.backgroundColor="#440000";
@@ -187,6 +205,8 @@ class Algorithm{
 		//Colors for additional post-green
 		if (col==13) btn.style.backgroundColor="#669900";
 		if (col==14) btn.style.backgroundColor="#00B359";
+		//Colors for tmp information - post-orange
+		if (col==15) btn.style.backgroundColor="#E64C00";
 
 		if (col==7){
 			btn.style.border="1px solid";
@@ -463,6 +483,15 @@ class Bitmasks{
 		return all_bitmasks;
 	}
 
+	static list_all_bits(bitmasks){
+		var all_bits=[], ln=bitmasks[0].length, i, _;
+
+		for (i=0; i<bitmasks.length; i++){
+			all_bits.push([]);
+			_=bitmasks[i].map(function(e, j){return (e==1)?all_bits[i].push(j):0;});
+		}
+		return all_bits;
+	}
 }
 
 class Complex{
@@ -479,5 +508,33 @@ class Complex{
 	toString(){
 		if (-10e-6<this.img && this.img<10e-6) return `${this.real.toFixed(5)}`;
 		return `${this.real.toFixed(5)}+${this.img.toFixed(5)}i`;
+	}
+}
+
+
+class ArrayUtils{
+	static range(a, b, diff=1){
+		var elements=[];
+		if (diff>0)
+			for (var i=a; i<=b; i+=diff) elements.push(i);
+		else
+			for (var i=a; i>=b; i+=diff) elements.push(i);
+		return elements;
+	}
+
+	static steady(num, elem){
+		var elements=[];
+		for (var i=a; i<=b; i++) elements.push(elem);
+		return elements;
+	}
+
+	static is_iterable(value){
+		return Symbol.iterator in Object(value);
+	}
+
+	//If value is sort of list - returns element under index, if not - returns value
+	static get_elem(value, ite){
+		if (ArrayUtils.is_iterable(value)) return value[ite];
+		return value;
 	}
 }
