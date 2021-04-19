@@ -145,3 +145,21 @@ p,ol{
 .pureAlgo{
 	position:relative;
 }
+
+.beauty_table{
+	margin-left: 15%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.beauty_table>thead>tr>td{
+	min-width: 50px;
+	text-align: center;
+	background-color: #994D00;
+	color: #FFFFFF;
+}
+
+.beauty_table>tbody>tr>td{
+	text-align: center;
+}
+

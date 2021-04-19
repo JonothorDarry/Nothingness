@@ -12,16 +12,21 @@
 	<body>
 		{{ headers.full_upper('Inclusion-Exclusion Principle', 'Combinatorics') }}
 		<h2>Introduction</h2>
-		<p>In this article a technique allowing to calculate size of union of sets \(|S_1 \cup S_2 \cup \dots \cup S_n|\) given sizes of all set intersections in form \(|S_{j_1} \cap S_{j_2} \cap \dots \cap S_{j_k}|\) will be shown, its different variants and generalization. As problems involving this method frequently involve bitmasks, several definitions regarding them shall be stated.</p>
-		<p>There are no divisors (and thus symbol \(|\)) in this article; used symbols are:</p>
+		<p>In this article a technique allowing to calculate size of union of sets \(|S_1 \cup S_2 \cup \dots \cup S_n|\) given sizes of all set intersections in form \(|S_{j_1} \cap S_{j_2} \cap \dots \cap S_{j_k}|\) will be shown, its different variants and generalization. As problems involving this method frequently can be solved quickly and elegantly with bitmasks, several definitions regarding them shall be stated, and the whole introduction will describe simple tricks and operations on them.</p>
+		<p>There are no divisors (and thus whenever symbol \(|\) is used, it doesn't mean divisibility) in this article.</p>
+
+		<h3>The secrets of bitmasks</h3>
+		<p>In the following article all operations on bitmasks are applied to non-negative integers.</p>
+		<h4>Operations</h4>
+		<p>The basic bit operations are:</p>
 		<ol>
-			<li>\(\oplus\) or ^ denotes XOR operation: exclusive or of bits.</li>
-			<li>| denotes OR opertation: or on bits.</li>
-			<li>\(\&\) dentotes AND operation: and on bits</li>
+			<li>\(\oplus\) or ^ denotes <strong>XOR</strong> operation: exclusive or of bits.</li>
+			<li>| denotes <strong>OR</strong> opertation: or on bits.</li>
+			<li>\(\&\) dentotes <strong>AND</strong> operation: and on bits</li>
 		</ol>
-		<!--
 		<p>The operations above have following meaning, if applied to two bits \(a, b\):</p>
-		<table>
+
+		<table class="beauty_table">
 			<thead>
 				<tr>
 					<td>\(a\)</td>
@@ -63,18 +68,67 @@
 
 			</tbody>
 		</table>
-		-->
-		<p>All operations on numbers are applied bit by bit: for example, \(12 \oplus 55=(001100)_2 \oplus (110111)_2=(111011)_2=59\), where \((x)_b\) denotes number \(x\) in positional system under base \(b\).</p>
-		<p>Other definitions used include:</p>
+
+		<p>All those operations on numbers are applied bit by bit: for example, \(12 \oplus 55=(001100)_2 \oplus (110111)_2=(111011)_2=59\), where \((x)_b\) denotes number \(x\) in positional system with constant radix under base \(b\). </p>
+
+		<p>There are several definitions stemming from the above:</p>
 		<ol>
-			<li>A bit \(h\) of number \(x\) is said to be <b>set</b> if and only if \(x|2^h=x\)</li>
-			<li>\(h\) is said to be <b>leftmost bit</b> of \(x\) (denoted later as \(leftmost_x\)) if and only if \(x|2^h=x \land \forall_{g \gt h} x|2^g \neq x\). For 0, for convenience it is assumed, that \(leftmost_0=-1\)</li>
-			<li>\(s\) is said to be <b>submask</b> of \(x\) if and only if \(x|s=x\).</li>
+			<li>A bit \(h\) of number \(x\) is said to be <b>set</b> if and only if \(x|2^h=x\). This fact will be later denoted by function \(set(x,h)\):
+				<span class="central">\(
+					set(x,h)=\begin{cases}
+						1 \text{ iff } x|2^h=x \\
+						0 \text{ otherwise } \\
+					\end{cases}
+				\)</span>
+			</li>
+			<li>\(h\) is said to be <strong>leftmost bit</strong> of \(x\) (denoted later as \(leftmost_x\)) if and only if \(x|2^h=x \land \forall_{g \gt h} x|2^g \neq x\). For convenience it is assumed, that \(leftmost_0=-1\). It is also called <strong>most significant bit</strong>.</li>
+			<li>\(s\) is said to be <strong>submask</strong> of \(x\) if and only if \(x|s=x\).</li>
+			<li><strong>Amount of bits</strong> of \(x\) (denoted later as \(amount_x\) or \(bits_x\)) is number of set bits of \(x\); in other words, \(amount_x=|\{h:set(x,h)=1\}|\)
 		</ol>
-		<p>Besides, note, that logical or on different powers of \(2\) is equivalent to their addition.</p>
+
+		<p>There exist two operators used commonly on whole numbers without proper equivalent on single bits; those are:</p>
+		<ol>
+			<li><strong>Bitshift left</strong> - is equivalent to multiplying number by \(2^k\) for some \(k\):
+				<span class="central">\(
+					y=x \lt \lt k \iff
+					set(y, h) = 
+					\begin{cases}
+					set(x, h-k) \text{ for } h \ge k \\
+					0  \text{ otherwise}\\
+					\end{cases}
+				\)</span>
+				In other words, bits are shifted \(k\) positions to the left. For example:
+				<span class="central">\(9 \lt \lt 2=(1001)_2 \lt \lt 2 = (100100)_2 = 36\)</span>
+			This operation allows quick and elegant multiplication by some \(2^k\).
+			</li>
+
+			<li><strong>Bitshift right</strong> - is equivalent to dividing number by \(2^k\) without reminder for some \(k\):
+				<span class="central">\(
+					y=x \gt \gt k \iff set(y, h) = set(x, h+k)
+				\)</span>
+				In other words, bits are shifted \(k\) positions to the right. For example:
+				<span class="central">\(9 \gt \gt 2=(1001)_2 \gt \gt 2 = (10)_2 = 2\)</span>
+				In normal programming languages (I don't care about prolog, whitespace or java) this operation is significantly faster than standard division.
+			</li>
+		</ol>
+		<p>Using those symbols leads to more efficient and less esoteric code when operating on bitmasks.</p>
+		<p>Note, that in certain cases bit operations are equivalent to standard operations on numbers; for example, logical or on different powers of \(2\) is equivalent to their addition.</p>
+		<h4>Standard problems</h4>
+		<p>First question regarding bitmask operations: how to check properties of bitmask representation of some numbers in range \(\lt 0;n \gt\)?</p>
+		<ol>
+			<li>\(leftmost_x=leftmost_{x \gt \gt 1}+1\) - because \(x \gt \gt 1\) has all the bits of \(x\) moved one position to the right, among them its leftmost bit.</li>
+			<li>\(amount_x=amount_{x \gt \gt 1}+(x \& 1)\) - because \(x \gt \gt 1\) has all the bits of \(x\) moved one position to the right except the least significant bit, which is removed; 1 is added depending on \(set(x, 0)\).</li>
+		</ol>
+
+		<p>Second question; how to use those? Suppose You have set of \(n \le 20\) numbers \(a_i\) and want to calculate for all subsets \(S\) of indexes of those numbers sum \(\sum_{x \in S} a_x\).</p>
+		<ol>
+			<li>Each \(S\) can be represented as a bitmask: for example, subset consisting of \(a_0, a_4, a_5\) would be described as \((110001)_2\); thus, if \(f\) maps a subset to a single number, then one can construct \(f\) as function satisfying \(set(f(S),i)=1 \iff i \in S\). Note that \(f\) is a bijection in range \(\lt 0 ; 2^n-1 \gt\).</li>
+			<li>Let \(sum(f(S))=\sum_{x \in S} a_x\) for any subset \(S\). Then, \(sum(f(S))=sum(f(S) \oplus leftmost_x)+a_{leftmost_x}\), and \(sum(0)=0\) : previously calculated result can be used in order to obtain \(sum(f(S))\) in constant time, because it contains information about sum of all \(a_x : x \in S\) except one.</li>
+		</ol>
+		<p>\(amount_x\) can turn out to be useful for example for calculating mean of those numbers instead of sum, or, in context of inclusion-exclusion principle - for finding sign, with which a number should be added to some aggregate sum.</p>
 
 		<h2>Problem I - Basic inclusion-exclusion principle</h2>
-		<p>Suppose You are give some elements, where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of \(i\)-th type. A multiset is called <i>proper</i> if it has at most \(a_i\) elements of \(i\)-th type. How many there are different proper multisets containing \(n\) elements (\(n \le 10^{14}\))? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
+		<p>Suppose You are given some elements, where each element belongs to one of \(t \le 20\) types, and elements of one type are indistinguishable. There are \(a_i \le 10^{12}\) elements of \(i\)-th type. A multiset is called <i>proper</i> if it has at most \(a_i\) elements of \(i\)-th type. How many there are different proper multisets containing \(n\) elements (\(n \le 10^{14}\))? Two multisets are different, if there exist such \(j\), that both multisets contain different amount of elements of \(j\)-th type. As answer can be huge, it shall be presented \(mod\ 10^9+7\)</p>
 		<h3>Better formulation of the question</h3>
 		<p>To solve problem, it may be crucial to create well-formulated question on what has to be found, and then find an answer. One can, for example, notice, that \(t \le 20\) allows to create a solution working in exponential complexity - for example, \(O(t2^t)\). One can observe, that question can be formulated in different way; number of all proper multisets of size \(n\) is equal to number of all multisets of size \(n\) consisting of elements of \(t\) types (possible to calculate as \(\binom{n+t-1}{t-1}\) - standard combination with repetitions) except those, that are not proper. The question arises: what is the number of not proper multisets? </p>
 		<p>Let \(b_i\) describe number of elements of \(i\)-th type in a multiset; let \(A_1, A_2, \dots, A_t\) be defined as such sets containing multisets, that \(X \in A_i \iff b_i \gt a_i\) in multiset \(X\). Then, the answer to this problem can be represented as \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\). The remaining question is: how to find \(|A_1 \cup A_2 \cup \dots \cup A_t|\).</p>
@@ -121,14 +175,13 @@
 			</li>
 		</ol>
 		<h3>Original problem solution</h3>
-		<p>One can, for each of \(2^t-1\) sets \(A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_k}\) find its size as equal to \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}\) - where the number of multisets having overabundance of elements of types \(j_i\) (represented as \(a_{j_i}+1\)) and some additional elements of each type (possibly also \(j_i\)) is calculated. Then, add sizes of those sets (mutiplied by \(-1\), iff \(k%2=0\) and print result. Thus, solution can consist of subsequent steps:</p>
+		<p>One can, for each of \(2^t-1\) sets \(A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_k}\) find its size as equal to \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}\) - where the number of multisets having overabundance of elements of types \(j_i\) (represented as \(a_{j_i}+1\)) and some additional elements of each type (possibly also \(j_i\)) is calculated. Then, add sizes of those sets (mutiplied by \(-1\), iff \(k \& 1=0\)) and print result. Thus, solution can consist of subsequent steps:</p>
 		<ol>
 			<li>For each number in range \(\lt 1;2^t-1 \gt\) calculate its number of bits, and amount of multisets in sets corresponding to bits: for example, for \(t=5\) and number \(01011\), it can represent \(A_1 \cap A_2 \cap A_4\), thus one has to find \(\binom{n+t-1-(a_1+1+a_2+1+a_4+1)}{t-1}\) and substract it from result, if number of bits is divisible by 2 or add it otherwise (in this case it shall be added).</li>
-			<li>It's worth noting that \(amount\_of\_bits(0)=0, amount\_of\_bits(x)=amount\_of\_bits(x \gt \gt 1)+x\%2\), where \(\%\) denotes modulus operation and \(\gt \gt\) denotes right bitshift - this equality is useful because right bitshift always gives smaller number (for which \(amount\_of\_bits\) was already calculated), and the only possible difference between those two numbers can be a result only of a bit that disappears after shift.</li>
-			<li>One can also calculate leftmost bit of a number as \(leftmost\_bit(0)=-1, leftmost\_bit(x)=leftmost\_bit(x \gt\gt 1)+1\)</li>
-			<li>Then, \(\sum_{i=0}^{amount\_of\_bits(i)}a_{j_i}\) described by number \(x\) is equal to \(summa(x)=summa(x\oplus2^{leftmost\_bit(x)})+a_{leftmost\_bit(x)}\) - using results computed previously, this result - and all previous results - can be calculated in \(O(2^t)\).</li>
-			<li>At last, calculate \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}=\binom{n+t-1-summa(x)}{t-1}=\frac{(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)}{(t-1)!}=(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)*((t-1)!)^{-1}\). As result has to be calculated \(\pmod {10^9+7}\), the last part (\((t-1)!^{-1} \pmod {10^9+7}\)) can be calculated beforehand, using Fermat's little theorem or Euclid algorithm. The remaining part shall be calculated by multiplying those \(t-1\) elements leading to complexity \(O(t2^t)\) - \(2^t\) times one has to multiply \(t-1\) numbers.</li>
-			<li>Finally, sum above shall be added to resulting \(|A_1 \cup \dots \cup A_t|\) with positive sign, if \(amount\_of\_bits(x) \equiv 1 \pmod 2\), or negative otherwise.</li>
+			<li>Calculating \(amount_x\) and \(leftmost_x\) - amount of set bits of \(x\) and leftmost bit of \(x\) - either by checking all bits of those numbers, or using some formula - here, formulas given in the introduction will be used.</li>
+			<li>Then, let \(summa(x) = \sum_{i=0}^{amount_x}a_{j_i}\); notice, that \(summa(x) = summa(x\oplus2^{leftmost_x})+a_{leftmost_x}\) - using results computed previously, this result - and all previous results - can be calculated in \(O(2^t)\).</li>
+			<li>At last, calculate \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}=\binom{n+t-1-summa(x)}{t-1}=\frac{(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)}{(t-1)!}=(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)*((t-1)!)^{-1}\). As result has to be calculated \(\pmod {10^9+7}\), the last part: (\((t-1)!^{-1} \pmod {10^9+7}\)) can be calculated beforehand, using Fermat's little theorem or Euclid algorithm. The remaining part shall be calculated by multiplying those \(t-1\) elements leading to complexity \(O(t2^t)\) - \(2^t\) times one has to multiply \(t-1\) numbers.</li>
+			<li>Finally, sum above shall be added to resulting \(|A_1 \cup \dots \cup A_t|\) with positive sign, if \(amount_x \equiv 1 \pmod 2\), or negative otherwise.</li>
 			<li>After all sizes of intersections were calculated, the final result is equal to amount of multisets not belonging to \(A_1 \cup A_2 \cup \dots \cup A_t\) - and so, it is equal to \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\)</li>
 		</ol>
 
@@ -229,7 +282,7 @@
 		, '6 15&#10;4 5 2 6 7 12', 'textarea') }}
 		<h3>Proper dp solution in \(O(L\log(L))\)</h3>
 		<p>Last solution used sets, that were not disjoint; for this reason inclusion-exclusion principle with its complexity was applied to solve the problem. However, what if those sets will be made explicitly disjoint in some way?</p>
-		<p>Aim of the problem for single \(x\) is to calculate sum \(\sum_{s:s|x=x}count_s\) for each \(x\) in some range. Let \(m\) denote number of set bits of \(x\). What about calculating sum of \(count_s\) for \(s\) with certain bits set, certain not set, and certain possibly set? For example, sums aggregating all \(\sum_{\delta} count_{\delta}\) having \(\delta\) with:
+		<p>Aim of the problem for single \(x\) is to calculate sum \(\sum_{s:s|x=x}count_s\). Let \(m\) denote number of set bits of \(x\). What about calculating sum of \(count_s\) for \(s\) with certain bits set, certain not set, and certain possibly set? For example, sums aggregating all \(\sum_{\delta} count_{\delta}\) having \(\delta\) with:
 		<span class="central">\(b_1\) not set</span>
 		<span class="central">\(b_1\) set, \(b_2\) not set</span>
 		<span class="central">\(b_1, b_2\) set, \(b_3\) not set</span>
@@ -249,7 +302,6 @@
 		<ol>
 			<li>To solve problem in a way described above, one can calculate \(dp_{x,y}\) for each \(x\) starting from \(dp_{x, amount_x}\) where \(amount_x\) describes amount of set bits in \(x\). This value will be equal to \(count_x\); Then, calculate values \(dp_{x,y}\) for \(y \lt amount_x\) from the formula.</li>
 			<li>To find \(i\)-th set bit of \(x\), one can just check for each value \(i\) from 0 to \(\lfloor log_2(L) \rfloor\), whether \(2^i \& x \gt 0\) - this can be done in \(O(log_2(L))\)</li>
-			<li>One can notice, that \(amount_x = amount_{x/2}+x \& 1\) - because \(\lfloor \frac{x}{2} \rfloor\) has at most one bit less set than \(x\) - the last one; if last bit of \(x\) equal to 1, then \(x \& 1\) will be equal to 1.</li>
 
 		</ol>
 		{{ algo.algorithm(3, 'DP on subsets', '
