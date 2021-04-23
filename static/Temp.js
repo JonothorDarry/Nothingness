@@ -61,10 +61,11 @@ class Algorithm{
 		this.version=1;
 
 		//Button style
-		this.bs_butt_width="40px";
-		this.bs_butt_height="40px";
-		this.bs_font_size="12px";
-		this.bs_border="0";
+		this.stylistic={};
+		this.stylistic.bs_butt_width="40px";
+		this.stylistic.bs_butt_height="40px";
+		this.stylistic.bs_font_size="14px";
+		this.stylistic.bs_border="0";
 	}
 
 	isFinished(){
@@ -175,101 +176,19 @@ class Algorithm{
 	}
 	StatementComprehension(){}
 	
-	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
-	//9: yellow(grey) 10: blue 11: dark gold
 	Painter(btn, col=1, only_bg=0){
-		if ('upper' in btn){
-			this.Painter(btn.upper, col, only_bg);
-			this.Painter(btn.lower, col, only_bg);
-			return;
-		}
-		var olden;
-		if (only_bg==1) olden=btn.style.color;
-		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14 || col==15) btn.style.color="#FFFFFF";
-		else btn.style.backgroundColor="#FFFFFF";
-
-		if (col==0) btn.style.backgroundColor="#440000";
-		else if (col==1) btn.style.backgroundColor="#004400";
-		else if (col==2 || col==7 || col==9) btn.style.color="#666666";
-		else if (col==3) btn.style.color="#FFFFFF";
-		else if (col==5) btn.style.backgroundColor="#000000";
-		else if (col==6) btn.style.backgroundColor="#888888";
-		else if (col==8) btn.style.backgroundColor="#8A7400";
-		else if (col==10) btn.style.backgroundColor="#0000FF";
-		else if (col==11) btn.style.backgroundColor="#222200";
-		if (col==12) btn.style.backgroundColor="#FF3333";
-		if (col==9) btn.style.backgroundColor="#FFFF00";
-
-		if (col==101) btn.style.backgroundColor="#804000";
-
-		//Colors for additional post-green
-		if (col==13) btn.style.backgroundColor="#669900";
-		if (col==14) btn.style.backgroundColor="#00B359";
-		//Colors for tmp information - post-orange
-		if (col==15) btn.style.backgroundColor="#E64C00";
-
-		if (col==7){
-			btn.style.border="1px solid";
-			btn.style.borderColor="#888888";
-		}
-		else btn.style.border="0px none";
-		if (only_bg==1) btn.style.color=olden;
+		Representation_utils.Painter(btn, col, only_bg);
 	}
 
 	//Creates buttons
 	buttCreator(numb=null, col='#440000'){
-		var butt=document.createElement("BUTTON");
-		butt.style.width=this.bs_butt_width;
-		butt.style.height=this.bs_butt_height;
-		butt.style.backgroundColor=col;
-		butt.style.border=this.bs_border;
-		butt.style.padding='0';
-		butt.style.margin='0';
-		butt.style.verticalAlign='middle';
-		
-		butt.style.color="#FFFFFF";
-		if (numb!=null) {
-			butt.innerHTML=numb;
-			butt.style.fontSize=this.font_size;
-		}
-		else {
-			butt.innerHTML=0;
-			butt.style.backgroundColor="#FFFFFF";
-		}
-		return butt;
-	}	
+		return Representation_utils.button_creator(this.stylistic, numb, col);
+	}
 
 
 	//Create Button
 	doubleButtCreator(v, fun){
-		var butt1=fun(v);
-		var butt2=fun(v);
-		butt1.classList.add("fullNumb");
-		butt2.classList.add("divisNumb");
-
-		var dv = document.createElement("DIV");
-		dv.style.display="inline-block";
-		dv.style.position="relative";
-
-		butt1.style.top="0";
-		butt2.style.bottom="0";
-		var lst=[butt1, butt2];
-		for (var i=0;i<2;i++){
-			lst[i].style.width=this.bs_butt_width;
-			lst[i].style.height="20px";
-			lst[i].style.textAlign="center";
-			lst[i].style.margin="0";
-			lst[i].style.position="absolute";
-		}
-
-		dv.style.width=this.bs_butt_width;
-		dv.style.height="40px";
-		dv.backgroundColor="#000000";
-		dv.appendChild(butt1);
-		dv.appendChild(butt2);
-		dv.upper=butt1;
-		dv.lower=butt2;
-		return [dv, butt1, butt2];
+		return Representation_utils.double_button_creator(this.stylistic, v, fun);
 	}
 
 	//Execute changes in the last state
@@ -292,41 +211,15 @@ class Algorithm{
 	}
 
 
-	//mode: 1 - buttons, 2 - midian button, 4 - text (logical or), midian - width of middle
-	static title_id='title';
-	static single_id='midian'
-	static buttons_id='buttons';
 	divsCreator(mode, number_of_rows, title_list, midian, elements=['divs', 'zdivs']){
-		var divs=[], zdivs=[], i, j, mode_title=(((mode&4)>0)?1:0), mode_single=(((mode&2)>0)?1:0), mode_butts=mode&1;
-		var elems=[];
-		if (mode_title==1) elems.push(Algorithm.title_id);
-		if (mode_single==1) elems.push(Algorithm.single_id);
-		if (mode_butts==1) elems.push(Algorithm.buttons_id);
+		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, this.place, this.stylistic.bs_butt_height);
+		this[elements[0]]=lst.divs;
+		this[elements[1]]=lst.zdivs;
+	}
 
-		var full_div=document.createElement("DIV");
-		for (i=0;i<number_of_rows;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
-		for (i=0;i<number_of_rows;i++){
-			divs[i].style.height=this.bs_butt_height;
-			//zdivs - inside div: 0 is write-up, 1 is button
-			for (j of elems) {
-				zdivs[i][j]=document.createElement("DIV");
-				zdivs[i][j].style.margin="0";
-				zdivs[i][j].style.padding="0";
-				zdivs[i][j].style.display="inline-block";
-				divs[i].appendChild(zdivs[i][j]);
-			}
-			if (mode_title==1) {
-				zdivs[i][Algorithm.title_id].innerHTML=title_list[i];
-				zdivs[i][Algorithm.title_id].style.width="200px";
-			}
-			if (mode_single==1) zdivs[i][Algorithm.single_id].style.width=midian;
-			if (mode_butts==1) zdivs[i][Algorithm.buttons_id].style.position="relative";
-
-			this.place.appendChild(divs[i]);
-		}
-		this.place.appendChild(full_div);
-		this[elements[0]]=divs;
-		this[elements[1]]=zdivs;
+	modern_divsCreator(mode, number_of_rows, title_list, midian, place=this.place){
+		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, place, this.stylistic.bs_butt_height);
+		return lst;
 	}
 
 
@@ -363,6 +256,163 @@ class Partial extends Algorithm{
 			'output':v.getElementsByClassName('comprehend')[0],
 		}
 		return dick;
+	}
+}
+
+
+class Representation_utils{
+	//mode: 1 - buttons, 2 - midian button, 4 - text (logical or), midian - width of middle
+	static title_id='title';
+	static single_id='midian'
+	static buttons_id='buttons';
+	static proto_divsCreator(mode, number_of_rows, title_list, midian, to_add, height){
+		var divs=[], zdivs=[], i, j, mode_title=(((mode&4)>0)?1:0), mode_single=(((mode&2)>0)?1:0), mode_butts=mode&1;
+		var elems=[];
+		if (mode_title==1) elems.push(Representation_utils.title_id);
+		if (mode_single==1) elems.push(Representation_utils.single_id);
+		if (mode_butts==1) elems.push(Representation_utils.buttons_id);
+
+		var full_div=document.createElement("DIV");
+		for (i=0;i<number_of_rows;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
+		for (i=0;i<number_of_rows;i++){
+			divs[i].style.height=height;
+			//zdivs - inside div: 0 is write-up, 1 is button
+			for (j of elems) {
+				zdivs[i][j]=document.createElement("DIV");
+				zdivs[i][j].style.margin="0";
+				zdivs[i][j].style.padding="0";
+				zdivs[i][j].style.display="inline-block";
+				divs[i].appendChild(zdivs[i][j]);
+			}
+			if (mode_title==1) {
+				zdivs[i][Representation_utils.title_id].innerHTML=title_list[i];
+				zdivs[i][Representation_utils.title_id].style.width="200px";
+			}
+			if (mode_single==1) zdivs[i][Representation_utils.single_id].style.width=midian;
+			if (mode_butts==1) zdivs[i][Representation_utils.buttons_id].style.position="relative";
+
+			full_div.appendChild(divs[i]);
+		}
+		to_add.appendChild(full_div);
+		return {'zdivs':zdivs, 'divs':divs}
+	}
+	
+	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
+	//9: yellow(grey) 10: blue 11: dark gold
+	static Painter(btn, col=1, only_bg=0){
+		if ('upper' in btn){
+			Representation_utils.Painter(btn.upper, col, only_bg);
+			Representation_utils.Painter(btn.lower, col, only_bg);
+			return;
+		}
+		var olden;
+		if (only_bg==1) olden=btn.style.color;
+		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14 || col==15) btn.style.color="#FFFFFF";
+		else btn.style.backgroundColor="#FFFFFF";
+
+		if (col==0) btn.style.backgroundColor="#440000";
+		else if (col==1) btn.style.backgroundColor="#004400";
+		else if (col==2 || col==7 || col==9) btn.style.color="#666666";
+		else if (col==3) btn.style.color="#FFFFFF";
+		else if (col==5) btn.style.backgroundColor="#000000";
+		else if (col==6) btn.style.backgroundColor="#888888";
+		else if (col==8) btn.style.backgroundColor="#8A7400";
+		else if (col==10) btn.style.backgroundColor="#0000FF";
+		else if (col==11) btn.style.backgroundColor="#222200";
+		if (col==12) btn.style.backgroundColor="#FF3333";
+		if (col==9) btn.style.backgroundColor="#FFFF00";
+
+		if (col==101) btn.style.backgroundColor="#804000";
+
+		//Colors for additional post-green
+		if (col==13) btn.style.backgroundColor="#669900";
+		if (col==14) btn.style.backgroundColor="#00B359";
+		//Colors for tmp information - post-orange
+		if (col==15) btn.style.backgroundColor="#E64C00";
+
+		if (col==7){
+			btn.style.border="1px solid";
+			btn.style.borderColor="#888888";
+		}
+		else btn.style.border="0px none";
+		if (only_bg==1) btn.style.color=olden;
+	}
+	
+	//Creates buttons
+	static button_creator(style, numb=null, col='#440000'){
+		var butt=document.createElement("BUTTON");
+		butt.style.width=style.bs_butt_width;
+		butt.style.height=style.bs_butt_height;
+		butt.style.backgroundColor=col;
+		butt.style.border=style.bs_border;
+		butt.style.padding='0';
+		butt.style.margin='0';
+		butt.style.verticalAlign='middle';
+		
+		butt.style.color="#FFFFFF";
+		if (numb!=null) {
+			butt.innerHTML=numb;
+			butt.style.fontSize=style.bs_font_size;
+		}
+		else {
+			butt.innerHTML=0;
+			butt.style.backgroundColor="#FFFFFF";
+		}
+		return butt;
+	}
+	
+	//Create Button
+	static double_button_creator(style, v, fun){
+		var butt1=fun(v);
+		var butt2=fun(v);
+		butt1.classList.add("fullNumb");
+		butt2.classList.add("divisNumb");
+
+		var dv = document.createElement("DIV");
+		dv.style.display="inline-block";
+		dv.style.position="relative";
+
+		butt1.style.top="0";
+		butt2.style.bottom="0";
+		var lst=[butt1, butt2];
+		for (var i=0;i<2;i++){
+			lst[i].style.width=style.bs_butt_width;
+			lst[i].style.height="20px";
+			lst[i].style.textAlign="center";
+			lst[i].style.margin="0";
+			lst[i].style.position="absolute";
+		}
+
+		dv.style.width=style.bs_butt_width;
+		dv.style.height="40px";
+		dv.backgroundColor="#000000";
+		dv.appendChild(butt1);
+		dv.appendChild(butt2);
+		dv.upper=butt1;
+		dv.lower=butt2;
+		return [dv, butt1, butt2];
+	}
+
+	static better_button_creator(style, name, color){
+		var btn=Representation_utils.button_creator(style, name);
+		Representation_utils.Painter(btn, color);
+		return btn;
+	}
+
+	static fill_with_buttons_horizontal(style, place, names, color, ln=-1){
+		var single_name=false, btn_list=[], btn, cur_name;
+		if (ArrayUtils.is_iterable(names)==false) single_name=true;
+		else ln=names.length;
+
+		for (var i=0; i<ln; i++){
+			if (single_name) cur_name=names;
+			else cur_name=names[i];
+
+			btn=Representation_utils.better_button_creator(style, cur_name, color);
+			place.append(btn);
+			btn_list.push(btn);
+		}
+		return btn_list;
 	}
 }
 
@@ -492,6 +542,13 @@ class Bitmasks{
 		}
 		return all_bits;
 	}
+
+	//Just a little bits - with added pows, for which they have to be calculated
+	static calculate_binary(x, pows){
+		var binaria=pows.map(function(e,i){return ((e&x)>0)?1:0});
+		binaria.reverse();
+		return binaria;
+	}
 }
 
 class Complex{
@@ -536,5 +593,11 @@ class ArrayUtils{
 	static get_elem(value, ite){
 		if (ArrayUtils.is_iterable(value)) return value[ite];
 		return value;
+	}
+
+	static revert(lst){
+		var rev_lst=[];
+		for (var i=lst.length-1; i>=0; i--) rev_lst.push(lst[i]);
+		return rev_lst;
 	}
 }

@@ -453,16 +453,16 @@ class Pascal_base extends Algorithm{
 
 		this.divsCreator(1, this.n+2);
 		this.construct_pascal();
-		this.place.style.width=`${(this.n+1)*this.bs_butt_width_h+210}px`;
+		this.place.style.width=`${(this.n+1)*this.stylistic.bs_butt_width_h+210}px`;
 		//this.create_reality(4);
 		//this.lees.push([0, 0]);
 	}
 
 	create_reality(color){
 		var i, j, btn;
-		this.bs_butt_width_h=Math.max(this.pascal[this.n][Math.floor(this.n/2)].toString().length*10, 40);
-		this.bs_butt_width=`${this.bs_butt_width_h}px`;
-		this.place.style.width=`${(this.n+2)*this.bs_butt_width_h+10}px`;
+		this.stylistic.bs_butt_width_h=Math.max(this.pascal[this.n][Math.floor(this.n/2)].toString().length*10, 40);
+		this.stylistic.bs_butt_width=`${this.stylistic.bs_butt_width_h}px`;
+		this.place.style.width=`${(this.n+2)*this.stylistic.bs_butt_width_h+10}px`;
 
 		btn=this.buttCreator("n\\k");
 		this.Painter(btn, 8);

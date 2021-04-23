@@ -230,6 +230,12 @@
 		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}2^i=(1+2)^m=3^m$$</span>
 		</p><p>So, algorithm moving through all submasks \(s\) of a number \(x\) and calculating sum of \(count_s\) for those submasks - where \(count_s\) is calculated at the start of the algorithm, so it can be accessed in \(O(1)\) - works in \(O(3^{log(L)})\) - in case of this problem, \(3^{20} \approx 3*10^9\) - which is not very good.</p>
 		</p>
+		{{ algo.algorithm(4, 'Obtaining submask of a number', '
+			<p>Input format: \(a\) - number, whose submasks have to be obtained<br>
+			\(a\)
+			</p>
+		'
+		, '86') }}
 
 		<h3>Dubious approach involving inclusion-exclusion principle</h3>
 		<p>For given \(x\), let \(b_i\) denote its \(i\)-th set bit, indexed from 1. For simplicity, let \(y_i=2^{b_i}\).</p>

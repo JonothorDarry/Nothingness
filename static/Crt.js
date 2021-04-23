@@ -2,9 +2,9 @@ class CrtSolver extends Algorithm{
 	constructor(block, n=-1, c, s){
 		super(block);
 
-		this.bs_butt_width="min(200px, 49%)";
-		this.bs_butt_height="30px";
-		this.bs_font_size="14px";
+		this.stylistic.bs_butt_width="min(200px, 49%)";
+		this.stylistic.bs_butt_height="30px";
+		this.stylistic.bs_font_size="14px";
 
 		if (n!=-1){
 			var i, af=[];

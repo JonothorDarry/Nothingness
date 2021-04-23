@@ -3,10 +3,10 @@ class EuclidGcd extends Algorithm{
 		super(block);
 		this.check=block.check;
 
-		this.bs_butt_width="30px";
-		this.bs_butt_width_h=30;
-		this.bs_butt_height="30px";
-		this.bs_border="1px solid";
+		this.stylistic.bs_butt_width="30px";
+		this.stylistic.bs_butt_width_h=30;
+		this.stylistic.bs_butt_height="30px";
+		this.stylistic.bs_border="1px solid";
 
 		if (a!=-1 && b!=-1){
 			this.divs=this.divsCreator();
@@ -140,7 +140,7 @@ class EuclidGcd extends Algorithm{
 		b=c.get_next();
 		a=BigInt(a);
 		b=BigInt(b);
-		this.bs_butt_width_h=Math.max(Math.max(a.toString().length, b.toString().length)*10, 30);
+		this.stylistic.bs_butt_width_h=Math.max(Math.max(a.toString().length, b.toString().length)*10, 30);
 
 		this.lees.push([0, a, b])
 		this.divs=this.divsCreator();
@@ -190,7 +190,7 @@ class EuclidGcd extends Algorithm{
 		var butt=super.buttCreator(numb, col);
 		butt.style.backgroundColor=col;
 		if (numb==null) butt.innerHTML="", butt.style.color="";
-		else butt.style.width=`${this.bs_butt_width_h}px`;
+		else butt.style.width=`${this.stylistic.bs_butt_width_h}px`;
 		return butt;
 	}
 
@@ -208,7 +208,7 @@ class EuclidGcd extends Algorithm{
 		}
 
 		var width=this.place.offsetWidth;
-		var width_h=5*this.bs_butt_width_h;
+		var width_h=5*this.stylistic.bs_butt_width_h;
 		var part=Math.max(0.14, width_h/width);
 		var rest=(1-part)*50-1;
 

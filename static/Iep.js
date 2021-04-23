@@ -102,7 +102,6 @@ class Iep extends Algorithm{
 		this.pl_set_size=this.pl_sum+2;
 		this.create_grid(pows+this.offset+1, this.pl_set_size+2);
 		var col_n=this.logic.t+1;
-		
 
 		var _tmp_sgn=this.logic.sgn;
 		var results=this.logic.partial_res.map(function(e, i){
@@ -159,8 +158,8 @@ class Iep extends Algorithm{
 
 	caress_style(){
 		this.place.style.width=`max-content`;
-		this.bs_butt_width_h=Math.max(40, 10*Math.max(Math.min(10, this.find_logarithm_binom(this.logic.n+this.logic.t-1, this.logic.t-1)), Math.ceil(Math.log10(this.logic.n)) ));
-		this.bs_butt_width=`${this.bs_butt_width_h}px`;
+		this.stylistic.bs_butt_width_h=Math.max(40, 10*Math.max(Math.min(10, this.find_logarithm_binom(this.logic.n+this.logic.t-1, this.logic.t-1)), Math.ceil(Math.log10(this.logic.n)) ));
+		this.stylistic.bs_butt_width=`${this.stylistic.bs_butt_width_h}px`;
 	}
 
 	BeginningExecutor(){
@@ -922,7 +921,140 @@ class Dp_iep extends Lord_of_the_combinatorics_trilogy{
 
 		if (s[0]==100) return `All values dp<sub>x,0</sub> were calculated, in the end, resulting table is ${this.logic.dp.map(function(e){return e[0]})}`;
 	}
+}
 
+class Submasks extends Algorithm{
+	logical_box(){
+		var x=this.logic.a, last=1, i, s;
+		this.logic.submasks=[0];
+		this.logic.y=[];
+		this.logic.bits=[];
+		this.logic.bit_no=[];
+		this.logic.amount_bits=0;
+		this.logic.amount_set_bits=0;
+
+		while (x>0){
+			this.logic.y.push(last);
+			this.logic.bit_no.push(this.logic.amount_set_bits);
+			if ((x%2)==0) this.logic.bits.push(0);
+			else{
+				this.logic.bits.push(1);
+				s=this.logic.submasks.length;
+				this.logic.amount_set_bits+=1;
+				for (i=0; i<s; i++) this.logic.submasks.push(this.logic.submasks[i]+last);
+			}
+			x=Math.floor(x/2);
+			last*=2;
+			this.logic.amount_bits+=1;
+		}
+	}
+
+	palingnesia(){
+		this.logical_box();
+		this.buttons={'bits':[], 'repr':[], 'y':[], 'submasks':[]};
+		var lst=this.modern_divsCreator(7, 5, ['Bit number', 'Representations of a', '2<sup>bit_no</sup>', '', 'Submasks'], '50px');
+		this.construction_site=lst.zdivs;
+
+		var i=0, btn, system=[['bits', 0, ArrayUtils.range(this.logic.amount_bits-1, 0, -1), 5, true], 
+			['repr', 1, ArrayUtils.revert(this.logic.bits), 0, true], 
+			['y', 2, ArrayUtils.revert(this.logic.y), 0, true], 
+			['submasks', 4, this.logic.submasks, 4, false], 
+		];
+
+		var tmp_lst;
+		for (var x of system){
+			tmp_lst=Representation_utils.fill_with_buttons_horizontal(this.stylistic, this.construction_site[x[1]].buttons, x[2], x[3]);
+			if (x[4]==true) this.buttons[x[0]]=ArrayUtils.revert(tmp_lst);
+			else this.buttons[x[0]]=tmp_lst;
+		}
+		var _=Representation_utils.fill_with_buttons_horizontal(this.stylistic, this.construction_site[1].midian, this.logic.a, 5, 1);
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.logic.a=c.get_next();
+	}
+
+	BeginningExecutor(){
+		this.read_data();
+		this.palingnesia();
+		this.lees.push([0, 0]);
+	}
+
+	constructor(block, a){
+		super(block);
+		this.logic.a=a;
+		this.version=4;
+		this.palingnesia();
+	}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], staat=[], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0]==0){
+			this.pass_color(this.buttons.submasks[0]);
+		}
+
+		if (s[0]==1){
+			var x=s[1];
+			this.pass_color(this.buttons.repr[x], 0, 1);
+		}
+
+		if (s[0]==2){
+			staat.push([0, this.buttons.submasks[s[1]-1], 0, 15]);
+			passer.push([0, this.buttons.y[s[3]], 0, 14]);
+		}
+		if (s[0]==3){
+			this.pass_color(this.buttons.submasks[s[2]+s[1]]);
+
+			if (s[2]+1==s[1]){
+				passer.push([0, this.buttons.submasks[s[1]-1], 15, 0]);
+				passer.push([0, this.buttons.y[s[3]], 14, 0]);
+				this.pass_color(this.buttons.submasks[s[2]], 15, 14);
+			}
+			else this.pass_color(this.buttons.submasks[s[2]], 0, 14);
+		}
+		if (s[0]==100){
+			for (var x of this.buttons.submasks){
+				staat.push([0, x, 0, 8]);
+			}
+		}
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+		if (s[0]==0) return [1, 0];
+		if (s[0]==1 && this.logic.bits[s[1]]==0) return [1, s[1]+1];
+		if (s[0]==1) return [2, this.logic.y[this.logic.bit_no[s[1]]], -1, s[1]];
+
+		if (s[0]==2 || (s[0]==3 && s[2]+1<s[1])) return [3, s[1], s[2]+1, s[3]];
+		if (s[0]==3 && s[3]+1<this.logic.amount_bits) return [1, s[3]+1];
+		if (s[0]==3) return [100];
+	}
+
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], x=s[1];
+		function get_bin_repr(x){
+			return `(${Bitmasks.calculate_binary(x, this.logic.y).join('')})<sub>2</sub>`;
+		}
+		if (s[0]==0) return `Our aim is to find all submasks of ${this.logic.a}. Notice, that a submask can be created by taking smaller submask and adding some alien, previously unused bit to it; however, there has to be some initial submask, in order for this method to work; and 0 is quite perfect initial submask, because it is submask of any possible a, and it cannot be created by our method in any other way - because it relies on adding bit to an existing number, and 0 doesn't have any bit set.`;
+		if (s[0]==1) return `Now, perhaps it's time to check, which bit can be added to all our previous submasks? As bit no. ${s[1]} is ${(this.logic.bits[s[1]]==1)?`set, then we can create new submasks from all currently known submasks by enchancing them with our newly found bit`:`not set, then we can proceed further in our quest to find set bits of ${this.logic.a} - no submask can have this bit set`}.`;
+		if (s[0]==2) return `Time to handle purely implementational nuissance: we store all submasks in one array. Some - say x elements are already stored, some new x elements will be stored as an effect of enchancing all previously existing elements with new bit. How to find out, whether we should enchance next numbers or rather end this part of the algorithm? For example, by storing index of last element of current list of submasks (there is a myriad of ways to solve this problem, this one looks elegant on visualization). By the way, index is equal to ${s[1]-1}.`;
+		if (s[0]==3){
+			var rep_1=get_bin_repr.call(this, this.logic.submasks[s[2]]);
+			var rep_2=get_bin_repr.call(this, this.logic.y[s[3]]);
+			var rep_last=get_bin_repr.call(this, this.logic.submasks[s[2]+s[1]]);
+
+			return `Now, let's take ${s[2]==0?`first`:`next`} already created submask. It has binary representation ${rep_1}. Our new bit can be represented as submask ${rep_2}. Then, new submask results from enchancing - logical or - equal to ${rep_1}|${rep_2}=${rep_last}=${this.logic.submasks[s[2]+s[1]]}. Notice, that as both numbers doesn't have common bits, it is equivalent to their standard addition: ${this.logic.submasks[s[2]]}+${this.logic.y[s[3]]}=${this.logic.submasks[s[2]+s[1]]}.${s[2]+1==s[1]?` It was last submask, that can be created using previously obtained submasks.`:``}`;
+		}
+		if (s[0]==100) return `All submasks of ${this.logic.a} were already obtained, thus, there is nothing left to do. Submasks of ${this.logic.a} are: ${this.logic.submasks}`
+	}
 }
 
 
@@ -934,3 +1066,6 @@ var eg2=new Generalized_iep(feral2, 6, 15, [4, 5, 2, 6, 7, 12]);
 
 var feral3=Algorithm.ObjectParser(document.getElementById('Algo3'));
 var eg3=new Dp_iep(feral3, 6, 15, [4, 5, 2, 6, 7, 12]);
+
+var feral4=Algorithm.ObjectParser(document.getElementById('Algo4'));
+var eg4=new Submasks(feral4, 86);

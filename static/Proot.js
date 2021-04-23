@@ -134,9 +134,9 @@ class Proot extends Algorithm{
 	BeginningExecutor(){
 		this.starter();
 		var fas=this.input.value;
-		this.bs_butt_width_h=Math.max(40, fas.length*10);
-		this.bs_butt_width=`${this.bs_butt_width_h}px`;
-		this.place.style.width=`${(this.bs_butt_width_h+20)*16+200}px`;
+		this.stylistic.bs_butt_width_h=Math.max(40, fas.length*10);
+		this.stylistic.bs_butt_width=`${this.stylistic.bs_butt_width_h}px`;
+		this.place.style.width=`${(this.stylistic.bs_butt_width_h+20)*16+200}px`;
 
 		this.is_deter=this.deter.checked;
 

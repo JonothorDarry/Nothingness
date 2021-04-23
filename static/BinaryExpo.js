@@ -23,8 +23,8 @@ class BinaryExpo extends Algorithm{
 		b=c.get_next();
 		m=c.get_next();
 		var mx_all=Math.max(Math.max(a.toString().length, b.toString().length), m.toString().length)*10;
-		this.bs_butt_width=`${Math.max(40, mx_all)}px`;
-		this.bs_butt_width_h=Math.max(40, mx_all);
+		this.stylistic.bs_butt_width=`${Math.max(40, mx_all)}px`;
+		this.stylistic.bs_butt_width_h=Math.max(40, mx_all);
 
 		this.lees.push([0, a, b, 1, m]);
 		this.Create_reality(a, b);
@@ -34,7 +34,7 @@ class BinaryExpo extends Algorithm{
 		var i=0, j=0, z=Math.floor(Math.log2(b))+1, btn, crb=b, mylst=[];
 		for (i=0;i<z;i++) mylst.push(crb%2), crb=Math.floor(crb/2);
 
-		this.divsCreator(7, 3, ["Current result:", "Current a:", "Current b:"],`${this.bs_butt_width}+100px`);
+		this.divsCreator(7, 3, ["Current result:", "Current a:", "Current b:"],`${this.stylistic.bs_butt_width}+100px`);
 		for (j=0;j<3;j++){
 			for (i=0;i<z;i++) {
 				if (j==1 && i==z-1) btn=this.buttCreator(a, '#004400');

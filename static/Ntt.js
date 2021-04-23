@@ -105,8 +105,8 @@ class Ntt extends Algorithm{
 		}
 
 
-		this.bs_butt_width=`${mx_all}px`;
-		this.bs_butt_width_h=mx_all;
+		this.stylistic.bs_butt_width=`${mx_all}px`;
+		this.stylistic.bs_butt_width_h=mx_all;
 
 		this.place_mul=7+2*this.lv+4;
 		this.endet=this.place_mul+8+this.lv+2;
@@ -520,9 +520,9 @@ class Ntt extends Algorithm{
 		for (i=1;i<=this.lv;i++) title_list.push(`Y<sub>${i}</sub>`);
 		title_list.push("inverse n and values c<sub>k</sub>")
 
-		super.divsCreator(7, this.endet-1, title_list, `${this.bs_butt_width_h+10}px`);
+		super.divsCreator(7, this.endet-1, title_list, `${this.stylistic.bs_butt_width_h+10}px`);
 		this.place.style.width=`max-content`;
-		this.wisdom.style.minWidth=`${(this.n+1)*this.bs_butt_width_h+210}px`;
+		this.wisdom.style.minWidth=`${(this.n+1)*this.stylistic.bs_butt_width_h+210}px`;
 	}
 }
 
@@ -536,8 +536,8 @@ class SumNtt extends Algorithm{
 		this.poly=[];
 		var poly=this.poly;
 
-		this.bs_butt_width="45px";
-		this.bs_butt_height="45px";
+		this.stylistic.bs_butt_width="45px";
+		this.stylistic.bs_butt_height="45px";
 
 		this.layers=Math.ceil(Math.log2(this.n))+1;
 		var i, j, ij, double_butt, add_butt;
