@@ -70,14 +70,8 @@
 				{% endfor %}
 				...+\frac{n}{maxPrime}
 				\le
-				{% for i in range(2, 8) %}	
-					{% if i==2 or i==4 %}
-						<!-- Here shall be underbrace begginning-->
-					{% endif %}
+				{% for i in range(2, 8) %}
 					\frac{n}{ {{i}} }
-					{% if i==3 or i==7 %}
-						<!-- Here shall be underbrace endet-->
-					{% endif %}
 					+
 				{% endfor %}
 				...+\frac{n}{n} \le
@@ -97,8 +91,6 @@
 				\)
 			</span><br><span class="central">
 				\(
-
-
 				\le
 				{% for i in range(1, 4) %}
 					{% set s=jipow(2, i) %}
@@ -119,7 +111,7 @@
 				
 			<h2>Problem II</h2>
 			<p id="ZwieteProbleme">
-				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(q\ (q\le10^6)\) numbers \(a_i (1 \le a_i \le n=10^6)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). First question, that shoul be addressed before solving problem itself - is such factorization unique?
+				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(q\ (q\le10^6)\) numbers \(a_i (1 \le a_i \le n=10^6)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). First question, that should be addressed before solving problem itself - is such factorization unique?
 			</p>
 
 			<h3>Fundamental theorem of arithmetic</h3>
@@ -137,6 +129,20 @@
 				<li>Existence of factorization: suppose integer \(y \in N^+\) is a minimal number not having any factorization into primes: so, \(y\) cannot be a prime number (otherwise, its factorization would be \(y\)). Therefore, it can be shown as \(y=kl\), where \(k,l \ge 2\), but \(k=p_1^{g_1}p_2^{g_2} \dots p_n^{g_n}\) and \(l=p_1^{h_1}p_2^{h_2} \dots p_n^{h_n}\) (where \(h_i, g_i \ge 0\)) as they have some factorization, so, \(y=kl=p_1^{h_1+g_1}p_2^{h_2+g_2} \dots p_n^{h_n+g_n}\), which contradicts assumption - so, any natural number have a factorization into primes.</li>
 				<li>Uniqueness of factorization: suppose integer \(y \in N^+\) is a minimal number having at least two factorizations into primes: then, \(y=p_1^{q_1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\). From euclid's lemma consequences, \(p_1|r_1 \lor p_1|r_2 \lor \dots \lor p_1|r_m\) - without loss of generality, suppose, that \(p_1|r_1\) - then, \(\frac{y}{p_1}=p_1^{q_1-1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1-1}r_2^{s_2} \dots r_m^{s_m}\). But \(\frac{y}{p_1}\) have one factorization, which contradicts assumption and finishes the proof.</li>
 			</ol>
+			<h3>Simple solution: checking all possible divisors of a single number in \(O(\sqrt{n})\)</h3>
+			<p>First simple solution for finding all primes dividing a number \(x\) (and how many times they divide \(x\)) consists of checking, whether \(x\) is divisible by subsequent numbers in range \(\lt 2;\lceil \sqrt{x} \rceil \gt\) and dividing \(x\) by all its found divisors as many times, as they are divisible by them. Formally, let \(x'_1=x\) and let \(x'_h\) denote value of \(x\) after dividing \(x'_h\) by \(h\) as many times, as \(x'_{h-1}\) was divisible by \(h\). Notice, that:</p>
+			<ol>
+				<li>If a divisor \(d\) of \(x\) is not prime, then it has some factorization consisting of smaller prime numbers. As \(x'_{d-1}\) will be divided by those factors before checking, whether \(x'_{d-1}\) is divisible by \(d\), \(x'_{d-1}\) will not be divisible by \(d\).</li>
+				<li>If \(x'_{\lceil \sqrt{x} \rceil} \gt 1\), then \(x\) has some divisor larger than \(\lceil \sqrt{x} \rceil\). As \(x\) cannot have more than one such divisor (otherwise \((\lceil \sqrt{x} \rceil+1) * (\lceil \sqrt{x} \rceil+1) \gt x = x\), which seems spurious), \(x'_{\lceil \sqrt{x} \rceil}\) has to be its only remaining prime divisor (prime - as it cannot have divisors lower or equal to \(\lceil \sqrt{x} \rceil\)).</li>
+			</ol>
+			{{ algo.algorithm(4, 'Simple factorization', '
+				<p>Input format: One number \(x\) to factorize.<br>
+				\(x\)
+				</p>
+			'
+			, '84') }}
+			
+
 
 			<h3>Enchanced Sieve of Erastothenes</h3>
 			<p>Marking each number with it's lowest divisor (instead of sole information whether it's prime) leads to solving this problem in the same way as problem above, in complexity \(O(nlog(n)+qlog(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)</p>

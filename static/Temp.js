@@ -114,7 +114,7 @@ class Algorithm{
 
 	new_next_state(){
 		var next_state=this.NextState();
-		if (next_state!=null){
+		if (!this.finito && next_state!=null){ //Konieczne 2? Sprawdzić
 			this.lees.push(next_state);
 		}
 	};
@@ -361,6 +361,21 @@ class Representation_utils{
 		return butt;
 	}
 	
+	//Creates buttons
+	static expo_style_button_creator(style, numb=null, args=null){
+		var base=Representation_utils.button_creator(style, numb.base);
+		var expo=Representation_utils.button_creator(style, numb.expo);
+		var size=20;
+		if (args.size!=null) size=args.size;
+
+		expo.style.width=`${size}px`;
+		expo.style.height=`${size}px`;
+
+		expo.style.top=`${-(40-size)/2}px`;
+		expo.style.position="relative";
+		return {'base':base, 'expo':expo, '_is_expo_offline':true};
+	}
+	
 	//Create Button
 	static double_button_creator(style, v, fun){
 		var butt1=fun(v);
@@ -393,23 +408,45 @@ class Representation_utils{
 		return [dv, butt1, butt2];
 	}
 
-	static better_button_creator(style, name, color){
-		var btn=Representation_utils.button_creator(style, name);
-		Representation_utils.Painter(btn, color);
+	static better_button_creator(style, name, color, place, fun, args){
+		var btn=fun(style, name, args);
+		if (btn._is_expo_offline==null){ //Negated expo-style button - like in primes/proot
+			Representation_utils.Painter(btn, color);
+			place.append(btn);
+		}
+
+		else{
+			for (var x in btn){
+				if (x[0]!='_'){
+					Representation_utils.Painter(btn[x], color);
+					place.append(btn[x]);
+				}
+			}
+		}
+
 		return btn;
 	}
 
-	static fill_with_buttons_horizontal(style, place, names, color, ln=-1){
-		var single_name=false, btn_list=[], btn, cur_name;
+	static change_button_width(style, mx, cur_ln=40){
+		style.bs_butt_width_h=Math.max(cur_ln, mx.toString().length*10);
+		style.bs_butt_width=`${style.bs_butt_width_h}px`;
+	}
+
+	static fill_with_buttons_horizontal(style, place, names, color, ln=-1, creator=Representation_utils.button_creator, additional_args=null){
+		var single_name=false, single_color=false, btn_list=[], btn, cur_name, cur_color;
 		if (ArrayUtils.is_iterable(names)==false) single_name=true;
 		else ln=names.length;
+
+		if (ArrayUtils.is_iterable(color)==false) single_color=true;
+		else ln=color.length;
 
 		for (var i=0; i<ln; i++){
 			if (single_name) cur_name=names;
 			else cur_name=names[i];
+			if (single_color) cur_color=color;
+			else cur_color=color[i];
 
-			btn=Representation_utils.better_button_creator(style, cur_name, color);
-			place.append(btn);
+			btn=Representation_utils.better_button_creator(style, cur_name, cur_color, place, creator, additional_args);
 			btn_list.push(btn);
 		}
 		return btn_list;
@@ -508,6 +545,13 @@ class NTMath{
 			}
 		}
 		return p3;
+	}
+}
+
+class NTMath_presentation{
+	static show_factorization(factors){
+		var lst=factors.map(function(e){return `${e.base}<sup>${e.expo}</sup>`});
+		return lst.join('');
 	}
 }
 

@@ -249,9 +249,9 @@
 		And coefficient by \(x^d\) in resulting polynominal is answer to the problem
 		</p>
 		<h3>Proper utilization of forementioned observation - replacing dp with NTT</h3>
-		<p>There is still one obstacle one has to remove in order to bathe his problem solutions in glorious capabilities of NTT: how to multiply polynominals, so that complexity will become significantly lower than for dp approach? Multipying them one by one will result in disastrous \(O(n\log(n)(\sum_{i=0}^{n}s_i))\) without better estimation.</p>
+		<p>There is still one obstacle one has to remove in order to bathe this problem solutions in glorious capabilities of NTT: how to multiply polynominals, so that complexity will become significantly lower than for dp approach? Multipying them one by one will result in disastrous \(O(n\log(n)(\sum_{i=0}^{n}s_i))\) without better estimation.</p>
 		<p>Before constructing lemma, let \(m=\sum_{i=0}^{n-1}s_i\).</p>
-		<p>Let \(pol_{0, i}=x^{s_i}+1\). Then, what if the polynominals are multiplied in layers, in such way, that \(pol_{level,i}=pol_{level-1, 2i}*pol_{level-1, 2i+1}\) (or \(pol_{level,i}=pol_{level-1, 2i}\) for odd number of polynominals in previous layer in the last polynominal)?</p>
+		<p>Let \(pol_{0, i}=x^{s_i}+1\). Then, what if the polynominals are multiplied in layers, in such way, that \(pol_{level,i}=pol_{level-1, 2i}*pol_{level-1, 2i+1}\) (or \(pol_{level,i}=pol_{level-1, 2i}\) for odd number of polynominals in previous layer in the last polynominal of the layer)?</p>
 
 		{{ algo.algorithm(2, 'Sum of elements', '
 			<p>Input format: value \(n\) and sequence of \(n\) values \(s_i\) - numbers written on each candy.<br>

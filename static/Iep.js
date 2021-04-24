@@ -951,7 +951,7 @@ class Submasks extends Algorithm{
 
 	palingnesia(){
 		this.logical_box();
-		this.buttons={'bits':[], 'repr':[], 'y':[], 'submasks':[]};
+		this.buttons={'bits':[], 'repr':[], 'y':[], 'submasks':[], 'repr_10':null};
 		var lst=this.modern_divsCreator(7, 5, ['Bit number', 'Representations of a', '2<sup>bit_no</sup>', '', 'Submasks'], '50px');
 		this.construction_site=lst.zdivs;
 
@@ -967,7 +967,7 @@ class Submasks extends Algorithm{
 			if (x[4]==true) this.buttons[x[0]]=ArrayUtils.revert(tmp_lst);
 			else this.buttons[x[0]]=tmp_lst;
 		}
-		var _=Representation_utils.fill_with_buttons_horizontal(this.stylistic, this.construction_site[1].midian, this.logic.a, 5, 1);
+		this.buttons.repr_10=Representation_utils.fill_with_buttons_horizontal(this.stylistic, this.construction_site[1].midian, this.logic.a, 5, 1)[0];
 	}
 
 	read_data(){
@@ -1001,6 +1001,8 @@ class Submasks extends Algorithm{
 		if (s[0]==1){
 			var x=s[1];
 			this.pass_color(this.buttons.repr[x], 0, 1);
+			this.pass_color(this.buttons.y[x], 0, 14);
+			this.pass_color(this.buttons.repr_10, 5, 14, 5);
 		}
 
 		if (s[0]==2){
@@ -1044,14 +1046,14 @@ class Submasks extends Algorithm{
 			return `(${Bitmasks.calculate_binary(x, this.logic.y).join('')})<sub>2</sub>`;
 		}
 		if (s[0]==0) return `Our aim is to find all submasks of ${this.logic.a}. Notice, that a submask can be created by taking smaller submask and adding some alien, previously unused bit to it; however, there has to be some initial submask, in order for this method to work; and 0 is quite perfect initial submask, because it is submask of any possible a, and it cannot be created by our method in any other way - because it relies on adding bit to an existing number, and 0 doesn't have any bit set.`;
-		if (s[0]==1) return `Now, perhaps it's time to check, which bit can be added to all our previous submasks? As bit no. ${s[1]} is ${(this.logic.bits[s[1]]==1)?`set, then we can create new submasks from all currently known submasks by enchancing them with our newly found bit`:`not set, then we can proceed further in our quest to find set bits of ${this.logic.a} - no submask can have this bit set`}.`;
+		if (s[0]==1) return `Now, perhaps it's time to check, which bit can be added to all our previous submasks? How to check, whether bit no. h=${s[1]} is set in a=${this.logic.a}? One can do it, for example, by definition - check, whether a=a|2<sup>h</sup>, whether ${this.logic.y[s[1]]}</sup>|${this.logic.a}=${this.logic.a}. As bit no. ${s[1]} is ${(this.logic.bits[s[1]]==1)?`set, then we can create new submasks from all currently known submasks by enchancing them with our newly found bit`:`not set, then we can proceed further in our quest to find set bits of ${this.logic.a} - no submask can have this bit set`}.`;
 		if (s[0]==2) return `Time to handle purely implementational nuissance: we store all submasks in one array. Some - say x elements are already stored, some new x elements will be stored as an effect of enchancing all previously existing elements with new bit. How to find out, whether we should enchance next numbers or rather end this part of the algorithm? For example, by storing index of last element of current list of submasks (there is a myriad of ways to solve this problem, this one looks elegant on visualization). By the way, index is equal to ${s[1]-1}.`;
 		if (s[0]==3){
 			var rep_1=get_bin_repr.call(this, this.logic.submasks[s[2]]);
 			var rep_2=get_bin_repr.call(this, this.logic.y[s[3]]);
 			var rep_last=get_bin_repr.call(this, this.logic.submasks[s[2]+s[1]]);
 
-			return `Now, let's take ${s[2]==0?`first`:`next`} already created submask. It has binary representation ${rep_1}. Our new bit can be represented as submask ${rep_2}. Then, new submask results from enchancing - logical or - equal to ${rep_1}|${rep_2}=${rep_last}=${this.logic.submasks[s[2]+s[1]]}. Notice, that as both numbers doesn't have common bits, it is equivalent to their standard addition: ${this.logic.submasks[s[2]]}+${this.logic.y[s[3]]}=${this.logic.submasks[s[2]+s[1]]}.${s[2]+1==s[1]?` It was last submask, that can be created using previously obtained submasks.`:``}`;
+			return `Now, let's take ${s[2]==0?`first`:`next`} already created submask. It has binary representation ${rep_1}. Our new bit can be represented as submask ${rep_2}. Then, new submask results from enchancing - logical or - equal to ${rep_1}|${rep_2}=${rep_last}=${this.logic.submasks[s[2]+s[1]]}. Notice, that as both numbers don't have common bits, it is equivalent to their standard addition: ${this.logic.submasks[s[2]]}+${this.logic.y[s[3]]}=${this.logic.submasks[s[2]+s[1]]}.${s[2]+1==s[1]?` It was last submask, that can be created using previously obtained submasks.`:``}`;
 		}
 		if (s[0]==100) return `All submasks of ${this.logic.a} were already obtained, thus, there is nothing left to do. Submasks of ${this.logic.a} are: ${this.logic.submasks}`
 	}
