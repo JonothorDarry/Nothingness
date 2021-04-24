@@ -14,11 +14,12 @@
 		<p>While simplest problems from number theory usually involve sieves, it seems easier to start describing number theory from the notion of greatest common divisor. How to calculate it rapidly for large numbers? How to find \(p,q\) solving equations in form \(px+qy=g\) for given \(x,y,g\)? To answer those question, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
 		<ol>
 			<li><b>Divisor</b> An integer \(d \in Z\) is a divisor of an integer \(x \in Z\) (which is often denoted by \(d|x\)), if and only if:<br>
-				<span class="central">\(d|x \iff \exists_{k \in Z}dk=x\)</span><br>
-				If \(d|x\), then \(x\) is divisible by \(d\).
+				<span class="central">\(d|x \iff \exists_{k \in Z}dk=x\)</span>
+				If \(d|x\), then \(x\) is divisible by \(d\).<br>
 			</li>
 			<li><b>Greatest common divisor (gcd)</b>: An integer \(g \in N^+\) is gcd of numbers \(w, v\) if and only if:<br>
-				<span class="central">\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h (h|w \land h|v \land h&gt;g)\)</span><br>
+				<span class="central">\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h (h|w \land h|v \land h&gt;g)\)</span>
+				In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\).<br>
 			</li>
 			<li><b>Least common multiple (lcm)</b>: An integer \(l \in N^+\) is lcm of numbers \(w, v\) if and only if:<br>
 				<span class="central">\(l=lcm(w, v) \iff w|l \land v|l \land !\exists_h (w|h \land v|h \land h&lt;l)\)</span><br>
@@ -27,12 +28,11 @@
 				<span class="central">\(m \gt x\%m=x-\lfloor \frac{x}{m} \rfloor m \ge 0\)</span><br>
 			</li>
 			<li><b>Two integers \(a\), \(b\) are equivalent modulo m</b>, if:<br>
-				<span class="central">\(a \equiv b \pmod m \iff \exists_{k \in Z} a-km=b\)</span><br>
-				It's worth noting, that \(x \equiv x\%m \pmod m\).
+				<span class="central">\(a \equiv b \pmod m \iff \exists_{k \in Z} a-km=b\)</span>
+				It's worth noting, that \(x \equiv x\%m \pmod m\).<br>
 			</li>
 		</ol>
 
-		<p>In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\).</p>
 		<h2>Problem I: Finding \(gcd(w,v)\)</h2>
 		<p>Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le n=10^{18}\)? First solution not being absolute brute force (checking all integers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*\min(w,v))\)) is discussed below:</p>
 		<h3>First sane idea: \(O(q\sqrt{\min(w,v)})\)</h3>
@@ -83,7 +83,7 @@
 		<p>
 		Let's say that sole \(gcd(w,v)\) is not enough: You want to find such numbers \(x, y\) such that: \(wx+vy=gcd(w,v)\).
 		<h3>Solution - Extending eclidean algorithm</h3>
-		One can use same mechanism to solve this problem, but calculate also arrays \(p, q\), such that for each \(i\) following stands:
+		<p>One can use same mechanism to solve this problem, but calculate also arrays \(p, q\), such that for each \(i\) following stands:
 			<br><span class="central">\(p_iw+q_iv=b_i\)<br>
 				\(p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1\)<br>
 				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}\)<br></span>

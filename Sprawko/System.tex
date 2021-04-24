@@ -54,6 +54,7 @@
 \begin{enumerate}
 	\item \textbf{Isolate logic from presentation.} Parts of logic shall be changed only during the beginning - in state maker it shall only be read.
 	\item In palingnesia (after constructor and BeginningExecutor), the visualization buttons shall be cast to this.buttons.x, where x represents variable presented by button - it reduces pain of writing and debugging StateMaker.
+	\item One cannot change this ... except from ephemeral variables explicitly after leaving BeginningExecutor.
 \end{enumerate}
 \section {Inner sanctumm - Temp.js and its contents}
 
@@ -78,7 +79,6 @@
 \subsubsection{On The Maker and Unmaker, III: Use}
 \begin {enumerate}
 	\item Unmaker actions depend on clicking "Previous" button, they're coded in Temp.js, so one does not have to do anything in code of an algorithm.
-	\item Maker has to execute at its end this.transformator(staat) (staat is just a convention).
 \end {enumerate}
 \subsection {Ephemeral variables}
 \begin{enumerate}
@@ -146,9 +146,8 @@
 	\item Batch one:
 	\begin {enumerate}
 		\item Add Mobius -> 5 days
-		\item Add basic factor for own use somewhere -> 1 day
 		\item Add Totient genral -> 1 day
-		\item Add IEP generalization -> 4 days
+		\item Add IEP generalization -> 1 day (just formula)
 		\item Add DLog -> 8 days
 		\item Add Partitions -> 10 days
 	\end{enumerate}
