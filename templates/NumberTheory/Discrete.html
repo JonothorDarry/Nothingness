@@ -6,20 +6,155 @@
 <html lang="en">
 	<head>
 		<title>Discrete Logarithm</title>
-		<meta charset = "UTF-8">
-		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='Temp.css')}}">
-		<script src="{{url_for('static', filename='Temp.js')}}"></script>
-		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+		{{headers.meta() }}
 	</head>
 
 	<body>
-		{{ headers.header('Discrete Logarithm', 'NumberTheory') }}
-		<h3>First problem statement and definitions</h3>
-		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{10}\) and thine aim is to find such \(x\) such that \(a^c \equiv b \pmod m\)
+		{{ headers.full_upper('Discrete Logarithm', 'NumberTheory') }}
+		<h2>Introduction</h2>
+		<p>This article describes techniques of finding some <strong>discrete logarithm</strong> - integer \(x\) satisfying \(a^x \equiv b \pmod m\) for given \(a,b,m\).</p>
+		<h2>Problem I - standard discrete logarithm</h2>
+		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{12}\), where \(gcd(a, m)=1\), and thine aim is to find such \(x\) that \(a^x \equiv b \pmod m\).</p>
+		<h3>Circumventing number-theoretical notions of the discrete logarithm, or Shanks' meet-in-the-middle approach in \(O(\sqrt{m}\log(m))\)</h3>
+		<ol>
+			<li>From Euler's theorem, for any pair \(a, m\) where \(gcd(a,m)=1\), \(a^{\phi(m)} \equiv 1 \pmod m\). And as \(\phi(m) \le m\), thus, if there exists such \(x\), that \(a^x \equiv b \pmod m\), then there is some solution \(x \le \phi(m) \le m\).</li>
+			<li>Let \(x=pn+q\) for some \(p, n, q\). One can present this problem as 
+				<span class="central">\(a^x \equiv b \pmod m\)</span>
+				<span class="central">\(a^{pn+q} \equiv b \pmod m\)</span>
+				<span class="central">\(a^q \equiv ba^{-pn} \pmod m\)</span>
+			</li>
+			<li>Let \(s=\lceil \frac{m}{n} \rceil\). One can:
+				<ol>
+					<li>For all \(q \in \lt 0;n-1 \gt\) compute \(a^q\). This can be done in \(O(n)\).</li>
+					<li>Sort all pairs \(\{q, a^q\}\) by \(a^q\). This takes \(O(n\log(n))\).</li>
+					<li>For all subsequent values of \(p \in \lt 0;s \gt\) find \(d=ba^{-np} \pmod m\). One could find single inverse with extended euclid in \(O(\log(s))\). Overall the complexity of this step would be \(O(s \log(s))\)</li>
+					<li>For all subsequent values \(p\) find, using binary search, element \(a^q\), for which \(a^q=d\). This element may, or may not exist - in particular, if \(a\) is primitive root \(\pmod m\), and \(gcd(b,m)=1\), there will be exactly one pair \(\{p,q\}\), for which \(a^{np+q} \equiv b \pmod m\). This can be done in \(O(\log(n))\), overall in all steps in \(O(s \log(n))\).</li>
+				</ol>
+			</li>
+			<li>Setting \(n=\lceil \sqrt{m} \rceil\) leads to \(s \approx n\) and, consequently, complexity \(O(\sqrt{n} \log(n))\).</li>
+			<li>Calculating modular inverse \(n\) times is not very clever technique, to put it bluntly; one can, however, notice, that \(a^{-np}=a^{-n(p-1)}a^{-n}\) - that is, one can use previously calculated inverse to obtain current inverse. If \(inv_p \equiv a^{-np} \pmod m\), then, for \(p \gt 1\), \(inv_p \equiv inv_{p-1}inv_1 \pmod m\), calculating inverse only once and reducing complexity of the third step from \(O(n \log(n))\) to \(O(n)\).</li>
+		</ol>
+		<!-- {{ algo.algorithm(1, 'Baby step giant step algorithm', '
+		<p>Input format: values \(a, b, m\), for which \(x: a^x \equiv b \pmod m\) has to be calculated. \(gcd(a, m)=1\) or expect the unexpected.<br>
+			\(a, b, m\)<br>
+			</p>
+		'
+		, '6 17 23', 'textarea', 'algo') }} -->
+		<h3>Remark regarding search technique: using \(ord_m(a)\)</h3>
+		<p>Notice, that for particular \(a\) not \(\phi(m)-1\), but \(ord_m(a)-1\) can be upper bound on range, where minimal discrete logarithm solving \(a^x \equiv b \pmod m\) can be found. Passing maximal possible exponent may drastically speed up computation time. Using this information within algorithm will be crucial for one algorithm shown later.</p>
+		<h3>Remark regarding implementation: hash table</h3>
+		<p>Instead of using sort and binary search, one can use hash table with, say, \(s\) bins for storing values \(a^q\). On average, in each bin there will be exactly one value - if values of \(a^q\) come from some uniform random distribution. Also, on average, each bin will be accessed once if values of \(a^{-pn}\) come from some uniform random distribution. Both statements will be false if \(ord_m(a)\) is lower than maximal exponent, for which the search is executed. Otherwise, values of \(a^q\) or \(a^{-pn}\) are quite problematic to predict; empirically, there is a good reason to believe, that it usually should run much faster than standard version.</p>
+		<h2>Problem II - discrete logarithm without insurance</h2>
+		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{12}\), and thine aim is to find such \(x\) that \(a^x \equiv b \pmod m\).</p>
+		<h3>Simple solution</h3>
+		<p>Solving this problem relies on changing values \(a, b, m\) in such way, that \(gcd(a, m)=1\) anew, then one can pass problem to any other algorithm solving discrete logarithm problem.</p>
+		<ol>
+			<li>First, if \(b \equiv 1 \pmod m\), then 0 is the solution</li>
+			<li>Otherwise, if \(gcd(a,m) \nmid gcd(b,m)\), then there cannot be a solution - because \(\forall_{x \gt 0} (gcd(a, m) | gcd(a^x, m) \land gcd(a, m) \nmid gcd(b,m)) \implies (gcd(a^x,m) \nmid gcd(b,m))\).</li>
+			<li>Then, notice, that, for \(g=gcd(a,m), a'=\frac{a}{g}, b'=\frac{b}{g}, m'=\frac{m}{g}\):
+				$$
+				\begin{align}
+				a^x &\equiv b \pmod m  \\
+				ga' a^{x-1} &= gb' - kgm'  \\
+				a' a^{x-1} &= b' - km' \\
+				a' a^{x-1} &= b' - km' \\
+				a' a^{x-1} &\equiv b' \pmod{m'} \\
+				a^{x-1} &\equiv b'(a')^{-1} \pmod{m'} && \text{Inverse exists, because \(gcd(a',m')=gcd(\frac{a}{gcd(a,m)}, \frac{m}{gcd(a,m)})=1\)} \\
+				\end{align}
+				$$
+			</li>
+			<li>Lowering \(m\) to \(\frac{m}{g}\) eventually must lead to situation, where \(gcd(a, m)=1\) - namely, in at most \(\log_2(m)\) steps. As this technique consists just of finding \(gcd\) and modular inverse in one step - in \(O(\log(m))\). Thus, this reduction works in \(O(\log^2(m))\).</li>
+			<li>Note, that in each step exponent \(x\) is lowered by one - if some solution \(x\) will be obtained, one has to add number of divisions by \(gcd\) to it in order to solve original problem.</li>
+			<li>Obviously, reduced version has to be passed to some discrete logarithm solving algorithm in order to solve this equation to the end.</li>
+		</ol>
 
+		<h2>Problem III - less standard discrete logarithm</h2>
+		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{18}\), where \(gcd(a, m)=1\), factorization of \(m\) can be represented as \(m=g_1^{e_1}g_2^{e_2} \dots g_r^{e_r}\) where \( \forall_i g_i \le 10^9\), and thine aim is to find such \(x\) that \(a^x \equiv b \pmod m\).</p>
+		<h3>The all-too-human approach of Pohlig-Hellman</h3>
+		<ol>
+			<li>Factorization of \(\phi(m)\) will be represented as \(\phi(m)=p_1^{q_1} \dots p_s^{q_s}\). Note that \(\forall_i p_i \le 10^9\) - because \(\phi(m)=g_1^{e_1-1}g_2^{e_2-1} \dots g_r^{e_r-1}(g_1-1)(g_2-1)\dots (g_r-1)\).</li>
+			<li>First, note, that if \(x\) is the solution for given problem, then \(x+\phi(m)\) is also the valid solution - because, from Euler's theorem, $$a^{x+\phi(m)} \equiv a^x a^{\phi(m)} \equiv a^x \pmod m$$</li>
+			<li>Thus, \(x\) satisfies following equations: 
+				<span class="central">\(x \equiv c_1 \pmod {p_1^{q_1}}\)</span>
+				<span class="central">\(\dots\)</span>
+				<span class="central">\(x \equiv c_s \pmod {p_s^{q_s}}\)</span>
+				Finding all \(c_i\) enables one to use Chinese Remainder Theorem to solve this problem.
+			</li>
+			<li>
+				{% macro cis(arg='', laste='k') %}
+				c_{i,0}{{arg}}+c_{i,1}p_i{{arg}}+c_{i, 2}p_i^2{{arg}}+ \dots c_{i, {{laste}}}p_i^{ {{laste}} }{{arg}}
+				{% endmacro %}
+				For simplicity, each \(c_i\) will be reprented as
+				$$c_i={{cis()}}$$
+				For \(c_{i,k} \in \lt 0;p_i-1 \gt \).
+
+			</li>
+			<li>Say, one is searching for \(c_{i,0}: x \equiv c_{i,0} \pmod {p_i}\). Then, for some \(\kappa\):
+				$$
+				\begin{align}
+				a^x &\equiv b \pmod m \\
+				a^{p_i\kappa + c_{i,0}} &\equiv b \pmod m \\
+				a^{p_i\kappa\frac{\phi(m)}{p_i} + c_{i,0}\frac{\phi(m)}{p_i}} &\equiv b^{\frac{\phi(m)}{p_i}} \pmod m \\
+				a^{\kappa \phi(m)}a^{c_{i,0}\frac{\phi(m)}{p_i}} &\equiv b^{\frac{\phi(m)}{p_i}} \pmod m && \text{From Euler's Theorem, \(a^{\phi(m)} \equiv 1 \pmod m\)} \\
+				a^{c_{i,0}\frac{\phi(m)}{p_i}} &\equiv b^{\frac{\phi(m)}{p_i}} \pmod m \\
+				\end{align}
+				$$
+				Now, either there is some solution with \(c_i \in \lt 0;p_i-1 \gt\), or there is no solution at all - because \(a^{(c_i+p_i)\frac{\phi(m)}{p_i}} \equiv a^{c_i\frac{\phi(m)}{p_i}} \pmod m\). How to find a solution? With standard discrete logarithm solving tool - either Shanks' algorithm presented above or something else.
+			</li>
+			<li>Say, one is searching for \(c_i: x \equiv c_i \pmod {p_i^{q_i}}\). Before proceeding further, let there be consistent idea of what has to be done in order to solve the mystery of Pohlig-Hellman:
+				<ol>
+					<li>\(c_i={{cis()}}\)</li>
+					<li>From formula above, it is possible to find \(c_{i,0}\).</li>
+					<li>It might be possible to calculate \(c_{i,k}\) with previous values of \(c_{i,0}, \dots c_{i, k-1}\).</li>
+					<li>Having all \(c_{i,k}\) gives \(c_i\)</li>
+				</ol>
+			Then, for some \(\kappa\):
+				$$
+				\begin{align}
+				a^x &\equiv b \pmod m \\
+				a^{p_i^{k+1}\kappa + {{cis(laste='k')}} } &\equiv b \pmod m \\
+				a^{p_i^{k+1}\kappa + c_{i,k}p_i^{k} } &\equiv ba^{-({{cis(laste='k-1')}})} \pmod m \\
+				a^{p_i^{k+1}\kappa \frac{\phi(m)}{p_i^{k+1}} + c_{i,k}p_i^{k} \frac{\phi(m)}{p_i^{k+1}} } &\equiv (ba^{-({{cis(laste='k-1')}}) })^{\frac{\phi(m)}{p_i^{k+1}}} \pmod m \\
+				a^{c_{i,k} \frac{\phi(m)}{p_i} } &\equiv (ba^{-({{cis(laste='k-1')}}) })^{\frac{\phi(m)}{p_i^{k+1}}} \pmod m \\
+				\end{align}
+				$$
+				As all previous \(\forall_{x \lt k} c_{i,x}\) are known, then calculating right hand side expression is possible. This reduces problem to finding discrete logarithm for \((a^{\frac{\phi(m)}{p}})^{c_{i,k}} \equiv some\_nasty\_constant \pmod m\) for \(c_{i,k} \in \lt 0;p-1 \gt\)
+			</li>
+			<li>Yet a simple implementional detail before finishing this algorithm: note, that
+				$$ba^{-({{cis(laste='k-1')}})}=ba^{-({{cis(laste='k-2')}})}a^{-c_{i,k-1}p_i^{k-1}}$$
+				Thus, one can calculate nasty constant using previous results in \(O(log(m))\) - time needed for two binary exponentations.
+			</li>
+		</ol>
+		<p>To sum up all that has been stated (or implicitly assumed):</p>
+		<ol>
+			<li>First, factorization of \(m\) has to be found - it will be equal to some \(O(fac(m))\), for \(fac\) dependent on used way of factorizing integer; one can use primitive factorization obtaining completely unstaisfying \(O(m^{1/2})\), one can instead use something more magical - for example pollard rho method with primarility testing working on average in \(O(m^{1/4})\).</li>
+			<li>Factorization gives totient, some of its parts also have to be factorized. Aim is obtaining full factorization of \(\phi(m)=p_1^{q_1} \dots p_s^{q_s}\).</li>
+			<li>For each \(p_i^{s_i}\), in order to find single \(c_{i,k}\) one has to execute some constant amount of binary exponantations \(\pmod m\), and then find discrete logarithm \(\pmod m\) - but with only \(p_i\) possible values of discrete logarithm - thus, with standard Shanks' approach, without hash table, finding one solution will work in \(O(\sqrt{p_i})\). Thus, finding one \(c_{i,k}\) takes \(O(\sqrt{p_i} \log(p_i) + \log(m))\)</li>
+			<li>To find single \(c_i\) one has to do all same operations \(q_i\) times, resulting in complexity \(O(q_i(\sqrt{p_i} \log(p_i)+\log(m)))\)</li>
+			<li>Thus, finding all \(c_i\)'s will take \(O(\sum_{i=0}^{s} q_i(\sqrt{p_i} \log(p_i)+\log(m)))\).</li>
+			<li>Last part, most straightforward - solving system of linear congruences should take \(O(s \log(m))\).</li>
+		</ol>
+		<p>Summing all up, complexity will look like \(O(fac(m)+\sum_{i=0}^{s} q_i(\sqrt{p_i} \log(p_i)+\log(m)))\). As \(\sum_{i=0}^{s} q_i \le \log_2(m)\), then complexity can be formulated as:
+		$$O(fac(m)+\log(m)\sqrt{p} \log(p))$$
+		For \(p=\max(p_i)\), though this estimation is extremely rough. Using some refined factorization method one can solve this problem in reasonable time.
 		</p>
 
+		<h2>Summary</h2>
+		<ol>
+			<li>Discrete logarithm problem - finding \(x: a^x \equiv b \pmod m\) - can be solved using Shanks' algorithm by representing \(x=pn+q\) for \(n \approx \sqrt{m}\) and then dividing problem into finding suitable \(q\) for given \(p\). This one works in \(O(\sqrt{p} \log(p))\), though with some optimizations one can practically reduce it to \(O(\sqrt{p})\).</li>
+			<li>Discrete logarithm lies for any \(a\) in range \(\lt 0;\phi(m)-1\), one can reduce it to \(\lt 0;ord_m(a)-1\). and use it to speed up process of searching a solution.</li>
+			<li>If \(g=gcd(a,m) \gt 1\), then one can, using fact, that \(a \equiv b \pmod m \iff \frac{a}{g} \equiv \frac{b}{g} \pmod {\frac{m}{g}}\) - reduce \(m\) subsequently leading to coprime \(a, m\), finding a soultion in a process if \(b \equiv 1\) or deciding that there are no solution if \(g \nmid gcd(b,m)\).</li>
+			<li>If one knows, that a number \(m\), for which discrete logarithm has to be found is not a prime, then one can use Pohlig-Hellman algorithm in order to find it, finding set of congruences of discrete logarithm to subsequent factors of totient and using intricate exponentation by \(\frac{\phi(m)}{p}\) in order to nullify undesired parts of exponent from an equation.</li>
 
+		</ol>
+		<h3>Problems</h3>
+		<ol>
+			<li><a href=https://codeforces.com/problemset/problem/913/G>Power Substring</a></li>
+			<li><a href=https://codeforces.com/problemset/problem/1106/F>Lunar New Year and a Recursive Sequence</a></li>
+		</ol>
+
+		<script src="{{url_for('static', filename='Dlog.js')}}"></script>
+		<form id="page" style="display:none"></form>
 		{{ footers.full_lower() }}
 	</body>
 </html>
