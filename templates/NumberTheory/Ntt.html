@@ -264,9 +264,9 @@
 
 		<h4>Complexity of such approach</h4>
 		<ol>
-			<li>At layer 0, all polynominals have form \(pol_{0,i}=x^{s_i}+1\).</li>
+			<li>In layer 0, all polynominals have form \(pol_{0,i}=x^{s_i}+1\).</li>
 			<li>There will be at most \(\lceil log_2(n) \rceil+1\) layers, as in each layer number of polynominals decreases two times (possibly without one element).</li>
-			<li>On layer \(x\), number of operations can be estimated by<br>
+			<li>In layer \(x\), number of operations can be estimated by<br>
 				<span class="central">\((s_0+s_1+\dots+s_{2^x-1})\log(s_0+s_1+\dots+s_{2^x-1})+(s_{2^x}+s_{2^x+1}+\dots+s_{2*2^x-1})\log(s_{2^x}+s_{2^x+1}+\dots+s_{2^x-1})+\dots+(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1})\log(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1}) \le\)</span>
 				<span class="central">\(\le (s_0+s_1+\dots+s_{2^x-1})\log(m)+(s_{2^x}+s_{2^x+1}+\dots+s_{2*2^x-1})\log(m)+\dots+(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1})\log(m)=\)</span>
 				<span class="central">\(= (s_0+s_1+\dots+s_{2^x}+s_{2^x+1}+ \dots + s_{n-1})log_2(m)\)</span>
