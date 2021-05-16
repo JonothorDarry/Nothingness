@@ -4,8 +4,13 @@ function make_toc(){
 	var contents=[], numbers=[0, 0, 0, 0, 0, 0], Limit=4;
 	var title="";
 
+	function mapping(str){
+		return str.replace(/ /g, '_');
+	}
+
 	for (i=0; i<lst.length; i++){
-		lst[i].id=`${i}.${lst[i].innerHTML}`;
+		//lst[i].id=`${i}_${mapping(lst[i].innerHTML)}`;
+		lst[i].id=`${i}_${mapping(lst[i].innerHTML)}`;
 		numbers[lst[i].tagName[1]-1]++;
 		for (j=lst[i].tagName[1]; j<6; j++) numbers[j]=0;
 		if (lst[i].tagName[1]=='1' || lst[i].tagName[1]>Limit) continue;

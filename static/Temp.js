@@ -453,6 +453,27 @@ class Representation_utils{
 	}
 }
 
+class ChildBigIntMath{
+	sqrt(value) {
+	    if (value < 0n) {
+		throw 'square root of negative numbers is not supported'
+	    }
+
+	    if (value < 2n) {
+		return value;
+	    }
+
+	    function newtonIteration(n, x0) {
+		const x1 = ((n / x0) + x0) >> 1n;
+		if (x0 === x1 || x0 === (x1 - 1n)) {
+		    return x0;
+		}
+		return newtonIteration(n, x1);
+	    }
+
+	    return newtonIteration(value, 1n);
+	}
+}
 
 
 class NTMath{
@@ -643,5 +664,16 @@ class ArrayUtils{
 		var rev_lst=[];
 		for (var i=lst.length-1; i>=0; i--) rev_lst.push(lst[i]);
 		return rev_lst;
+	}
+
+	//comparer(a,b): a<=b - True
+	static binaria_lower(lst, elem, comparer){
+		var r=lst.length-1, l=0, m=Math.floor(r/2);
+		while (l<=r){
+			m=Math.floor((l+r)/2);
+			if (comparer(lst[m], elem)) l=m+1;
+			else r=m-1;
+		}
+		return l;
 	}
 }

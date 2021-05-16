@@ -10,7 +10,7 @@ class XXXX extends Algorithm{
 		this.logic.n=c.get_next();
 	}
 
-	constructor(block, t, n, a){
+	constructor(block, n){
 		super(block);
 		this.logic.n=n;
 		this.version=4;
