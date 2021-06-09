@@ -474,9 +474,11 @@ def jinjautils():
             return str(a), -1
         sa=str(a)
         return f'{sa[0]}.{sa[1]}*10', len(sa)-1
+    def ji_ge(a, b):
+        return a>=b
 
     topics=[x for x in transformation.inverse_place_mapper if ord(x[0])<92]
-    return dict(jipow=jipow, jilog=jilog, ji_expo=ji_expo, ji_formatter=ji_formatter, topics=topics)
+    return dict(jipow=jipow, jilog=jilog, ji_expo=ji_expo, ji_formatter=ji_formatter, ji_ge=ji_ge, topics=topics)
 
 def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
     port = 465

@@ -50,7 +50,7 @@
 						{% set y=(16//x) %}
 						(
 						{% for j in range(0, y) %}
-							a_{ {{j*x+ns.start}} }
+							a_{ {{ j*x+ns.start }} }
 							{% if j!=y-1 %}
 								,
 							{% endif %}
@@ -58,7 +58,7 @@
 
 						{% set ns.broke=1 %}
 						{% for j in range(cur-1, -1, -1) %}
-							{% if ns.start>=pows[j] and ns.broke==1 %}
+							{% if ji_ge(ns.start, pows[j]) and ns.broke==1 %}
 								{% set ns.start=ns.start-pows[j] %}
 							{% elif ns.broke==1 %}
 								{% set ns.start=ns.start+pows[j] %}
@@ -288,7 +288,6 @@
 		</ol>
 
 		<script src="{{url_for('static', filename='Ntt.js')}}"></script>
-		<form id="page" style="display:none"></form>
 		{{ footers.full_lower() }}
 	</body>
 </html>
