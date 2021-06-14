@@ -154,6 +154,7 @@
 				fully expresses the glory of inclusion-exclusion principle.
 			</li>
 		</ol>
+		<div class="mathemagical_box"> 
 		<h3>Other Proof of Inclusion-Exclusion principle</h3>
 		<ol>
 			<li>\(|A_1|=|A_1|\), furthermore, \(|A_1 \cup A_2|=|A_1|+|A_2|-|A_1 \cap A_2|\) - because each element belonging to \(A_1 \cap A_2'\) or \(A_1' \cap A_2\) will be counted once, elements belonging to \(A_1' \cap A_2'\) won't be counted, and elements belonging to \(A_1 \cap A_2\) are counted \(1+1-1=1\) time.</li>
@@ -174,24 +175,28 @@
 			Which proves inclusion-exclusion principle in another way.
 			</li>
 		</ol>
+		</div>
 		<h3>Original problem solution</h3>
 		<p>One can, for each of \(2^t-1\) sets \(A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_k}\) find its size as equal to \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}\) - where the number of multisets having overabundance of elements of types \(j_i\) (represented as \(a_{j_i}+1\)) and some additional elements of each type (possibly also \(j_i\)) is calculated. Then, add sizes of those sets (mutiplied by \(-1\), iff \(k \& 1=0\)) and print result. Thus, solution can consist of subsequent steps:</p>
 		<ol>
 			<li>For each number in range \(\lt 1;2^t-1 \gt\) calculate its number of bits, and amount of multisets in sets corresponding to bits: for example, for \(t=5\) and number \(01011\), it can represent \(A_1 \cap A_2 \cap A_4\), thus one has to find \(\binom{n+t-1-(a_1+1+a_2+1+a_4+1)}{t-1}\) and substract it from result, if number of bits is divisible by 2 or add it otherwise (in this case it shall be added).</li>
 			<li>Calculating \(amount_x\) and \(leftmost_x\) - amount of set bits of \(x\) and leftmost bit of \(x\) - either by checking all bits of those numbers, or using some formula - here, formulas given in the introduction will be used.</li>
 			<li>Then, let \(summa(x) = \sum_{i=0}^{amount_x}a_{j_i}\); notice, that \(summa(x) = summa(x\oplus2^{leftmost_x})+a_{leftmost_x}\) - using results computed previously, this result - and all previous results - can be calculated in \(O(2^t)\).</li>
-			<li>At last, calculate \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}=\binom{n+t-1-summa(x)}{t-1}=\frac{(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)}{(t-1)!}=(n-summa(x)+1)*(n-summa(x)+2) \dots (n-summa(x)+t-1)*((t-1)!)^{-1}\). As result has to be calculated \(\pmod {10^9+7}\), the last part: (\((t-1)!^{-1} \pmod {10^9+7}\)) can be calculated beforehand, using Fermat's little theorem or Euclid algorithm. The remaining part shall be calculated by multiplying those \(t-1\) elements leading to complexity \(O(t2^t)\) - \(2^t\) times one has to multiply \(t-1\) numbers.</li>
+			<li>At last, calculate \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}=\binom{n+t-1-summa(x)-k}{t-1}=\frac{(n-summa(x)-k+1)*(n-summa(x)-k+2) \dots (n-summa(x)-k+t-1)}{(t-1)!}=(n-summa(x)-k+1)*(n-summa(x)-k+2) \dots (n-summa(x)-k+t-1)*((t-1)!)^{-1}\). As result has to be calculated \(\pmod {10^9+7}\), the last part: (\((t-1)!^{-1} \pmod {10^9+7}\)) can be calculated beforehand, using Fermat's little theorem or Euclid algorithm. The remaining part shall be calculated by multiplying those \(t-1\) elements leading to complexity \(O(t2^t)\) - \(2^t\) times one has to multiply \(t-1\) numbers.</li>
 			<li>Finally, sum above shall be added to resulting \(|A_1 \cup \dots \cup A_t|\) with positive sign, if \(amount_x \equiv 1 \pmod 2\), or negative otherwise.</li>
 			<li>After all sizes of intersections were calculated, the final result is equal to amount of multisets not belonging to \(A_1 \cup A_2 \cup \dots \cup A_t\) - and so, it is equal to \(\binom{n+t-1}{t-1}-|A_1 \cup A_2 \cup \dots \cup A_t|\)</li>
 		</ol>
 
-		{{ algo.algorithm(1, 'Inclusion-exclusion principle', '
+		{{ algo.neo_algorithm(1, 'Inclusion-exclusion principle', '
 			<p>Input format: \(t\) - number of types, \(n\) - number of elements in resulting multisets, \(a_i\) - maximal possible number of elements from \(i\)-th type in any proper multiset.<br>
 			\(t\ n\)<br>
-			\(a_1, a_2, \dots, a_n\)
+			\(a_1, a_2, \dots, a_t\)
 			</p>
 		'
-		, '4 12&#10;3 2 5 7', 'textarea') }}
+		, '4 12&#10;3 2 5 7', {'input_type':'textarea',
+
+		'color_description':{'standard':'', 'change':'', 'crucial':'Also value, that has to be substracted from result without constraints and n', 'helper1':'Shows a,b from of Cn(n+t-1-a-b, t-1), also value, from which leftmost is derived.', 'helper2':'Show sign when calculating result, also the value influencing subset sum.'}
+		}) }}
 		<h2>Problem 2: Inclusion-Exclusion Principle over all subsets - complexity reduction</h2>
 		<p>Suppose You are given \(n\) numbers \(a_i\). For each number \(x:\ 0 \le x \le L\) calculate number of values \(a_i\), such that \(a_i | x=x\), where | denotes bitwise or. In othere words, for each \(x\) find \(|\{i: a_i|x=x\}|\). \(1 \le n \le 10^6\), \(0 \le a_i, L \lt 2^{20}\).</p>
 		<h3>Absolutely brutal solution</h3>
@@ -230,12 +235,15 @@
 		<span class="central">$$\sum_{i=0}^{m} \binom{m}{i}2^i=(1+2)^m=3^m$$</span>
 		</p><p>So, algorithm moving through all submasks \(s\) of a number \(x\) and calculating sum of \(count_s\) for those submasks - where \(count_s\) is calculated at the start of the algorithm, so it can be accessed in \(O(1)\) - works in \(O(3^{log(L)})\) - in case of this problem, \(3^{20} \approx 3*10^9\) - which is not very good.</p>
 		</p>
-		{{ algo.algorithm(4, 'Obtaining submask of a number', '
+		{{ algo.neo_algorithm(4, 'Obtaining submask of a number', '
 			<p>Input format: \(a\) - number, whose submasks have to be obtained<br>
 			\(a\)
 			</p>
 		'
-		, '86') }}
+		, '86', {
+		'color_description':{'standard':'', 'change':'', 'stagnant':'', 'crucial':'', 'helper1':'', 'iterator':''}
+
+		}) }}
 
 		<h3>Dubious approach involving inclusion-exclusion principle</h3>
 		<p>For given \(x\), let \(b_i\) denote its \(i\)-th set bit, indexed from 1. For simplicity, let \(y_i=2^{b_i}\).</p>
@@ -279,13 +287,16 @@
 			<li>Notice, that to calculate sequences \(r\) and \(c\) one can use same procedure with different arguments - this simplifies implementation.</li>
 			<li>There is one remaining problem - calculating sign, with which \(res_{r_i}\) will be added to \(res_x\). From formula to calculate \(res_x\), this depends on number of bits, that are set in \(x\) and not set in \(r_i\) - if this number is odd, sign is \(1\), if even, sign is \(-1\) (note that if bit is set in \(r_i\) it has to be set in \(x\)). This can be calculated as \(sgn_{x \oplus r_i}\), where \(sgn_z=1\) for \(z\) with odd number of bits, \(sgn_z=-1\) otherwise.</li>
 		</ol>
-		{{ algo.algorithm(2, 'Inclusion-exclusion on subsets', '
+		{{ algo.neo_algorithm(2, 'Inclusion-exclusion on subsets', '
 			<p>Input format: \(n\) - number of elements, \(a_i\) - elements of sequence.<br>
 			\(n\)<br>
 			\(a_1, a_2, \dots, a_n\)
 			</p>
 		'
-		, '6 15&#10;4 5 2 6 7 12', 'textarea') }}
+		, '6 15&#10;4 5 2 6 7 12', {'input_type':'textarea',
+		'color_description':{'standard':'', 'change':'', 'stagnant':'', 'crucial':'Subsequent results', 'helper1':'', 'iterator':'Used to iterate over bits', 'merge-standard':'One half of bits.'}
+
+		}) }}
 		<h3>Proper dp solution in \(O(L\log(L))\)</h3>
 		<p>Last solution used sets, that were not disjoint; for this reason inclusion-exclusion principle with its complexity was applied to solve the problem. However, what if those sets will be made explicitly disjoint in some way?</p>
 		<p>Aim of the problem for single \(x\) is to calculate sum \(\sum_{s:s|x=x}count_s\). Let \(m\) denote number of set bits of \(x\). What about calculating sum of \(count_s\) for \(s\) with certain bits set, certain not set, and certain possibly set? For example, sums aggregating all \(\sum_{\delta} count_{\delta}\) having \(\delta\) with:
@@ -310,13 +321,15 @@
 			<li>To find \(i\)-th set bit of \(x\), one can just check for each value \(i\) from 0 to \(\lfloor log_2(L) \rfloor\), whether \(2^i \& x \gt 0\) - this can be done in \(O(log_2(L))\)</li>
 
 		</ol>
-		{{ algo.algorithm(3, 'DP on subsets', '
+		{{ algo.neo_algorithm(3, 'DP on subsets', '
 			<p>Input format: \(n\) - number of elements, \(a_i\) - elements of sequence.<br>
 			\(n\)<br>
 			\(a_1, a_2, \dots, a_n\)
 			</p>
 		'
-		, '6 15&#10;4 5 2 6 7 12', 'textarea') }}
+		, '6 15&#10;4 5 2 6 7 12', {'input_type':'textarea', 
+		'color_description':{'standard':'', 'change':'', 'stagnant':'', 'crucial':'Subsequent results', 'helper1':'', 'helper2':'', 'iterator':''}
+		}) }}
 
 
 		<h2>Summary</h2>
@@ -337,6 +350,8 @@
 		</ol>
 		</p>
 
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
 		<script src="{{url_for('static', filename='Iep.js')}}"></script>
 		<form id="page" style="display:none"></form>
 		{{ footers.full_lower() }}

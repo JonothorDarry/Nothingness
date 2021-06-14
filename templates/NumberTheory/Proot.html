@@ -20,15 +20,17 @@
 			<li>Primitive root modulo \(n\) may exist or not, depending on factorization of \(n\).</li>
 			<li>From <b>Euler's theorem</b>, \(g^{\phi(n)} \equiv 1 \pmod n\) for \(gcd(g, n)=1\) - what follows, \(ord_n(g) \le \phi(n)\) - and so, primitive root has maximal multiplicative order modulo \(n\) possible.</li>
 		</ol>
-		{{ algo.algorithm(1, 'Orders modulo given number', '
+		{{ algo.neo_algorithm(1, 'Orders modulo given number', '
 			<p>To formulate certain theoremas concerning primitive roots, it may be wise to visualize first what are their values \(ord_m(g)\) for fixed \(m\) and what is their distribution.
 			<p>Input format: value \(m\), for which all orders will be calculated<br>
 			\(m\)<br>
 			</p>
-		', '7', 'input', 'shower') }}
+			', '7', {'algo_type':'shower', 
+			'color_description':{'standard':'', 'crucial':'Either primitive root or totient of m above number of primitive roots.'} }) }}
+			}) }}
 
 		<h2>Problem I - Existence of primitive roots</h2>
-		A number \(m\ (m \le 10^12)\) is given. Is there any primitive root modulo \(m\)?
+		A number \(m\ (m \le 10^{12})\) is given. Is there any primitive root modulo \(m\)?
 
 		<h3>Fundamental lemmas</h3>
 		Those lemmas will be heavily used in all further paragraphs
@@ -177,7 +179,7 @@
 		<p>As \(\lim_{n -\gt \infty} (\frac{n-1}{n})^n=\frac{1}{e} \lt \frac{1}{2}\), this allows to estimate expected number of operations of given algorithm by \(O(log^3(m))\) without factorization, and the algorithm will terminate with probability \(2^{-l}\) in expected number of steps being at most \(O(l*\log^3(n))\) (note that if probability, that in \(kl\) random numbers there will be no primitive roots is \(p^{kl}\) - and if probability, that after \(k\) steps there will be no primitive root found is \(\le \frac{1}{2}\), then the probability of not finding primitive root in \(kl\) steps is \((p^k)^l \le (\frac{1}{2})^l\)).</p>
 
 
-		{{ algo.algorithm(2, 'Primitive root finding', '
+		{{ algo.neo_algorithm(2, 'Primitive root finding', '
 			<p>It\'s worth noting You can change, whether the algorithm checks numbers:</p>
 			<ul>
 				<li>Deterministically: algorithm checks subsequent natural numbers from \(2\) to \(p-1\) whether they\'re primitive roots.</li>
@@ -187,7 +189,8 @@
 			<p>Input format: One number \(m\), such that primitive root modulo \(m\) has to be found<br>
 			\(m\)
 		'
-		, '334562', 'input', 'algo', 'radio', ['Probabilistic', 'Deterministic']) }}
+		, '334562', {'add_on':'radio', 'added_elements':['Probabilistic', 'Deterministic'],
+		'color_description':{'standard':'', 'change':'', 'crucial':'Primitive root shown along with its order, also candidate for primitive root.'} }) }}
 
 
 		<h2>Summary</h2>
@@ -204,7 +207,10 @@
 			<a href="https://codeforces.com/problemset/problem/360/D">Levko and Sets</a>, 
 			<a href="https://codeforces.com/problemset/problem/1190/F">Tokitsukaze and Powers</a>, 
 			</p>
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
 		<script src="{{url_for('static', filename='Proot.js')}}"></script>
+		<form id="page" style="display:none"></form>
 		{{ footers.full_lower() }}
 	</body>
 </html>

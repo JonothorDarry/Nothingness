@@ -49,8 +49,8 @@ class EuclidGcd extends Algorithm{
 
 		if (s[0]==1 || s[0]==0) this.lees.push([2, a%b, b]);
 		if (s[0]==2) this.lees.push([3, b, a]);
-		if (s[0]==3 && b>0)	this.lees.push([1, a, b]);
-		if (s[0]==3 && b==0)	this.lees.push([100]);
+		if (s[0]==3 && b>0) this.lees.push([1, a, b]);
+		if (s[0]==3 && b==0) this.lees.push([100]);
 	}
 
 	StateMaker(){

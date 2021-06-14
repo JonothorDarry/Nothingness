@@ -513,25 +513,16 @@ class Pascal_triangle extends Pascal_base{
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
-			staat.push([0, this.btnlist[s[1]][0], 4, 1]);
+			this.pass_color(this.btnlist[s[1]][0]);
 			if (s[1]>1){
-				staat.push([0, this.btnlist[s[1]-1][s[1]-1], 1, 0]);
-				staat.push([0, this.btnlist[s[1]-2][s[1]-2], 1, 0]);
-				staat.push([0, this.btnlist[s[1]-1][0], 0, 1]);
+				this.pass_color(this.btnlist[s[1]-1][0], 0, 14);
 			}
 		}
 
 		if (s[0]==1){
-			staat.push([0, this.btnlist[s[1]][s[2]-1], 1, 0]);
-			if (s[2]!=1) staat.push([0, this.btnlist[s[1]-1][s[2]-2], 1, 0]);
-
-			staat.push([0, this.btnlist[s[1]][s[2]], 4, 1]);
-			if (s[2]!=s[1]) staat.push([0, this.btnlist[s[1]-1][s[2]], 0, 1]);
-		}
-		if (s[0]==100) {
-			staat.push([0, this.btnlist[this.n][this.n], 1, 0]);
-			if (this.n>0) staat.push([0, this.btnlist[this.n-1][this.n-1], 1, 0]);
-			
+			this.pass_color(this.btnlist[s[1]][s[2]]);
+			this.pass_color(this.btnlist[s[1]-1][s[2]-1], 0, 14);
+			if (s[2]!=s[1]) this.pass_color(this.btnlist[s[1]-1][s[2]], 0, 14);
 		}
 	}
 
@@ -730,7 +721,7 @@ var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new Choice(feral, 5);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var eg2=new Perm_rep(feral2, 3, [3, 2, 1]);
+var eg2=new Perm_rep(feral2, 2, [3, 2]);
 
 var feral3=Algorithm.ObjectParser(document.getElementById('Algo3'));
 var eg3=new Pascal_triangle(feral3, 5);

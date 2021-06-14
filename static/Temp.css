@@ -177,3 +177,7 @@ h3,h4,h5,h6{
 	text-align: center;
 }
 
+.mathemagical_box{
+	border: solid 3em #FFD8FF;
+	border-radius:1%;
+}

@@ -78,12 +78,14 @@
 		<span class="central">\(dp(n)=n*dp(n-1)=n(n-1)*dp(n-2)= \dots = n(n-1)(n-2) \dots 1=\prod_{i=1}^{n}i=n!\)</span>
 		</p>
 
-		{{ algo.algorithm(1, 'Permutation', '
+		{{ algo.neo_algorithm(1, 'Permutation', '
 			<p>Input format: \(n\) - size of the sequence<br>
 			\(n\)<br>
 			</p>
 		'
-		, '5') }}
+		, '5', {
+		'color_description':{'standard':'', 'change':'New element in permutation.'}
+		}) }}
 
 		<h3>Permutation with repetitions</h3>
 		<p>Question: How many sequences of size \(n\) of \(n\) objects, each belonging to one of \(t\) distinct element types exist (elements from one type are indistinguishable)? For example, for \(t=2\) and subsequent numbers of objects of certain types: \(a=[2, 2]\) (and so, \(n=\sum_{i=1}^{t}a_i=4\)) the sequences are: \([1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1], [2, 1, 1, 2], [2, 1, 2, 1], [2, 2, 1, 1]\) - and so, there are \(6\) such sequences.</p>
@@ -112,7 +114,7 @@
 			\(a_1, a_2, \dots, a_t\)<br>
 			</p>
 		'
-		, '3&#10;3 2 1', 'textarea') }}
+		, '2&#10;3 2', 'textarea') }}
 
 		<h2>Problem II: Combination</h2>
 		<h3>The notion of combination</h3>
@@ -130,12 +132,14 @@
 		<h3>Pascal's triangle and binomial theorem</h3>
 		<!--<p>Question: Suppose Jonasz is making moves. In each move, he either moves left or up. How many sequences of \(n\) moves exist, such that he made exactly \(k\) moves up?</p>-->
 		<p>The last statement of the claims in the list above leads to establish <b>Pascal's triangle</b> - a triangle of numbers, with \(\binom{0}{0}=1\) at the top and subsequent \(\binom{n}{k}\) for each \(k \le n\) below, where each \(\binom{n}{k}\) is calculated as sum of two numbers above.</p>
-		{{ algo.algorithm(3, 'Pascal''s triangle', '
+		{{ algo.neo_algorithm(3, 'Pascal''s triangle', '
 		<p>Input format: \(n\) - number of rows<br>
 			\(n\)<br>
 			</p>
 		'
-		, '5') }}
+		, '5', {
+		'color_description':{'standard':'', 'change':'', 'helper1':''}
+		}) }}
 		<p>This structure is useful for analyzing certain identities (e.g. Hockey stick identity), showing properties (e.g. \(\sum_{k=0}^{n}\binom{n}{k}=2^n\)) etc.
 
 
@@ -252,12 +256,14 @@
 		<p>To use both properties above it may be appropriate to define <b>Hockey stick identity</b> first: if one has to choose \(k+1\) elements out of sequence of \(n+1\) elements, then one of chosen elements will be the one with largest index - say \(i\)-th - and then \(k\) elements have to be chosen out of previous \(i-1\) elements. Thus: </p>
 		<span class="central">$$\sum_{i=0}^{n}\binom{i}{k}=\sum_{i=k}^{n}\binom{i}{k}=\binom{n+1}{k+1}$$</span>
 		<p>This identity can be shown in elegant way using Pascal's triangle</p>
-		{{ algo.algorithm(4, 'Hockey Stick identity', '
+		{{ algo.neo_algorithm(4, 'Hockey Stick identity', '
 		<p>Input format: \(n\) - size of the set, \(k\) - number of elements from the set.<br>
 			\(n\ k\)
 			</p>
 		'
-		, '7 4') }}
+		, '7 4', {
+		'color_description':{'standard':'', 'change':'Sum of values is equal to second side of hockey-stick equation.', 'crucial':'One side of hockey-stick equation.'}
+		}) }}
 
 		<p>Returning to starting problem there exists such \(l\), that following equality holds:</p>
 		<span class="central">$$
@@ -359,6 +365,8 @@
 			<a href="https://codeforces.com/problemset/problem/932/E">Team Work</a>, 
 		</p>
 
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
 		<script src="{{url_for('static', filename='Choice.js')}}"></script>
 		<form id="page" style="display:none"></form>
 		{{ footers.full_lower() }}

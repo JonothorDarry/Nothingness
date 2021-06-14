@@ -177,65 +177,45 @@ class Iep extends Algorithm{
 		if (s[0]==0){
 			staat.push([0, this.btn_list[0+this.offset][0], 4, 5]);
 			for (i=1; i<=this.logic.t; i++){
-				staat.push([0, this.btn_list[0+this.offset][i], 4, 1]);
+				this.pass_color(this.btn_list[0+this.offset][i]);
 			}
-			staat.push([0, this.btn_list[0+this.offset][this.pl_amount], 4, 1]);
-			staat.push([0, this.btn_list[0+this.offset][this.pl_leftmost], 4, 1]);
-			staat.push([0, this.btn_list[0+this.offset][this.pl_sum], 4, 1]);
+			this.pass_color(this.btn_list[0+this.offset][this.pl_amount]);
+			this.pass_color(this.btn_list[0+this.offset][this.pl_leftmost]);
+			this.pass_color(this.btn_list[0+this.offset][this.pl_sum]);
 		}
 
 		if (s[0]==1){
 			if (s[1]>1){
-				staat.push([0, this.btn_list[s[1]+this.offset-1][this.pl_set_size], 1, 0]);
 				staat.push([0, this.btn_list[this.last_in_line][this.pl_set_size], 1, 8]);
-			}
-			else{
-				for (i=1; i<=this.logic.t; i++){
-					staat.push([0, this.btn_list[0+this.offset][i], 1, 0]);
-				}
-				staat.push([0, this.btn_list[0+this.offset][this.pl_amount], 1, 0]);
-				staat.push([0, this.btn_list[0+this.offset][this.pl_leftmost], 1, 0]);
-				staat.push([0, this.btn_list[0+this.offset][this.pl_sum], 1, 0]);
 			}
 			staat.push([0, this.btn_list[s[1]+this.offset][0], 4, 5]);
 			for (i=1; i<=this.logic.t; i++){
-				staat.push([0, this.btn_list[s[1]+this.offset][i], 4, 1]);
+				this.pass_color(this.btn_list[s[1]+this.offset][i]);
 			}
 		}
 
 		if (s[0]==2){
-			for (i=1; i<=this.logic.t; i++){
-				staat.push([0, this.btn_list[s[1]+this.offset][i], 1, 0]);
-			}
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_amount], 4, 1]);
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_sgn], 4, 1]);
-
-			staat.push([0, this.btn_list[(s[1]>>1)+this.offset][this.pl_amount], 0, 14]);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_amount]);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sgn]);
+			this.pass_color(this.btn_list[(s[1]>>1)+this.offset][this.pl_amount], 0, 14);
 		}
 
 		if (s[0]==3){
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_amount], 1, 0]);
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_sgn], 1, 0]);
+			this.pass_color(this.btn_list[(s[1]>>1)+this.offset][this.pl_leftmost], 0, 14);
+			this.pass_color(this.btn_list[(s[1]^(1<<this.logic.leftmost_bit[s[1]]))+this.offset][this.pl_sum], 0, 13);
+			this.pass_color(this.btn_list[1][this.logic.t-this.logic.leftmost_bit[s[1]]], 0, 13);
 
-			staat.push([0, this.btn_list[(s[1]>>1)+this.offset][this.pl_leftmost], 0, 14]);
-			staat.push([0, this.btn_list[(s[1]^(1<<this.logic.leftmost_bit[s[1]]))+this.offset][this.pl_sum], 0, 13]);
-			staat.push([0, this.btn_list[1][this.logic.t-this.logic.leftmost_bit[s[1]]], 0, 13]);
-			staat.push([0, this.btn_list[(s[1]>>1)+this.offset][this.pl_amount], 14, 0]);
-
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_leftmost], 4, 1]);
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_sum], 4, 1]);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_leftmost]);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sum]);
 		}
 
 		if (s[0]==4){
 			var summary=this.btn_list[this.last_in_line][this.pl_set_size];
-			//Czystka
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_leftmost], 1, 0]);
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_sum], 1, 0]);
-			staat.push([0, this.btn_list[(s[1]>>1)+this.offset][this.pl_leftmost], 14, 0]);
-			staat.push([0, this.btn_list[(s[1]^(1<<this.logic.leftmost_bit[s[1]]))+this.offset][this.pl_sum], 13, 0]);
-			staat.push([0, this.btn_list[1][this.logic.t-this.logic.leftmost_bit[s[1]]], 13, 0]);
 			//Odrodzenie
-			staat.push([0, this.btn_list[s[1]+this.offset][this.pl_set_size], 4, 1]);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_set_size]);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_amount], 0, 14);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sum], 0, 14);
+			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sgn], 0, 13);
 			staat.push([1, summary, this.logic.full_res[s[1]-1], this.logic.full_res[s[1]]]);
 			staat.push([0, summary, 8, 1]);
 		}
@@ -265,7 +245,7 @@ class Iep extends Algorithm{
 
 		if (s[0]==0) return `In the beginning of the mechanism, starting values for x=0 are constructed (leftmost bit, amount of bits and sum of a<sub>i</sub>s marked by bit representation), the values for empty set are not used in formula, so they are not used in calculations (though it could be used, if one knows what he wants to do).`;
 		if (s[0]==1) return `Next intersection of sets is chosen. It's represented by number x=${x}, its bit representation is shown next to it. As one can see, it represents intersection of sets ${intersect(x, this.logic.t)} (or set of all multisets, which have more than a<sub>i</sub> elements from all those types)`;
-		if (s[0]==2) return `Amount of sets A<sub>i</sub> in this intersection is bits(x)=bits(x/2)+x%2, in this case, bits(${x})=bits(${x>>1})+${x%2}=${this.logic.amount_of_bits[x>>1]}+${x%2}=${this.logic.amount_of_bits[x]}, thus sign, with which the resulting size of intersection will be added to the resulting sum is (-1)<sup>${this.logic.amount_of_bits[s[1]]+1}</sup>=${this.logic.sgn[s[1]]}`;
+		if (s[0]==2) return `Amount of sets A<sub>i</sub> in this intersection is bits(x)=bits(x/2)+x%2, in this case, bits(${x})=bits(${x>>1})+${x%2}=${this.logic.amount_of_bits[x>>1]}+${x%2}=${this.logic.amount_of_bits[x]}, thus sign, with which the resulting size of intersection will be added to the resulting sum is (-1)<sup>${this.logic.amount_of_bits[s[1]]}+1</sup>=${this.logic.sgn[s[1]]}`;
 		if (s[0]==3) return `The leftmost bit allows to calculate sum of sizes of sets in this set intersection in O(1), leftmost bit can be calculated as left(x)=left(x/2)+1, in this case, left(${x})=left(${x>>1})+1=${this.logic.leftmost_bit[x>>1]}+1=${this.logic.leftmost_bit[x]+1}, and sum by formula sum(x)=sum(x^2<sup>leftmost_bit(x)</sup>)+a<sub>leftmost_bit(x)</sub> (where ^ represents xor), so sum(${x})=sum(${x}^${1<<this.logic.leftmost_bit[x]})+${this.logic.a[this.logic.leftmost_bit[x]]}=sum(${s[1]^(1<<this.logic.leftmost_bit[x])})+${this.logic.a[this.logic.leftmost_bit[x]]}=${this.logic.summa[x]}</sub>`;
 		if (s[0]==4) return `The size of this subset - number of multisets, which belong to ${intersect(x, this.logic.t, `&cap;`, '', '')} - is calculated as Cn(n+t-1-sum(x)-bits(x), t-1)=Cn(${this.logic.n}+${this.logic.t}-1-${this.logic.summa[x]}-${this.logic.amount_of_bits[x]}, ${this.logic.t}-1)=Cn(${this.logic.n+this.logic.t-1-this.logic.summa[x]-this.logic.amount_of_bits[x]}, ${this.logic.t-1})${eq}${Math.abs(this.logic.partial_res[x])} (mod 10<sup9</sup>+7). This result is immediately multiplied by sgn(${s[1]})=${this.logic.sgn[s[1]]} and added to penultimate result in that form.`
 		if (s[0]==100){
@@ -532,16 +512,16 @@ class Generalized_iep extends Lord_of_the_combinatorics_trilogy{
 		if (s[0]==1) {
 			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_leftmost]);
 			if (s[1]!=0)
-				this.pass_color(this.btn_list[Math.floor(s[1]/2)+this.offset][this.pl_leftmost], 0);
+				this.pass_color(this.btn_list[Math.floor(s[1]/2)+this.offset][this.pl_leftmost], 0, 14);
 		}
 		if (s[0]==2){
 			if (s[1]!=0)
-				this.pass_color(this.btn_list[(s[1]^(1<<this.logic.leftmost_bit[s[1]]))+this.offset][this.pl_sgn], 0);
+				this.pass_color(this.btn_list[(s[1]^(1<<this.logic.leftmost_bit[s[1]]))+this.offset][this.pl_sgn], 0, 14);
 			this.pass_color(this.btn_list[s[1]+this.offset][this.pl_sgn]);
 		}
 		if (s[0]==3){
 			var cor_column=this.logic.max_bits-s[2];
-			this.pass_color(this.btn_list[s[1]+this.offset][cor_column], 0, 1, 0);
+			this.pass_color(this.btn_list[s[1]+this.offset][cor_column], 0, 15, 0);
 
 			if (((1<<s[2])&s[1])>0){
 				point=s[3]+1;
@@ -562,7 +542,7 @@ class Generalized_iep extends Lord_of_the_combinatorics_trilogy{
 		if (s[0]==5){
 			var lft=this.logic.leftmost_bit[s[2]];
 			this.pass_color(this.buttons.sum_count[s[2]-(1<<lft)], 0, 14, 0);
-			this.pass_color(this.buttons.yi[(this.logic.partial_pows[s[1]].length>>1)+lft], 0, 13, 0);
+			this.pass_color(this.buttons.yi[(this.logic.partial_pows[s[1]].length>>1)+lft], 0, 14, 0);
 		}
 
 		if (s[0]==10){
@@ -584,7 +564,7 @@ class Generalized_iep extends Lord_of_the_combinatorics_trilogy{
 		if (s[0]==7){
 			var lft=this.logic.leftmost_bit[s[2]];
 			this.pass_color(this.buttons.sum_res[s[2]-(1<<lft)], 0, 14, 0);
-			this.pass_color(this.buttons.yi[lft], 12, 13, 12);
+			this.pass_color(this.buttons.yi[lft], 12, 14, 12);
 		}
 		if (s[0]==11){
 			for (i=(this.logic.partial_pows[s[1]].length>>1); i<this.logic.partial_pows[s[1]].length; i++)
@@ -628,7 +608,7 @@ class Generalized_iep extends Lord_of_the_combinatorics_trilogy{
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1];
-		function sub(x){return `<sub>${x}</sub>`}
+		function sub(x) {return `<sub>${x}</sub>`}
 
 		if (s[0]==0) return this.scompreh_strings.count;
 		if (s[0]==1 && s[1]==0) return `Value of leftmost<sub>${s[1]}</sub>=-1 is calculated to simplify further calculations. Notice that as 0 doesn't have any bits set, this is convenient value for its leftmost bit.`;
@@ -708,7 +688,6 @@ class Dp_iep extends Lord_of_the_combinatorics_trilogy{
 				dp_end[i][j]=dp_end[i][j]+dp_end[i][j+1];
 			}
 		}
-
 		this.logic.dp=dp_end;
 	}
 
@@ -862,14 +841,8 @@ class Dp_iep extends Lord_of_the_combinatorics_trilogy{
 			var eld=s[1]^(1<<used);
 
 			//All below is highly controversial
-			this.pass_color(this.buttons.bits[s[1]][used], 0, 13, 0);
-			this.pass_color(this.buttons.bits[eld][used], 0, 13, 0);
-			for (i=0; i<this.logic.max_bits; i++){
-				if (i==used) continue;
-				this.pass_color(this.buttons.bits[s[1]][i], 0, 15, 0);
-				this.pass_color(this.buttons.bits[eld][i], 0, 15, 0);
-			}
-			//*************************
+			this.pass_color(this.buttons.bits[s[1]][used], 0, 15, 0);
+			this.pass_color(this.buttons.bits[eld][used], 0, 15, 0);
 
 			this.pass_color(this.buttons.dp[eld][s[2]], old_col, 13, old_col);
 			this.pass_color(this.buttons.dp[s[1]][s[2]]);
@@ -1000,17 +973,20 @@ class Submasks extends Algorithm{
 
 		if (s[0]==1){
 			var x=s[1];
-			this.pass_color(this.buttons.repr[x], 0, 1);
+			this.pass_color(this.buttons.repr[x], 0, 15);
 			this.pass_color(this.buttons.y[x], 0, 14);
 			this.pass_color(this.buttons.repr_10, 5, 14, 5);
 		}
 
 		if (s[0]==2){
+			var x=s[3];
+			this.pass_color(this.buttons.repr[x], 0, 15);
 			staat.push([0, this.buttons.submasks[s[1]-1], 0, 15]);
-			passer.push([0, this.buttons.y[s[3]], 0, 14]);
+			passer.push([0, this.buttons.y[x], 0, 14]);
 		}
 		if (s[0]==3){
 			this.pass_color(this.buttons.submasks[s[2]+s[1]]);
+			this.pass_color(this.buttons.repr[s[3]], 0, 15);
 
 			if (s[2]+1==s[1]){
 				passer.push([0, this.buttons.submasks[s[1]-1], 15, 0]);

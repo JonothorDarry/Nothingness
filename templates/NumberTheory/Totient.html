@@ -90,12 +90,14 @@
 		<h3>Solution with sieve for finding totient</h3>
 		<p>Note that in practice it is enough to find totient for each number in range \(\lt 1; 5*10^6\gt\) before processing queries and be able to find \(gcd\) in \(O(log(m+y))\) - for example using Euclid's algorithm - in order to solve this problem in satisfying \(O(n\log(\log(n))+q\log(n))\). To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve.</p>
 
-		{{ algo.algorithm(1, 'Totient sieve', '
+		{{ algo.neo_algorithm(1, 'Totient sieve', '
 			<p>Input format: One number \(n\) is the size of the sieve used to find totients.<br>
 			\(n\)
 			</p>
 		'
-		, '99') }}
+		, '99', {
+		'color_description':{'standard':'', 'change':'Move through sieve in order to determine compositeness and totient.', 'dead':'Marks non-prime numbers', 'iterator':'Finds subsequent primes.',}
+		}) }}
 
 		<h2>Problem III</h2>
 		<p> Suppose You are given numbers \(2 \le a_0, a_1, .. a_{n-1}, m \le 10^9+7, n \le 10^5\) and have to find value of such expression:

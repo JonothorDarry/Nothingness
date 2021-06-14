@@ -361,12 +361,12 @@ class Representation_utils{
 		return butt;
 	}
 	
-	//Creates buttons
+	//Creates buttons with exponent to the right
 	static expo_style_button_creator(style, numb=null, args=null){
 		var base=Representation_utils.button_creator(style, numb.base);
 		var expo=Representation_utils.button_creator(style, numb.expo);
 		var size=20;
-		if (args.size!=null) size=args.size;
+		if (args && args.size!=null) size=args.size;
 
 		expo.style.width=`${size}px`;
 		expo.style.height=`${size}px`;
@@ -375,11 +375,38 @@ class Representation_utils{
 		expo.style.position="relative";
 		return {'base':base, 'expo':expo, '_is_expo_offline':true};
 	}
+
+	//Creates buttons with exponent from within
+	static expo_inner_style_button_creator(style, numb=null, args=null){
+		var all=Representation_utils.double_button_creator(style, null, Representation_utils.button_creator);
+		var base=all[2];
+		var expo=all[1];
+		all=all[0];
+		if (numb){
+			base.innerHTML=numb.base;
+			expo.innerHTML=numb.expo;
+		}
+
+		//Zamienić zmienne
+		all.style.height="45px";
+		all.style.width="45px";
+
+		base.style.height="45px";
+		base.style.width="45px";
+		base.style.paddingTop="10px";
+		base.style.verticalAlign="bottom";
+
+		expo.style.width="20px";
+		expo.style.right="0";
+		expo.style.zIndex="2";
+
+		return {'system':all, '_base':base, '_expo':expo, '_is_expo_offline':false};
+	}
 	
 	//Create Button
 	static double_button_creator(style, v, fun){
-		var butt1=fun(v);
-		var butt2=fun(v);
+		var butt1=fun(style, v);
+		var butt2=fun(style, v);
 		butt1.classList.add("fullNumb");
 		butt2.classList.add("divisNumb");
 

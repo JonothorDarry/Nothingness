@@ -289,7 +289,7 @@ class PowerTower extends Algorithm{
 
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var sk=new TotientSieve(100, feral);
+var sk=new TotientSieve(feral, 100);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 var sk2=new PowerTower(feral2, 6, 107, [2, 7, 3, 12, 43, 25]);

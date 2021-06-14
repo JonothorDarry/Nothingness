@@ -187,10 +187,10 @@ class Ntt extends Algorithm{
 
 		staat.push([0, cur_btn, 1, 20]);
 		if (s[0]==7){
-			staat.push([0, pol_0, 5, 20]);
-			staat.push([0, pol_1, 8, 20]);
+			staat.push([0, pol_0, 13, 20]);
+			staat.push([0, pol_1, 14, 20]);
 		}
-		staat.push([0, w, 8, 0]);
+		staat.push([0, w, 14, 0]);
 	}
 
 	StateMaker(){
@@ -350,10 +350,10 @@ class Ntt extends Algorithm{
 
 			staat.push([0, cur_btn, 4, 1]);
 			if (s[0]==6){
-				staat.push([0, pol_0, 20, 5]);
-				staat.push([0, pol_1, 20, 8]);
+				staat.push([0, pol_0, 20, 13]);
+				staat.push([0, pol_1, 20, 14]);
 			}
-			staat.push([0, w, 0, 8]);
+			staat.push([0, w, 0, 14]);
 			/*Show merge*/
 
 			this.show_number(cur_btn, value);

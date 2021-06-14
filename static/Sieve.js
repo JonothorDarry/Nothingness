@@ -1,5 +1,5 @@
 class Sieve extends Algorithm{
-	constructor(len, block){
+	constructor(block, len){
 		super(block);
 		this.createMarked(len);	
 
@@ -63,13 +63,13 @@ class Sieve extends Algorithm{
 
 	//Color processed slaying number
 	Darken(v, granted="sieveBut"){
-		this.Painter(this.place.getElementsByClassName(granted)[v], 5, 1);
+		this.Painter(this.place.getElementsByClassName(granted)[v], 15, 1);
 	}
 
 	//Color processed just slain by prime
 	PrimeColor(v1, v2, granted="sieveBut"){
 		var bt=this.place.getElementsByClassName(granted)[v1];
-		this.Painter(bt, 9);
+		this.Painter(bt, 1);
 		this.Darken(v2);
 	}
 
@@ -92,7 +92,6 @@ class Sieve extends Algorithm{
 		return strr;
 	}
 
-
 	EscapeCondition(v, lim){
 		if (v*v>lim) return 1;
 		return 0;
@@ -104,14 +103,14 @@ class Sieve extends Algorithm{
 		var s=this.lees[l-1];
 		var lim=s[1];
 		if (s[0]==0){
-			if (s[2]+s[3]<=lim)	this.lees.push([0, lim, s[2]+s[3], s[3]]);
-			else if (s[3]<=lim)	this.lees.push([1, lim, s[3]+1]);
-			else	this.lees.push([100]);
+			if (s[2]+s[3]<=lim) this.lees.push([0, lim, s[2]+s[3], s[3]]);
+			else if (s[3]<=lim) this.lees.push([1, lim, s[3]+1]);
+			else this.lees.push([100]);
 		}
 
 		else if (s[0]==1){
-			if (this.EscapeCondition(s[2], s[1])==1) 		this.lees.push([100]);
-			else if (this.PrimeCheck(s[2])==1 && s[2]*s[2]<=s[1])	this.lees.push([0, lim, s[2]*s[2], s[2]]);
+			if (this.EscapeCondition(s[2], s[1])==1) this.lees.push([100]);
+			else if (this.PrimeCheck(s[2])==1 && s[2]*s[2]<=s[1]) this.lees.push([0, lim, s[2]*s[2], s[2]]);
 			else this.lees.push([1, lim, s[2]+1]);
 		}
 	}
@@ -128,7 +127,7 @@ class Sieve extends Algorithm{
 		if (l>1){
 			s=this.lees[l-2];
 			if (this.lees[l-1][0]!=0 || this.lees[l-2][0]!=1) this.MarkNormally(s[2]);
-			if (s[0]==0 && s[2]+s[3]>s[1]) 		this.MarkNormally(s[3]);
+			if (s[0]==0 && s[2]+s[3]>s[1]) this.MarkNormally(s[3]);
 		}
 	}
 
@@ -137,13 +136,13 @@ class Sieve extends Algorithm{
 	StateUnmaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
-		if (s[0]==0)	this.MakePrime(s[2], s[3]);
-		if (s[0]!=100)	this.MarkNormally(s[2]);
+		if (s[0]==0) this.MakePrime(s[2], s[3]);
+		if (s[0]!=100) this.MarkNormally(s[2]);
 
 		if (l>1){
 			s=this.lees[l-2];
-			if (s[0]==1)	this.Darken(s[2]);
-			if (s[0]==0)	this.PrimeColor(s[2], s[3]);
+			if (s[0]==1) this.Darken(s[2]);
+			if (s[0]==0) this.PrimeColor(s[2], s[3]);
 		}
 		super.StateUnmaker();
 	}

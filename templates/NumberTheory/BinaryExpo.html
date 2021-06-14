@@ -28,12 +28,15 @@
 		</p>
 
 
-		{{ algo.algorithm(1, 'Binary Exponentation', '
+		{{ algo.neo_algorithm(1, 'Binary Exponentation', '
 			<p>Input format: three numbers \(a, b, m\), such that \(x=a^b \pmod m\) has to be found.<br>
 			\(a, b, m\)
 			</p>
 		'
-		, '17 43 107') }}
+		, '17 43 107', {
+		'color_description':{'standard':'', 'change':'Also result.', 'dead':'Previously partial solutions, now useless solutions.'}
+		
+		}) }}
 		
 		<p>This animation shows, why method is called binary exponentation: if \(b\) is shown as \(b=2^{i_1}+2^{i_2}+...+2^{i_k}\), where \(\forall_{w,v} i_w \neq i_v\), then \(res=a^{2^{i_1}}*a^{2^{i_2}}*...*a^{2^{i_k}}\).
 		<h3>Further analysis</h3>

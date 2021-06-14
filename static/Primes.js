@@ -277,10 +277,10 @@ var feral4=Algorithm.ObjectParser(document.getElementById('Algo4'));
 var eg4=new Simple_factorizer(feral4, 84);
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var sk=new Sieve(100, feral);
+var sk=new Sieve(feral, 100);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var sk2=new ExtendedSieve(100, feral2);
+var sk2=new ExtendedSieve(feral2, 100);
 
 var foul=Algorithm.ObjectParser(document.getElementById('querySection'));
 var sk3=new Querier(132, foul, sk2);

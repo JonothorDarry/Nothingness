@@ -45,7 +45,7 @@
 		</p>
 		
 
-		{{ algo.algorithm(1, 'Sieve', '
+		{{ algo.neo_algorithm(1, 'Sieve', '
 			<p>Input format: One number \(n\) is the size of the sieve.<br>
 			\(n\)
 			</p>
@@ -105,6 +105,10 @@
 			</span>
 			<br>
 			Furthermore, the second inequality in this proof also shows, that sum of number of divisors over all numbers in a range \(&lt;1; n&gt;\) can be estimated by \(O(n*logn)\) - because every divisor \(d\) has exactly \(\lfloor \frac{n}{d} \rfloor\) numbers divisible by it, and this sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*logn)\).
+		</p>
+		<br>
+		<p id="gutSieve">
+			Query answering can be done in \(O(q)\), because for each query \(a_i\) one only needs to look whether it is marked as prime or not - that can be done in \(O(1)\). So total complexity for a given task is at most \(O(n*log(n)+q)\), where \(n\) is number, for which we run sieve, that is \(n \ge max(a_i)\). 
 		</p>
 				
 				
@@ -191,7 +195,8 @@
 				</div>
 			</div>
 		</div>
-		<h4>Different complexity proof of a sieve using fundamental theorem</h4>
+		<div class="mathemagical_box"> 
+			<h4>Different complexity proof of a sieve using fundamental theorem</h4>
 			<p>
 				There is also simpler proof with assumption, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
 			<br><br>
@@ -233,10 +238,8 @@
 			<br>
 			What follows, one can construct lowest number with \(s\) distinct prime divisors by multiplying subsequent prime numbers, starting from lowest: \(2*3*5*...*p_m; m \le log_2(n)\), and the proof is finished giving better approximation of number of used steps in this algorithm.
 			</p>	
-			<br>
-			<p id="gutSieve">
-				Query answering can be done in \(O(q)\), because for each query \(a_i\) one only needs to look whether it is marked as prime or not - that can be done in \(O(1)\). So total complexity for a given task is at most \(O(n*log(n)+q)\), where \(n\) is number, for which we run sieve, that is \(n \ge max(a_i)\). 
-			</p>
+			</div>
+
 
 
 		<h2>Summary</h2>

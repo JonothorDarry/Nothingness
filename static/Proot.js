@@ -165,7 +165,8 @@ class Proot extends Algorithm{
 		this.recover=[];
 		this.last_index=-1;
 		this.falsify=0;
-		this.finito=0;
+		this.finito=false;
+		this.closed=false;
 		this.current_exponent=-1;
 
 		this.btnlist=[];
@@ -272,7 +273,7 @@ class Proot extends Algorithm{
 			if (x==0){
 				old_base=this.btnlist[2][this.t_primes.length];
 				base.innerHTML=1;
-				color=8;
+				color=1;
 			}
 			else{
 				old_base=this.btnlist[3][x-1];
@@ -282,7 +283,7 @@ class Proot extends Algorithm{
 			staat.push([2, this.check_expos, value_to_expos]);
 		
 			staat.push([0, base, 4, color]);
-			if (x!=1) staat.push([0, old_base, 1, 0]);
+			staat.push([0, old_base, 1, 0]);
 		}
 
 		if (s[0]==5){
@@ -335,35 +336,34 @@ class Proot extends Algorithm{
 			staat.push([0, base, 4, 1]);
 			staat.push([0, expo, 4, 1]);
 			var ln=this.exponents[this.primes.length-1];
-			console.log("TOTH: ", this.toth, this.m, s[1]);
 			if (s[1]==0){
 				res=this.current_candidate;
 				staat.push([3, 'current_result', this.current_result, res]);
 				expo.innerHTML=this.toth+1;
-				console.log("TOTH: ", this.toth, this.m);
-				if (this.toth+1==this.m) finale=1, staat.push([3, 'finito', 0, 1]), console.log("TOTH: ", this.toth, this.m);
+				if (this.toth+1==this.m) finale=1;
 			}
 			else if (s[1]==1 && ln>1){
 				var numb=this.m;
-				if (this.m%2!=0) finale=1, staat.push([3, 'finito', 0, 1]);
+				if (this.m%2!=0) finale=1;
 				else numb=Math.floor(this.m/2);
 				if (this.pow(this.current_candidate, this.toth, (this.toth+1)*(this.toth+1))==1) res=this.current_candidate+this.toth+1, staat.push([0, 'current_result', this.current_result, res]);
 				expo.innerHTML=numb;
 			}
 
 			else{
-				finale=1, staat.push([3, 'finito', 0, 1]);
+				finale=1;
 				if (this.current_result%2==0) res=this.current_candidate+Math.floor(this.m/2), staat.push([3, 'current_result', this.current_result, res]);
 				expo.innerHTML=this.m;
 			}
 			base.innerHTML=res;
 
 			if (finale==1){
+				staat.push([3, 'closed', this.closed, true]);
 				staat.push([0, base, 4, 8]);
 				staat.push([0, expo, 4, 8]);
 			}
 		}
-
+		
 		if (s[0]==101){
 			base=this.btnlist[0][point];
 			expo=this.btnlist[0][point+1];
@@ -426,8 +426,7 @@ class Proot extends Algorithm{
 			else this.lees.push([5, s[1]+1]);
 		}
 		if (s[0]==6){
-			console.log(s, this.finito);
-			if (this.finito==1) this.lees.push([100]);
+			if (this.closed==true) this.lees.push([100]);
 			else this.lees.push([6, s[1]+1]);
 		}
 	}
@@ -506,7 +505,7 @@ class Proot extends Algorithm{
 		else if (last[0]==5 && last[1]!=0) return `It turns out, that ${this.current_candidate}<sup>${this.check_expos[last[1]]}</sup> &equiv; ${this.recover[this.last_index][last[1]]} (mod ${p}). ${(this.recover[this.last_index][last[1]]==1)?`This number cannot be a primitive root, as ord<sub>${p}</sub>(${this.current_candidate}) <= ${this.check_expos[last[1]]} < &#x03D5;(${p})`:((last[1]==this.t_primes.length?`As for all exponents this number was not equivalent to 1, this is primitive root`:` As it is not yet known whether this number is a primitive root, I check it against next exponent.`))}`;
 
 		else if (last[0]==6 && last[1]==0) return `The primitive root for p=${p} is already found; `+this.Last_Exit_For_The_Lost();
-		else if (last[0]==6 && last[1]==1 && (this.finito==0 || this.m%2!=0)) return `The primitive root for p<sup>k</sup>=${this.m%2!=0?this.m:Math.floor(this.m/2)} is either equal to g=${this.current_candidate} or g+p=${this.current_candidate+p}, where g is primitive root of p - this follows from second case of existential proof of primitive root. As g<sup>&#x03D5;(p)</sup> ${this.current_result>p?`&equiv;`:`&#8802;`} 1 (mod p<sup>2</sup>), then primitive root mod p<sup>k</sup> is ${this.current_result<p?`g`:`g+p`}=${this.current_result} `+this.Last_Exit_For_The_Lost();
+		else if (last[0]==6 && last[1]==1 && (this.finito==false || this.m%2!=0)) return `The primitive root for p<sup>k</sup>=${this.m%2!=0?this.m:Math.floor(this.m/2)} is either equal to g=${this.current_candidate} or g+p=${this.current_candidate+p}, where g is primitive root of p - this follows from second case of existential proof of primitive root. As g<sup>&#x03D5;(p)</sup> ${this.current_result>p?`&equiv;`:`&#8802;`} 1 (mod p<sup>2</sup>), then primitive root mod p<sup>k</sup> is ${this.current_result<p?`g`:`g+p`}=${this.current_result} `+this.Last_Exit_For_The_Lost();
 		else if (last[0]==6){
 			var olden=this.current_result>Math.floor(this.m/2)?this.current_result-Math.floor(this.m/2):this.current_result, newer, sup;
 			newer=olden+Math.floor(this.m/2);

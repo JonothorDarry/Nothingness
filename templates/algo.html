@@ -17,6 +17,7 @@
 					{% endif %}
 				</form>
 			</div>
+
 			{% if algo_type=='algo' %}
 			<div id="Buttons{{id}}" style="position:sticky; top:0; z-index:1; display:inline-block;">
 					<button id="Sender{{id}}" class="sender">Begin</button>
@@ -45,6 +46,101 @@
 			<div id="Primez{{id}}" class="primez"></div>
 			<div id="Comprehend{{id}}" class="comprehend"
 						   {% if vehement==true %}
+							   style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"
+						   {% endif %}
+			></div>
+		</div>
+{% endmacro %}
+
+
+<!-- New version - use only this! -->
+{% macro neo_algorithm(id, header_text, input_format, start_value, kvargos={}) %}
+		{% set argos={'input_type':'input', 'algo_type':'algo', 'add_on':none, 'added_elements':none, 'vehement':false, 'color_description':false} %}
+		{% set _=argos.update(kvargos) %}
+
+		<div id="Algo{{id}}" class="pureAlgo">
+			{% set algo_colors={
+				'standard':{'color':'#440000', 'meaning':'Data that is still meaningful (or shows something important) and can be used in the future.'},
+				'change':{'color':'#004400', 'meaning':'Difference introduced by last action.'},
+				'dead':{'color':'#FFFFFF', 'meaning':'Something not important, that is not a subject to change; dead, that is.'},
+				'stagnant':{'color':'#000000', 'meaning':'Something important, that is not a subject to change.'},
+				'crucial':{'color':'#8A7400', 'meaning':'Results of the algorithm.'},
+				'merge-standard':{'color':'#FF3333', 'meaning':'Data used in one part of merge-like procedure.'},
+				'helper1':{'color':'#00B359', 'meaning':'Source of last change.'},
+				'helper2':{'color':'#669900', 'meaning':'Yet another source of last change.'},
+				'exponent':{'color':'#804000', 'meaning':'Value associated with another value, usually some index.'},
+				'iterator':{'color':'#E64C00', 'meaning':'Some iterator or set of iterators.'},
+				'half-dead':{'color':'#888888', 'meaning':'Partially processed data.'},
+			}
+			%}
+			<h4 class={{argos.algo_type}}>{{header_text}}</h4>
+
+			{% if argos.color_description != false %}
+				<table class="beauty_table">
+					<caption>Colors and their meaning</caption>
+					<thead>
+						<tr>
+							<td>Color</td>
+							<td>Standard meaning - what color intends to show?</td>
+							<td>Particular meaning here</td>
+						</tr>
+					</thead>
+					<tbody>
+						{% for key, value in argos.color_description.items() %}
+							<tr>
+								<td style="background-color:{{ algo_colors[key].color }}; height:30px"></td>
+								<td>{{ algo_colors[key].meaning }}</td>
+								<td>{{ value }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			{% endif %}
+
+			{% autoescape off %}
+				{{input_format}}
+			{% endautoescape %}
+
+			<div id="Inputter{{id}}">
+				<form>
+					{% if argos.input_type=='input' %}
+						<input class="inputter" id="SomeInput{{id}}" name="SomeInput" value="{{start_value}}">
+					{% else %}
+						{% autoescape off %}
+						<textarea class="inputter" id="SomeInput{{id}}" name="SomeInput">{{start_value}}</textarea>
+						{% endautoescape %}
+					{% endif %}
+				</form>
+			</div>
+
+			{% if argos.algo_type=='algo' %}
+			<div id="Buttons{{id}}" style="position:sticky; top:0; z-index:1; display:inline-block;">
+					<button id="Sender{{id}}" class="sender">Begin</button>
+					<button id="Prever{{id}}" class="previous">Previous Move</button>
+					<button id="Nexter{{id}}" class="next">Next Move</button>
+					<button id="Finisher{{id}}" class="finish">Finish</button>
+
+					{% if argos.add_on=='radio' %}
+						{% set y=argos.added_elements[0] %}
+						<input type="radio" id="{{y}}" name="algoType" checked><label for="{{y}}">{{y}}</label>
+						{% for x in argos.added_elements[1:] %}
+							<input type="radio" id="{{x}}" name="algoType"><label for="{{x}}">{{x}}</label>
+						{% endfor %}
+					{% endif %}
+
+					{% if argos.add_on=='checkbox' %}
+						<input type="checkbox" id="{{argos.added_elements}}{{id}}" name="shower"><label for="{{argos.added_elements}}{{id}}">Show only table</label> <!--GCD-targeted-->
+					{% endif %}
+			</div>
+
+			{% else %}
+				<button id="Show{{id}}" class="show">Show</button>
+			{% endif %}
+
+			<div class="breakAlgo"></div>
+			<div id="Primez{{id}}" class="primez"></div>
+			<div id="Comprehend{{id}}" class="comprehend"
+						   {% if argos.vehement==true %}
 							   style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"
 						   {% endif %}
 			></div>
