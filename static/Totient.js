@@ -109,7 +109,7 @@ class TotientSieve extends Sieve{
 	}
 
 	buttCreator(v){
-		return this.doubleButtCreator(v, super.buttCreator.bind(this))[0];
+		return this.doubleButtCreator(v, Representation_utils.button_creator)[0];
 	}
 }
 

@@ -17,22 +17,22 @@
 		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{12}\), where \(gcd(a, m)=1\), and thine aim is to find such \(x\) that \(a^x \equiv b \pmod m\).</p>
 		<h3>Circumventing number-theoretical notions of the discrete logarithm, or Shanks' meet-in-the-middle approach in \(O(\sqrt{m}\log(m))\)</h3>
 		<ol>
-			<li>From Euler's theorem, for any pair \(a, m\) where \(gcd(a,m)=1\), \(a^{\phi(m)} \equiv 1 \pmod m\). And as \(\phi(m) \le m\), thus, if there exists such \(x\), that \(a^x \equiv b \pmod m\), then there is some solution \(x \le \phi(m) \le m\).</li>
-			<li>Let \(x=pn+q\) for some \(p, n, q\). One can present this problem as 
+			<li>From Euler's theorem, for any pair \(a, m\) where \(gcd(a,m)=1\), \(a^{\phi(m)} \equiv 1 \pmod m\). And as \(\phi(m) \le m\), thus, if there exists such \(x\), that \(a^x \equiv b \pmod m\), then there is some solution \(0 \le x \lt \phi(m) \le m\).</li>
+			<li>Let \(x=ps+q\) for some \(p, s, q\). One can present this problem as 
 				<span class="central">\(a^x \equiv b \pmod m\)</span>
-				<span class="central">\(a^{pn+q} \equiv b \pmod m\)</span>
-				<span class="central">\(a^q \equiv ba^{-pn} \pmod m\)</span>
+				<span class="central">\(a^{ps+q} \equiv b \pmod m\)</span>
+				<span class="central">\(a^q \equiv ba^{-ps} \pmod m\)</span>
 			</li>
-			<li>Let \(s=\lceil \frac{m}{n} \rceil\). One can:
+			<li>Let \(n=\lfloor \frac{m}{s} \rfloor\). One can:
 				<ol>
-					<li>For all \(q \in \lt 0;n-1 \gt\) compute \(a^q\). This can be done in \(O(n)\).</li>
-					<li>Sort all pairs \(\{q, a^q\}\) by \(a^q\). This takes \(O(n\log(n))\).</li>
-					<li>For all subsequent values of \(p \in \lt 0;s \gt\) find \(d=ba^{-np} \pmod m\). One could find single inverse with extended euclid in \(O(\log(s))\). Overall the complexity of this step would be \(O(s \log(s))\)</li>
-					<li>For all subsequent values \(p\) find, using binary search, element \(a^q\), for which \(a^q=d\). This element may, or may not exist - in particular, if \(a\) is primitive root \(\pmod m\), and \(gcd(b,m)=1\), there will be exactly one pair \(\{p,q\}\), for which \(a^{np+q} \equiv b \pmod m\). This can be done in \(O(\log(n))\), overall in all steps in \(O(s \log(n))\).</li>
+					<li>For all \(q \in \lt 0;s-1 \gt\) compute \(a^q\). This can be done in \(O(s)\).</li>
+					<li>Sort all pairs \(\{q, a^q\}\) by \(a^q\). This takes \(O(s\log(s))\).</li>
+					<li>For all subsequent values \(p \in \lt 0;n \gt\) find \(d=ba^{-sp} \pmod m\). One could find single inverse with extended euclid in \(O(\log(n))\). Overall the complexity of this step would be \(O(n \log(n))\)</li>
+					<li>For all subsequent values \(p\) find, using binary search, element \(a^q\), for which \(a^q=d\). This element may, or may not exist - in particular, if \(a\) is primitive root \(\pmod m\), and \(gcd(b,m)=1\), there will be exactly one pair \(\{p,q\}\), for which \(a^{sp+q} \equiv b \pmod m\). This can be done in \(O(\log(s))\), overall considering all steps in \(O(n \log(s))\).</li>
 				</ol>
 			</li>
-			<li>Setting \(n=\lceil \sqrt{m} \rceil\) leads to \(s \approx n\) and, consequently, complexity \(O(\sqrt{n} \log(n))\).</li>
-			<li>Calculating modular inverse \(n\) times is not very clever technique, to put it bluntly; one can, however, notice, that \(a^{-np}=a^{-n(p-1)}a^{-n}\) - that is, one can use previously calculated inverse to obtain current inverse. If \(inv_p \equiv a^{-np} \pmod m\), then, for \(p \gt 1\), \(inv_p \equiv inv_{p-1}inv_1 \pmod m\), calculating inverse only once and reducing complexity of the third step from \(O(n \log(n))\) to \(O(n)\).</li>
+			<li>Setting \(s=\lceil \sqrt{m} \rceil\) leads to \(s \approx n\) and, consequently, complexity \(O(\sqrt{n} \log(n))\).</li>
+			<li>Calculating modular inverse \(n\) times is not very clever technique, to put it bluntly; one can, however, notice, that \(a^{-sp}=a^{-s(p-1)}a^{-s}\) - that is, one can use previously calculated inverse to obtain current inverse. If \(inv_p \equiv a^{-sp} \pmod m\), then, for \(p \gt 1\), \(inv_p \equiv inv_{p-1}inv_1 \pmod m\), calculating inverse only once and reducing complexity of the third step from \(O(n \log(n))\) to \(O(n)\).</li>
 		</ol>
 		{{ algo.algorithm(1, 'Baby step giant step algorithm', '
 		<p>Input format: values \(a, b, m\), for which \(x: a^x \equiv b \pmod m\) has to be calculated. \(gcd(a, m)=1\) or expect the unexpected.<br>
@@ -43,7 +43,7 @@
 		<h3>Remark regarding search technique: using \(ord_m(a)\)</h3>
 		<p>Notice, that for particular \(a\) not \(\phi(m)-1\), but \(ord_m(a)-1\) can be upper bound on range, where minimal discrete logarithm solving \(a^x \equiv b \pmod m\) can be found. Passing maximal possible exponent may drastically speed up computation time. Using this information within algorithm will be crucial for one algorithm shown later.</p>
 		<h3>Remark regarding implementation: hash table</h3>
-		<p>Instead of using sort and binary search, one can use hash table with, say, \(s\) bins for storing values \(a^q\). On average, in each bin there will be exactly one value - if values of \(a^q\) come from some uniform random distribution. Also, on average, each bin will be accessed once if values of \(a^{-pn}\) come from some uniform random distribution. Both statements will be false if \(ord_m(a)\) is lower than maximal exponent, for which the search is executed. Otherwise, values of \(a^q\) or \(a^{-pn}\) are quite problematic to predict; empirically, there is a good reason to believe, that it usually should run much faster than standard version.</p>
+		<p>Instead of using sort and binary search, one can use hash table with, say, \(s\) bins for storing values \(a^q\). On average, in each bin there will be exactly one value - if values of \(a^q\) come from some uniform random distribution. Also, on average, each bin will be accessed once if values of \(a^{-ps}\) come from some uniform random distribution. Both statements will be false if \(ord_m(a)\) is lower than maximal exponent, for which the search is executed. Otherwise, values of \(a^q\) or \(a^{-ps}\) are quite problematic to predict; empirically, there is a good reason to believe, that it usually should run much faster than standard version.</p>
 		<h2>Problem II - discrete logarithm without insurance</h2>
 		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{12}\), and thine aim is to find such \(x\) that \(a^x \equiv b \pmod m\).</p>
 		<h3>Simple solution</h3>

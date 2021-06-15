@@ -63,6 +63,7 @@ class Algorithm{
 		//Button style
 		this.stylistic={};
 		this.stylistic.bs_butt_width="40px";
+		this.stylistic.bs_small_butt_width="20px";
 		this.stylistic.bs_butt_height="40px";
 		this.stylistic.bs_font_size="14px";
 		this.stylistic.bs_border="0";
@@ -212,13 +213,13 @@ class Algorithm{
 
 
 	divsCreator(mode, number_of_rows, title_list, midian, elements=['divs', 'zdivs']){
-		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, this.place, this.stylistic.bs_butt_height);
+		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, this.place, this.stylistic);
 		this[elements[0]]=lst.divs;
 		this[elements[1]]=lst.zdivs;
 	}
 
 	modern_divsCreator(mode, number_of_rows, title_list, midian, place=this.place){
-		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, place, this.stylistic.bs_butt_height);
+		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, place, this.stylistic);
 		return lst;
 	}
 
@@ -265,7 +266,7 @@ class Representation_utils{
 	static title_id='title';
 	static single_id='midian'
 	static buttons_id='buttons';
-	static proto_divsCreator(mode, number_of_rows, title_list, midian, to_add, height){
+	static proto_divsCreator(mode, number_of_rows, title_list, midian, to_add, style){
 		var divs=[], zdivs=[], i, j, mode_title=(((mode&4)>0)?1:0), mode_single=(((mode&2)>0)?1:0), mode_butts=mode&1;
 		var elems=[];
 		if (mode_title==1) elems.push(Representation_utils.title_id);
@@ -275,7 +276,7 @@ class Representation_utils{
 		var full_div=document.createElement("DIV");
 		for (i=0;i<number_of_rows;i++) divs.push(document.createElement("DIV")), zdivs.push([]);
 		for (i=0;i<number_of_rows;i++){
-			divs[i].style.height=height;
+			divs[i].style.height=style.bs_butt_height;
 			//zdivs - inside div: 0 is write-up, 1 is button
 			for (j of elems) {
 				zdivs[i][j]=document.createElement("DIV");
@@ -294,7 +295,7 @@ class Representation_utils{
 			full_div.appendChild(divs[i]);
 		}
 		to_add.appendChild(full_div);
-		return {'zdivs':zdivs, 'divs':divs}
+		return {'zdivs':zdivs, 'divs':divs, 'full_div':full_div}
 	}
 	
 	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
@@ -388,15 +389,15 @@ class Representation_utils{
 		}
 
 		//Zamienić zmienne
-		all.style.height="45px";
-		all.style.width="45px";
+		all.style.height=style.bs_butt_height;
+		all.style.width=style.bs_butt_width;
 
-		base.style.height="45px";
-		base.style.width="45px";
+		base.style.height=style.bs_butt_height;
+		base.style.width=style.bs_butt_width;
 		base.style.paddingTop="10px";
 		base.style.verticalAlign="bottom";
 
-		expo.style.width="20px";
+		expo.style.width=style.bs_small_butt_width;
 		expo.style.right="0";
 		expo.style.zIndex="2";
 
