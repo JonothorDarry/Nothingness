@@ -20,6 +20,7 @@
 			<li>Primitive root modulo \(n\) may exist or not, depending on factorization of \(n\).</li>
 			<li>From <b>Euler's theorem</b>, \(g^{\phi(n)} \equiv 1 \pmod n\) for \(gcd(g, n)=1\) - what follows, \(ord_n(g) \le \phi(n)\) - and so, primitive root has maximal multiplicative order modulo \(n\) possible.</li>
 		</ol>
+		<h3>Orders</h3>
 		{{ algo.neo_algorithm(1, 'Orders modulo given number', '
 			<p>To formulate certain theoremas concerning primitive roots, it may be wise to visualize first what are their values \(ord_m(g)\) for fixed \(m\) and what is their distribution.
 			<p>Input format: value \(m\), for which all orders will be calculated<br>
@@ -27,7 +28,6 @@
 			</p>
 			', '7', {'algo_type':'shower', 
 			'color_description':{'standard':'', 'crucial':'Either primitive root or totient of m above number of primitive roots.'} }) }}
-			}) }}
 
 		<h2>Problem I - Existence of primitive roots</h2>
 		A number \(m\ (m \le 10^{12})\) is given. Is there any primitive root modulo \(m\)?

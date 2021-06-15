@@ -125,10 +125,12 @@ class Dlog extends Algorithm{
 				this.pass_color(this.buttons.large_table[i]['_expo'], 4, 1, 101);
 			}
 			this.pass_color(this.buttons.large_table[2]['_base'], 0, 14);
+			this.pass_color(this.buttons.large_table[1]['_base'], 0, 14);
 		}
 
 		if (s[0]==3){
 			var x=s[1];
+			if (s[1]>0) this.pass_color(this.buttons.a, 0, 14);
 			this.pass_color(this.buttons.small_table[x]['_base']);
 			this.pass_color(this.buttons.small_table[x]['_expo'], 4, 1, 101);
 			if (s[1]>1) this.pass_color(this.buttons.small_table[x-1]['_base'], 0, 14);
@@ -139,6 +141,7 @@ class Dlog extends Algorithm{
 				this.pass_color(this.buttons.small_table[i]['_expo'], 4, 1, 101);
 			}
 			this.pass_color(this.buttons.small_table[2]['_base'], 0, 14);
+			this.pass_color(this.buttons.a, 0, 14);
 		}
 
 		if (s[0]==5){
@@ -157,6 +160,7 @@ class Dlog extends Algorithm{
 			if (s[1]==0) staat.push([0, this.buttons.pursued, 4, 1]);
 			else staat.push([0, this.buttons.pursued, 14, 1]);
 			staat.push([1, this.buttons.pursued, this.buttons.pursued.innerHTML, this.logic.b_anx[s[1]][1]]);
+			this.pass_color(this.buttons.b, 0, 14, 0);
 		}
 
 		if (s[0]==7){
@@ -207,21 +211,21 @@ class Dlog extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1];
 
-		if (s[0]==0) return `Our aim is to find discrete logarithm - number x solving equation <strong>a<sup>x</sup> &equiv; b (mod m)</strong> - in this case, x solving ${this.logic.a}<sup>x</sup> &equiv; ${this.logic.b} (mod ${this.logic.m}). First, notice, that if there exist any solution, then there exist solution x &in; &lt;0 ; m-1 &gt; - because values of a<sup>x</sup> have to enter a cycle for subsequent values of x, because any value (mod m) is equivalent to one of m numbers in range &lt;0 ; m-1 &gt;. Then: a<sup>x</sup> &equiv; a<sup>s*p+q</sup> &equiv; b (mod m)</sup> for some constant s and q &lt; s. What can be done with this forbidden knowledge? Notice, that a<sup>q</sup> &equiv; b*a<sup>-s*p</sup>. If s is approximately square root of m, then one can, for each a<sup>s*p</sup> find its inverse, multiply by b, then check, if there exists such q in range &lt; 0; s-1 &gt;, that a<sup>q</sup>=b*a<sup>-s*p</sup> and have quite better algorithm than standard br&uuml;te f&ouml;rce. So, what is s in our case? Ceiling (could be floor, round, it doesn't matter as long, as number is close to square root) of square root of ${this.logic.m} is equal to ${this.logic.s} - this value will be used further.`
+		if (s[0]==0) return `Our aim is to find discrete logarithm - number x solving equation <strong>a<sup>x</sup> &equiv; b (mod m)</strong> - in this case, x solving ${this.logic.a}<sup>x</sup> &equiv; ${this.logic.b} (mod ${this.logic.m}). First, notice, that if there exist any solution, then there exist solution x &in; &lt;0 ; m-1 &gt; - because values of a<sup>x</sup> have to enter a cycle for subsequent values of x, because any value (mod m) is equivalent to one of m numbers in range &lt;0 ; m-1 &gt;. Then: a<sup>x</sup> &equiv; a<sup>s*p+q</sup> &equiv; b (mod m)</sup> for some constant s and q &lt; s. What can be done with this forbidden knowledge? Notice, that a<sup>q</sup> &equiv; b*a<sup>-s*p</sup>. If s is approximately square root of m, then one can, for each a<sup>s*p</sup> find its inverse, multiply by b, then check, if there exists such q in range &lt; 0; s-1 &gt;, that a<sup>q</sup> &equiv; b*a<sup>-s*p</sup> (mod m) and have quite better algorithm than standard br&uuml;te f&ouml;rce. So, what is s in our case? Ceiling (could be floor, round, it doesn't matter as long, as number is close to square root) of square root of ${this.logic.m} is equal to ${this.logic.s} - this value will be used further.`
 		if (s[0]==1 && s[1]==0) return `By large table we mean table with values a<sup>s*p</sup>. For p=0, value of a<sup>s*0</sup> is certainly equal to 1: thus, ${this.logic.a}<sup>${this.logic.s}*0</sup> &equiv; 1 (mod ${this.logic.m}).`;
 		if (s[0]==1 && s[1]==1) return `For p=1, value a<sup>s*p</sup> &equiv; a<sup>s</sup> (mod m) - this value can be calculated for example using binary exponentation. In this case, ${this.logic.a}<sup>${this.logic.s}</sup> &equiv; ${this.logic.anx[1][1]} (mod ${this.logic.m})`;
-		if (s[0]==1 && s[1]==2) return `a<sup>p*s</sup>=a<sup>(p-1)*s</sup>a<sup>s</sup> - thus, this (and all further values of a<sup>p*s</sup>) can be calculated from previous values. Here, ${this.logic.a}<sup>2*${this.logic.s}</sup> &equiv; ${this.logic.a}<sup>${this.logic.s}</sup> * ${this.logic.a}<sup>${this.logic.s}</sup> &equiv; ${this.logic.anx[1][1]}*${this.logic.anx[1][1]} &equiv; ${this.logic.anx[2][1]} (mod ${this.logic.m})`;
-		if (s[0]==2) return `Using formula a<sup>p*s</sup>=a<sup>(p-1)*s</sup>a<sup>s</sup> all further values of a<sup>p*s</sup> (mod m) can be calculated. Calculating values a<sup>p*s</sup> up to such value p', such that a<sup>(p'+1)*s</sup> &ge; m always yields discrete logarithm, if one exists.`;
+		if (s[0]==1 && s[1]==2) return `a<sup>p*s</sup> &equiv; a<sup>(p-1)*s</sup>a<sup>s</sup> (mod m) - thus, this (and all further values of a<sup>p*s</sup>) can be calculated from previous values. Here, ${this.logic.a}<sup>2*${this.logic.s}</sup> &equiv; ${this.logic.a}<sup>${this.logic.s}</sup> * ${this.logic.a}<sup>${this.logic.s}</sup> &equiv; ${this.logic.anx[1][1]}*${this.logic.anx[1][1]} &equiv; ${this.logic.anx[2][1]} (mod ${this.logic.m})`;
+		if (s[0]==2) return `Using formula a<sup>p*s</sup> &equiv; a<sup>(p-1)*s</sup>a<sup>s</sup> (mod m) all further values of a<sup>p*s</sup> (mod m) can be calculated. Calculating values a<sup>p*s</sup> up to such value p', such that (p'+1)*s &ge; m always yields discrete logarithm, if one exists.`;
 
 		if (s[0]==3 && s[1]==0) return `By large table we mean table with values a<sup>q</sup>. For q=0, value of a<sup>0</sup> is certainly equal to 1: thus, ${this.logic.a}<sup>0</sup> &equiv; 1 (mod ${this.logic.m}).`;
 		if (s[0]==3 && s[1]==1) return `For q=1, value a<sup>q</sup> &equiv; a (mod m) - in this case, a<sup>1</sup> &equiv; ${this.logic.a} (mod m).`;
-		if (s[0]==3 && s[1]==2) return `a<sup>q</sup>=a<sup>(q-1)</sup>*a - thus, this (and all further values of a<sup>q</sup>) can be calculated from previous values. Here, ${this.logic.a}<sup>2</sup> &equiv; ${this.logic.a} * ${this.logic.a} &equiv; ${this.logic.ax[1][1]}*${this.logic.ax[1][1]} &equiv; ${this.logic.ax[2][1]} (mod ${this.logic.m})`;
-		if (s[0]==4) return `Using formula a<sup>q</sup>=a<sup>(q-1)</sup>a all further values of a<sup>q</sup> (mod m) can be calculated. Values a<sup>q</sup> have to be calculated in a way enabling to construct all possible values of exponent in for p*s+q - thus, q &lt; s = ${this.logic.s} will always yield discrete logarithm, if one exists.`;
+		if (s[0]==3 && s[1]==2) return `a<sup>q</sup> &equiv; a<sup>(q-1)</sup>*a (mod m) - thus, this (and all further values of a<sup>q</sup>) can be calculated from previous values. Here, ${this.logic.a}<sup>2</sup> &equiv; ${this.logic.a} * ${this.logic.a} &equiv; ${this.logic.ax[1][1]}*${this.logic.ax[1][1]} &equiv; ${this.logic.ax[2][1]} (mod ${this.logic.m})`;
+		if (s[0]==4) return `Using formula a<sup>q</sup> &equiv; a<sup>(q-1)</sup>a (mod m) all further values of a<sup>q</sup> (mod m) can be calculated. Values a<sup>q</sup> have to be calculated in a way enabling to construct all possible values of exponent in for p*s+q - thus, q &lt; s = ${this.logic.s} will always yield discrete logarithm, if one exists.`;
 		if (s[0]==5) return `Values of a<sup>q</sup> are sorted in order to be able to find specific value within this array (and exponent associated with this value). Stable sort is preferable, as it allows to find lowest value of exponent being discrete logarithm for given (a, b, m).`;
 		if (s[0]==6) return `Next value of a<sup>p*s</sup> &equiv; ${this.logic.a}<sup>${this.logic.anx[s[1]][0]}</sup> &equiv; ${this.logic.anx[s[1]][1]} (mod ${this.logic.m}) is checked in order to determine, whether there exists discrete logarithm in form ${this.logic.a}<sup>${this.logic.anx[s[1]][0]}+q</sup>. In order to check it, one has to solve a<sup>p*s+q</sup> &equiv; b (mod m) for q - or rather a<sup>-s*p</sup>*b &equiv; a<sup>q</sup> (mod m). Inverse in the left part can be calculated with extended euclidead algorithm. The left part is equal to ${this.logic.inverse_anx[s[1]][1]}*${this.logic.b} &equiv; ${this.logic.b_anx[s[1]][1]} (mod ${this.logic.m}).`;
 		if (s[0]==7){
 			var ending_seq=``;
-			if (this.logic.march_of_the_binars[s[1]]==this.logic.ax.length) ending_seq=`thus, there is not even a greater equal value to ${this.logic.b_anx[s[1]][1]} the small table.`
+			if (this.logic.march_of_the_binars[s[1]]==this.logic.ax.length) ending_seq=`thus, there is not even a greater equal value to ${this.logic.b_anx[s[1]][1]} in the small table.`
 			else if (this.logic.solution_part_anx==s[1]) ending_seq=`thus, a discrete logarithm has been found! a<sup>x</sup> &equiv; ${this.logic.a} <sup> ${this.logic.anx[this.logic.solution_part_anx][0]}+${this.logic.sorted_ax[this.logic.solution_part_ax][0]}</sup> &equiv; ${this.logic.b} &equiv; b (mod ${this.logic.m}}`
 			else {
 				ending_seq=`thus, there is no discrete logarithm for this value of p.`;

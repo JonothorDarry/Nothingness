@@ -1,6 +1,6 @@
 .comprehend{
         position: relative;
-        height:80px;
+        height:90px;
 }
 .sender, .previous, .next, .finish, .show{
         background-color: #000000;
@@ -158,6 +158,7 @@ h3,h4,h5,h6{
 
 .pureAlgo{
 	position:relative;
+	/*margin-left:3%;*/
 }
 
 .beauty_table{

@@ -575,6 +575,10 @@ class SumNtt extends Algorithm{
 						super.Painter(double_butt[1], 101);
 						super.Painter(double_butt[2], 0);
 					}
+					else{
+						super.Painter(double_butt[1], 4);
+						super.Painter(double_butt[2], 4);
+					}
 					double_butt[0].style.height="45px";
 					double_butt[0].style.width="45px";
 

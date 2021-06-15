@@ -154,7 +154,6 @@
 				fully expresses the glory of inclusion-exclusion principle.
 			</li>
 		</ol>
-		<div class="mathemagical_box"> 
 		<h3>Other Proof of Inclusion-Exclusion principle</h3>
 		<ol>
 			<li>\(|A_1|=|A_1|\), furthermore, \(|A_1 \cup A_2|=|A_1|+|A_2|-|A_1 \cap A_2|\) - because each element belonging to \(A_1 \cap A_2'\) or \(A_1' \cap A_2\) will be counted once, elements belonging to \(A_1' \cap A_2'\) won't be counted, and elements belonging to \(A_1 \cap A_2\) are counted \(1+1-1=1\) time.</li>
@@ -175,7 +174,6 @@
 			Which proves inclusion-exclusion principle in another way.
 			</li>
 		</ol>
-		</div>
 		<h3>Original problem solution</h3>
 		<p>One can, for each of \(2^t-1\) sets \(A_{j_1} \cap A_{j_2} \cap \dots \cap A_{j_k}\) find its size as equal to \(\binom{n+t-1-\sum_{i=1}^k(a_{j_i}+1)}{t-1}\) - where the number of multisets having overabundance of elements of types \(j_i\) (represented as \(a_{j_i}+1\)) and some additional elements of each type (possibly also \(j_i\)) is calculated. Then, add sizes of those sets (mutiplied by \(-1\), iff \(k \& 1=0\)) and print result. Thus, solution can consist of subsequent steps:</p>
 		<ol>
