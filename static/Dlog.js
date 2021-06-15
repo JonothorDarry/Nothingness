@@ -234,7 +234,7 @@ class Dlog extends Algorithm{
 		}
 
 		if (s[0]==101) return `Apparently, there is no proper solution to this problem - no x solving ${this.logic.a}<sup>x</sup> &equiv; ${this.logic.b} (mod ${this.logic.m})`;
-		if (s[0]==100) return `Solution was found, it is equal to ${this.logic.dlog}: ${this.logic.a}<sup>${this.logic.dlog}</sup> &equiv; ${this.logic.b} (mod ${this.logic.m}).`;
+		if (s[0]==100) return `Solution was found, it is equal to ${this.logic.dlog}: ${this.logic.a}<sup>${this.logic.dlog}</sup> &equiv; ${this.logic.a}<sup>${this.logic.solution_part_anx*this.logic.s}</sup> * ${this.logic.a}<sup>${this.logic.sorted_ax[this.logic.solution_part_ax][0]}</sup> &equiv; ${this.logic.b} (mod ${this.logic.m}).`;
 	}
 }
 
