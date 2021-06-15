@@ -59,6 +59,10 @@ class Dlog extends Algorithm{
 		lst2.full_div.style.top="0";
 		var construction_site_post=lst2.zdivs;
 
+		for (var x of lst2.zdivs){
+			x.title.style.verticalAlign="top";
+		}
+
 		var system1=[['a', 0, 0], ['m', 2, 0], ['b', 1, 0], ['s', 3, 4]];
 
 		for (var x of system1){
@@ -70,7 +74,7 @@ class Dlog extends Algorithm{
 		var huge_numbs = this.logic.anx.map(post_logic);
 		var small_numbs = this.logic.ax.map(post_logic);
 		buttons['large_table']=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_post[0].buttons, huge_numbs, 4, -1, Representation_utils.expo_inner_style_button_creator);
-		buttons['small_table']=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_post[1].buttons, small_numbs, 4, -1, Representation_utils.expo_inner_style_button_creator);
+		buttons['small_table']=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_post[1].buttons, small_numbs.concat({'base':'', 'expo':''}), 4, -1, Representation_utils.expo_inner_style_button_creator);
 		buttons['pursued']=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_post[2].buttons, 0, 4, 1)[0];
 		this.buttons=buttons;
 	}
@@ -106,30 +110,35 @@ class Dlog extends Algorithm{
 
 		if (s[0]==0){
 			this.pass_color(this.buttons.s, 4, 1);
+			this.pass_color(this.buttons.m, 0, 14);
 		}
 
 		if (s[0]==1){
 			var x=s[1];
 			this.pass_color(this.buttons.large_table[x]['_base']);
 			this.pass_color(this.buttons.large_table[x]['_expo'], 4, 1, 101);
+			if (s[1]>1) this.pass_color(this.buttons.large_table[x-1]['_base'], 0, 14);
 		}
 		if (s[0]==2){
 			for (i=3; i<this.logic.anx.length; i++){
 				this.pass_color(this.buttons.large_table[i]['_base']);
 				this.pass_color(this.buttons.large_table[i]['_expo'], 4, 1, 101);
 			}
+			this.pass_color(this.buttons.large_table[2]['_base'], 0, 14);
 		}
 
 		if (s[0]==3){
 			var x=s[1];
 			this.pass_color(this.buttons.small_table[x]['_base']);
 			this.pass_color(this.buttons.small_table[x]['_expo'], 4, 1, 101);
+			if (s[1]>1) this.pass_color(this.buttons.small_table[x-1]['_base'], 0, 14);
 		}
 		if (s[0]==4){
 			for (i=3; i<this.logic.ax.length; i++){
 				this.pass_color(this.buttons.small_table[i]['_base']);
 				this.pass_color(this.buttons.small_table[i]['_expo'], 4, 1, 101);
 			}
+			this.pass_color(this.buttons.small_table[2]['_base'], 0, 14);
 		}
 
 		if (s[0]==5){
@@ -152,7 +161,12 @@ class Dlog extends Algorithm{
 
 		if (s[0]==7){
 			staat.push([0, this.buttons.pursued, 1, 14]);
-			if (this.logic.march_of_the_binars[s[1]]<this.logic.ax.length) this.pass_color(this.buttons.small_table[this.logic.march_of_the_binars[s[1]]]['_base'], 0, 15, 0);
+			if (this.logic.solution_part_anx==s[1]){
+				this.pass_color(this.buttons.small_table[this.logic.march_of_the_binars[s[1]]]['_base'], 0, 8, 0);
+				this.pass_color(this.buttons.large_table[s[1]]['_base'], 15, 8, 0);
+			}
+			else if (this.logic.march_of_the_binars[s[1]]<this.logic.ax.length) this.pass_color(this.buttons.small_table[this.logic.march_of_the_binars[s[1]]]['_base'], 0, 15, 0);
+			else this.pass_color(this.buttons.small_table[this.logic.march_of_the_binars[s[1]]]['_base'], 4, 15, 4);
 		}
 
 		if (s[0]==100){
@@ -216,7 +230,7 @@ class Dlog extends Algorithm{
 		}
 
 		if (s[0]==101) return `Apparently, there is no proper solution to this problem - no x solving ${this.logic.a}<sup>x</sup> &equiv; ${this.logic.b} (mod ${this.logic.m})`;
-		if (s[0]==101) return `Solution was found, it is equal to ${this.logic.dlog}: ${this.logic.a}<sup>${this.logic.dlog}</sup> &equiv; ${this.logic.b} (mod ${this.logic.m}).`;
+		if (s[0]==100) return `Solution was found, it is equal to ${this.logic.dlog}: ${this.logic.a}<sup>${this.logic.dlog}</sup> &equiv; ${this.logic.b} (mod ${this.logic.m}).`;
 	}
 }
 

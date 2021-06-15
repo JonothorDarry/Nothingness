@@ -50,7 +50,9 @@
 			\(n\)
 			</p>
 		'
-		, '99') }}
+		, '99', {
+		'color_description':{'standard':'Number still considered to be a prime', 'change':'Move through sieve in order to determine compositeness.', 'dead':'Marks non-prime numbers', 'iterator':'Finds subsequent primes.',}
+		}) }}
 
 		<p id="Anime-Descr">
 		Begin starts the sieve with a given limit. Next move moves forward current sieve, Previous move moves backward. This sieve has 2 optimizations: first, if a number is marked as non-prime, then all numbers it could mark were already marked by it's divisor. Proof:<br><br>
@@ -139,12 +141,14 @@
 				<li>If a divisor \(d\) of \(x\) is not prime, then it has some factorization consisting of smaller prime numbers. As \(x'_{d-1}\) will be divided by those factors before checking, whether \(x'_{d-1}\) is divisible by \(d\), \(x'_{d-1}\) will not be divisible by \(d\).</li>
 				<li>If \(x'_{\lceil \sqrt{x} \rceil} \gt 1\), then \(x\) has some divisor larger than \(\lceil \sqrt{x} \rceil\). As \(x\) cannot have more than one such divisor (otherwise \((\lceil \sqrt{x} \rceil+1) * (\lceil \sqrt{x} \rceil+1) \gt x = x\), which seems spurious), \(x'_{\lceil \sqrt{x} \rceil}\) has to be its only remaining prime divisor (prime - as it cannot have divisors lower or equal to \(\lceil \sqrt{x} \rceil\)).</li>
 			</ol>
-			{{ algo.algorithm(4, 'Simple factorization', '
+			{{ algo.neo_algorithm(4, 'Simple factorization', '
 				<p>Input format: One number \(x\) to factorize.<br>
 				\(x\)
 				</p>
 			'
-			, '84') }}
+			, '84', {
+			'color_description':{'standard':'', 'change':'Newly found prime (or increase in exponent), changed value of number to factorize.', 'crucial':'Result - factorization', 'stagnant':'Value of number, whose factorization is sought.',}
+			}) }}
 			
 
 

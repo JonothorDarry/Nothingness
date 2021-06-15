@@ -34,12 +34,14 @@
 			<li>Setting \(s=\lceil \sqrt{m} \rceil\) leads to \(s \approx n\) and, consequently, complexity \(O(\sqrt{n} \log(n))\).</li>
 			<li>Calculating modular inverse \(n\) times is not very clever technique, to put it bluntly; one can, however, notice, that \(a^{-sp}=a^{-s(p-1)}a^{-s}\) - that is, one can use previously calculated inverse to obtain current inverse. If \(inv_p \equiv a^{-sp} \pmod m\), then, for \(p \gt 1\), \(inv_p \equiv inv_{p-1}inv_1 \pmod m\), calculating inverse only once and reducing complexity of the third step from \(O(n \log(n))\) to \(O(n)\).</li>
 		</ol>
-		{{ algo.algorithm(1, 'Baby step giant step algorithm', '
+		{{ algo.neo_algorithm(1, 'Baby step giant step algorithm', '
 		<p>Input format: values \(a, b, m\), for which \(x: a^x \equiv b \pmod m\) has to be calculated. \(gcd(a, m)=1\) or expect the unexpected.<br>
 			\(a, b, m\)<br>
 			</p>
 		'
-		, '6 17 23', 'textarea', 'algo') }}
+		, '6 17 23', {'input_type':'textarea',
+		'color_description':{'standard':'', 'change':'', 'exponent':'Value of exponent', 'iterator':'Either iterator moving over large table or iterator evaluated for binary search moving over small table.', 'crucial':'Resulting two values \(p, q\), such that \(a^{ps+q} \equiv b \pmod m\)', 'helper1':''}
+		}) }}
 		<h3>Remark regarding search technique: using \(ord_m(a)\)</h3>
 		<p>Notice, that for particular \(a\) not \(\phi(m)-1\), but \(ord_m(a)-1\) can be upper bound on range, where minimal discrete logarithm solving \(a^x \equiv b \pmod m\) can be found. Passing maximal possible exponent may drastically speed up computation time. Using this information within algorithm will be crucial for one algorithm shown later.</p>
 		<h3>Remark regarding implementation: hash table</h3>
