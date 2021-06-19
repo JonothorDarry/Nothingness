@@ -154,6 +154,7 @@ class Algorithm{
 		this.finito=false;
 		this.ephemeral={'staat':null, 'passer':null};
 		this.pass_to_next_state=[];
+		this.logic={};
 	}
 
 	//Reversing operation
