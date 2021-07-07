@@ -705,4 +705,14 @@ class ArrayUtils{
 		}
 		return l;
 	}
+	static create_2d(dim1, dim2){
+		var i, j, arr;
+		arr=Array.apply(null, Array(dim1)).map(e => []);
+		for (j=0; j<dim1; j++){
+			for (i=0; i<dim2; i++){
+				arr.push(0);
+			}
+		}
+		return arr;
+	}
 }
