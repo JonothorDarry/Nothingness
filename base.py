@@ -12,22 +12,36 @@ from math import log
 app=Flask(__name__)
 
 #Później: zamienić na graf i przechodzić pomiędzy przestrzeniami funkcją
+class Article:
+    def __init__(self, base, full_name, path, refined_full_name, refined_with_underscore):
+        self.base=base
+        self.full_name=full_name
+        self.path=path
+        self.refined_full_name=refined_full_name
+        self.refined_with_underscore=refined_with_underscore
+
+systems=[
+        ['sieve', 'ErastotenesSieve', 'NumberTheory/Primes.html', 'Erastotenes Sieve', 'Erastotenes_Sieve'],
+        ['gcd', 'EuclidAlgo', 'NumberTheory/Gcd.html', 'Greatest Common Divisor', 'Greatest_Common_Divisor'],
+        ['crt', 'ChineseTheorem', 'NumberTheory/Crt.html', 'Chineese Remainder Theorem', 'Chineese_Remainder_Theorem'],
+        ['divisors', 'Divisors', 'NumberTheory/Divisors.html', 'Divisors', 'Divisors'],
+        ['binex', 'BinExpo', 'NumberTheory/BinaryExpo.html', 'Binary Exponentation', 'Binary_Exponentation'],
+        ['totient', 'Totient', 'NumberTheory/Totient.html', 'Totient', 'Totient'],
+        ['proot', 'PrimeRoot', 'NumberTheory/Proot.html', 'Primitive Root', 'Primitive_Root'],
+        ['dlog', 'DiscreteLog', 'NumberTheory/Dlog.html', 'Discrete Logarithm', 'Discrete_Logarithm'],
+        ['advpr', 'AdvPrimes', 'NumberTheory/Aprimes.html', 'Advanced Primes', 'Advanced Primes'],
+        ['primescnt', 'PrimesCount', 'NumberTheory/Prcount.html', 'Counting Primes', 'Counting_Primes'],
+
+        ['choice', 'Choice', 'Combinatorics/Choice.html', 'Choice', 'Choice'],
+        ['iep', 'Iep', 'Combinatorics/Iep.html', 'Inclusion Exclusion Principle', 'Inclusion_Exclusion_Principle'],
+
+        ['treewalk', 'TreeBasic', 'Trees/TreeBasics.html', 'Tree Walk', 'Tree_Walk']
+]
+systems=[Article(*x) for x in systems]
+
 class transformation:
     places={
-            'sieve':'ErastotenesSieve',
-            'gcd':'EuclidAlgo',
-            'crt':'ChineseTheorem',
-            'divisors':'Divisors',
-            'binex':'BinExpo',
-            'totient':'Totient',
-            'proot':'PrimeRoot',
-            'dlog':'DiscreteLog',
-            'ntt':'NumberTransform',
-
-            'choice':'Choice',
-            'iep':'Iep',
-
-            'treewalk':'TreeBasic',
+            **{x.base:x.full_name for x in systems}, 
             'index':'Wisdom',
             'signup':'Signer',
             'unlog':'Wisdom',
@@ -37,72 +51,20 @@ class transformation:
     }
 
     place_mapper={
-            'NumberTheory/Crt.html':'Chineese_Remainder_Theorem',
-            'NumberTheory/BinaryExpo.html':'Binary_Exponentation',
-            'NumberTheory/Primes.html':'Erastotenes_Sieve',
-            'NumberTheory/Gcd.html':'Greatest_Common_Divisor',
-            'NumberTheory/Divisors.html':'Divisors',
-            'NumberTheory/Totient.html':'Totient_function',
-            'NumberTheory/Proot.html':'Primitive_Root',
-            'NumberTheory/Discrete.html':'Discrete_Logarithm',
-            'NumberTheory/Ntt.html':'Number_Theoretic_Transform',
-
-            'Combinatorics/Choice.html':'Choice',
-            'Combinatorics/Iep.html':'Choice',
-
-            'Trees/TreeBasics.html':'Tree_Walk',
+            **{x.path:x.refined_with_underscore for x in systems}, 
     }
 
     inverse_place_mapper={
-            'Chineese Remainder Theorem':'crt',
-            'Binary Exponentation':'binex',
-            'Erastotenes Sieve':'sieve',
-            'Greatest Common Divisor':'gcd',
-            'Totient function':'totient',
-            'Divisors':'divisors',
-            'Primitive Root':'proot',
-            'Discrete Logarithm':'dlog',
-            'Number Theoretic Transform':'ntt',
-
-            'Choice':'choice',
-            'Iep':'iep',
-
-            'Tree Walk':'treewalk',
+            **{x.refined_full_name:x.base for x in systems}, 
             'index':'index',
     }
 
     funeral_procession={
-            'Chineese Remainder Theorem':'NumberTheory/Crt.html',
-            'Binary Exponentation':'NumberTheory/BinaryExpo.html',
-            'Erastotenes Sieve':'NumberTheory/Primes.html',
-            'Greatest Common Divisor':'NumberTheory/Gcd.html',
-            'Divisors':'NumberTheory/Divisors.html',
-            'Totient function':'NumberTheory/Totient.html',
-            'Primitive Root':'NumberTheory/Proot.html',
-            'Discrete Logarithm':'NumberTheory/Discrete.html',
-            'Number Theoretic Transform':'NumberTheory/Ntt.html',
-
-            'Choice':'Combinatorics/Choice.html',
-            'Iep':'Combinatorics/Iep.html',
-
-            'Tree Walk':'Trees/TreeBasics.html',
+            **{x.refined_full_name:x.path for x in systems},
     }
     
     html_to_place={
-            'NumberTheory/Crt.html':'crt',
-            'NumberTheory/BinaryExpo.html':'binex',
-            'NumberTheory/Primes.html':'sieve',
-            'NumberTheory/Gcd.html':'gcd',
-            'NumberTheory/Divisors.html':'divisors',
-            'NumberTheory/Totient.html':'totient',
-            'NumberTheory/Proot.html':'proot',
-            'NumberTheory/Discrete.html':'dlog',
-            'NumberTheory/Ntt.html':'ntt',
-
-            'Combinatorics/Choice.html':'choice',
-            'Combinatorics/Iep.html':'iep',
-
-            'Trees/TreeBasics.html':'treewalk', 
+            **{x.path:x.base for x in systems},
     }
 
 
@@ -304,6 +266,13 @@ def Iep():
 def TreeBasic():
     return Router('Trees/TreeBasics.html')
 
+@app.route('/advpr', methods=['GET', 'POST'])
+def AdvPrimes():
+    return Router('NumberTheory/Aprimes.html')
+
+@app.route('/prcount', methods=['GET', 'POST'])
+def PrimesCount():
+    return Router('NumberTheory/Prcount.html')
 
 @app.route('/logger/<login>')
 def logChecker(login):

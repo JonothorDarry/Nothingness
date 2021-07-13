@@ -44,7 +44,7 @@
 		<h2>Problem II: Finding \(n\)-th element of linear recursive equation of \(k\)-th degree</h2>
 		<p>Suppose a recursive sequence is given in form: 
 			<span class="central">\(f_n=c_1f_{n-1}+c_2f_{n-2}+...+c_kf_{n-k}+c_0\)</span>
-			And thine purpose is to find \(f_n\ mod\ m\), \(f_i, c_i, m, n &lt; 10^9, k &lt; 100\), where \(c_i, f_i\) for \(i &le; k\) are given.
+			And thine purpose is to find \(f_n\ mod\ m\) with constraints: \(c_i, m, n \le 10^9, k \le 100\), where \(c_i, f_i\) for \(i \le k\) are given (also, \(f_i \le 10^9\) for \(i \le k\)).
 		</p>
 		<h3>Brutal solution in \(O(nk)\)</h3>
 		<p>Standard brute-force dp solution would solve this problem in \(O(nk)\) - by calculating \(n\)-th element with previous \(k\) elements kept in memory, plugged into equation.</p>

@@ -76,7 +76,7 @@
 		<ol>
 			<li>Factorization of \(\phi(m)\) will be represented as \(\phi(m)=p_1^{q_1} \dots p_s^{q_s}\). Note that \(\forall_i p_i \le 10^9\) - because \(\phi(m)=g_1^{e_1-1}g_2^{e_2-1} \dots g_r^{e_r-1}(g_1-1)(g_2-1)\dots (g_r-1)\).</li>
 			<li>First, note, that if \(x\) is the solution for given problem, then \(x+\phi(m)\) is also the valid solution - because, from Euler's theorem, $$a^{x+\phi(m)} \equiv a^x a^{\phi(m)} \equiv a^x \pmod m$$</li>
-			<li>Thus, \(x\) satisfies following equations: 
+			<li>Thus, \(x\) (mind, that there might be more than one solution in range \( &lt; 0;\phi(m)-1 &gt; \)) satisfies following equations: 
 				<span class="central">\(x \equiv c_1 \pmod {p_1^{q_1}}\)</span>
 				<span class="central">\(\dots\)</span>
 				<span class="central">\(x \equiv c_s \pmod {p_s^{q_s}}\)</span>
@@ -134,7 +134,7 @@
 			<li>For each \(p_i^{s_i}\), in order to find single \(c_{i,k}\) one has to execute some constant amount of binary exponantations \(\pmod m\), and then find discrete logarithm \(\pmod m\) - but with only \(p_i\) possible values of discrete logarithm - thus, with standard Shanks' approach, without hash table, finding one solution will work in \(O(\sqrt{p_i})\). Thus, finding one \(c_{i,k}\) takes \(O(\sqrt{p_i} \log(p_i) + \log(m))\)</li>
 			<li>To find single \(c_i\) one has to do all same operations \(q_i\) times, resulting in complexity \(O(q_i(\sqrt{p_i} \log(p_i)+\log(m)))\)</li>
 			<li>Thus, finding all \(c_i\)'s will take \(O(\sum_{i=0}^{s} q_i(\sqrt{p_i} \log(p_i)+\log(m)))\).</li>
-			<li>Last part, most straightforward - solving system of linear congruences should take \(O(s \log(m))\).</li>
+			<li>Last part, most straightforward - solving system of \(s\) linear congruences should take \(O(s \log(m))\).</li>
 		</ol>
 		<p>Summing all up, complexity will look like \(O(fac(m)+\sum_{i=0}^{s} q_i(\sqrt{p_i} \log(p_i)+\log(m)))\). As \(\sum_{i=0}^{s} q_i \le \log_2(m)\), then complexity can be formulated as:
 		$$O(fac(m)+\log(m)\sqrt{p} \log(p))$$
