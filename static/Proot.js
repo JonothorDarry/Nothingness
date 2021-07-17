@@ -186,6 +186,7 @@ class Proot extends Algorithm{
 					allez=this.doubleButtCreator(0, this.buttCreator.bind(this));
 					btn=allez[1];
 					btn2=allez[2];
+					this.Painter(allez[0], 4);
 					var butt_container=allez[0];
 				}
 

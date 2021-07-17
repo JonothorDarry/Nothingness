@@ -10,8 +10,101 @@
 	</head>
 	<body>
 		{{ headers.full_upper('Counting Primes', 'NumberTheory') }}
-		
+		<h2>Introduction</h2>
+		<p>This article is focused on showing efficient techniques regarding prime counting or, in general, counting numbers coprime to some set of numbers. Currently, Prime Number Theorem is assumed without proof. Here, \(P\) will refer either to set of all primes or sequence of subsequent primes (\(i\)-th element of this sequence will be denoted as \(P_k\)). Definitions used in this article:</p>
+		<ol>
+			<li><strong>Prime counting function \(\pi(n)\)</strong> is a function counting number of prime numbers \(p \in P\) in the interval \(\lt 1;n \gt\) inclusive.
+				$$\pi(n)=|\{x: x \le n \land x \in P\}|$$
+			</li>
+			<li><strong>Prime Number Theorem</strong> states, that:
+				$$\lim_{n \rightarrow \infty} \frac{\Pi(n)}{n/\ln(n)} = 1$$
+				There are at least two types of proofs of this theorem: refined analytical proofs using properties of zeta function or even more uncanny entities, and Selberg/Erdos standard proof - long, painful, one that can be interpreted as the very definition of suffering and could serve well as introduction to Schopenhauer's <i>The World as Will and Representation</i>. Currently, none is shown here.
+			</li>
+			<li><strong>Partial sieve function \(\phi(n, a)\)</strong> is defined as number of numbers lower or equal to \(n\) not divisible by any prime number in sequence \(P\) up to index \(a\).
+				$$\phi(n, a)=|\{x: x \le n \land \forall_{i \le a} P_i \nmid x\}|$$
+			</li>
+			<li><strong>Kth partial sieve function \(P_k(n, a)\)</strong> is defined as number of numbers lower or equal to \(n\) not divisible by any prime number in sequence \(P\) up to index \(a\), that have \(k\) (not necessarily distinct) prime factors.
+				$$P_k(n, a)=|\{x: x \le n \land \forall_{i \le a} P_i \nmid x \land x=p_1p_2 \dots p_k\}|$$
+			</li>
+		</ol>
+		<h2>Problem I - Number of coprime numbers in a range, or special case of more general problem</h2>
+		<p>A sequence \(S\) of \(n\) pairwisely coprime numbers \(n \le 100, S_i \le 10^5\) is given. How many there are numbers less or equal to \(x\) (\(x \le 10^{13})\) divisible by at least one element of this sequence?</p>
+		<h3>Solution I: using botched Legendre's formula</h3>
+		<p>Let \(\pi_S(x)\) denote answer to given question. First, answer is equal to amount of numbers in a range except numbers divisible by at least one number from sequence. From inclusion-exclusion principle, 
+		$$\pi_S(x) = x - \sum_{i=1}^{n} \lfloor \frac{x}{S_i} \rfloor \sum_{i=1}^{n} \sum_{j=1}{n} + \lfloor \frac{x}{S_i S_j} \rfloor - \dots + (-1)^n \lfloor \frac{x}{S_1 S_2 \dots S_n \rfloor}$$
+		Note that as all numbers are coprime, it is not necessary to calculate any \(lcm\) (otherwise there would be \(lcm(S_{i_1}, S_{i_2}, \dots S_{i_l})\) instead of \(S_{i_1} S_{i_2} \dots S_{i_l}\)
+		</p>
 
+		<p>How to estimate number of operations occuring using this technique? Let \(f(S,x)\) denote set of all multiples of elements of \(S\) lower or equal to \(x\). There are two ways: </p>
+			<ol> 
+				<li>One can invent maxtest for this particular problem where \(H=S\) consisits of 100 smallest primes, \(x=10^{13}\): turns out, that \(f(H, 10^{13}) \approx 2*10^9\) - too large.</li>
+				<li>For any set \(S\) of size \(n\) one can estimate \(f(S, x)\) by \(O(\sum_{i=0}^{k} \binom{n}{i})\), where \(k\) is greatest primorial lower equal to \(x\): here, it is equal to \(k=10\), as \(p_{10}\# = 200.560.490.130, p_{11}=7.420.738.134.810\) - because no more than \(k\) primes will be chosen for as denominators for this formula. This, however, does not necessarily yield better estimates than \(O(x)\).</li>
+			</ol>
+		</p>
+
+		<h3>Solution II: generalized partial sieve function</h3>
+		<p>
+		Let \(\phi_S(n, a)\) denote amount of numbers in range \(\lt 1;n \gt\) coprime to all numbers in sequence \(S\) up to index \(a\):
+			$$\phi_S(n, a)=|\{x: x \le n \land \forall_{i \le a} S_i \nmid x\}|$$
+			Note, that \(\phi(n, a)=\phi_P(n,a)\). How to calculate values of that function?
+		</p>
+		<p>All numbers divisible by all elements \(S_1, \dots, S_a\) are all numbers not divisible by elements \(S_1, \dots, S_{a-1}\) except those divisible by \(S_a\). As \(S_a\) is coprime to all previous elements, each element in range \(\lt 1; \lfloor \frac{n}{S_a} \rfloor \gt \) not divisible by \(S_1, \dots, S_{a-1}\) multiplied by \(S_a\) will yield a number:</p>
+		<ol>
+			<li>Not divisible by \(S_1 \dots S_{a-1}\)</li>
+			<li>Divisible by \(S_a\)</li>
+			<li>Lower or equal to \(x\)</li>
+		</ol>
+		<p>Thus:
+			$$\phi_S(n, a)=\phi_S(n, a-1)-\phi_S(\lfloor \frac{n}{S_a} \rfloor, a-1)$$
+			$$\phi_S(n, 0)=n$$
+		</p>
+		<p>And the sought value is \(\phi_S(n, a)\). While this formula is immediate consequence of Legendre's formula, it gives the possibility to reformulate the solution in moderately elegant way by:</p>
+		<ol>
+			<li>Calculating values \(\phi(m, a)\) for small \(m\) and every \(a\) straight dp - up to, say, \(m=C\).</li>
+			<li>Calculating values \(\phi(m, a)\) directly from the formula for greater \(m\).</li>
+		</ol>
+		<p>Note, that complexity of this approach will be equal to \(O(f(H, \frac{x}{C})+C*a)\), where \(C*a\) comes from dp part, \(f(H, \frac{x}{C})\) comes from calculating \(\phi_S\) directly from recursive formula; in this particular case for \(C=10^5\), \(f(H, \frac{10^{13}}{10^5})=f(H, 10^8) \approx 2.5*10^6\), which constitutes much better solution.
+		</p>
+
+		<h2>Problem 2: number of primes in a range</h2>
+		<p>A number \(x \le 10^{11}\) is given; how many there are primes in range \(\lt 1;x \gt\)</p>
+		<h3>Solution I: Legendre's formula</h3>
+		<p><strong>Legendre's formula</strong> states, that:</p>
+		{% set sqrt=" \lfloor \sqrt{x} \\rfloor " %}
+		$$ \pi(x) = -1 + \pi( {{sqrt}} ) + x - \lfloor \sum_{p_i \le {{sqrt}} }\frac{x}{p_i} \rfloor + \sum_{p_i \le p_j \le {{sqrt}} } \lfloor \frac{x}{p_i p_j} \rfloor + \dots + (-1)^{ {{sqrt}} } \lfloor \frac{x}{p_1 p_2 \dots p_k} \rfloor$$
+
+		<p>Where:</p>
+		<ol>
+			<li>\(\pi( {{sqrt}} )\) counts number of all primes in range up to \({{ sqrt }}\)</li>
+			<li>\(x - \lfloor \sum_{p_i \le {{sqrt}} }\frac{x}{p_i} \rfloor + \sum_{p_i \le p_j \le {{sqrt}} } \lfloor \frac{x}{p_i p_j} \rfloor + \dots + (-1)^{ {{sqrt}} } \lfloor \frac{x}{p_1 p_2 \dots p_k} \rfloor\) counts all numbers not divisible by any found prime - as in the first problem.</li>
+			<li>\(-1\) stands for counting number \(1\) - neither prime, nor divisible by any prime. 
+		</ol>
+		<p>It suffers from same problems as analogous method shown in problem I - its number of operations is too great larger.</p>
+		<h3>Solution II: partial sieving</h3>
+		<p>First, the problem will be divided into two distinct problems:</p>
+
+		{% set partial_sq=" \sqrt[D]{x} " %}
+		<ol>
+			<li>How many there are numbers in range \(\lt 1;x \gt\) not divisible by prime numbers \(p \le {{partial_sq}} \) for some \(D\)?</li>
+			<li>How many there are numbers in range \(\lt 1;x \gt\) divisible by either \(2\) or \(3\) or \(\dots\) or \(D\) primes, all of them greater than \( {{partial_sq}} \)?</li>
+		</ol>
+		<p>First problem can be defined in terms of a partial sieve function:
+			$$\phi(x, \pi( {{partial_sq}} ))$$
+		gives the sought result.</p>
+		<p>Let \(P_k(x, a)\) be defined as amount of number lower equal to \(x\) with exactly \(k\) prime divisors (not necessarily distinct), none of them less or equal to \(P_a\). Then:
+			$$\phi(x, h)=P_0(x, h) + P_1(x, h) + P_2(x, h) + \dots $$
+		</p>
+		<p>How to calculate \(P_k(x, h)\) though?
+		$$P_2(x, a)=\sum_{i=a+1}^{\pi(\sqrt{x})} \pi(\frac{x}{P_i})-(i-1)$$
+
+		</p>
+
+
+
+		<!--
+			as \(\pi( {{partial_sq}} ) \approx 10^3 \), setting constant \(C\) for dp/recursion tradeoff to \(10^3\) seems to be a reasonable
+		-->
+		
 
 		{{ footers.full_lower() }}
 	</body>

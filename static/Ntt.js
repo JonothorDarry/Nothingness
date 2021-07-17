@@ -15,7 +15,6 @@ class Ntt extends Algorithm{
 	_logical_single_unity_root(){
 		if (this.logic.is_ntt) this.logic.w=NTMath.pow(this.logic.proot, Math.floor((this.logic.toth)/this.logic.n), this.logic.q);
 		else this.logic.w=this.logic.proot;
-		console.log(this.logic.w);
 	}
 	_logical_butterfly(){
 		var cnst, halfx, x, i;
@@ -89,6 +88,7 @@ class Ntt extends Algorithm{
 	}
 
 	_logical_multiply(){
+		var i;
 		this.logic.y=Array.apply(null, Array(this.logic.n)).map(e => 0n);
 		for (i=0; i<this.logic.n; i++){
 			if (this.logic.is_ntt) this.logic.y[i]=(this.logic.a_merger[this.logic.lv][i]*this.logic.b_merger[this.logic.lv][i])%this.logic.Bq;
@@ -96,13 +96,13 @@ class Ntt extends Algorithm{
 		}
 	}
 	_logical_generate_result(){
+		var i;
 		this.logic.res=Array.apply(null, Array(this.logic.n)).map(e => 0);
 		for (i=0; i<this.logic.n; i++){
 			if (this.logic.is_ntt) this.logic.res[i]=(this.logic.y_merger[this.logic.lv][i]*this.logic.inv_n)%this.logic.Bq;
 			else this.logic.res[i]=this.logic.y_merger[this.logic.lv][i].mul(new Complex(this.logic.inv_n));
 		}
 	}
-
 
 
 	logical_box(){
@@ -160,19 +160,44 @@ class Ntt extends Algorithm{
 
 	palingnesia(){
 		this.logical_box();
-		this.buttons={'inv_n':null, 'proot':null, }
+		//Currently unused
+		this.buttons={'inv_n':null, 'proot':null, 'k':[], 'a':[], 'b':[], 'w':[], 'A':[], 'B':[], 'w2':[], 'A2':[], 'B2':[], 'y':[], 'Y':[], 'res':[]};
+		var mx_all, i;
+		console.log(this.logic);
+
+		//System-specific feats: either read q or not, then find inverse n and minsize of button (perhaps too large for fft)
+		if (this.logic.is_ntt) mx_all=Math.max(4, this.logic.q.toString().length)*10;
+		else{
+			var mxa=0, sumb=0;
+			for (i=0;i<this.logic.n;i++) {
+				if (mxa<Math.max(this.logic.a[i].real, mxa)) mxa=this.logic.a[i].real;
+			}
+			for (i=0;i<this.logic.n;i++) sumb+=this.logic.b[i].real;
+			mx_all=mx_all=Math.max(4, 7+Math.ceil(Math.log(sumb*mxa)))*10;
+		}
+		this.stylistic.bs_butt_width=`${mx_all}px`;
+		this.stylistic.bs_butt_width_h=mx_all;
+
+
+		this.place_mul=7+2*this.logic.lv+4;
+		this.endet=this.place_mul+8+this.logic.lv+2;
+		var x=this.divsCreator();
+		this.zdivs=x.zdivs;
 	}
 
-	constructor(block, o, a, m, b){
+	constructor(block, o, a, m, b, q){
 		super(block);
 		this.ntt=block.radio_n;
 		this.fft=block.radio_f;
 		this.logic.o=o;
+		this.logic.a=a.map(e => BigInt(e));
 		this.logic.m=m;
-		this.logic.a=a;
-		this.logic.b=b;
+		this.logic.b=b.map(e => BigInt(e));
+		this.logic.q=q;
+		this.logic.Bq=BigInt(this.logic.q);
+
 		this.logic.is_ntt=true;
-		this.logic.is_fft=true;
+		this.logic.is_fft=false;
 
 		this.palingnesia();
 
@@ -180,10 +205,6 @@ class Ntt extends Algorithm{
 		this.btnlist=[];
 		this.utilbts=[];
 
-		this.place_mul=7+2*this.logic.lv+4;
-		this.endet=this.place_mul+8+this.logic.lv+2;
-
-		this.divsCreator();
 		for (i=0;i<3;i++){
 			this.btnlist.push([]);
 			for (j=0;j<this.logic.n;j++){
@@ -191,7 +212,7 @@ class Ntt extends Algorithm{
 				this.btnlist[i].push(btn);
 				this.zdivs[i].buttons.appendChild(btn);
 
-				this.btnlist[i][j].innerHTML=(i==0?j:(i==1?a[j]:b[j]));
+				this.btnlist[i][j].innerHTML=(i==0?j:(i==1?this.logic.a[j]:this.logic.b[j]));
 				this.Painter(this.btnlist[i][j], 0);
 			}
 		}
@@ -205,26 +226,10 @@ class Ntt extends Algorithm{
 		this.read_data();
 		this.palingnesia();
 
-		//System-specific feats: either read q or not, then find inverse n and minsize of button (perhaps too large for fft)
-		if (this.logic.is_ntt) mx_all=Math.max(4, this.logic.q.toString().length)*10;
-		else{
-			var mxa=0, sumb=0;
-			for (i=0;i<this.logic.n;i++) {
-				if (mxa<Math.max(this.logic.a[i].real, mxa)) mxa=this.logic.a[i].real;
-			}
-			for (i=0;i<this.logic.n;i++) sumb+=this.logic.b[i].real;
-			mx_all=mx_all=Math.max(4, 7+Math.ceil(Math.log(sumb*mxa)))*10;
-		}
 
-		this.stylistic.bs_butt_width=`${mx_all}px`;
-		this.stylistic.bs_butt_width_h=mx_all;
-
-		this.place_mul=7+2*this.logic.lv+4;
-		this.endet=this.place_mul+8+this.logic.lv+2;
 		var ij, thrs=[7, 7+this.logic.lv+2, this.place_mul+8];
 		this.mapp={0:[this.logic.a, this.logic.a_merger, thrs[0], 1], 1:[this.logic.b, this.logic.b_merger, thrs[1], 2], 2:[this.logic.y, this.logic.y_merger, thrs[2], this.place_mul+3]};
 
-		this.divsCreator();
 		//Checking conditions for ntt, adding state
 		if (this.logic.is_ntt){
 			if (this.logic.q%2==0)
@@ -362,7 +367,7 @@ class Ntt extends Algorithm{
 			var pol_1=this.btnlist[level+pos-1][whole+part];
 			var w=((s[1]==2)?this.btnlist[this.place_mul+6][diff]:this.btnlist[4][diff]);
 
-			this.pass_color(cur_btn);
+			this.pass_color(cur_btn, 4, 1, 20);
 			//These two change every two moves - 2d passer? previously if s[0]==6
 			this.pass_color(pol_0, 20, 13, 20);
 			this.pass_color(pol_1, 20, 14, 20);
@@ -517,9 +522,10 @@ class Ntt extends Algorithm{
 		for (i=1;i<=this.logic.lv;i++) title_list.push(`Y<sub>${i}</sub>`);
 		title_list.push("inverse n and values c<sub>k</sub>")
 
-		super.divsCreator(7, this.endet-1, title_list, `${this.stylistic.bs_butt_width_h+10}px`);
 		this.place.style.width=`max-content`;
 		this.wisdom.style.minWidth=`${(this.logic.n+1)*this.stylistic.bs_butt_width_h+210}px`;
+		var divs=this.modern_divsCreator(7, this.endet-1, title_list, `${this.stylistic.bs_butt_width_h+10}px`);
+		return divs;
 	}
 }
 
@@ -704,8 +710,6 @@ class SumNtt extends Algorithm{
 			}
 		}
 
-
-
 		if (s[0]==101){
 			var coeffs=this.poly[this.layers-1][0];
 			var poly=polynominalize(coeffs);
@@ -721,7 +725,7 @@ class SumNtt extends Algorithm{
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 feral.radio_n=document.getElementById('NTT');
 feral.radio_f=document.getElementById('DFT');
-var eg1=new Ntt(feral, 6, [2, 7, 3, 12, 43, 25, 19], 7, [4, 6, 7, 1, 2, 3, 4, 132]);
+var eg1=new Ntt(feral, 6, [2, 7, 3, 12, 43, 25, 19], 7, [4, 6, 7, 1, 2, 3, 4, 132], 257);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 var eg2=new SumNtt(feral2, 6, [2, 3, 5, 4, 2, 3]);

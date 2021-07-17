@@ -709,10 +709,9 @@ class ArrayUtils{
 		var i, j, arr;
 		arr=Array.apply(null, Array(dim1)).map(e => []);
 		for (j=0; j<dim1; j++){
-			for (i=0; i<dim2; i++){
-				arr.push(0);
-			}
+			for (i=0; i<dim2; i++) arr[j].push(0);
 		}
+		console.log(dim1, arr.length);
 		return arr;
 	}
 }
