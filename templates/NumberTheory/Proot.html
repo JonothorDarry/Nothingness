@@ -30,10 +30,10 @@
 			'color_description':{'standard':'', 'crucial':'Either primitive root or totient of m above number of primitive roots.'} }) }}
 
 		<h2>Problem I - Existence of primitive roots</h2>
-		A number \(m\ (m \le 10^{12})\) is given. Is there any primitive root modulo \(m\)?
+		<p>A number \(m\ (m \le 10^{12})\) is given. Is there any primitive root modulo \(m\)?</p>
 
 		<h3>Fundamental lemmas</h3>
-		Those lemmas will be heavily used in all further paragraphs
+		<p>Those lemmas will be heavily used in all further paragraphs</p>
 		<h4>0 Lemma: \(x^k \equiv 1 \pmod n \iff ord_n(x)|k\)</h4>
 		<p>To prove by contradiction \(x^k \equiv 1 \pmod n \implies ord_n(x)|k\): Let \(k\) be miniml such number, such that \(x^k \equiv 1 \pmod n \land ord_n(x) \nmid k\). Either \(k \lt ord_n(x)\) - this cannot be, as \(ord_n(x)\) is minimal number, such that \(x^{ord_n(x)} \equiv 1 \pmod n\); or \(k \gt ord_n(x)\) - then, 
 		<span class="central">\(x^k \equiv x^{ord_n(x)} \equiv 1 \pmod n\)</span>
@@ -191,13 +191,62 @@
 		'
 		, '334562', {'add_on':'radio', 'added_elements':['Probabilistic', 'Deterministic'],
 		'color_description':{'standard':'', 'change':'', 'crucial':'Primitive root shown along with its order, also candidate for primitive root.'} }) }}
+		<p>Note, that modification of the method described above allows to find quickly \(ord_m(g)\) for given \(m, g\): one can start from \(s=\phi(m)=p_1^{q_1} \dots p_n^{q_n}\), find out, for subsequent \(p_i\), whether \(g^{s/p_i} \equiv 1 \pmod m\): if so, then set \(s=p_1^{r_1} \dots p_i^{r_i-1} \dots p_n^{r_n}\), where \(r_i\) were previous exponents for \(s\) (in the beginning, \(r_i=q_i\)) and try to mow down either exponent by \(p_i\) if currently \(r_i \ge 0\), or move to \(r_{i+1}=q_{i+1}\). In the end of this process \(ord_m(g) = s\), and this method works in \(O(\log^2(m))\) - one \(\log\) for binary exponentation, one for passing through exponents.</p>
+		<h2>Problem IV: maximal order for a given number</h2>
+		<h3>The very definition of the problem and its consequences</h3>
+		<p>For given \(m\), what is the maximal value of \(ord_m(g)\) for any \(g\)? <strong>Carmichael function</strong> denoted as \(\lambda(x)\) is defined as an answer to this problem. More formally, 
+		$$ \lambda(m) = max_{ord_m(g)} \{g \in N^+: gcd(g, m)=1\} $$
+		There are 3 cases that will be discussed separately:
+		<ol>
+			<li>\(m=p^k\) for odd \(p\) - already covered</li>
+			<li>\(m=2^k\)</li>
+			<li>\(m=p_1^{q_1} \dots p_n^{q_n}\)</li>
+		</ol>
+		<h3>Thesis I: for \(m=2^k\) and \(k \ge 3\) occurs: \(\lambda(m)=\frac{\phi(m)}{2}\)</h3>
+		<p>Note, that above means, that for each \(k \ge 3\) there exists such \(g\), such that:
+			$$ g^{2^{k-3}} \not \equiv 1 \pmod {2^k}$$
+			As proven in 2.2.5 for \(k \ge 3\) \(ord_{2^k}(g) \le \frac{\phi(m)}{2}\), and also, \(\lambda(m) | \phi(m)\) and \(\phi(2^k)=2^{k-1}\), then \(\lambda(2^k)\) has form \(2^l\); showing, that \(\lambda(2^k) \gt 2^{k-3}\) will show that \(\lambda(2^k) = 2^{k-2}\) finishing the proof.</p>
+
+			<p>Proof will consist of showing, that if there exists \(g\) for which \(g^{2^{k-3}} \equiv 2^{k-1}+1 \pmod {2^{k}}\), then \(g^{2^{k-2}} \equiv 2^k+1 \pmod {2^{k+1}}\)</p>
+			<p>For \(k=3\), let \(g=5\): then, \(g^{2^{k-3}} \equiv 5^1 \equiv 5 \equiv 2^2+1 \pmod 8\)</p>
+			<p>Thus
+			$$ \exists_{k} 5^{2^{k-3}} \equiv 2^{k-1}+1 \pmod {2^k} $$
+			Induction hypothesis consists of:
+			$$ \forall_{k \ge k_0} 5^{2^{k-2}} \equiv 2^k+1 \pmod {2^{k+1}} $$
+			As for the proof itself:
+			$$ 5^{2^{k-2}} \equiv (5^{2^{k-3}})^2 \equiv ((2^{k-1}+1)+c2^k)^2 \equiv (2^{k-1}+1)^2 + 2(2^{k-1}+1)c2^k + c^22^{2k} \equiv (2^{k-1}+1)^2 + (2^{k-1}+1)c2^{k+1} + c^22^{2k} \equiv(2^{k-1}+1)^2 + 0 + 0 \equiv 2^{2k-2}+2*2^{k-1}+1 \equiv 2^k+1 \pmod {2^{k+1}}$$
+			Which shows existence of a number \(g\), for which \(ord_m(g)=\frac{\phi(2^k)}{2}\), and thus, \(\lambda(2^k) = \frac{\phi(2^k)}{2}\) for \(k \ge 3\).</p>
+			{% set lcm="lcm(\lambda(p_1^{q_1}), \dots, \lambda(p_n^{q_n}))" %}
+			<h3>Thesis II: for \(m=p_1^{q_1} \dots p_n^{q_n}\) occurs: \(\lambda(m)={{lcm}}\)</h3>
+			<p>This proof wil consist of two parts: first, for any \(g\), \(g^{ {{lcm}} } \equiv 1 \pmod m\). Second, for any number \(h\) not dividing at least one \(\lambda(p_i^{q_i})\) there exists such \(g\), that \(g^{h} \not \equiv 1 \pmod m\).</p>
+			<h4>First lemma: \(g^{ {{lcm}} } \equiv 1 \pmod m\) for any \(g\)</h4>
+			<p>Proof: Define \(c_1, \dots c_n\) in such way, that \({{lcm}}=\lambda(p_1^{q_1})c_1 = \lambda(p_2^{q_2})c_2 = \dots = \lambda(p_n^{q_n})c_n \)
+			$$
+			\begin{cases}
+			{% for x in [1,2] %}
+				g^{\lambda(p_{{x}}^{q_{{x}} }) c_{{x}} } \equiv (g^{\lambda(p_{{x}}^{q_{{x}} }) })^{c_{{x}} } \equiv 1^{c_{{x}} } \equiv 1 \pmod {p_{{x}}^{q_{{x}} }} \\
+			{% endfor %}
+				... \\
+				g^{\lambda(p_n^{q_n }) c_n } \equiv (g^{\lambda(p_n^{q_n }) })^{c_n } \equiv 1^{c_n } \equiv 1 \pmod {p_n^{q_n} } \\
+			\end{cases}
+			$$</p>
+			<p>Thus, from chinese remainder theorem, $$g^{ {{lcm}} } \equiv 1 \pmod {p_1^{q_1} p_2^{q_2} \dots p_n^{q_n} }$$</p>
+			<h4>Second lemma: for any \(h \le {{lcm}}\) there exists such \(g\), such that \(g^h \not \equiv 1 \pmod m\)</h4>
+			<p>Proof: </p>
+			<ol>
+				<li>There has to be some index \(i\), such that \(h \nmid \lambda(p_i^{q_i})\) - because it is lower than \(lcm\) of all \(\lambda(p_i^{q_i})\)</li>
+				<li>Thus, there exists such \(g\) - namely any number with maximal order modulo \(p_i^{q_i}\) - that \(g^{h} \nmid 1 \pmod {p_i^{q_i}}\).</li>
+				<li>From Chinese Remainder Theorem there is exactly one such sequence of remainders of \(g^h\) modulo \(p_1^{q_1}, \dots, p_n^{q_n}\), that \(g^h \equiv 1 \pmod m\). This sequence is \(1, 1, \dots, 1\). As \(g^h \not \equiv 1 \pmod {p_i^{q_i}}\), then \(g^h \not \equiv 1 \pmod m\), which ends the proof.</li>
+			</ol>
+
 
 
 		<h2>Summary</h2>
 		<ol>
 			<li>A number has a primitive root if and only if it can be represented as \(1, 2, 4, p^k\) or \(2p^k\), where \(p\) is odd prime number.</li>
 			<li>If one primitive root modulo \(m\) exists, then there are \(\phi(\phi(m))\) primitive roots modulo \(m\).</li>
-			<li>One can find primitive root in expected number of operations not higher than \(O(log^3(m))+O(fac(m))\), where \(fac(m)\) denotes time to factorize \(m\).</li>
+			<li>One can find primitive root in expected number of operations not higher than \(O(log^3(m))+O(fac(m))\), where \(fac(m)\) denotes time to factorize \(m\). One can also find \(ord_m(g)\) in \(O(log^2(m))+O(fac(m))\).</li>
+			<li><strong>Carmichael function</strong> - denoted as \(\lambda(m)\) - is equal to maximum possible \(ord_m(g)\) for any \(g\) coprime to \(m\). Notably, \(\lambda(p_1^{q_1} \dots p_n^{q_n}) = lcm(\lambda(p_1^{q_1}) \dots \lambda(p_n^{q_n}))\) and \(\lambda(2^k)=2^{k-2}\) for \(k \ge 3\).
 		</ol>
 
 			<h3>Problems</h3>
