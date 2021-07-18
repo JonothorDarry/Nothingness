@@ -217,25 +217,41 @@
 			$$ 5^{2^{k-2}} \equiv (5^{2^{k-3}})^2 \equiv ((2^{k-1}+1)+c2^k)^2 \equiv (2^{k-1}+1)^2 + 2(2^{k-1}+1)c2^k + c^22^{2k} \equiv (2^{k-1}+1)^2 + (2^{k-1}+1)c2^{k+1} + c^22^{2k} \equiv(2^{k-1}+1)^2 + 0 + 0 \equiv 2^{2k-2}+2*2^{k-1}+1 \equiv 2^k+1 \pmod {2^{k+1}}$$
 			Which shows existence of a number \(g\), for which \(ord_m(g)=\frac{\phi(2^k)}{2}\), and thus, \(\lambda(2^k) = \frac{\phi(2^k)}{2}\) for \(k \ge 3\).</p>
 			{% set lcm="lcm(\lambda(p_1^{q_1}), \dots, \lambda(p_n^{q_n}))" %}
+			{% set post_lcm="lcm(ord_{p_1^{q_1}}(g), \dots, ord_{p_n^{q_n}}(g))" %}
 			<h3>Thesis II: for \(m=p_1^{q_1} \dots p_n^{q_n}\) occurs: \(\lambda(m)={{lcm}}\)</h3>
-			<p>This proof wil consist of two parts: first, for any \(g\), \(g^{ {{lcm}} } \equiv 1 \pmod m\). Second, for any number \(h\) not dividing at least one \(\lambda(p_i^{q_i})\) there exists such \(g\), that \(g^{h} \not \equiv 1 \pmod m\).</p>
-			<h4>First lemma: \(g^{ {{lcm}} } \equiv 1 \pmod m\) for any \(g\)</h4>
-			<p>Proof: Define \(c_1, \dots c_n\) in such way, that \({{lcm}}=\lambda(p_1^{q_1})c_1 = \lambda(p_2^{q_2})c_2 = \dots = \lambda(p_n^{q_n})c_n \)
+			<p>More generally, proven shall be:
+			$$ord_m(g) = lcm(ord_{p_1^{q_1}}(g), ord_{p_2^{q_2}}(g), \dots, ord_{p_n^{q_n}}(g))$$
+			Note, that there exists such \(g\), that for each \(i\): \(ord_{p_i^{q_i}}(g)=\lambda(p_i^{q_i})\) - this comes straight from chinese remainder theorem: namely, one can chose numbers \(c_1, c_2 \dots c_n\), such that \(ord_{p_i^{q_i}}(c_i)=\lambda(p_i^{q_i})\) - and from chinese remainder theorem, there exists exactly one such number \(g\), that
 			$$
 			\begin{cases}
 			{% for x in [1,2] %}
-				g^{\lambda(p_{{x}}^{q_{{x}} }) c_{{x}} } \equiv (g^{\lambda(p_{{x}}^{q_{{x}} }) })^{c_{{x}} } \equiv 1^{c_{{x}} } \equiv 1 \pmod {p_{{x}}^{q_{{x}} }} \\
+				g \equiv c_{{x}} \pmod {p_{{x}}^{q_{{x}} }} \\
 			{% endfor %}
 				... \\
-				g^{\lambda(p_n^{q_n }) c_n } \equiv (g^{\lambda(p_n^{q_n }) })^{c_n } \equiv 1^{c_n } \equiv 1 \pmod {p_n^{q_n} } \\
+				g \equiv c_n \pmod {p_n^{q_n }} \\
+			\end{cases}
+			$$
+			This implies, that there exists such number \(g\), that \(ord_m(g)={{lcm}}\), and there cannot be any number \(h\) with higher \(ord_m(h)\).
+			</p>
+
+
+			<h4>First lemma: \(g^{ {{post_lcm}} } \equiv 1 \pmod m\) for any \(g\)</h4>
+			<p>Proof: Define \(c_1, \dots c_n\) in such way, that \({{post_lcm}}=ord_{p_1^{q_1}}(g)c_1 = ord_{p_2^{q_2}}(g)c_2 = \dots = ord_{p_n^{q_n}}(g)c_n \)
+			$$
+			\begin{cases}
+			{% for x in [1,2] %}
+				g^{ord_{p_{{x}}^{q_{{x}} }}(g) c_{{x}} } \equiv (g^{ord_{p_{{x}}^{q_{{x}} }}(g) })^{c_{{x}} } \equiv 1^{c_{{x}} } \equiv 1 \pmod {p_{{x}}^{q_{{x}} }} \\
+			{% endfor %}
+				... \\
+				g^{ord_{p_n^{q_n }}(g) c_n } \equiv (g^{ord_{p_n^{q_n }}(g) })^{c_n } \equiv 1^{c_n } \equiv 1 \pmod {p_n^{q_n} } \\
 			\end{cases}
 			$$</p>
-			<p>Thus, from chinese remainder theorem, $$g^{ {{lcm}} } \equiv 1 \pmod {p_1^{q_1} p_2^{q_2} \dots p_n^{q_n} }$$</p>
-			<h4>Second lemma: for any \(h \le {{lcm}}\) there exists such \(g\), such that \(g^h \not \equiv 1 \pmod m\)</h4>
+			<p>Thus, from chinese remainder theorem, $$g^{ {{post_lcm}} } \equiv 1 \pmod {p_1^{q_1} p_2^{q_2} \dots p_n^{q_n} }$$</p>
+			<h4>Second lemma: for any \(g\) and \(h \lt {{post_lcm}}\), \(g^h \not \equiv 1 \pmod m\)</h4>
 			<p>Proof: </p>
 			<ol>
-				<li>There has to be some index \(i\), such that \(h \nmid \lambda(p_i^{q_i})\) - because it is lower than \(lcm\) of all \(\lambda(p_i^{q_i})\)</li>
-				<li>Thus, there exists such \(g\) - namely any number with maximal order modulo \(p_i^{q_i}\) - that \(g^{h} \nmid 1 \pmod {p_i^{q_i}}\).</li>
+				<li>There has to be some index \(i\), such that \(ord_{p_i^{q_i}}(g) \nmid h\) - because it is lower than \(lcm\) of all \(ord_{p_i^{q_i}}(g)\)</li>
+				<li>Thus, \(g^{h} \not \equiv 1 \pmod {p_i^{q_i}}\).</li>
 				<li>From Chinese Remainder Theorem there is exactly one such sequence of remainders of \(g^h\) modulo \(p_1^{q_1}, \dots, p_n^{q_n}\), that \(g^h \equiv 1 \pmod m\). This sequence is \(1, 1, \dots, 1\). As \(g^h \not \equiv 1 \pmod {p_i^{q_i}}\), then \(g^h \not \equiv 1 \pmod m\), which ends the proof.</li>
 			</ol>
 
@@ -246,7 +262,7 @@
 			<li>A number has a primitive root if and only if it can be represented as \(1, 2, 4, p^k\) or \(2p^k\), where \(p\) is odd prime number.</li>
 			<li>If one primitive root modulo \(m\) exists, then there are \(\phi(\phi(m))\) primitive roots modulo \(m\).</li>
 			<li>One can find primitive root in expected number of operations not higher than \(O(log^3(m))+O(fac(m))\), where \(fac(m)\) denotes time to factorize \(m\). One can also find \(ord_m(g)\) in \(O(log^2(m))+O(fac(m))\).</li>
-			<li><strong>Carmichael function</strong> - denoted as \(\lambda(m)\) - is equal to maximum possible \(ord_m(g)\) for any \(g\) coprime to \(m\). Notably, \(\lambda(p_1^{q_1} \dots p_n^{q_n}) = lcm(\lambda(p_1^{q_1}) \dots \lambda(p_n^{q_n}))\) and \(\lambda(2^k)=2^{k-2}\) for \(k \ge 3\).
+			<li><strong>Carmichael function</strong> - denoted as \(\lambda(m)\) - is equal to maximum possible \(ord_m(g)\) for any \(g\) coprime to \(m\). Notably, \(\lambda(p_1^{q_1} \dots p_n^{q_n}) = lcm(\lambda(p_1^{q_1}), \dots, \lambda(p_n^{q_n}))\) and \(\lambda(2^k)=2^{k-2}\) for \(k \ge 3\).
 		</ol>
 
 			<h3>Problems</h3>

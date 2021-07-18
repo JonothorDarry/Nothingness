@@ -47,6 +47,12 @@
 					<li> If each pair \(c_1, c_2\) uniquely defines \(x \in &lt;0;ab-1&gt;\), then one can prove theorem combinatorically: \(gcd(x, ab)=1 \iff (gcd(c_1, a)=1 \land gcd(c_2, b)=1)\). How many there are numbers \(c_1\), such that \(gcd(a, c_1)=1\) and \(c_1 \le a\)? \(\phi(a)\). Analogously for \(b\). And so, there are \(\phi(a) \phi(b)\) pairs \(c_1, c_2\) identifying \(x: gcd(x, ab)=1\), which finishes the proof.</li>
 				</ol>
 			</li>
+			<li>Another proof, that \(\phi(ab)=\phi(a)\phi(b)\) for coprime \(a, b\), this time using inclusion-exclusion principle, perhaps simpler:
+				<ol>
+					<li>For \(x=p_1^{q_1} \dots p_n^{q_n}\): \(\phi(x)=x-\sum_{i} \frac{x}{p_i} + \sum_{i \lt j} \frac{x}{p_i p_j} - \dots + (-1)^n\frac{x}{p_1p_2 \dots p_n}\) - this comes from inclusion-exclusion principle, defining sets \(P_1, P_2, \dots, P_n\) of numbers divisible by \(p_1, \dots p_n\) lower or equal to \(x\) and finding, how many elements belong to neither of those sets.</li>
+					<li>For coprime \(x=p_1^{q_1} \dots p_n^{q_n}, y=r_1^{s_1} \dots r_m^{s_m}\) (also, let sequence \(t\) denote concatenation of sequences \(p, r\): \(\phi(x)\phi(y)=x(1-\sum_i \frac{1}{p_i} + \sum_{i \lt j} \frac{1}{p_i p_j} + \dots +(-1)^n\frac{1}{p_1 \dots p_n}) * y(1-sum_i \frac{1}{r_i} + \sum_{i \lt j} \frac{1}{r_i r_j} - \dots +(-1)^m \frac{1}{r_1 \dots r_n}) = xy(1-\sum_i \frac{1}{t_i} + \sum_{i \lt j} \frac{1}{t_i t_j} - \dots +(-1)^{n+m} \frac{1}{t_1 \dots t_{n+m}}) = \phi(xy)\)</li>
+				</ol>
+			</li>
 		</ol>
 		<p>
 		To sum up the proof: each \(x\) identifies one pair \(0 \le c_1 \lt a, 0 \le c_2 \lt b\), and each \(c_1, c_2\) identifies exactly one \(x \in &lt; 0;ab-1 &gt;\). If and only if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(x\) defined by \(c_1, c_2\) is coprime to \(ab\). There are \(\phi (a)\) numbers, such that \(gcd(c_1, x)=1\), and \(\phi (b)\) numbers, such that \(gcd(c_2, x)=1\) - and so, there are \(\phi(a) \phi(b)\) distinct pairs \(c_1, c_2\) such that \(x &lt; ab\) identified by them is coprime to \(ab\), and for any \(ab \ge 1:\ gcd(ab, ab) = gcd(0, ab)\).<br>
