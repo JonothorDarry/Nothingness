@@ -219,7 +219,7 @@ class Algorithm{
 		this[elements[1]]=lst.zdivs;
 	}
 
-	modern_divsCreator(mode, number_of_rows, title_list, midian, place=this.place){
+	modern_divsCreator(mode, number_of_rows, title_list, midian=null, place=this.place){
 		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, place, this.stylistic);
 		return lst;
 	}
@@ -521,6 +521,20 @@ class NTMath{
 			a=(a+a)%m;
 		}
 		return res;
+	}
+
+	static gcd(a, b){
+		var c;
+		while (b>0){
+			c=a%b;
+			a=b;
+			b=c;
+		}
+		return a;
+	}
+
+	static lcm(a, b){
+		return Math.floor((a*b)/NTMath.gcd(a, b));
 	}
 
 	static ext_gcd(a, b){

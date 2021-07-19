@@ -3,10 +3,14 @@ class Order extends Partial{
 		super(block);
 		this.ShowReality(x);
 	}
+
 	ShowReality(x=-1){
 		var i=0, toth;
 		if (x==-1) x=this.input.value;
 		toth=this.sieve_mark(x);
+		this.logic.lambda=this.find_carmichael(x);
+		console.log(this.logic.lambda);
+
 		this.place.innerHTML='';
 		this.create_upper_div(x, toth);
 
@@ -37,6 +41,20 @@ class Order extends Partial{
 			for (j=x;j<lim;j+=x) this.marked[j]=1;
 		}
 		return toth;
+	}
+
+	find_carmichael(x){
+		var i=0, lambda=1, k=0, pw=i;
+		for (i=2; i*i<=x; i++){
+			if (x%i != 0) continue;
+			pw=1,  k=0;
+			while (x%i==0) x=Math.floor(x/i), pw=pw*i, k+=1;
+			if (i==2 && k>=3) lambda=NTMath.lcm(lambda, Math.floor(pw/4));
+			else lambda=NTMath.lcm(lambda, pw-Math.floor(pw/i));
+			console.log(i, pw, lambda);
+		}
+		if (x>1) lambda=NTMath.lcm(lambda, (x-1));
+		return lambda;
 	}
 
 	create_standard_div(g, mod, toth){
@@ -75,7 +93,9 @@ class Order extends Partial{
 		dv.style.width=`${(x-1+5)*40}px`;
 		dv.style.height="40px"
 		var lst=['x', 'g', `ord<sub>${x}</sub>(g)`, 'g<sup>i</sup>; i='];
-		for (i=1;i<=toth;i++) lst.push(i);
+
+
+		for (i=1; i<=this.logic.lambda; i++) lst.push(i);
 		for (i=0; i<lst.length; i++){
 			btn.push(this.buttCreator(lst[i]));
 			btn[i].style.position="relative";

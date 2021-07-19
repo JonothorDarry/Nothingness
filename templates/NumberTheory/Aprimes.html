@@ -10,9 +10,20 @@
 	</head>
 	<body>
 		{{ headers.full_upper('Advanced Primes', 'NumberTheory') }}
+
+		{{ algo.neo_algorithm(1, 'Primarility tests', '
+			<p>Input format: value \(m\), for which all witnessess and non-witnessess will be shown<br>
+			\(m\)<br>
+			</p>
+			', '77', {'algo_type':'shower', 
+			}) }}
 		
 
 
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+		<script src="{{url_for('static', filename='Aprimes.js')}}"></script>
+		<form id="page" style="display:none"></form>
 		{{ footers.full_lower() }}
 	</body>
 </html>
