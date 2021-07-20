@@ -25,7 +25,7 @@ class Order extends Partial{
 			this.logic.power.push([]);
 			for (j=0; j<this.logic.expos.length; j++){
 				this.logic.power[i].push(NTMath.pow(i, this.logic.expos[j], this.logic.m));
-				if ((i==0 && this.logic.power[i][j]!=1) || (i>0 && this.logic.power[i][j]!=1 && this.logic.power[i][j]!=this.logic.m-1)) break;
+				if ((i==0 && this.logic.power[i][j]!=1) || (i>0 && this.logic.power[i][j]!=1)) break;
 			}
 		}
 	}
@@ -48,8 +48,8 @@ class Order extends Partial{
 		var divs=this.modern_divsCreator(1, this.logic.m, []);
 		var i=0, j, btn;
 		
-		this._btn_appender(divs.zdivs[0].buttons);
-		this._btn_appender(divs.zdivs[0].buttons);
+		this._btn_appender(divs.zdivs[0].buttons, "g", 5);
+		this._btn_appender(divs.zdivs[0].buttons, "g<sup>x</sup>; x=", 5);
 		for (j=0; j<this.logic.expos.length; j++){
 			this._btn_appender(divs.zdivs[0].buttons, this.logic.expos[j], 5);
 		}
@@ -57,11 +57,14 @@ class Order extends Partial{
 		//Meat
 		for (i=1; i<this.logic.m; i++){
 
+			var last=this.logic.power[i][this.logic.power[i].length-1];
 			if (NTMath.gcd(i, this.logic.m)>1){
 				divs.divs[i].style.display="none";
 				this._btn_appender(divs.zdivs[i].buttons, i, 2);
 			}
 			else if (this.logic.power[i].length==1) this._btn_appender(divs.zdivs[i].buttons, i, 5);
+			else if (last!=1 && last!=this.logic.m-1) this._btn_appender(divs.zdivs[i].buttons, i, 8);
+
 			else this._btn_appender(divs.zdivs[i].buttons, i);
 			this._btn_appender(divs.zdivs[i].buttons);
 

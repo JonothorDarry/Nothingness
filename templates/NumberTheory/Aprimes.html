@@ -11,8 +11,66 @@
 	<body>
 		{{ headers.full_upper('Advanced Primes', 'NumberTheory') }}
 
-		{{ algo.neo_algorithm(1, 'Primarility tests', '
-			<p>Input format: value \(m\), for which all witnessess and non-witnessess will be shown<br>
+		<h2>Introduction</h2>
+		<p>This article is intended to show efficient, not necessarily elegant methods of finding whether particular number is prime, and also its factorization. Definitions introduced in this article include:</p>
+		<ol>
+			<li>There are myriads of <strong>tests</strong>, that check, whether a number is prime; every one of tests shown here uses some <strong>base</strong>. Testing consists of two steps:
+				<ol>
+					<li>Choosing a base \(b\)</li>
+					<li>Checking, whether a number is a composite according to the given test. Later, result of this test will be denoted by \(test(m, b) = \begin{cases} 1 \text{ test using base \(b\) shows, that \(m\) is composite} \\0 \text{ otherwise}\\ \end{cases}\)</li>
+				</ol>
+				If a number \(m\) is composite, yet, \(test(m,b)=0\) for some base \(b\), then, \(b\) will be called <strong>non-witness</strong> or <strong>liar</strong> regarding compositeness of \(m\). Conversely, if \(test(m, b)=1\) for base \(b\), then \(b\) will be called a <strong>witness</strong> of compositeness of \(m\). Two particular tests will be described later: <strong>Fermat test</strong> and <strong>Miller-Rabin test</strong>.
+			</li>
+			<li><strong>Carmichael number</strong> is such number \(m\), that \(\lambda(m) | m-1 \).</li>
+		</ol>
+
+		<h2>Problem I: Is given number prime?</h2>
+		<p>A number \(m \le 10^{18}\) is given; is this number a prime number?</p>
+		<h3>Solution I: Fermat primarility test</h3>
+		<p>First test shown relies on special case of euler's theorem (\(gcd(a,m)=1 \implies a^{\phi(m)} \equiv 1 \pmod m\)), namely Fermat's little theorem:
+		 $$a^{p-1} \equiv 1 \pmod p $$
+		 For a prime number \(p\). If there is such \(a \lt p\), that \(a^{p-1} \not \equiv 1 \pmod p\), then \(p\) is not a prime.</p>
+		<p>Let \(test_F(m, b)\) denote results of Fermat test testing compositeness of \(m\) for a base \(b\).
+		$$test_F(m,b)=
+		\begin{cases} 
+			1 \text{ if \(b^{m-1} \not \equiv 1  \pmod m\)} \\
+			0 \text{ otherwise} \\
+		\end{cases}
+		$$
+		</p>
+		<h4>Theorem I: if a number \(m\) is neither a prime nor a Carmichael number, then there are at least \(\frac{m}{2}\) fermat witnesses for \(m\)</h4>
+		<ol>
+			<li>If \(gcd(b, m) \gt 1\), then \(b^{m-1} \not \equiv 1 \pmod m\) - so, instead, a lemma showing that at least half of numbers coprime to \(m\) are fermat witnesses will be shown. 
+				$$\frac{\phi(m)}{2}+(m-\phi(m)) \ge \frac{m}{2}$$
+			</li>
+			<li>Say, there exists such \(b: gcd(b, m)=1\), that \(b^{m-1} \equiv c \pmod m\), where \(c \not \equiv 1 \pmod m\). Then, let set \(H\) denote set of all such numbers \(h\), that: 
+				$$h^{m-1} \equiv 1 \pmod m$$
+				then, for any \(h \in H\)
+				$$ (hb)^{m-1} \equiv h^{m-1}b^{m-1} \equiv 1*c \equiv c \pmod m $$
+				Note, that all \(hb\) are distinct: otherwise two elements of set \(H\) would have to be equivalent \(\pmod m\):
+				$$h_1 b \equiv h_2 b \pmod m \ \ \ //*b^{-1}$$
+				$$h_1 \equiv h_2 \pmod m$$
+
+				Thus, $$|\{h: h^{m-1} \equiv 1 \pmod m\}| \le |\{x: x^{m-1} \equiv c \pmod m\}| $$
+				<!--
+				Furthermore, let \(X\) denote set of all numbers \(x\) such that \(x^{m-1} \equiv c \pmod m\); notice, that as \(gcd(b, m)=1\), then \(b\) has an inverse modulo \(m\). Then, for any \(x \in X\):
+				$$ (xb^{-1})^{m-1} \equiv x^{m-1}(b^{m-1})^{-1} \equiv c*c^{-1} \equiv 1 \pmod m $$
+				Thus, if there is at least one such number \(b\), such that \(b^{m-1} \equiv c \pmod m\), then there are exactly as many numbers \(h\), such that \(h^{m-1} \equiv 1 \pmod m\), as there are such numbers \(x\), that \(x^{m-1} \equiv c \pmod m\). In other words:
+				$$ \exists_{b: gcd(b, m)=1} b^{m-1} \equiv c \pmod m \implies |\{h: h^{m-1} \equiv 1 \pmod m\}|=|\{x: x^{m-1} \equiv c \pmod m\}| $$
+				-->
+				What follows, if there is at least one witness \(\pmod m\), there are no less fermat witnesses than non-witnesses.
+			</li>
+			<li>When does a number \(m\) not have any witness? When, for all \(h: h^{m-1} \equiv 1 \pmod m\). Note, that if \(\lambda(m) \nmid m-1\), this won't happen - if \(g\) is such number, that \(ord_m(g)=\lambda(m)\), then \(g^y \equiv 1 \pmod m\) if and only if \(\lambda(m) | y\). Conversely, if \(\lambda(m) | m-1\), this <strong>will</strong> happen - as for any \(g: ord_m(g) | \lambda(m)\), so 
+				$$ g^{m-1} \equiv g^{\lambda(m)*\_tmp} \equiv g^{ord_m(g)*\_tmp2} \equiv (g^{ord_m(g)})^{\_tmp2} \equiv 1^{\_tmp2} \equiv 1 \pmod m $$.
+			Such number are either prime numbers or Carmichael numbers.
+			</li>
+			<li>To sum it up: Fermat test consists of testing for a base \(b\), whether \(b^{m-1} \not \equiv 1 \pmod m\) - if so, then \(m\) is composite; otherwise, \(m\) might be prime. If there is a witness of compositeness of \(m\), then there are not less than \(\frac{m}{2}\) witnesses of compositeness of \(m\). There are numbers, for which there are no Fermat's witnesses of compositeness - prime numbers and Carmichael numbers, that is numbers, for which \(\lambda(m) | m-1\) holds.
+			</li>
+		</ol>
+
+
+		{{ algo.neo_algorithm(1, 'Primarility tests: Fermat and Miller-Rabin', '
+			<p>Input format: value \(m\), for which all witnesses and non-witnesses will be shown<br>
 			\(m\)<br>
 			</p>
 			', '77', {'algo_type':'shower', 
