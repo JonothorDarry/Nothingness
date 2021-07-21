@@ -38,6 +38,7 @@
 		\end{cases}
 		$$
 		</p>
+
 		<h4>Theorem I: if a number \(m\) is neither a prime nor a Carmichael number, then there are at least \(\frac{m}{2}\) fermat witnesses for \(m\)</h4>
 		<ol>
 			<li>If \(gcd(b, m) \gt 1\), then \(b^{m-1} \not \equiv 1 \pmod m\) - so, instead, a lemma showing that at least half of numbers coprime to \(m\) are fermat witnesses will be shown. 
@@ -68,6 +69,59 @@
 			</li>
 		</ol>
 
+		<h3>Solution II: Miller-Rabin primarility test</h3>
+		<ol>
+			<li>Notice, that if \(m\) has a primitive root, then there are only 2 such numbers \(x\), that \(x^2 \equiv 1 \pmod m\) - namely \(1\) and \(m-1\) - if \(m\) has a primitive root, then number of such numbers \(g\), that \(ord_m(g)=2\) is equal to \(\phi(2)=1\) - this comes from <a href="/proot#27_Problem_II:_The_number_of_primitive_roots_modulo_\(m\)">here</a> (basically, if \(d|\phi(m)\), then there are \(\phi(d)\) such numbers \(h\), that \(ord_m(h)=d\)). </li>
+
+			<li>All prime numbers have at least one primitive root (also powers of odd prime number).</li>
+			<li>Miller-Rabin test involves checking, whether:
+				<ol>
+					<li>\(g^{m-1} \not \equiv 1 \pmod m\) - if so, then \(m\) is not a prime.</li>
+					<li>If \(g^{2^{l+1}k} \equiv 1 \pmod m\) for some \(l, k\), the test checks whether \(g^{2^lk} \equiv \pm 1 \pmod m\) - if not, then \(m\) is a prime.</li>
+				</ol>
+			</li>
+			<li>Note, that - because of first step - every Fermat witness is also Miller-Rabin witness.</li>
+		</ol>
+		<h4>Probability of hittin' a witness part I: A short remark on Carmichael numbers</h4>
+		<p>Only Carmichael numbers have less than \(\frac{m}{2}\) witnesses; what can be said about them?</p>
+		<h5>Thesis I: All Carmichael numbers are square-free: that is, they have a form \(m=p_1p_2 \dots p_n\), where all \(p_i\) are distinct</h5>
+		<ol>
+			<li>Suppose, that there is some Carmichael number \(v=p_1^{q_1} \dots p_n^{q_n}\) with some \(q_i \gt 1\), that is not square-free. Also, without loss of generality let \(q_1 \gt 1\)</li>
+			<li>Clearly, \(\phi(p_1^{q_1}) | \lambda(m)\), and as \(\lambda(m) | m-1\), then \(\phi(p_1^{q_1}) | m-1\)</li>
+			<li>\(\phi(p_1^{q_1}) = p_1^{q_1-1}(p_1-1)\)</li>
+			<li>However, as \(p_1 | m\), then \(p_1 \nmid m-1\) - which contradicts our statement.</li>
+		</ol>
+		<h5>Supplement: Korselt's Criterion</h5>
+		<h6>Part I: Carmichael implies criterion</h6>
+			<p>Korselt's Criterion states, that for all primes \(p\) dividing \(m\):
+				$$\forall_{p \in P:p|m} p-1 | m-1 \implies m \in C$$
+				, where \(C\) denotes set of Carmichael numbers.
+			</p>
+			<p>Assuming theorem I (above - Carmichael numbers are square-free), if \(m=p_1p_2 \dots p_n\) is a Carmichael number, then 
+			$$\lambda(m)=lcm(\lambda(p_1), \lambda(p_2), \dots, \lambda(p_n))=lcm(\phi(p_1), \phi(p_2), \dots, \phi(p_n))=lcm(p_1-1, p_2-1, \dots p_n-1)$$.
+			Thus, \(p_1-1 | \lambda(m), p_2-1 | \lambda(m) \dots, p_n-1 | \lambda(m)\). And as \(\lambda(m) | m-1\) for Carmichael numbers, then \(m \in C\) implies for all prime divisors of \(m\): \(p_i-1 | m-1\).</p>
+		<h6>Part II: Criterion implies Carmichael</h6>
+			<p>Still, \(p_i\) denotes prime divisor of some number \(m\); if for all primes dividing \(m\)
+			$$p_i-1 | m-1$$, 
+			then \(\lambda(m)=lcm(p_1-1, p_2-1, \dots, p_n-1)\) must divide \(m-1\), because:
+			<ol>
+				<li>Let factorization of \(p_i-1=r_1^{s_{i,1}} \dots r_z^{s_{i,z}}\), where some s_z may be equal to zero and sequence \(r_i\) is the sequence of all prime divisors of \(p_1-1, p_2-1, \dots p_n-1\).</li>
+				<li>\(\lambda(m)=lcm(p_1-1 \dots p_n-1) = r_1^{MAX_j(s_{j, 1})} \dots r_z^{MAX_j(s_{j, z})}\)</li>
+				<li>For any \(i\) one can argue, that \(r_i^{s_{j,i}} | m-1\) - as \(p_j-1 | m-1\)</li>
+				<li>Thus, \(\lambda(m) | m-1\)</li>
+			</ol>
+			<p>Thus, if for all \(p_i\) one can argue, that \(p_i-1 | m-1\), then \(m\) is a Carmichael number</p>
+
+			</p>
+		<h5>Thesis II: All Carmichael numbers have at least 3 distinct primes in their factorization</h5>
+		<ol>
+			<li>Suppose, that there is some Carmichael number \(v=pq\) with prime, distinct \(p, q\).</li>
+			<li>From Korselt's criterion \(p-1 | m-1\), also \(q-1 | m-1\)</li>
+			<li>\(m-1=(p-1)(q-1)+p+q-2 = (p-1)(q-1)+(p-1)+(q-1)\) - pure algebra.</li>
+			<li>\(p-1 | (p-1)(q-1)+(p-1)+(q-1) \implies p-1 | q-1\)</li>
+			<li>\(q-1 | (p-1)(q-1)+(p-1)+(q-1) \implies q-1 | p-1\)</li>
+			<li>Both statements above cannot be true simaltaneously, if \(p \neq 1\)</li>
+		</ol>
 
 		{{ algo.neo_algorithm(1, 'Primarility tests: Fermat and Miller-Rabin', '
 			<p>Input format: value \(m\), for which all witnesses and non-witnesses will be shown<br>

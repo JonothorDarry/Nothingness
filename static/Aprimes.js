@@ -81,7 +81,6 @@ class Order extends Partial{
 
 		this.presentation();
 	}
-
 }
 
 var feral1=Partial.ObjectParser(document.getElementById('Algo1'));
