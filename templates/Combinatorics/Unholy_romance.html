@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
+
+<html lang="en">
+	<head>
+		<title>Intertwining Number theory and combinatorics</title>
+		{{ headers.meta() }}
+	</head>
+
+	<body>
+		{{ headers.full_upper('Number theory in Combinatorics', 'Combinatorics') }}
+
+		<h2>Introduction</h2>
+		<p>This article is intended to show aspects of number theory that are useful for calculating some values particularly suited for combinatorics (e.g. binomial coefficient modulo some value), and also certain number-theoretical properties of binomial coefficient. Some definitions and theorems (most of which were already stated and shown in number-theoretic articles) from number theory will be stated here:</p>
+		<ol>
+			<li>If \(gcd(a, m)=1\), then there exists such number \(a^{-1}\), that \(a*a^{-1} \equiv 1 \pmod m\). Number \(a^{-1}\) is often called <b>modular multiplicative inverse</b> of \(a\) <a href="https://en.wikipedia.org/wiki/John_Gotti">with respect</a> to modulus \(m\). Modular inverse can be found using extended euclid algorithm, as it allows to find \(p, q\) satisfying \(a*p+m*q = 1\) - thus, \(p=a^{-1}\).</li>
+			<li>If \(\forall_{i,j} gcd(s_i, s_j)=1\), then a system of equations in form:
+			$$\begin{cases}
+				x \equiv c_1 \pmod {s_1} \\
+				x \equiv c_2 \pmod {s_2} \\
+				\dots \\
+				x \equiv c_m \pmod {s_m} \\
+			\end{cases}$$
+			has infinitely many solutions \(x\) satisfying equation \(x \equiv s \pmod {s_1s_2 \dots s_m}\) for exactly one \(s \in \lt 0; s_1s_2 \dots s_m-1\gt\)
+			</li>
+		</ol>
+
+		<h2>Problem 2: divisibilty of binomial coefficient</h2>
+		{{ algo.neo_algorithm(1, 'Divisibility of a binomial coefficient', '
+			<p>Input format: values \(n, d\), - number of rows to print and divisor; all numbers are printed modulo \(d\)<br>
+			\(n, d\)<br>
+			</p>
+			', '10 2', {'algo_type':'shower', 
+			'color_description':{'standard':'Number not divisible by \(d\)', 'crucial':'Number divisible by \(d\)'} }) }}
+		
+
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+		<script src="{{url_for('static', filename='Unholy_romance.js')}}"></script>
+		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
+
+	</body>
+</html>

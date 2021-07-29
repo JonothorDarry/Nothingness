@@ -11,7 +11,6 @@ from math import log
 
 app=Flask(__name__)
 
-#Później: zamienić na graf i przechodzić pomiędzy przestrzeniami funkcją
 class Article:
     def __init__(self, base, full_name, path, refined_full_name, refined_with_underscore):
         self.base=base
@@ -34,6 +33,7 @@ systems=[
 
         ['choice', 'Choice', 'Combinatorics/Choice.html', 'Choice', 'Choice'],
         ['iep', 'Iep', 'Combinatorics/Iep.html', 'Inclusion Exclusion Principle', 'Inclusion_Exclusion_Principle'],
+        ['romance', 'Romance', 'Combinatorics/Unholy_romance.html', 'Number theory in combinatorics', 'Number_theory_in_combinatorics'],
 
         ['treewalk', 'TreeBasic', 'Trees/TreeBasics.html', 'Tree Walk', 'Tree_Walk']
 ]
@@ -260,6 +260,9 @@ def Choice():
 @app.route('/iep', methods=['GET', 'POST'])
 def Iep():
     return Router('Combinatorics/Iep.html')
+@app.route('/romance', methods=['GET', 'POST'])
+def Romance():
+    return Router('Combinatorics/Unholy_romance.html')
 
 
 @app.route('/treewalk', methods=['GET', 'POST'])

@@ -24,6 +24,9 @@
 .nt_combinato{background:linear-gradient(to right bottom, #6666DD 50%, #800000 50%);}
 .nt_combinato:hover{background:linear-gradient(to right bottom, #8888DD 50%, #b22222 50%);}
 
+.combinato_nt{background:linear-gradient(to left top, #6666DD 50%, #800000 50%);}
+.combinato_nt:hover{background:linear-gradient(to left top, #8888DD 50%, #b22222 50%);}
+
 .combutton{background-color: #800000;}
 .combutton:hover{background-color: #b22222;}
 

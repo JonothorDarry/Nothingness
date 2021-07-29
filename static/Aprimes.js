@@ -1,4 +1,4 @@
-class Order extends Partial{
+class Muller extends Partial{
 	constructor(block, x){
 		super(block);
 		this.ShowReality(x);
@@ -84,4 +84,4 @@ class Order extends Partial{
 }
 
 var feral1=Partial.ObjectParser(document.getElementById('Algo1'));
-var sk1=new Order(feral1, 77);
+var sk1=new Muller(feral1, 77);

@@ -253,7 +253,7 @@ class Simple_factorizer extends Algorithm{
 		var s=this.lees[l-1];
 
 		if (s[0]==0 && this.logic.factors[s[1]].expo>1) return [1, s[1], s[2]+1, 1];
-		if (s[0]==1 && this.logic.factors[s[1]].expo>s[2]+1) return [1, s[1], s[2]+1, s[3]+1];
+		if (s[0]==1 && this.logic.factors[s[1]].expo>s[3]+1) return [1, s[1], s[2]+1, s[3]+1];
 		if (this.logic.factors.length>s[1]+1) return [0, s[1]+1, s[2]+1];
 		return [100];
 	}
