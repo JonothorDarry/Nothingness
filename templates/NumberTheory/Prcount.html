@@ -63,7 +63,7 @@
 			<li>Calculating values \(\phi(m, a)\) for small \(m\) and every \(a\) straight dp - up to, say, \(m=C\).</li>
 			<li>Calculating values \(\phi(m, a)\) directly from the formula for greater \(m\).</li>
 		</ol>
-		<p>Note, that complexity of this approach will be equal to \(O(f(H, \frac{x}{C})+C*a)\), where \(C*a\) comes from dp part, \(f(H, \frac{x}{C})\) comes from calculating \(\phi_S\) directly from recursive formula; in this particular case for \(C=10^5\), \(f(H, \frac{10^{13}}{10^5})=f(H, 10^8) \approx 2.5*10^6\), which constitutes much better solution.
+		<p>Note, that complexity of this approach will be equal to \(O(n*f(H, \frac{x}{C})+C*a)\), where \(C*a\) comes from dp part, \(f(H, \frac{x}{C})\) comes from calculating \(\phi_S\) directly from recursive formula, and 100 for multiplying each of those elements by one element of the sequence to descend into known value of \(\phi(x,a)\); in this particular case for \(C=10^5\), \(f(H, \frac{10^{13}}{10^5})=f(H, 10^8) \approx 2.5*10^6\), which constitutes much better solution.
 		</p>
 
 		<h2>Problem 2: number of primes in a range</h2>

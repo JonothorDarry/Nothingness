@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
+
+<html lang="en">
+	<head>
+		<title>Tree isomorphism</title>
+		{{ headers.meta() }}
+	</head>
+
+	<body>
+		{{ headers.full_upper('Tree isomorphism', 'Combinatorics') }}
+
+		<h2>Introduction</h2>
+		<p>In this article the idea of isomorphim of labeled / unlabeled trees will be analysed, formulas on number of isomorphisms and procedure to check, whether two trees are isomorphic. Definitions include:</p>
+		<ol>
+			<li>Two labeled trees consisting of \(n\) vertices each are considered isomorphic if and only if for each pair of vertices \(a, b\) edge connecting them either exists in both trees or none of them.</li>
+			<li>Two unlabeled trees consisting of \(n\) vertices each are considered isomorphic if there exists such permutation \(p:\{1,\dots,n\} \mapsto \{1 \dots n\}\) that for some labeling of trees the edge connecting vertices \((u, v)\) is present in the first tree if and only if the edge \((p_u, p_v)\) is present in the second tree.</li>
+			<li>Two unlabeled trees with one disitinct element (unlabeled rooted trees) consisting of \(n\) vertices each are considered isomorphic if there exists such permutation \(p:\{1,\dots,n\} \mapsto \{1 \dots n\}\) where \(p_1=1\) that for some labeling of trees the edge connecting vertices \((u, v)\) is present in the first tree if and only if the edge \((p_u, p_v)\) is present in the second tree.</li>
+		</ol>
+
+		<h2>Problem I: Number of unlabeled rooted trees</h2>
+		<p>A different formulation of this query will be answered: How many there are unlabeled trees with \(n\) nodes and greatest subtree of a root has size equal to \(k\)?</p>
+		<h3>Solution: dynamic poetry with elements of combinatorics at its finest</h3>
+		<p>Let \(dp_{n,k}\) denote amount of trees of size \(n\) with largest subtree having size \(k\). Notice, that</p>
+		<ol>
+			<li>There is exactly one rooted tree with one node - the root itself - thus, \(dp_{1,0}=1\)</li>
+			<li>Every rooted tree has its largest subtrees - one or many such subtrees.</li>
+			<li>All rooted trees having \(n\) vertices and largest subtree of size \(k\) are trees that can be constructed by adding to some rooted tree of size \(n-s*k\) and largest subtree of size \( \lt k\) exactly \(s\) subtrees of size \(k\): thus, \(dp_{n,k}=\sum_{s=0}^{s=\lfloor \frac{n}{k} \rfloor}\sum_{l=0}{k-1} dp_{n-s*k, l} * some\_function(k, s)\), where \(some\_function(k,s)\) denotes number of different multisets of size \(s\) consisting of subtrees of size \(k\) that can be added to a rooted tree.</li>
+
+			<li>Now - How many there are trees \(T\) consisting of root and \(s\) subtrees, each of them having size \(k\)? One has to <b>choose</b> \(s\) subtrees out of \(\sum_{i=0}^k dp_{k, i}\) trees of size \(k\), the <b>order of subtrees is meaningless</b>, and one <b>subtree can appear any number of times</b> in the \(T\): thus, it is combination with repetition equal to \(\binom{s+\sum_{i=0}^k dp_{k, i}-1}{s}\). (each added subtree is a ball, types are all trees of size \(k\).</li>
+
+		</ol>
+
+
+
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+		<!--<script src="{{url_for('static', filename='Tree_isomorphism.js')}}"></script>-->
+		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
+	</body>
+</html>
+

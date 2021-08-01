@@ -72,6 +72,7 @@ class Kummer extends Partial{
 				this.buttons.cn[i].push(btn);
 				this.buttons.cn[i][j].dataProperties={'i':i, 'j':j, 'elems_x':this.buttons.x[j], 'elems_y':this.buttons.y[i]};
 
+				//On the usury of preferences
 				this.buttons.cn[i][j].addEventListener('mouseenter', function(){
 					var prop=this.dataProperties;
 					prop.elems_x.style.backgroundColor='#888888';

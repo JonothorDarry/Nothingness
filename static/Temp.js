@@ -729,3 +729,38 @@ class ArrayUtils{
 		return arr;
 	}
 }
+
+class Modern_tree{
+	calculate_position(){
+		var parameters={}, tmp_parameters={};
+		var max_depth=0, min_depth=1, df, slain;
+
+		for (x of this.vertexes){
+			if (x.depth+2 > max_depth) max_depth=x.depth+2;
+		}
+
+		for (x of this.vertexes){
+			a=x.parent;
+			df=a.instant_sons;
+			slain=tmp_parameters;
+
+			parameters[x.label]={
+				'y':(x.depth+1)/max_depth,
+				'x':1//Lipa
+			};
+			tmp_parameters[x.label]={
+				'left':1,
+				'right':1,
+				'used_sons':0
+			}
+		}
+	}
+
+	proc_tree(root){
+
+	}
+
+	constructor(tree){
+		this.tree=tree;
+	}
+}

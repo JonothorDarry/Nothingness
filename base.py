@@ -34,8 +34,10 @@ systems=[
         ['choice', 'Choice', 'Combinatorics/Choice.html', 'Choice', 'Choice'],
         ['iep', 'Iep', 'Combinatorics/Iep.html', 'Inclusion Exclusion Principle', 'Inclusion_Exclusion_Principle'],
         ['romance', 'Romance', 'Combinatorics/Unholy_romance.html', 'Number theory in combinatorics', 'Number_theory_in_combinatorics'],
+        ['isomorphism', 'TreeIsomorphism', 'Combinatorics/Tree_isomorphism.html', 'Tree Isomorphism', 'Tree Isomorphism'],
 
-        ['treewalk', 'TreeBasic', 'Trees/TreeBasics.html', 'Tree Walk', 'Tree_Walk']
+        ['treewalk', 'TreeBasic', 'Trees/TreeBasics.html', 'Tree Walk', 'Tree_Walk'],
+        ['lca', 'Lca', 'Trees/Lca.html', 'Lowest Common Ancestor', 'Lowest_Common_Ancestor']
 ]
 systems=[Article(*x) for x in systems]
 
@@ -260,14 +262,21 @@ def Choice():
 @app.route('/iep', methods=['GET', 'POST'])
 def Iep():
     return Router('Combinatorics/Iep.html')
-@app.route('/romance', methods=['GET', 'POST'])
+@app.route('/unholy_romance', methods=['GET', 'POST'])
 def Romance():
     return Router('Combinatorics/Unholy_romance.html')
+@app.route('/tree_isomorphism', methods=['GET', 'POST'])
+def Isomorphisms():
+    return Router('Combinatorics/Tree_isomorphism.html')
+
 
 
 @app.route('/treewalk', methods=['GET', 'POST'])
 def TreeBasic():
     return Router('Trees/TreeBasics.html')
+@app.route('/lca', methods=['GET', 'POST'])
+def Lca():
+    return Router('Trees/Lca.html')
 
 @app.route('/advpr', methods=['GET', 'POST'])
 def AdvPrimes():

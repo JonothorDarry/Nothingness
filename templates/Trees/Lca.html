@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
+
+<html lang="en">
+	<head>
+		<title>Lowest Common Ancestor</title>
+		{{ headers.meta() }}
+	</head>
+
+	<body>
+		{{ headers.full_upper('Lowest Common Ancestor', 'Trees') }}
+		<h2>Introduction</h2>
+		<p>In this article the idea of lowest common ancestor will be shown, along with quick ways of finding it.</p>
+
+		<div id="problems"></div>
+		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+
+		<!--<script src="{{url_for('static', filename='Lca.js')}}"></script>-->
+		<form id="page" style="display:none"></form>
+		{{ footers.full_lower() }}
+	</body>
+
+</html>

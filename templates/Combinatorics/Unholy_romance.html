@@ -25,15 +25,42 @@
 			\end{cases}$$
 			has infinitely many solutions \(x\) satisfying equation \(x \equiv s \pmod {s_1s_2 \dots s_m}\) for exactly one \(s \in \lt 0; s_1s_2 \dots s_m-1\gt\)
 			</li>
+			<li><strong>p-adic order</strong> (denoted by \(\nu_p(x)\)) is highest exponent of \(p\) dividing \(x\): that is, if factorization of \(x\) is \(x=p_1^{q_1} \dots p_n^{n}\), then \(\nu_{p_i}(x)=q_i\)</li>
 		</ol>
 
 		<h2>Problem 2: divisibilty of binomial coefficient</h2>
+		<p>Suppose You are given \(t\) queries (\(t \le 10^6\)) asking, whether \(p^q | \binom{n}{m}\) for \(p, q, n, m \le 10^6\).</p>
+		<h3>Overview of this property</h3>
 		{{ algo.neo_algorithm(1, 'Divisibility of a binomial coefficient', '
 			<p>Input format: values \(n, d\), - number of rows to print and divisor; all numbers are printed modulo \(d\)<br>
 			\(n, d\)<br>
 			</p>
 			', '10 2', {'algo_type':'shower', 
 			'color_description':{'standard':'Number not divisible by \(d\)', 'crucial':'Number divisible by \(d\)'} }) }}
+		<h3>Solution: Legendre's formula and Kummer theorem.</h3>
+		<h4>Subproblem I: finding out, whether \(p^q | n!\): Legendre's formula</h4>
+		<p>Notice, that $$\nu_p(n!)=\sum_{i=0}^{\infty} \lfloor \frac{n}{p^i} \rfloor$$</p>
+		<p>Because \(\nu_p(n!)=\sum_{i=0}^{n} \nu_p(i)\) - and there are exactlu \(\lfloor \frac{n}{p} \rfloor\) numbers divisible by \(p\) in range \(\lt 1; n \gt\), exactly \(\lfloor \frac{n}{p^2} \rfloor\) divisible by \(p^2\), ... etc. The number of times a number \(x \in \lt 1; n \gt\) is added to this sum is equal to \(\nu_p(x)\). This result is known as <strong>Legendre's Formula</strong>. One can, however, produce different version of the same result; 
+		$$ \nu_p(n!)=\frac{n-s_p(n)}{p-1}$$
+		Where \(s_p(n)\) is sum of digits of \(n\) in positional representation of \(n=a_0+a_1p^1+\dots+a_mp^m\) to base \(p\). Proof is purely algebraic:
+		$$ \nu_p(n!) = \sum_{i=0}^{\infty} \lfloor \frac{n}{p^i} \rfloor = (a_1p^0 + a_2p^1 + \dots +a_mp^{m-1})+(a_2p^0 + a_3p^1 + \dots +a_mp^{m-2}) + \dots + (a_mp^0) = $$
+		$$ = a_1(p^0)+a_2(p^1+p^0)+\dots+a_m(p^{m-1}+p^{m-2}+\dots + p^0) = $$
+		$$ = a_1\frac{1-p^1}{1-p} + a_2\frac{1-p^2}{1-p} + \dots + a_m\frac{1-p^m}{1-p} = $$
+		$$ = \frac{a_1p^1+a^2p^2+\dots+a_mp^m-a_1-a_2-\dots-a_m}{p-1} = $$
+		$$ = \frac{a_0p^0+a_1p^1+a^2p^2+\dots+a_mp^m-a_0-a_1-a_2-\dots-a_m}{p-1} = $$
+		$$ = \frac{n-s_p(n)}{p-1} = \nu_p(n!)$$
+		<h4>Subproblem II: finding out, whether \(p^q | \binom{n}{m}\) -  Kummer's theorem</h4>
+		<p>So, does \(p^q | \binom{n}{m}\)? In order to find out, one can expand this equation:
+		$$ \nu_p(\binom{n}{m}) = \nu_p(\frac{n!}{(n-m)!m!}) = \nu_p(n!)-\nu_p(m!)-\nu_m(n-m!) = $$ 
+		$$ = \frac{n-s_p(n)-m+s_p(m)-(n-m)+s_p(n-m)}{p-1} = \frac{s_p(m)+s_p(n-m)-s_p(n)}{p-1}$$
+		Now, <strong>Kummer's theorem</strong> states, that \(\nu_p(\binom{n}{m})\) is equal to the number of carries occuring during adding \(m\) and \(n-m\). Notice, that:
+		<ul>
+			<li>Sum of \(m\) and \(n-m\) is equal to \(n\).</li>
+			<li>Now, let \(a+b=c\); let \(a_i, b_i\) denote \(i\)-th digits of \(a, b\) and carry bit produced during the addition of \(a, b\).
+			<li>Each carry produced during adding \(a, b\) has same effect on sum of digits of \(a+b\) - makes it by \(p-1\) lower than the sum of sums of digits of \(a\) and \(b\) - because it leads to \(a_i+b_i+c_i-p\) on \(i\)-th digit and thus lowers coefficient by \(p^i\) by \(p\) - and makes \(c_{i+1}=1\), thus making coefficient by \(p^{i+1}\) higher by one.</li>
+		</ul>
+		<p>Corollary of these misty ideas is Kummer's theorem.</p>
+
 		
 
 		<div id="problems"></div>
