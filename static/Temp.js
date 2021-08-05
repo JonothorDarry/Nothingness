@@ -54,6 +54,8 @@ class Algorithm{
 	constructor(block){
 		this.lees=[];
 		this.logic={};
+		this.buttons={};
+
 		this.place=block.primePlace;
 		this.wisdom=block.output;
 		this.input=block.input;
@@ -689,7 +691,7 @@ class ArrayUtils{
 
 	static steady(num, elem){
 		var elements=[];
-		for (var i=a; i<=b; i++) elements.push(elem);
+		for (var i=0; i<num; i++) elements.push(elem);
 		return elements;
 	}
 
@@ -725,42 +727,257 @@ class ArrayUtils{
 		for (j=0; j<dim1; j++){
 			for (i=0; i<dim2; i++) arr[j].push(0);
 		}
-		console.log(dim1, arr.length);
 		return arr;
 	}
 }
 
-class Modern_tree{
-	calculate_position(){
-		var parameters={}, tmp_parameters={};
-		var max_depth=0, min_depth=1, df, slain;
+class Modern_tree_presenter{
+	//Gives position to a tree - banal shit boring, besides tree is bad
+	_calculate_position_vertexes(){
+		var i, j, n=this.tree.n, ln, x;
+		if (this.tree.system_depth==null)
+			this.tree.add_on_listed_depths();
 
-		for (x of this.vertexes){
-			if (x.depth+2 > max_depth) max_depth=x.depth+2;
+		var parameters=ArrayUtils.steady(n+1, 0);
+		var max_depth=Math.max(...this.tree.depth), min_depth=1;
+
+		for (i=0; i<n; i++){
+			ln=this.tree.system_depth[i].length
+			for (j=0; j<ln; j++){
+				x=this.tree.system_depth[i][j];
+				parameters[x]={
+					'y':(this.tree.depth[x])/(max_depth+1),
+					'x':(j+1)/(ln+1)
+				};
+			}
+		}
+		this.parameters={'vertexes':parameters};
+	}
+
+	//Ponoć to Reingold-Tilford Algorithm (Chuj wie, kto to byli)
+	calculate_position_vertexes(){
+		var i, j, ij, n=this.tree.n, ln, x, a, b, prev;
+
+		var position=ArrayUtils.steady(n+1, 0);
+		var parameters=ArrayUtils.steady(n+1, 0);
+		var mod=ArrayUtils.steady(n+1, 0);
+		var lc=ArrayUtils.create_2d(n+1, 0);
+		var rc=ArrayUtils.create_2d(n+1, 0);
+
+		var max_depth=Math.max(...this.tree.depth), min_depth=1;
+		var max_diff=0;
+
+		for (i=n; i>0; i--){
+			a=this.tree.apre[i];
+			position[a]=0;
+			for (j=0; j<this.tree.kids[a].length; j++){
+				b=this.tree.kids[a][j];
+				if (j>0){
+					prev=this.tree.kids[a][j-1];
+					for (ij=0; ij<Math.min(rc[prev].length, lc[b].length); ij++){
+						mod[b]=Math.max(mod[b], rc[b][ij]-(lc[prev][ij]+mod[prev])+1);
+					}
+				}
+			}
+
+			for (j=1; j<this.tree.kids[a].length; j++){
+				b=this.tree.kids[a][j];
+				prev=this.tree.kids[a][j-1];
+				max_diff=Math.max(max_diff, mod[b]+position[b]-position[prev]-mod[prev]);
+			}
+
+			for (j=1; j<this.tree.kids[a].length; j++){
+				b=this.tree.kids[a][j];
+				prev=this.tree.kids[a][j-1];
+
+				mod[b]=position[prev]+mod[prev]-position[b]+max_diff;
+			}
+
+			var v, v1, v2;
+			if (this.tree.kids[a].length%2==1){
+				v=this.tree.kids[a][(this.tree.kids[a].length>>1)];
+				position[a]=position[v]+mod[v];
+			}
+			else if (this.tree.kids[a].length>0){
+				v1=this.tree.kids[a][(this.tree.kids[a].length>>1) - 1];
+				v2=this.tree.kids[a][(this.tree.kids[a].length>>1)];
+
+				position[a] = (position[v1] + mod[v1] + position[v2] + mod[v2])/2;
+			}
+		
+
+			if (this.tree.kids[a].length>0){
+				var v=this.tree.kids[a][this.tree.kids[a].length-1];
+				rc[a].push(mod[v]+position[v]);
+				lc[a].push(mod[this.tree.kids[a][0]] + position[this.tree.kids[a][0]]);
+			}
+			else{
+				lc[a]=[0];
+				rc[a]=[0];
+			}
+
+
+			for (j=0; j<this.tree.kids[a].length; j++){
+				b=this.tree.kids[a][j];
+				for (ij=lc[a].length; ij<=lc[b].length; ij++){
+					lc[a].push(lc[b][ij-1]+mod[b]);
+				}
+			}
+
+			for (j=this.tree.kids[a].length-1; j>=0; j--){
+				b=this.tree.kids[a][j];
+				for (ij=rc[a].length; ij<=rc[b].length; ij++){
+					rc[a].push(rc[b][ij-1]+mod[b]);
+				}
+			}
 		}
 
-		for (x of this.vertexes){
-			a=x.parent;
-			df=a.instant_sons;
-			slain=tmp_parameters;
+		for (i=1; i<=n; i++){
+			a=this.tree.apre[i];
+			mod[a]+=mod[this.tree.par[a]];
+			position[a]=mod[a]+position[a];
+		}
 
-			parameters[x.label]={
-				'y':(x.depth+1)/max_depth,
-				'x':1//Lipa
+		var mx=Math.max(...position);
+		for (i=1; i<=n; i++){
+			parameters[i]={
+				'x':(position[i]+1)/(mx+2),
+				'y':(this.tree.depth[i])/(max_depth+1),
 			};
-			tmp_parameters[x.label]={
-				'left':1,
-				'right':1,
-				'used_sons':0
+		}
+		this.parameters={'vertexes':parameters};
+	}
+
+	create_edge(a){
+		var cval, angle; 
+		var dv=document.createElement("DIV");
+		var verts=this.parameters.vertexes;
+		var width=this.width, height=this.height;
+		//this.divis[a]=dv;
+
+		dv.style.position="absolute";
+
+		var ln_x=(verts[a].x-verts[this.tree.par[a]].x)*width;
+		var ln_y=(verts[a].y-verts[this.tree.par[a]].y)*height;
+
+		cval=Math.sqrt(ln_x*ln_x+ln_y*ln_y);
+		//dv.style['--prec_point_zis']=precise_wid[a];
+		//dv.style['--prec_point_par']=precise_wid[par[a]];
+		dv.style.width=`${cval}px`;
+		
+		dv.style.top=`${verts[a].y*100}%`;
+		dv.style.left=`${verts[a].x*100}%`;
+
+		dv.style.backgroundColor="#000000";
+		dv.style.height="2px"
+		dv.style.zIndex="-1";
+
+		if (ln_x==0) angle=-Infinity;
+		else angle=Math.sin(ln_y/cval);
+
+		dv.style.transformOrigin="top left";
+		if (ln_x==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
+		else if (ln_x<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
+		else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
+		return dv;
+	}
+
+	//x, y - position, like, (1,1) - above, right
+	//Assumption - homogeneous buttons
+	get_place_for_companion_button(vertex, x_axis, y_axis, button_properties={'width':20, 'height':20}){
+		var place={};
+		var full_radius=40; //Temp
+		var half_radius=Math.floor(full_radius/2);
+
+		if (x_axis>0) place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${full_radius/Math.sqrt(2)+button_properties.width*(x_axis-1)-half_radius}px)`;
+		else place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${-half_radius+full_radius/Math.sqrt(2)-button_properties.width*(-x_axis-1)}px)`;
+
+		if (y_axis>0) place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${-half_radius/Math.sqrt(2)-button_properties.height*(y_axis-1)-half_radius}px)`;
+		else place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${half_radius/Math.sqrt(2)+button_properties.height*(-y_axis-1)}px)`;
+		return place;
+		
+	}
+
+	//places the tree
+	place_tree(places){
+
+	}
+
+
+
+	constructor(tree){
+		this.tree=tree;
+	}
+}
+
+//par - parent, dep-depth, pre - preorder, apre - inverse preorder, sons - subtree size
+class Modern_tree{
+	constructor(tree, root=1){
+		this.n=tree.length-1;
+		this.root=1;
+		this.tr=tree;
+
+		var i=1, j=0, a, b, ip=2;
+
+		this.par=ArrayUtils.steady(this.n+1, 0);
+		this.depth=ArrayUtils.steady(this.n+1, 0);
+		this.pre=ArrayUtils.steady(this.n+1, 0);
+		this.apre=ArrayUtils.steady(this.n+1, 0);
+		this.sons=ArrayUtils.steady(this.n+1, 1);
+
+		var s=[root], ij=ArrayUtils.steady(this.n+1, 0).map(function(e,i){return tree[i].length});
+		this.kids=ArrayUtils.steady(this.n+1, 0).map(e => []);
+		this.depth[1]=0;
+		this.pre[1]=root, this.apre[root]=1;
+
+		while(s.length>0){
+			a=s[s.length-1];
+			if (ij[a]<=0) s.pop();
+			else{
+				b=tree[a][ij[a]-1];
+				if (this.par[a]==b) ij[a]--, this.sons[this.par[a]]+=this.sons[a];
+				else{
+					ij[a]--;
+					this.kids[a].push(b);
+					this.depth[b]=this.depth[a]+1;
+					this.par[b]=a;
+					this.pre[b]=ip;
+					this.apre[ip]=b;
+
+					s.push(b);
+					ip+=1;
+				}
 			}
 		}
 	}
 
-	proc_tree(root){
-
+	//Adds system_depth
+	add_on_listed_depths(){
+		this.system_depth=ArrayUtils.create_2d(this.n, 0);
+		for (var i=1; i<=this.n; i++){
+			this.system_depth[this.depth[i]].push(i);
+		}
 	}
 
-	constructor(tree){
-		this.tree=tree;
+	static edges_to_edge_list(edges){
+		var n=edges.length+1, i, a, b;
+		var tr=ArrayUtils.create_2d(n+1, 0);
+
+		for (i=0;i<edges.length;i++){
+			a=edges[i][0];
+			b=edges[i][1];
+
+			tr[a].push(b), tr[b].push(a);
+		}
+		return tr;
+	}
+
+	static tree_reader(input){
+		var str=input, edges=[];
+		var n=str.get_next();
+		for (var i=1; i<n; i++) edges.push([str.get_next(), str.get_next()]);
+
+		var tree=this.edges_to_edge_list(edges)
+		return tree;
 	}
 }

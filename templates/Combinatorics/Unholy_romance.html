@@ -56,8 +56,7 @@
 		Now, <strong>Kummer's theorem</strong> states, that \(\nu_p(\binom{n}{m})\) is equal to the number of carries occuring during adding \(m\) and \(n-m\). Notice, that:
 		<ul>
 			<li>Sum of \(m\) and \(n-m\) is equal to \(n\).</li>
-			<li>Now, let \(a+b=c\); let \(a_i, b_i\) denote \(i\)-th digits of \(a, b\) and carry bit produced during the addition of \(a, b\).
-			<li>Each carry produced during adding \(a, b\) has same effect on sum of digits of \(a+b\) - makes it by \(p-1\) lower than the sum of sums of digits of \(a\) and \(b\) - because it leads to \(a_i+b_i+c_i-p\) on \(i\)-th digit and thus lowers coefficient by \(p^i\) by \(p\) - and makes \(c_{i+1}=1\), thus making coefficient by \(p^{i+1}\) higher by one.</li>
+			<li>Say, equality \(A+B=C\) is considered. Each carry while adding to base \(p\) adds one to sum of digits of \(C\) on \(i\)-th position and reduces sum of digits on \(i-1\)-th position by \(p-1\).</li>
 		</ul>
 		<p>Corollary of these misty ideas is Kummer's theorem.</p>
 
