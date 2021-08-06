@@ -842,7 +842,7 @@ class Modern_tree_presenter{
 		for (i=1; i<=n; i++){
 			parameters[i]={
 				'x':(position[i]+1)/(mx+2),
-				'y':(this.tree.depth[i]+1)/(max_depth+1),
+				'y':(this.tree.depth[i]+0.5)/(max_depth+1),
 			};
 		}
 		this.parameters={'vertexes':parameters};
@@ -870,7 +870,6 @@ class Modern_tree_presenter{
 
 		dv.style.backgroundColor="#000000";
 		dv.style.height="2px"
-		dv.style.zIndex="-1";
 
 		if (ln_x==0) angle=-Infinity;
 		else angle=ln_y/cval;
@@ -897,13 +896,55 @@ class Modern_tree_presenter{
 		return place;
 	}
 
-	//places the tree
-	place_tree(places){
+	//Creates buttons
+	buttCreator(stylistic, numb=null, col='#440000'){
+		var butt=Representation_utils.button_creator(stylistic.nonsense, numb, col);
 
+		if (stylistic.vertex.label=='none'){
+			butt.innerHTML='';
+		}
+
+		butt.style.width=`${stylistic.vertex.width}px`
+		butt.style.height=`${stylistic.vertex.height}px`
+		butt.style.borderRadius=`${stylistic.vertex.radius}px`;
+		butt.style.zIndex=1;
+		return butt;
 	}
 
-	constructor(tree){
+	//places the tree
+	//Currently nonsensical distinction width-height
+	place_tree(place, style){
+		var i, a, j;
+
+		this.calculate_position_vertexes();
+		this.height=place.height;
+		this.width=place.width;
+		this.place=place.div
+		this.buttons={'vertexes':ArrayUtils.steady(this.tree.n, 0), 'edges':ArrayUtils.steady(this.tree.n, 0)};
+
+		var vertex_pos=this.parameters.vertexes;
+		for (i=1; i<=this.tree.n; i++){
+			a=i;
+			var bt=this.buttCreator(style, a);
+			this.buttons.vertexes[a]=bt;
+
+			if (a!=1){
+				var dv=this.create_edge(a);
+				this.buttons.edges[a]=dv;
+				this.place.appendChild(dv);
+			}
+
+			//Normalized vertex positions
+			bt.style.position="absolute";
+			bt.style.top=`calc(${100*this.parameters.vertexes[a].y}% - ${style.vertex.height/2}px)`;
+			bt.style.left=`calc(${100*this.parameters.vertexes[a].x}% - ${style.vertex.width/2}px)`;
+			this.place.appendChild(bt);
+		}
+	}
+
+	constructor(tree, place, style){
 		this.tree=tree;
+		this.place_tree(place, style);
 	}
 }
 

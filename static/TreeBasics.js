@@ -8,6 +8,7 @@ class Tree extends Algorithm{
 		this.treeConstructor();
 	}
 
+	/*
 	emergency_resize(){
 		if (!('bound_tree' in window)){
 			window.bound_tree=[this];
@@ -34,6 +35,7 @@ class Tree extends Algorithm{
 		}
 		else window.bound_tree.push(this);
 	}
+	*/
 
 	//Tworzy drzewo o zadanym widthu, obok niego stacks razem z sąsiedztwem
 	//tree_vertex - wierzchołek drzewa
@@ -86,40 +88,19 @@ class Tree extends Algorithm{
 		this.treeDiv.style.height=`${tree_height}px`;
 		this.divCreator(tr, namez, this.tabDiv, post_max_depth);
 
-		var present_tree = new Modern_tree_presenter(this.logic.tree);
-		present_tree.calculate_position_vertexes();
-		present_tree.height=tree_height;
-		present_tree.width=width;
-		this.tree_presentation=present_tree;
+		this.tree_presentation = new Modern_tree_presenter(this.logic.tree, 
+			{'div':this.treeDiv, 'width':width, 'height':tree_height}, 
 
-		var vertex_pos=present_tree.parameters.vertexes;
-		for (i=0; i<=max_depth; i++){
-			for (j=0;j<depth[i].length;j++){
-				a=depth[i][j];
-				var bt=this.buttCreator(a);
-				this.buttons.vertexes[a]=bt;
-
-				if (a!=1){
-					var dv=present_tree.create_edge(a);
-					this.buttons.edges[a]=dv;
-					this.treeDiv.appendChild(dv);
-				}
-
-				//Normalized vertex positions
-				bt.style.position="absolute";
-				bt.style.top=`calc(${100*present_tree.parameters.vertexes[a].y}% - 20px)`;
-				bt.style.left=`calc(${100*present_tree.parameters.vertexes[a].x}% - 20px)`;
-				this.treeDiv.appendChild(bt);
+			{
+				'vertex':{'width':40, 'height':40, 'radius':100},
+				'edge':{'height':2},
+				'nonsense':this.stylistic
 			}
-		}
-		this.emergency_resize();
-	}
+		);
+		this.buttons.edges=this.tree_presentation.buttons.edges;
+		this.buttons.vertexes=this.tree_presentation.buttons.vertexes;
 
-	//Creates buttons
-	buttCreator(numb=null, col='#440000'){
-		var butt=super.buttCreator(numb, col);
-		butt.style.borderRadius="100%";
-		return butt;
+		//this.emergency_resize();
 	}
 	
 
