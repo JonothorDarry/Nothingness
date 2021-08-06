@@ -18,12 +18,12 @@ class Tree extends Algorithm{
 						var dv=dv_container[i], angle;
 						var width=this.bound_tree[j].treeDiv.offsetWidth;
 						var th=dv.style['--prec_point_zis']*width, tpar=dv.style['--prec_point_par']*width;
-						var cval=Math.sqrt(Math.pow(th-tpar, 2)+75*75);
+						var cval=Math.sqrt(Math.pow(th-tpar, 2)+120*120);
 						dv.style.width=`${cval}px`
 
 
 						if (th-tpar==0) angle=-Infinity;
-						else angle=Math.sin(75/cval);
+						else angle=Math.sin(120/cval);
 						if (th-tpar==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
 						else if (th-tpar<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
 						else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
@@ -52,7 +52,7 @@ class Tree extends Algorithm{
 		this.tabDiv.style.display="inline-block";
 		this.place.appendChild(this.tabDiv);
 
-		var i=0, j=0, a, b, width=this.treeDiv.offsetWidth, floater;
+		var i=0, j=0, a, b, width=this.treeDiv.offsetWidth;
 
 		this.dissolved_input=this.dissolve_input(this.input.value);
 		var tr=Modern_tree.tree_reader(this.dissolved_input);
@@ -77,7 +77,7 @@ class Tree extends Algorithm{
 
 		var max_depth=Math.max(...this.logic.tree.depth), post_max_depth=max_depth+1;
 		
-		var magic=75;
+		var magic=160;
 		var used_mx=Math.max(post_max_depth*magic, 40*(this.logic.tree.tr.length+1));
 		//var tree_height=Math.max(post_max_depth*magic+40-magic, 40*(this.logic.tree.tr.length+1));
 		var tree_height=post_max_depth*magic+40-magic;

@@ -842,7 +842,7 @@ class Modern_tree_presenter{
 		for (i=1; i<=n; i++){
 			parameters[i]={
 				'x':(position[i]+1)/(mx+2),
-				'y':(this.tree.depth[i])/(max_depth+1),
+				'y':(this.tree.depth[i]+1)/(max_depth+1),
 			};
 		}
 		this.parameters={'vertexes':parameters};
@@ -873,7 +873,7 @@ class Modern_tree_presenter{
 		dv.style.zIndex="-1";
 
 		if (ln_x==0) angle=-Infinity;
-		else angle=Math.sin(ln_y/cval);
+		else angle=ln_y/cval;
 
 		dv.style.transformOrigin="top left";
 		if (ln_x==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
@@ -895,15 +895,12 @@ class Modern_tree_presenter{
 		if (y_axis>0) place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${-half_radius/Math.sqrt(2)-button_properties.height*(y_axis-1)-half_radius}px)`;
 		else place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${half_radius/Math.sqrt(2)+button_properties.height*(-y_axis-1)}px)`;
 		return place;
-		
 	}
 
 	//places the tree
 	place_tree(places){
 
 	}
-
-
 
 	constructor(tree){
 		this.tree=tree;
