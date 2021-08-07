@@ -623,9 +623,9 @@ class Com_rep extends Partial{
 		super(block);
 		this.n=k-1+n;
 		this.k=k-1;
-		this.make_system(this.n, this.k);
+		this.logic.all_combinats = Combinatorisation.make_system_combinations_repetitions(this.n, this.k);
 		this.grid_constructor();
-		this.reformulate_reality(this.all_combinats);
+		this.reformulate_reality(this.logic.all_combinats);
 	}
 
 	ShowReality(){
@@ -638,7 +638,7 @@ class Com_rep extends Partial{
 
 		this.make_system(this.n, this.k);
 		this.grid_constructor();
-		this.reformulate_reality(this.all_combinats);
+		this.reformulate_reality(this.logic.all_combinats);
 	}
 
 	Painter(btn, col=1, only_bg=0){
@@ -652,36 +652,12 @@ class Com_rep extends Partial{
 		if (col==19) btn.style.backgroundColor="#004D40";
 	}
 
-	make_system(n, k){
-		this.all_combinats=[];
-		var i, j, cur_perm=[], new_perm, zeros;
-		for (i=0; i<n-k; i++) cur_perm.push(0);
-		for (i=0; i<k; i++) cur_perm.push(1);
-		this.all_combinats.push(cur_perm);
-
-		while (true){
-			new_perm=[], zeros=0;
-			for (i=n-1; i>0; i--){
-				if (cur_perm[i]==1 && cur_perm[i-1]==0) break;
-			}
-			if (i==0) break;
-			for (j=0; j<i-1; j++) {
-				new_perm.push(cur_perm[j]);
-				if (cur_perm[j]==0) zeros++;
-			}
-			new_perm.push(1);
-			for (j=0; j<n-k-zeros; j++) new_perm.push(0);
-			for (j=j+i; j<n; j++) new_perm.push(1);
-			this.all_combinats.push(new_perm);
-			cur_perm=new_perm;
-		}
-	}
 
 	grid_constructor(){
 		var btn_width=40;
 		var batch=(this.n-this.k)*40+this.k*20;
 		var width_combinations=Math.floor((this.place.offsetWidth+btn_width)/(batch+btn_width));
-		var all_rows=Math.ceil(this.all_combinats.length/width_combinations);
+		var all_rows=Math.ceil(this.logic.all_combinats.length/width_combinations);
 		var system=width_combinations*(this.n+1)-1;
 		this.system_end=system+Math.floor((this.place.offsetWidth-((batch+btn_width)*(width_combinations-1)+batch))/40);
 

@@ -57,16 +57,16 @@ class Tree extends Algorithm{
 		var i=0, j=0, a, b, width=this.treeDiv.offsetWidth;
 
 		this.dissolved_input=this.dissolve_input(this.input.value);
-		var tr=Modern_tree.tree_reader(this.dissolved_input);
+		var edges=Modern_tree.tree_reader(this.dissolved_input);
 
 		var namez=['Stack:'];
 		this.state_data=[];
 
-		this.buttons.edges=ArrayUtils.steady(this.logic.n+1, null);
-		this.buttons.vertexes=ArrayUtils.steady(this.logic.n+1, null);
-
-		this.logic.tree=new Modern_tree(tr);
+		this.logic.tree=new Modern_tree(edges);
 		this.logic.tree.add_on_listed_depths();
+
+		this.buttons.edges=ArrayUtils.steady(this.logic.tree.n+1, null);
+		this.buttons.vertexes=ArrayUtils.steady(this.logic.tree.n+1, null);
 
 		var depth=this.logic.tree.system_depth;
 		var par=this.logic.tree.par;
@@ -86,7 +86,7 @@ class Tree extends Algorithm{
 
 		this.place.style.height=`${used_mx}px`;
 		this.treeDiv.style.height=`${tree_height}px`;
-		this.divCreator(tr, namez, this.tabDiv, post_max_depth);
+		this.divCreator(this.logic.tree.tr, namez, this.tabDiv, post_max_depth);
 
 		this.tree_presentation = new Modern_tree_presenter(this.logic.tree, 
 			{'div':this.treeDiv, 'width':width, 'height':tree_height}, 
