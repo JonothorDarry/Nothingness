@@ -17,7 +17,7 @@
 		<ol>
 			<li>Two labeled trees consisting of \(n\) vertices each are considered isomorphic if and only if for each pair of vertices \(a, b\) edge connecting them either exists in both trees or none of them.</li>
 			<li>Two unlabeled trees consisting of \(n\) vertices each are considered isomorphic if there exists such permutation \(p:\{1,\dots,n\} \mapsto \{1 \dots n\}\) that for some labeling of trees the edge connecting vertices \((u, v)\) is present in the first tree if and only if the edge \((p_u, p_v)\) is present in the second tree.</li>
-			<li>Two unlabeled trees with one disitinct element (unlabeled rooted trees) consisting of \(n\) vertices each are considered isomorphic if there exists such permutation \(p:\{1,\dots,n\} \mapsto \{1 \dots n\}\) where \(p_1=1\) that for some labeling of trees the edge connecting vertices \((u, v)\) is present in the first tree if and only if the edge \((p_u, p_v)\) is present in the second tree.</li>
+			<li>Two unlabeled trees with one disinguished element (unlabeled rooted trees) consisting of \(n\) vertices each are considered isomorphic if there exists such permutation \(p:\{1,\dots,n\} \mapsto \{1 \dots n\}\) where \(p_1=1\) and label \(1\) denotes a distinguished element in both trees, that for some labeling of trees the edge connecting vertices \((u, v)\) is present in the first tree if and only if the edge \((p_u, p_v)\) is present in the second tree.</li>
 		</ol>
 
 		<h2>Problem I: Number of unlabeled rooted trees</h2>
@@ -27,18 +27,47 @@
 		<ol>
 			<li>There is exactly one rooted tree with one node - the root itself - thus, \(dp_{1,0}=1\)</li>
 			<li>Every rooted tree has its largest subtrees - one or many such subtrees.</li>
-			<li>All rooted trees having \(n\) vertices and largest subtree of size \(k\) are trees that can be constructed by adding to some rooted tree of size \(n-s*k\) and largest subtree of size \( \lt k\) exactly \(s\) subtrees of size \(k\): thus, \(dp_{n,k}=\sum_{s=0}^{s=\lfloor \frac{n}{k} \rfloor}\sum_{l=0}^{k-1} dp_{n-s*k, l} * some\_function(k, s)\), where \(some\_function(k,s)\) denotes number of different multisets of size \(s\) consisting of subtrees of size \(k\) that can be added to a rooted tree.</li>
+			<li>All rooted trees having \(n\) vertices and largest subtree of size \(k\) are trees that can be constructed by adding to some rooted tree of size \(n-s*k\) and largest subtree of size \( \lt k\) exactly \(s\) subtrees of size \(k\): thus, \(dp_{n,k}=\sum_{s=0}^{s=\lfloor \frac{n}{k} \rfloor} some\_function(k,s) * (\sum_{l=0}^{k-1} dp_{n-s*k, l})\), where \(some\_function(k,s)\) denotes number of different multisets of size \(s\) consisting of subtrees of size \(k\) that can be added to a rooted tree.</li>
 
-			<li>Now - How many there are trees \(T\) consisting of root and \(s\) subtrees, each of them having size \(k\)? One has to <b>choose</b> \(s\) subtrees out of \(\sum_{i=0}^k dp_{k, i}\) trees of size \(k\), the <b>order of subtrees is meaningless</b>, and one <b>subtree can appear any number of times</b> in the \(T\): thus, it is combination with repetition equal to \(\binom{s+\sum_{i=0}^k dp_{k, i}-1}{s}\). (each added subtree is a ball, types are all trees of size \(k\).</li>
+			<li>Now - How many there are trees \(T\) consisting of root and \(s\) subtrees, each of them having size \(k\)? One has to <b>choose</b> \(s\) subtrees out of \(\sum_{i=0}^k dp_{k, i}\) trees of size \(k\), the <b>order of subtrees is meaningless</b>, and one <b>subtree can appear any number of times</b> in \(T\): thus, it is combination with repetition equal to \(\binom{s+\sum_{i=0}^k dp_{k, i}-1}{s}\) (choosing \(s\) elements belonging to one of \(\sum_{i=0}^k dp_{k, i}\) types - different trees).</li>
 			<li>This allows to proceed to crème de la crème of this paragraph: 
-				$$ dp_{n,k}=\sum_{s=1}^{\lfloor \frac{n}{k} \rfloor} \sum_{l=0}^{k-1} dp_{n-s*k, l}*\binom{s+(\sum_{i=0}^{k} dp_{k, i})-1}{s} $$
+				$$ dp_{n,k}=\sum_{s=1}^{\lfloor \frac{n}{k} \rfloor} \binom{s+(\sum_{i=0}^{k} dp_{k, i})-1}{s} (\sum_{l=0}^{k-1} dp_{n-s*k, l})$$
 			</li>
-			<li>While in visualization, that will follow those subtle nuances may not be shown, in order to find \(\sum_{k=0}^n dp_{n,k}\) in less than \(O(n^4 \log(n))\), one may use prefix sums: let 
+			<li>In order to find \(\sum_{k=0}^n dp_{n,k}\) in less than \(O(n^4 \log(n))\), one may use prefix sums: let 
 				$$csc_{n, k}=\sum_{i=0}^k dp_{n,i}$$.
-				Every \(csc_{n,k}\) may be calculated in \(O(n)\) for each \(n\). This reduces formula to:
+				Sequence \(csc_{n,0}, \dots csc_{n,n-1}\) may be calculated in \(O(n)\) for each \(n\). This reduces formula to:
 				$$dp_{n,k}=\sum_{s=1}^{\lfloor \frac{n}{k} \rfloor} csc_{n-s*k, k-1}*\binom{s+csc_{k,k}-1}{s} $$
-				One may also get rid of unfortunate and unnecessary calculations of \(\binom{s+csc_{k,k}-1}{s}\).</li>
+				One may also get rid of unfortunate and unnecessary calculations of \(\binom{s+csc_{k,k}-1}{s}\): Let \(cn_{k,s}=\binom{s+csc_{k,k}-1}{s}\). Notice, that 
+				$$ 
+					cn_{n,s}=cn_{n,s-1}*\frac{csc_{n,n}+s-1}{s} \text{ for \(s \gt 0\)} \\
+					cn_{n,0}=1
+				$$
+				And so, one can calculate \(cn_{n,k}\) for each \(k\) in practical \(O(n)\).
+				All of the above ultimately leads to:
+				$$
+					dp_{n,k}=\sum_{s=1}^{\lfloor \frac{n}{k} \rfloor} csc_{n-s*k, k-1}*cn_{k,s} \text{ for \(n \gt 2\)}\\
+					dp_{1,0}=1 \\
+
+					csc_{n,k} = 
+					\begin{cases}
+						csc_{n,k-1}+dp_{n, k-1} \text{ for \(k \gt 0\)}\\
+						csc_{n,0}=dp_{n,0}\\
+					\end{cases} \\
+
+					cn_{n,s} =
+					\begin{cases}
+						cn_{n,s-1}*\frac{csc_{n,n}+s-1}{s} \text{ for \(s \gt 0\)} \\
+						cn_{n,0}=1\\
+					\end{cases}
+				$$
 			</li>
+
+			<li>
+				One inobvious idea: why complexity is exactly \(O(n^2 \log(n))\)? The proof would be analogous to the proof for erastothenes sieve complexity; amount of operation needed to calculate \(dp_{n,k}\) for each \(k\) is equal to 
+				$$\lfloor \frac{n}{1} \rfloor + \lfloor \frac{n}{2} \rfloor + \dots + \lfloor \frac{n}{n} \rfloor \le \frac{n}{1} + \frac{n}{2} + \dots + \frac{n}{n} \le $$
+				$$\le n (1 + \frac{1}{2} + \dots + \frac{1}{n}) \le n(1 + 2\frac{1}{2} + 4\frac{1}{4} + \dots + 2^{\lfloor \log_2(n) \rfloor} \frac{1}{2^{\lfloor log_2(n) \rfloor}}) = O(n \log(n))$$
+			</li>
+			<li>Ultimately, \(csc_{n}{n-1}\) gives an answer to the question: how many there are non-isomorphic rooted trees cosisting of \(n\) nodes.</li>
 		</ol>
 
 		{{ algo.neo_algorithm(1, 'Counting rooted distinct unlabeled trees', '
@@ -46,7 +75,39 @@
 			\(n\)<br>
 			</p>
 		'
-		, '5', {'color_description':{'standard':'', 'change':'Also last vertex on stack.', 'dead':'Already processed vertex.', 'iterator':'Pointer to vertex on stack.'} }) }}
+		, '5', {'color_description':{'standard':''} }) }}
+
+		<h2>Problem II: Number of unlabeled trees</h2>
+		<p>How many there are unlabeled distinct trees (without distinguished element) of size \(n\)? The answer will be later denoted by \(T_n\)</p>
+		<h3>Solution: built upon previous solution</h3>
+		<p>First, each tree has a centroid; it can have either one or two centroids (<s>Insert a reference to a proof in sometime: but first, write it down</s>). There are two possible situations:</p>
+		<ol>
+			<li>Tree has odd number of nodes: then, it has exactly one centroid; largest subtree of a tree rooted at a centroid has size \( \le \frac{n-1}{2} \). Thus, \(T_n=csc_{n,\frac{n-1}{2}}\) for \(n=2k+1\).</li>
+			<li>Tree has even number of nodes; it can have either one or two centroids; thus, \(t_n=c1_n+c2_n\) for \(c1_n\) and \(c2_n\) denoting number of trees with even number of vertices and one or two centroids, respectively. How to calculate them, however?
+				<ol>
+					<li>In case of one centroid, analogously to case with one node: \(c1_n=csc_{n, \frac{n-2}{2}}\).</li>
+					<li>In case of two centroids, largest subtree of a tree rooted at centroid has size \(\frac{n}{2}\). Notice, that there is an edge between centroids. Then, in \(dp_{n}{\frac{n}{2}}\), after removing edge between centroids either:
+						<ol>
+							<li>Trees created after removing edge are different: thus, this tree was calculated twice in \(dp_{n,\frac{n}{2}}\)</li>
+							<li>Trees created after removing edge are isomorphic (with respect to distinguished vertices - centroids): they were calculated once in \(dp_{n,\frac{n}{2}}\). How many there are such trees? As many, as isomorphic rooted trees with \(\frac{n}{2}\) vertices - because both trees created by removing edge have to be identical with respect to distinguished element - centroid, and both created trees have \(\frac{n}{2}\) nodes.</li>
+						</ol>
+						This implies, that \(c2_n=\frac{dp_{n,n/2}-csc_{n/2, n/2-1}}{2}+csc_{n/2, n/2-1}\)
+					</li>
+				</ol>
+				Thus, \(T_n=c1_n+c2_n = csc_{n, \frac{n-2}{2}} + \frac{dp_{n,n/2}-csc_{n/2, n/2-1}}{2}+csc_{n/2, n/2-1}\)
+			</li>
+		</ol>
+		<p>
+		To summarize, 
+		$$T_n=\begin{cases}
+		csc_{n,\frac{n-1}{2}} \text{  for \(n: 2 \nmid n\)} \\
+		csc_{n, \frac{n-2}{2}} + \frac{dp_{n,n/2}-csc_{n/2, n/2-1}}{2}+csc_{n/2, n/2-1} \text{  for \(n: 2 | n\)} \\
+			
+		\end{cases}
+		$$
+
+		</p>
+
 
 
 		<div id="problems"></div>

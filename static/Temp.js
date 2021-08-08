@@ -794,6 +794,7 @@ class Modern_tree_presenter{
 	}
 
 	//Ponoć to Reingold-Tilford Algorithm (Chuj wie, kto to byli)
+	//lc, rc - left/right contour
 	calculate_position_vertexes(){
 		var i, j, ij, n=this.tree.n, ln, x, a, b, prev;
 
@@ -814,7 +815,7 @@ class Modern_tree_presenter{
 				if (j>0){
 					prev=this.tree.kids[a][j-1];
 					for (ij=0; ij<Math.min(rc[prev].length, lc[b].length); ij++){
-						mod[b]=Math.max(mod[b], rc[b][ij]-(lc[prev][ij]+mod[prev])+1);
+						mod[b]=Math.max(mod[b], rc[prev][ij]+mod[prev]-lc[b][ij]+1); //1 - dystans między parą punktów
 					}
 				}
 			}
@@ -847,8 +848,8 @@ class Modern_tree_presenter{
 
 			if (this.tree.kids[a].length>0){
 				var v=this.tree.kids[a][this.tree.kids[a].length-1];
-				rc[a].push(mod[v]+position[v]);
-				lc[a].push(mod[this.tree.kids[a][0]] + position[this.tree.kids[a][0]]);
+				rc[a]=[mod[v]+position[v]];
+				lc[a]=[mod[this.tree.kids[a][0]] + position[this.tree.kids[a][0]]];
 			}
 			else{
 				lc[a]=[0];
@@ -869,6 +870,7 @@ class Modern_tree_presenter{
 					rc[a].push(rc[b][ij-1]+mod[b]);
 				}
 			}
+			console.log(a, lc[a], rc[a], mod[5]);
 		}
 
 		for (i=1; i<=n; i++){
@@ -887,7 +889,7 @@ class Modern_tree_presenter{
 		this.parameters={'vertexes':parameters};
 	}
 
-	create_edge(a){
+	create_edge(a, stylistic){
 		var cval, angle; 
 		var dv=document.createElement("DIV");
 		var verts=this.parameters.vertexes;
@@ -908,7 +910,8 @@ class Modern_tree_presenter{
 		dv.style.left=`${verts[a].x*100}%`;
 
 		dv.style.backgroundColor="#000000";
-		dv.style.height="2px"
+		dv.style.height=`${stylistic.edge.height}px`;
+		if ('color' in stylistic.edge) butt.style.backgroundColor=`${stylistic.vertex.color}px`;
 
 		if (ln_x==0) angle=-Infinity;
 		else angle=ln_y/cval;
@@ -946,6 +949,7 @@ class Modern_tree_presenter{
 		butt.style.width=`${stylistic.vertex.width}px`
 		butt.style.height=`${stylistic.vertex.height}px`
 		butt.style.borderRadius=`${stylistic.vertex.radius}px`;
+		if ('color' in stylistic.vertex) butt.style.backgroundColor=`${stylistic.vertex.color}px`;
 		butt.style.zIndex=1;
 		return butt;
 	}
@@ -968,7 +972,7 @@ class Modern_tree_presenter{
 			this.buttons.vertexes[a]=bt;
 
 			if (a!=1){
-				var dv=this.create_edge(a);
+				var dv=this.create_edge(a, style);
 				this.buttons.edges[a]=dv;
 				this.place.appendChild(dv);
 			}
@@ -1059,3 +1063,14 @@ class Modern_tree{
 		return edges;
 	}
 }
+/*
+9
+1 2
+2 3
+1 5
+5 4
+5 6
+5 7
+5 8
+5 9
+*/
