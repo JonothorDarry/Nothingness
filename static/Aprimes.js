@@ -84,4 +84,4 @@ class Muller extends Partial{
 }
 
 var feral1=Partial.ObjectParser(document.getElementById('Algo1'));
-var sk1=new Muller(feral1, 77);
+var sk1=new Muller(feral1, 15);

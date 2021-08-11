@@ -39,16 +39,16 @@
 		$$
 		</p>
 
-		<h4>Theorem I: if a number \(m\) is neither a prime nor a Carmichael number, then there are at least \(\frac{m}{2}\) fermat witnesses for \(m\)</h4>
+		<h4>Thesis I: if a number \(m\) is neither a prime nor a Carmichael number, then there are at least \(\frac{m}{2}\) fermat witnesses for \(m\)</h4>
 		<ol>
 			<li>If \(gcd(b, m) \gt 1\), then \(b^{m-1} \not \equiv 1 \pmod m\) - so, instead, a lemma showing that at least half of numbers coprime to \(m\) are fermat witnesses will be shown. 
 				$$\frac{\phi(m)}{2}+(m-\phi(m)) \ge \frac{m}{2}$$
 			</li>
-			<li>Say, there exists such \(b: gcd(b, m)=1\), that \(b^{m-1} \equiv c \pmod m\), where \(c \not \equiv 1 \pmod m\). Then, let set \(H\) denote set of all such numbers \(h\), that: 
+			<li>Say, there exists such \(b: gcd(b, m)=1\), that \(b^{m-1} \equiv c \pmod m\), where \(c \not \equiv 1 \pmod m\). In other words, \(b\) is a Fermat witness. Then, let set \(H\) denote set of all such numbers \(h\), that: 
 				$$h^{m-1} \equiv 1 \pmod m$$
 				then, for any \(h \in H\)
 				$$ (hb)^{m-1} \equiv h^{m-1}b^{m-1} \equiv 1*c \equiv c \pmod m $$
-				Note, that all \(hb\) are distinct: otherwise two elements of set \(H\) would have to be equivalent \(\pmod m\):
+				Note, that all \(hb\) for \(h \in H\) are distinct: otherwise two elements of set \(H\) would have to be equivalent \(\pmod m\):
 				$$h_1 b \equiv h_2 b \pmod m \ \ \ //*b^{-1}$$
 				$$h_1 \equiv h_2 \pmod m$$
 
@@ -59,15 +59,16 @@
 				Thus, if there is at least one such number \(b\), such that \(b^{m-1} \equiv c \pmod m\), then there are exactly as many numbers \(h\), such that \(h^{m-1} \equiv 1 \pmod m\), as there are such numbers \(x\), that \(x^{m-1} \equiv c \pmod m\). In other words:
 				$$ \exists_{b: gcd(b, m)=1} b^{m-1} \equiv c \pmod m \implies |\{h: h^{m-1} \equiv 1 \pmod m\}|=|\{x: x^{m-1} \equiv c \pmod m\}| $$
 				-->
-				What follows, if there is at least one witness \(\pmod m\), there are no less fermat witnesses than non-witnesses.
+				What follows, if there is at least one witness \(\pmod m\), there are no less fermat witnesses than non-witnesses \(\pmod m\).
 			</li>
 			<li>When does a number \(m\) not have any witness? When, for all \(h: h^{m-1} \equiv 1 \pmod m\). Note, that if \(\lambda(m) \nmid m-1\), this won't happen - if \(g\) is such number, that \(ord_m(g)=\lambda(m)\), then \(g^y \equiv 1 \pmod m\) if and only if \(\lambda(m) | y\). Conversely, if \(\lambda(m) | m-1\), this <strong>will</strong> happen - as for any \(g: ord_m(g) | \lambda(m)\), so 
 				$$ g^{m-1} \equiv g^{\lambda(m)*\_tmp} \equiv g^{ord_m(g)*\_tmp2} \equiv (g^{ord_m(g)})^{\_tmp2} \equiv 1^{\_tmp2} \equiv 1 \pmod m $$.
 			Such number are either prime numbers or Carmichael numbers.
 			</li>
-			<li>To sum it up: Fermat test consists of testing for a base \(b\), whether \(b^{m-1} \not \equiv 1 \pmod m\) - if so, then \(m\) is composite; otherwise, \(m\) might be prime. If there is a witness of compositeness of \(m\), then there are not less than \(\frac{m}{2}\) witnesses of compositeness of \(m\). There are numbers, for which there are no Fermat's witnesses of compositeness - prime numbers and Carmichael numbers, that is numbers, for which \(\lambda(m) | m-1\) holds.
-			</li>
 		</ol>
+		<h4>Summarizing Fermat test</h4>
+		<p>To sum it up: Fermat test consists of testing for a base \(b\), whether \(b^{m-1} \not \equiv 1 \pmod m\) - if so, then \(m\) is composite; otherwise, \(m\) might be prime. If there is a witness of compositeness of \(m\), then there are not less than \(\frac{m}{2}\) witnesses of compositeness of \(m\). There are numbers, for which there are no Fermat's witnesses of compositeness - prime numbers and Carmichael numbers, that is numbers, for which \(\lambda(m) | m-1\) holds.
+		</p>
 
 		<h3>Solution II: Miller-Rabin primarility test</h3>
 		<ol>
@@ -77,14 +78,29 @@
 			<li>Miller-Rabin test involves checking, whether:
 				<ol>
 					<li>\(g^{m-1} \not \equiv 1 \pmod m\) - if so, then \(m\) is not a prime.</li>
-					<li>If \(g^{2^{l+1}k} \equiv 1 \pmod m\) for some \(l, k\), the test checks whether \(g^{2^lk} \equiv \pm 1 \pmod m\) - if not, then \(m\) is a prime.</li>
+					<li>If \(g^{\frac{m-1}{2^h}} \equiv 1 \pmod m\) for some \(h: 2^h | m-1\), the test checks whether \(g^{\frac{m-1}{2^h}} \equiv \pm 1 \pmod m\) - if not, then \(m\) is a prime.</li>
 				</ol>
 			</li>
+			In other words, if \(test_{MR}(m,b)\) denotes, whether Miller-Rabin test found a witness of compositeness of \(m\)
+			$$test_{MR}(m,b)=
+			\begin{cases} 
+			1 \text{ if \(b^{m-1} \not \equiv 1  \pmod m\)} \lor (\exists_{k \in \{\frac{m-1}{2}, \frac{m-1}{4}, \dots \frac{m-1}{2^l} \}} b^k \not \equiv \pm 1 \pmod m \land b^{2k} \equiv 1 \pmod m) \text{ for \(l=\nu_2(m-1)\)}\\
+				0 \text{ otherwise} \\
+			\end{cases}
+		$$
 			<li>Note, that - because of first step - every Fermat witness is also Miller-Rabin witness.</li>
 		</ol>
+
+		{{ algo.neo_algorithm(1, 'Primarility tests: Fermat and Miller-Rabin', '
+			<p>Input format: value \(m\), for which all witnesses and non-witnesses will be shown<br>
+			\(m\)<br>
+			</p>
+			', '15', {'algo_type':'shower', 
+			'color_description':{'standard':'Non-witness', 'stagnant':'Both Fermat witness and Miller-Rabin witness', 'crucial':'Miller-rabin witness'} }) }}
+
 		<h4>Probability of hittin' a witness part I: A short remark on Carmichael numbers</h4>
 		<p>Only Carmichael numbers have less than \(\frac{m}{2}\) witnesses; what can be said about them?</p>
-		<h5>Thesis I: All Carmichael numbers are square-free: that is, they have a form \(m=p_1p_2 \dots p_n\), where all \(p_i\) are distinct</h5>
+		<h5>Thesis II: All Carmichael numbers are square-free: that is, they have a form \(m=p_1p_2 \dots p_n\), where all \(p_i\) are distinct</h5>
 		<ol>
 			<li>Suppose, that there is some Carmichael number \(v=p_1^{q_1} \dots p_n^{q_n}\) with some \(q_i \gt 1\), that is not square-free. Also, without loss of generality let \(q_1 \gt 1\)</li>
 			<li>Clearly, \(\phi(p_1^{q_1}) | \lambda(m)\), and as \(\lambda(m) | m-1\), then \(\phi(p_1^{q_1}) | m-1\)</li>
@@ -92,12 +108,12 @@
 			<li>However, as \(p_1 | m\), then \(p_1 \nmid m-1\) - which contradicts our statement.</li>
 		</ol>
 		<h5>Supplement: Korselt's Criterion</h5>
-		<h6>Part I: Carmichael implies criterion</h6>
 			<p>Korselt's Criterion states, that for all primes \(p\) dividing \(m\):
-				$$\forall_{p \in P:p|m} p-1 | m-1 \implies m \in C$$
+				$$\forall_{p \in P:p|m} p-1 | m-1 \iff m \in C$$
 				, where \(C\) denotes set of Carmichael numbers.
 			</p>
-			<p>Assuming theorem I (above - Carmichael numbers are square-free), if \(m=p_1p_2 \dots p_n\) is a Carmichael number, then 
+		<h6>Part I: Carmichael implies criterion</h6>
+			<p>Assuming thesis II (above - Carmichael numbers are square-free), if \(m=p_1p_2 \dots p_n\) is a Carmichael number, then 
 			$$\lambda(m)=lcm(\lambda(p_1), \lambda(p_2), \dots, \lambda(p_n))=lcm(\phi(p_1), \phi(p_2), \dots, \phi(p_n))=lcm(p_1-1, p_2-1, \dots p_n-1)$$.
 			Thus, \(p_1-1 | \lambda(m), p_2-1 | \lambda(m) \dots, p_n-1 | \lambda(m)\). And as \(\lambda(m) | m-1\) for Carmichael numbers, then \(m \in C\) implies for all prime divisors of \(m\): \(p_i-1 | m-1\).</p>
 		<h6>Part II: Criterion implies Carmichael</h6>
@@ -105,7 +121,7 @@
 			$$p_i-1 | m-1$$, 
 			then \(\lambda(m)=lcm(p_1-1, p_2-1, \dots, p_n-1)\) must divide \(m-1\), because:
 			<ol>
-				<li>Let factorization of \(p_i-1=r_1^{s_{i,1}} \dots r_z^{s_{i,z}}\), where some s_z may be equal to zero and sequence \(r_i\) is the sequence of all prime divisors of \(p_1-1, p_2-1, \dots p_n-1\).</li>
+				<li>Let factorization of \(p_i-1=r_1^{s_{i,1}} \dots r_z^{s_{i,z}}\), where some \(s_{i,z}\) may be equal to zero and sequence \(r_i\) is the sequence of all prime divisors of \(p_1-1, p_2-1, \dots p_n-1\).</li>
 				<li>\(\lambda(m)=lcm(p_1-1 \dots p_n-1) = r_1^{MAX_j(s_{j, 1})} \dots r_z^{MAX_j(s_{j, z})}\)</li>
 				<li>For any \(i\) one can argue, that \(r_i^{s_{j,i}} | m-1\) - as \(p_j-1 | m-1\)</li>
 				<li>Thus, \(\lambda(m) | m-1\)</li>
@@ -113,23 +129,135 @@
 			<p>Thus, if for all \(p_i\) one can argue, that \(p_i-1 | m-1\), then \(m\) is a Carmichael number</p>
 
 			</p>
-		<h5>Thesis II: All Carmichael numbers have at least 3 distinct primes in their factorization</h5>
+		<h5>Thesis III: All Carmichael numbers have at least 3 distinct primes in their factorization</h5>
 		<ol>
 			<li>Suppose, that there is some Carmichael number \(v=pq\) with prime, distinct \(p, q\).</li>
 			<li>From Korselt's criterion \(p-1 | m-1\), also \(q-1 | m-1\)</li>
 			<li>\(m-1=(p-1)(q-1)+p+q-2 = (p-1)(q-1)+(p-1)+(q-1)\) - pure algebra.</li>
 			<li>\(p-1 | (p-1)(q-1)+(p-1)+(q-1) \implies p-1 | q-1\)</li>
 			<li>\(q-1 | (p-1)(q-1)+(p-1)+(q-1) \implies q-1 | p-1\)</li>
-			<li>Both statements above cannot be true simaltaneously, if \(p \neq 1\)</li>
+			<li>Both statements above cannot be true simaltaneously, if \(p \neq q\)</li>
+		</ol>
+		<h5>Corollary of the above - divisibility of Carmicahel number by \(2\)</h5>
+		<p>Notice, that Carmichael number cannot be divisible by \(2\) - because it has at least 1 prime divisor, and, by Korselt's criterion, \(p-1 | m-1\) - which is not possible if \(m\) is even and \(p\) is odd.</p>
+
+		<h4>Probability of hittin' a witness part II: Amount of witnesses among Carmichael numbers.</h4>
+		<p>It will be established, that if \(m\) is a Carmichael number, then out of all numbers coprime to \(m\) among \(\{1 \dots m-1\}\) at most \(\frac{1}{4}\) of them are fermat liars. The technique (shown by Bobby Kleinberg in his timeless cult-classic <a href=https://web.archive.org/web/20210415013417/http://www.cs.cornell.edu/courses/cs4820/2010sp/handouts/MillerRabin.pdf>paper</a>) of proving this statement involves distinguishing three non-intersecting sets consisting of elements \(\{1 \dots m-1\}\); Let \(m-1=2^kt\) where \(2 \nmid t\):</p>
+		<ol>
+			<li>\(X\) - all numbers not-coprime to \(m\) - \(x \in X\) is a witness.</li>
+			<li>\(Y\) - \(y \in Y \iff y^t \equiv 1 \pmod m\) - \(y \in Y\) is a non-witness.</li>
+			<li>\(Z1\) - \(z \in Z1 \iff z^{2^ht} \equiv m-1 \pmod m\) for some \(h\) - \(z \in Z1\) is a non-witness.</li>
+			<li>\(Z2\) - \(z \in Z2 \iff z^{2^ht} \not \equiv \pm 1 \pmod m \land z^{2^{h+1}t} \equiv 1 \pmod m\) for some \(h\) - \(z \in Z2\) is a witness.</li>
+		</ol>
+		<p>The point will be made, that \(|Y| \le \frac{m-1}{8}\), \(|Z1| \le \frac{|Z1|+|Z2|}{7}\): This will imply, that \(|Y|+|Z1| \le |Y| + \frac{m-1-|Y|}{7} = \frac{7|Y|+m-1-|Y|}{7} = \frac{6|Y|+m-1}{7} \le \frac{6m-6}{7*8}+\frac{m-1}{7} = \frac{6m+8m-18-6}{8*7} = \frac{14(m-1)}{8*7} = \frac{m-1}{4}\) - thus, choosing any base leads to probability greater than half of choosing miller-rabin witness for any base.</p>
+		<h5>Proof of Miller-Rabin probability of a hit for Carmicahel numbers, part I: \(|Y| \le \frac{m-1}{8}\)</h5>
+		<p>Proof:</p>
+		<ol>
+			<li>An argument will go like this: for a single prime divisor \(p\) of \(m\), there are at most \(\frac{p-1}{2}\) such values \(b\), that \(b^t \equiv 1 \pmod p\). Thus, from Chinese remainder theorem, there are at most \(\frac{(p_1-1)(p_2-1) \dots (p_n-1)}{2^n}\) such values \(b\), that \(b^t \equiv 1 \pmod m\). As each Carmichael number has at least 3 prime divisors, then \(|Y| \le \frac{m}{8}\). What is left to show is that, for a single prime, there are at most \(\frac{p-1}{2}\) such values \(b\), that \(b^t \equiv 1 \pmod m\).</li>
+			<li>Notice, that for prime divisor \(p\) of \(m: \lambda(p)=\phi(p)\) is even (as \(p\) is odd), and thus, there is some \(b\) with \(ord_p(b)=\phi(p)\), for which \(t \nmid ord_p(b)\) - because \(t\) is not divisible by \(2\) - for this \(b: b^t \not \equiv 1 \pmod p\), and, consequently, \(b^t \not \equiv 1 \pmod m\).</li>
+			<li>From Thesis I, if there is one such \(b\), that \(b^t \not \equiv 1 \pmod m\), then at most half of all values \(s \in \{1, \dots, m-1\}\) fulfills: \(s^t \equiv 1 \pmod m\) which ends the proof.</li>
+		</ol>
+		<h5>Proof of Miller-Rabin probability of a hit for Carmichael numbers, part II: \(|Z1| \le \frac{|Z2|}{6}\)<b style="color:red">WARNING: BAD PROOF</b></h5>
+		<p>Proof:</p>
+		<ol>
+			<li>Suppose, there is at least one element \(z \in Z1\) (otherwise there would be no need to show anything): thus, for some \(l\), 
+				$$
+				\begin{cases}
+					z^{2^lt} \equiv -1 \pmod {p_1} \\
+					\dots \\
+					z^{2^lt} \equiv -1 \pmod {p_n} \\
+				\end{cases}\\
+				$$
+				Then, for some \(v\), let \(s_v\) denote sequence \((v \pmod {p_1}, \dots v \pmod {p_n})\). Notice, that for any sequence \(x\) consisting of \(1\)s and \(-1\)s there exists some \(w\), for which \(s_{(zw)^{2^lt}}=x\):
+				<ol>
+					<li>If \(x(i)=-1\), then \(w \equiv 1 \pmod {p_i}\)</li>
+					<li>If \(x(i)=1\), then \(w \equiv z \pmod {p_i}\)</li>
+				</ol>
+				Any \(z \in Z1\) multiplied by \(w\) leads to such value \(wz\), that \(s_{(wz)^{2^lt}} = x\). Thus, as \((wz)^{2^{l+1}t} \equiv 1 \pmod m\) (because for all \(p_i: p_i|m\) noticeable nuissance: \((wz)^{2^{l+1}t} \equiv ((wz)^{2^lt})^2 \equiv -1^2 \equiv 1 \pmod {p_i}\) occurs), and as for each \(z_1, \dots z_h \in Z1\) all \(wz_1, \dots wz_h\) are distinct, then for each sequence \(x\) consisting of \(1\)s and \(-1\)s there are at least as many values \(b: s_b=x\) as there are values \(z: s_z=(-1, -1, \dots -1)\). Notice, that \(b\) is certainly a non-witness if \(s_b \neq (-1, -1, \dots -1)\) and \(s_b \neq (1, 1, \dots 1)\) - thus, there are \(2^n-2\) sequences constituting a witness, and so, as \(n \ge 3\), \(|Z1| \le \frac{|Z2|}{8-2} = \frac{|Z2|}{6}\)
+			</li>
+		</ol>
+		<h4>One last time, and Miller-Rabin will fade away</h4>
+		<p>To sum it up:</p>
+		<ol>
+			<li>The aim of Miller-Rabin test is checking, whether some number \(m\) is composite. It chooses a base \(b\),  and then, checks, whether running a test with a given base shows, that a number is composite.</li>
+			<li>Miller Rabin test first checks, whether \(b^{m-1} \equiv 1 \pmod m\) if not, then \(m\) is composite.</li>
+			<li>Then, it checks, for subsequent \(k=2, 4, \dots 2^{\nu_2(m)}\), whether \(b^{\frac{m-1}{k}} \equiv 1 \pmod m\). If not, there are two possible outcomes:
+				<ul>
+					<li>\(b^{\frac{m-1}{k}} \equiv -1 \pmod m\) - then \(b\) is not a witness of compositeness of \(m\), thus, \(test_{MR}(b)=0\).</li>
+					<li>\(b^{\frac{m-1}{k}} \not \equiv -1 \pmod m\) - \(b\) is a witness of compositeness of \(m\), thus, \(test_{MR}(b)=1\).</li>
+				</ul>
+			</li>
+			<li>Every fermat witness is also Miller-Rabin witness.</li>
+			<li>Carmichael numbers have at least 3 prime divisors (and none of them is equal to 2) and are square-free.</li>
+			<li>There are at most \(\frac{m}{4}\) Miller-Rabin liars if \(m\) is a Carmichael number.</li>
+			<li>It was shown (hopefully without mistakes, cardinal mistakes, or papal mistakes), that for any composite number \(m\) probability, that random \(b\) is a witness of compositeness of \(m\) is not lower than \(\frac{1}{2}\) - for all numbers except for Carmichael numbers it is not lower than \(\frac{1}{2}\) using a standard fermat test, and each fermat witness is also miller-rabin witness; and for Carmichael numbers it is not lower than \(\frac{1}{4}\)</li>
+			<li>If one calculates \(d=b^{\frac{m-1}{2^{\nu(m-1)}}}\), and then finds subsequent values to test as \(d^2, (d^2)^2, \dots \), then one can achieve complexity equal to that of Fermat test - that is \(O(\log(m)*mul(m))\), where \(mul(m)\) denotes time needed to multiply two numbers of size \(m\) - something like \(O(\log^2(m)\log\log(m))\).</li>
+			<li>Utilitarian remarks, part I: for \(m \le 2^{64}\) it is enough to check, whether \(test_{MR}(m,b)=0\) for bases \(\{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37\}\); if for each of those bases \(test_{MR}(m,b)=0\), then \(m\) is a prime.</li>
+			<li>Utilitarian remarks, part II: If \(b\) is a miller-rabin witness but not fermat witness, then there is some \(k=2^h\), for which \(b^{\frac{m-1}{k}} \not \equiv \pm 1 \pmod m\), but \(b^{2\frac{m-1}{k}} \equiv 1 \pmod m\). Let \(\kappa = b^{\frac{m-1}{k}}\) (and, \(\kappa^2 \equiv 1 \pmod m\)). Notice, that there is some prime \(p: p|m\), for which \(\kappa \equiv 1 \pmod p\), and some prime \(q: q|m\), for which \(\kappa \equiv -1 \pmod q\). And so, \(gcd(\kappa+1, m) \gt 1\), and \(gcd(\kappa-1, m) \gt 1\). This leads to some conclusions, among them: one can find a factor of Carmichael number in polynominal time.</li>
+		</ol>
+		
+		<h2>Second problem - finding a factorization</h2>
+		<p>Suppose You are given a number \(m: m \le 10^{18}\), and thine aim is to find a factorization of \(m\) into primes; that is, such values \(p_1, q_1, p_2, q_2, \dots p_n, q_n\), that \(m=p_1^{q_1} \dots p_n^{q_n}\) for prime \(p_1, \dots p_n\).</p>
+		<h3>Solution: Pollard's rho algorithm</h3>
+
+		<p>Pollard's Rho algorithm relies on following ideas:</p>
+		<ol>
+			<li>If an infinite sequence of elements \(w_0, w_1, w_2, \dots \) is given, all \(w_i \in \{0, 1, \dots m-1\}\), then there are some indexes \(x,y\), for which \(w_x = w_y\) - as \(w_i\) has one of \(m\) possible values. Furthermore, if \(w_i=g(w_{i-1})\) for any function \(g\), then sequences \((w_x, w_{x+1}, w_{y-1})\) and \((w_y, w_{y+1} \dots w_{2y-x-1})\) are identical.</li>
+			<li>Suppose \(p|m\): if \(x \equiv y \pmod p \implies g(x) \equiv g(y) \pmod p\), then the sequence \(w\) taken \(\pmod p\) will also have a cycle of elements \(w_a, \dots w_{b-1}\) if \(w_a \equiv w_b \pmod p\) for some \(a, b\).</li>
+			<li>Suppose, that \(g(x)\) taken \(\pmod p\) gives pseudorandom output (with uniform probability of each value). When will the cycle start? One can use birthday paradox to solve this problem: say, a sequence \(s_1, \dots s_k\) of random elements from uniform distribution, each \(s_i \in \{ 1, \dots p-1\}\) is given; for what \(k\) is the probability that it has two equal elements larger than \(\frac{1}{2}\)? By birthday paradox, \(k=O(\sqrt{p})\)</li>
+			<li>If \(w_a \equiv w_b \pmod p\) for \(p: p|m\), then \(gcd(w_a-w_b, m) \gt 1\). Thus, to find a cycle in the sequence \(\pmod p\), it is enough to find for some pair of elements \(w_a, w_b\), then check, whether \(gcd(w_a-w_b, m) \gt 1\). And this \(gcd\) provides a factor of \(m\).</li>
+		</ol>
+		<p>To summarize the above; if one finds some function \(f\) satisfying above, generates a sequence \(w_i=f(w_{i-1})\), and finds a cycle in linear time (that is, elements, for which \(gcd(w_a-w_b, m) \in \lt 1; m-1 \gt \)), then one has an algorithm finding a divisor of \(m\) in \(O(\sqrt{least\_prime\_divisor\_of\_m} * \log(m))\). The remaining three questions: what function is appropriate, how to find a cycle in non-explicitly given graph, and what is the overall complexity with some caveats regarding use of this algorithm.</p>
+
+		<h4>Part I: defining a function</h4>
+		<p>Let's define certain function \(f\):</p>
+		<ul>
+			<li>\(f: \{0, 1, 2, \dots m-1\} \mapsto \{0, 1, 2, \dots m-1\}\)</li>
+			<li>For any \(d: d|m\), $$x \equiv y \pmod d \implies f(x) \equiv f(y) \pmod d$$</li>
+			<li>Values of \(f\) modulo any prime \(p: p|m\) are pseudorandom, uniformly chosen from \(\{1,\dots ,p\}\) (or, at least, their behavior is unpredictable).</li>
+		</ul>
+		<p>Those are the conditions that are imposed upon \(f\). It turns out, that any polynominal will do point \(2\); from assumption, that 
+		$$ x-y=kd+lm $$
+		one can prove, that:
+		$$ f(x)-f(y) = a_0+a_1x^1+\dots+a_nx^n-a_0-a_1y-\dots-a_ny^n = a_1(x-y)+a_2(x^2-y^2)+\dots+a_n(x^n-y^n) = a_1(x-y)+a_2(x^2-y^2) + \dots a_n(x^n-y^n) = $$
+		$$ = a_1(x-y) + a_2(x-y)(x+y) + a_n(x-y)(y^{n-1}+x^1y^{n-2}+\dots+x^{n-2}y + x^{n-1}) = $$
+		$$ = (x-y)*s = (kd+lm)*s $$
+		For some \(s \in N\). Thus, \(f(x)-f(y) \equiv 0 \pmod d\)
+		Polynominal \(x^2+1\) should be enough to solve point (3).</p>
+		<h4>Part II: Floyd's cycle-finding algorithm</h4>
+		<p>The problem is posited as follows: suppose, there is a sequence \(c_0, f(c_0), f(f(c_0)), \dots\), and some relation of equivalence between elements, such that \(x \equiv y \implies f(x) \equiv f(y)\). Also, for simplicity, let \(c_i=f(c_{i-1})\). At some point, \(c_a \equiv c_b\) for some \(a, b\) (and thus, there is a cycle in this sequence). How to find two same (equivalent) elements in this cycle? Note, that checking for equivalence of \(a,b\) may be non-trivial - in case of pollard's rho, a divisor \(d\), modulo which all elements \(c_i\) are considered, is not known - in other words, representation, in which the numbers are equivalent, is not known; thus, \(gcd\) for two elements of sequence will be checked.</p>
+		<p>Let \(l\) denote length of a part of the sequence, that is not a part of the cycle, let \(o\) denote length of a cycle</p>
+		<p>Solution is, for example, Floyd's cycle finding algorithm: checking for equivalence \(c_k\) and \(c_{2k}\) in \(k\)-th check. Notice, that once \(c_k\) is a part of cycle, then \(c_{2k}\) also has to be a part of this cycle. Furthermore, if \(o\) is the length of the cycle, then exactly one of \((c_{2k} \equiv c_k, c_{2k+2} \equiv c_{k+1}, \dots c_{2k+2o-2}, \equiv c_{k+o-1})\) is true - because \(c_a, c_b\) are equivalent exactly when \(o|b-a\) and \(a \gt l \land b \gt l\). Thus, this algorithm will finish in \(O(l+o)\) comparisions.</p>
+
+		<h4>Part III: Complexity, caveats, controversies</h4>
+		<ol>
+			<li>It may happen, that a cycle is found, for some \(a, b\), \(gcd(w_a-w_b, m) \gt 1)\) - most fortunate. However, \(gcd(w_a-w_b, m)=m)\) - not a single divisor is found. There are three questions associated with this inconvenience:
+				<ol>
+					<li>What does it mean? Let \(o_{p_i}\) denote length of the cycle for \(i\)-th prime divisor of \(m\). Then, \(\forall_i o_{p_i}|b-a\). After running this algorithm further (that is, just as if \(gcd(w_a-w_b, m)=1\)), it may either turn out, that all \(o_{p_i}\) are equal - thus, always \(w_x \equiv w_y \implies o|x-y\), or not. Things can also get messy, when \(m\) is not square-free in this simple analysis.</li>
+					<li>How cope? Finding different seed \(w_0\) or polynominal \(f\) seems plausible.</li>
+					<li>What is the probability of such occurence? Low.</li>
+				</ol>
+			</li>
+			<li>As one can see, complexity of this method is \(O(\sqrt{least\_prime\_divisor\_of\_m}\log(m))\) - applying it to factorize whole number leads to complexity like 
+				$$O(\sum_{i=1}^{n-1} \sqrt{p_i} \log(m))$$
+			, where \(p_i\) denotes subsequent prime factors of \(m\) from smallest to largest. Notice, that this method won't produce anything useful if one will try to factorize a prime number - because in this case, \(gcd(w_a-w_b, m)=m\) for two elements of a cycle. This leads to necessity of employing primarility test when using this method.</li>
 		</ol>
 
-		{{ algo.neo_algorithm(1, 'Primarility tests: Fermat and Miller-Rabin', '
-			<p>Input format: value \(m\), for which all witnesses and non-witnesses will be shown<br>
-			\(m\)<br>
-			</p>
-			', '77', {'algo_type':'shower', 
-			}) }}
+
 		
+		<h4>Appendix: proof of birthday paradox</h4>
+		<p>Thesis: if a sequence of numbers is given, \(s_1, \dots s_k\), each \(s_i \in \{0, \dots p-1\}\), then the probability it has two equal elements is greater than \(\frac{1}{2}\) for \(k=O(\sqrt{p})\).</p>
+		<p>Proof:</p>
+		<ol>
+			{% set lc= '\\lceil \\sqrt{p} \\rceil' %}
+			<li>Take two sequences \(s=(s_1, \dots s_{\lceil \sqrt{p} \rceil})\) and \(t=(t_1, \dots t_{\lceil \sqrt{p} \rceil})\) consisting of random elements from uniform distribution from set \(\{1,\dots,p-1\}\).</li>
+			<li>With some probability there are two equal elements in \(s\), and two equal elements in \(t\) - proof will show, that if there are no two equal elements in \(s\) and no two equal elements in \(t\), then probability, that in \(t\) there is an element equal to some element from \(s\) is greater than \(\frac{1}{2}\). If this condition is not satisfied, there are already two equal elements in sequence of size \(2\lceil \sqrt{p} \rceil\) (that is, concatenation of \(s\) and \(t\)).</li>
+			<li>For each element \(t_i \in t\) probability, that there is no equal element in \(s\) is \(\frac{p-\lceil \sqrt{p} \rceil}{p}\) - because there are \(p-{{lc}}\) elements not belonging to \(s\) out of set \(\{0, 1, \dots, p-1\}\) of \(p\) elements.</li>
+			<li>There are \( {{lc}} \) elements in \(t\). Thus, probability, that in sequence \(t\) there is no element equal to element from \(s\), is 
+				$$ \Biggl( \frac{p-{{lc}} }{p} \Biggr)^{ {{lc}} } = \Biggl( 1 - \frac{ {{lc}} }{p} \Biggr)^{ {{lc}} } \le \Biggl( 1 - \frac{1}{\sqrt{p}} \Biggr)^{ \sqrt{p} } $$
+				Which tends to \(e^{-1}\) as \(p\) approaches infinity, which is lower than \(\frac{1}{2}\).
+			</li>
+		</ol>
 
 
 		<div id="problems"></div>

@@ -110,7 +110,7 @@ html, body{
 	font-family: sans-serif;
 }
 
-p,ol{
+p,ol,ul{
 	margin:0px 3%;
 	line-height: 2;
 }
