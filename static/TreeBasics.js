@@ -649,27 +649,3 @@ var eg1=new DiamFinder(feral, 70);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 var eg2=new DoubleWalk(feral2, 70);
-/*
-15
-1 2
-2 3
-2 4
-4 5
-4 6
-1 7
-1 8
-8 9
-8 10
-10 11
-10 12
-10 13
-10 14
-10 15
-
-
-
-4
-1 2
-1 3
-1 4
-*/

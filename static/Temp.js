@@ -132,13 +132,18 @@ class Algorithm{
 
 	//reading input
 	dissolve_input(str){
-		var lst=[], j=0, i=0, x, a=0;
+		var lst=[], j=0, i=0, x, a=0, is_string=false;
 		lst.iter=-1;
 		lst.get_next=function(){this.iter+=1; return this[this.iter];}
 		while (j<str.length){
+			is_string=false;
 			for (;i<str.length;i++){
 				x=str.charCodeAt(i);
-				if (x<58 && x>=48) a=a*10+x-48;
+				if (x<58 && x>=48 && is_string==false) a=a*10+x-48;
+				else if ( (x>=65 && x<=90) || (x>=97 && x<=122) ){
+					if (a==0) a="";
+					a+=str[i];
+				}
 				else break;
 			}
 			if (j!=i) lst.push(a);
@@ -299,6 +304,20 @@ class Representation_utils{
 		}
 		to_add.appendChild(full_div);
 		return {'zdivs':zdivs, 'divs':divs, 'full_div':full_div}
+	}
+
+	static gridify_div(place, n, m, style){
+		var i, j, btn;
+		var grid=ArrayUtils.create_2d(n, m);
+
+		for (i=0; i<n; i++){
+			for (j=0; j<m; j++){
+				btn=Representation_utils.button_creator(style);
+				place[i].buttons.appendChild(btn);
+				grid[i][j]=btn;
+			}
+		}
+		return grid;
 	}
 	
 	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
@@ -767,6 +786,20 @@ class ArrayUtils{
 			for (i=0; i<dim2; i++) arr[j].push(0);
 		}
 		return arr;
+	}
+
+	static subsetting(array, d1, d2){
+		var i=0, res=[];
+		if (ArrayUtils.is_iterable(d1)){
+			for (i=d1[0]; i<d1[1]; i+=1)
+				res.push(array[i][d2]);
+		}
+
+		else{
+			for (i=d2[0]; i<d2[1]; i+=1)
+				res.push(array[i][d1]);
+		}
+		return res;
 	}
 }
 
