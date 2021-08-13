@@ -126,6 +126,7 @@ class PollardRho extends Algorithm{
 			this.logic.starter = 3;
 
 		this.fill_floyd();
+		this.logic.poly_str=this.prepare_poly();
 	}
 
 	presentation(){
@@ -258,11 +259,24 @@ class PollardRho extends Algorithm{
 		else return [100];
 	}
 
+	prepare_poly(){
+		var poly_strs=this.logic.poly.map((e,i) => `${(e==1)?``:e}x<sup>${i}</sup>`);
+		poly_strs=poly_strs.filter((e,i) => this.logic.poly[i]!=0);
+		poly_strs=poly_strs.reverse();
+		function concat(str1, str2) {return str1+"+"+str2;}
+		return poly_strs.reduce(concat, "").substr(1);
+	}
+
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1];
 
-		if (s[0]==0) return `Whatever`;
+		var poly_str=this.logic.poly_str;
+
+		if (s[0]==0) return `Next values w<sub>k</sub>=w<sub>${s[1]}</sub>=f(w<sub>${s[1]-1}</sub>)=f(${this.logic.w[s[1]-1]}) and w<sub>2k</sub>=w<sub>${2*s[1]}</sub>=f(f(w<sub>${2*s[1]-2}</sub>))=f(f(${this.logic.w[2*s[1]-2]})) are found; for f(x)=${poly_str}, they're equal to ${this.logic.w[s[1]]} and ${this.logic.w[2*s[1]]}`;
+		if (s[0]==1) return `Difference w<sub>k</sub>-w<sub>2k</sub> (taken as absolute value - it doesn't actually matter, because it will be used only for gcd finding, but looks better) is equal to |w<sub>k</sub>-w<sub>2k</sub>|=|${this.logic.w[s[1]]}-${this.logic.w[2*s[1]]}|=${this.logic.diff[s[1]]}`;
+		if (s[0]==2) return `Gcd between difference of w<sub>k</sub> and w<sub>2k</sub> and m is equal to gcd(${this.logic.diff[s[1]]}, ${this.logic.m})=${this.logic.gcds[s[1]]}.`;
+		if (s[0]==100) return `A factor of ${this.logic.m} was found - namely, ${this.logic.gcds[this.logic.gcds.length-1]}, algorithm ends.`;
 	}
 }
 
