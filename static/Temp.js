@@ -803,6 +803,85 @@ class ArrayUtils{
 	}
 }
 
+class Graph_utils{
+	//Positions+w/h of v1, v2; v1 below; general_params: h/w of a button
+	static create_edge(v1_pos, v2_pos, stylistic, general_params){
+		var cval, angle; 
+		var dv=document.createElement("DIV");
+		var width=general_params.width, height=general_params.height;
+
+		dv.style.position="absolute";
+
+		var ln_x=(v1_pos.x-v2_pos.x)*width;
+		var ln_y=(v1_pos.y-v2_pos.y)*height;
+
+		cval=Math.sqrt(ln_x*ln_x+ln_y*ln_y);
+		dv.style.width=`${cval}px`;
+		
+		dv.style.top=`${v1_pos.y*100}%`;
+		dv.style.left=`${v1_pos.x*100}%`;
+
+		dv.style.backgroundColor="#000000";
+		dv.style.height=`${stylistic.edge.height}px`;
+		if ('color' in stylistic.edge) dv.style.backgroundColor=`${stylistic.edge.color}px`;
+
+		if (ln_x==0) angle=-Infinity;
+		else angle=ln_y/cval;
+
+		dv.style.transformOrigin="top left";
+		if (ln_x==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
+		else if (ln_x<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
+		else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
+		return dv;
+	}
+
+	static button_creator(stylistic, numb=null, col='#440000'){
+		var butt=Representation_utils.button_creator(stylistic.nonsense, numb, col);
+
+		if (stylistic.vertex.label=='none'){
+			butt.innerHTML='';
+		}
+
+		butt.style.width=`${stylistic.vertex.width}px`
+		butt.style.height=`${stylistic.vertex.height}px`
+		butt.style.borderRadius=`${stylistic.vertex.radius}px`;
+		if ('color' in stylistic.vertex) butt.style.backgroundColor=`${stylistic.vertex.color}px`;
+		butt.style.zIndex=1;
+		return butt;
+	}
+	
+	//places the graph
+	//Currently nonsensical distinction width-height
+	static place_graph(edge_list, positions, place, style){
+		var i, a, j;
+
+		//this.calculate_position_vertexes();
+		this.height=place.height;
+		this.width=place.width;
+		this.place=place.div;
+		this.buttons={'vertexes':ArrayUtils.steady(this.tree.n, 0), 'edges':ArrayUtils.steady(this.tree.n, 0)};
+
+		var vertex_pos=this.parameters.vertexes;
+		for (i=1; i<=this.tree.n; i++){
+			a=i;
+			var bt=Graph_utils.buttCreator(style, a);
+			this.buttons.vertexes[a]=bt;
+
+			if (a!=1){
+				var dv=Graph_utils.create_edge(a, style);
+				this.buttons.edges[a]=dv;
+				this.place.appendChild(dv);
+			}
+
+			//Normalized vertex positions
+			bt.style.position="absolute";
+			bt.style.top=`calc(${100*this.parameters.vertexes[a].y}% - ${style.vertex.height/2}px)`;
+			bt.style.left=`calc(${100*this.parameters.vertexes[a].x}% - ${style.vertex.width/2}px)`;
+			this.place.appendChild(bt);
+		}
+	}
+}
+
 class Modern_tree_presenter{
 	//Gives position to a tree - banal shit boring, besides tree is bad
 	_calculate_position_vertexes(){
@@ -903,7 +982,6 @@ class Modern_tree_presenter{
 					rc[a].push(rc[b][ij-1]+mod[b]);
 				}
 			}
-			console.log(a, lc[a], rc[a], mod[5]);
 		}
 
 		for (i=1; i<=n; i++){
@@ -923,37 +1001,8 @@ class Modern_tree_presenter{
 	}
 
 	create_edge(a, stylistic){
-		var cval, angle; 
-		var dv=document.createElement("DIV");
 		var verts=this.parameters.vertexes;
-		var width=this.width, height=this.height;
-		//this.divis[a]=dv;
-
-		dv.style.position="absolute";
-
-		var ln_x=(verts[a].x-verts[this.tree.par[a]].x)*width;
-		var ln_y=(verts[a].y-verts[this.tree.par[a]].y)*height;
-
-		cval=Math.sqrt(ln_x*ln_x+ln_y*ln_y);
-		//dv.style['--prec_point_zis']=precise_wid[a];
-		//dv.style['--prec_point_par']=precise_wid[par[a]];
-		dv.style.width=`${cval}px`;
-		
-		dv.style.top=`${verts[a].y*100}%`;
-		dv.style.left=`${verts[a].x*100}%`;
-
-		dv.style.backgroundColor="#000000";
-		dv.style.height=`${stylistic.edge.height}px`;
-		if ('color' in stylistic.edge) butt.style.backgroundColor=`${stylistic.vertex.color}px`;
-
-		if (ln_x==0) angle=-Infinity;
-		else angle=ln_y/cval;
-
-		dv.style.transformOrigin="top left";
-		if (ln_x==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
-		else if (ln_x<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
-		else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
-		return dv;
+		return Graph_utils.create_edge(verts[a], verts[this.tree.par[a]], stylistic, {'width':this.width, 'height':this.height});
 	}
 
 	//x, y - position, like, (1,1) - above, right
@@ -973,18 +1022,7 @@ class Modern_tree_presenter{
 
 	//Creates buttons
 	buttCreator(stylistic, numb=null, col='#440000'){
-		var butt=Representation_utils.button_creator(stylistic.nonsense, numb, col);
-
-		if (stylistic.vertex.label=='none'){
-			butt.innerHTML='';
-		}
-
-		butt.style.width=`${stylistic.vertex.width}px`
-		butt.style.height=`${stylistic.vertex.height}px`
-		butt.style.borderRadius=`${stylistic.vertex.radius}px`;
-		if ('color' in stylistic.vertex) butt.style.backgroundColor=`${stylistic.vertex.color}px`;
-		butt.style.zIndex=1;
-		return butt;
+		return Graph_utils.button_creator(stylistic, numb, col);
 	}
 
 	//places the tree
