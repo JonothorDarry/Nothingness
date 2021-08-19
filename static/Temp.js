@@ -65,8 +65,12 @@ class Algorithm{
 		//Button style
 		this.stylistic={};
 		this.stylistic.bs_butt_width="40px";
+		this.stylistic.bs_butt_width_h=40;
 		this.stylistic.bs_small_butt_width="20px";
+
 		this.stylistic.bs_butt_height="40px";
+		this.stylistic.bs_butt_height_h=40;
+
 		this.stylistic.bs_font_size="14px";
 		this.stylistic.bs_border="0";
 	}
@@ -268,6 +272,25 @@ class Partial extends Algorithm{
 	}
 }
 
+class Grid{
+	//Later, perhaps: create grid w/o overlay of divsCreator - no place
+	constructor(n, m, style, place=null){
+		this.grid=Representation_utils.gridify_div(place, n, m, style)
+	}
+
+	//Dict: positions:[[a,b], c] or [a, [b,c]]; array (iterable) to fill; color (default 4)
+	filler(to_fill){
+		var is_row=false, elems;
+		if (ArrayUtils.is_iterable(positions[0])){
+			is_row=true;
+		}
+		//if (ArrayUtils.is_iterable(positions[1]))
+
+
+
+	}
+}
+
 
 class Representation_utils{
 	//mode: 1 - buttons, 2 - midian button, 4 - text (logical or), midian - width of middle
@@ -302,7 +325,8 @@ class Representation_utils{
 
 			full_div.appendChild(divs[i]);
 		}
-		to_add.appendChild(full_div);
+		if (to_add!=null) to_add.appendChild(full_div);
+
 		return {'zdivs':zdivs, 'divs':divs, 'full_div':full_div}
 	}
 
@@ -344,6 +368,11 @@ class Representation_utils{
 		else if (col==11) btn.style.backgroundColor="#222200";
 		if (col==12) btn.style.backgroundColor="#FF3333";
 		if (col==9) btn.style.backgroundColor="#FFFF00";
+
+		//moderater-red, moderate-green, violet
+		if (col==30) btn.style.backgroundColor="#880000";
+		if (col==31) btn.style.backgroundColor="#008800";
+		if (col==32) btn.style.backgroundColor="#800080";
 
 		if (col==101) btn.style.backgroundColor="#804000";
 
@@ -822,8 +851,8 @@ class Graph_utils{
 		dv.style.left=`${v1_pos.x*100}%`;
 
 		dv.style.backgroundColor="#000000";
-		dv.style.height=`${stylistic.edge.height}px`;
-		if ('color' in stylistic.edge) dv.style.backgroundColor=`${stylistic.edge.color}px`;
+		dv.style.height=`${stylistic.height}px`;
+		if ('color' in stylistic) dv.style.backgroundColor=`${stylistic.color}`;
 
 		if (ln_x==0) angle=-Infinity;
 		else angle=ln_y/cval;
@@ -850,27 +879,29 @@ class Graph_utils{
 		return butt;
 	}
 	
+	/*
 	//places the graph
 	//Currently nonsensical distinction width-height
-	static place_graph(edge_list, positions, place, style){
-		var i, a, j;
+	//Additional stuff - among them, buttons
 
 		//this.calculate_position_vertexes();
-		this.height=place.height;
-		this.width=place.width;
-		this.place=place.div;
-		this.buttons={'vertexes':ArrayUtils.steady(this.tree.n, 0), 'edges':ArrayUtils.steady(this.tree.n, 0)};
+		var height=place.height;
+		var width=place.width;
+		var place=place.div;
+
+		var buttons={'vertexes':ArrayUtils.steady(vertex_no, 0), 'edges':ArrayUtils.steady(edge_list.length, 0)};
+		if ('vertexes' in additional_stuff) this.buttons.vertexes=additional_stuff.vertexes;
 
 		var vertex_pos=this.parameters.vertexes;
-		for (i=1; i<=this.tree.n; i++){
+		for (i=1; i<=vertex_no; i++){
 			a=i;
-			var bt=Graph_utils.buttCreator(style, a);
-			this.buttons.vertexes[a]=bt;
-
-			if (a!=1){
-				var dv=Graph_utils.create_edge(a, style);
-				this.buttons.edges[a]=dv;
-				this.place.appendChild(dv);
+			
+			if ('vertexes' in additional_stuff){
+				bt=this.buttons.vertexes[a];
+			}
+			else{
+				bt=Graph_utils.buttCreator(style, a);
+				this.buttons.vertexes[a]=bt;
 			}
 
 			//Normalized vertex positions
@@ -879,7 +910,16 @@ class Graph_utils{
 			bt.style.left=`calc(${100*this.parameters.vertexes[a].x}% - ${style.vertex.width/2}px)`;
 			this.place.appendChild(bt);
 		}
+
+		//edge order - uncanny
+		for (i=1; i<=edge_list.length; i++){
+			dv=Graph_utils.create_edge(postion[edge_list[i][0]], position[edge_list[i][1]], style);
+			this.buttons.edges[i]=dv;
+			this.place.appendChild(dv);
+		}
+
 	}
+	*/
 }
 
 class Modern_tree_presenter{
@@ -1002,7 +1042,7 @@ class Modern_tree_presenter{
 
 	create_edge(a, stylistic){
 		var verts=this.parameters.vertexes;
-		return Graph_utils.create_edge(verts[a], verts[this.tree.par[a]], stylistic, {'width':this.width, 'height':this.height});
+		return Graph_utils.create_edge(verts[a], verts[this.tree.par[a]], stylistic.edge, {'width':this.width, 'height':this.height});
 	}
 
 	//x, y - position, like, (1,1) - above, right

@@ -1,7 +1,7 @@
 class Muller extends Partial{
-	constructor(block, x){
+	constructor(block){
 		super(block);
-		this.ShowReality(x);
+		this.ShowReality();
 	}
 
 	read_data(){
@@ -30,9 +30,57 @@ class Muller extends Partial{
 		}
 	}
 
+	_logical_summary(){
+		var i, olden, index, x, roots_count=ArrayUtils.steady(this.logic.m, 0);
+		this.logic.roots=[];
+		this.logic.expos_count={};
+		for (x of this.logic.expos)
+			this.logic.expos_count[x]=0;
+
+		this.logic.summary={
+			'non_coprime': [],
+			'fermat_witnesses': {},
+			'non_witnesses_1': [],
+			'non_witnesses_minus1': [],
+			'mr_witnesses':{},
+		}
+		for (x of this.logic.expos) this.logic.summary.mr_witnesses[x]={};
+
+		for (i=1; i<this.logic.m; i+=1){
+			if (NTMath.gcd(i, this.logic.m) > 1) this.logic.summary.non_coprime.push(i);
+			else if (this.logic.power[i][0]!=1){
+				if (!(this.logic.power[i][0] in this.logic.summary.fermat_witnesses))
+					this.logic.summary.fermat_witnesses[this.logic.power[i][0]]=0;
+				this.logic.summary.fermat_witnesses[this.logic.power[i][0]] += 1;
+			}
+			else if (this.logic.power[i][this.logic.power[i].length-1]==1) this.logic.summary.non_witnesses_1.push(i);
+			else {
+				if (this.logic.power[i][this.logic.power[i].length-1]==this.logic.m-1) this.logic.summary.non_witnesses_minus1.push(i);
+				this.logic.expos_count[this.logic.expos[this.logic.power[i].length-1]] += 1;
+
+				index=this.logic.power[i].length-1;
+				olden = this.logic.summary.mr_witnesses[this.logic.expos[index]];
+				if (!(this.logic.power[i][index] in olden))
+					olden[this.logic.power[i][index]]=0;
+
+				olden[this.logic.power[i][index]] += 1;
+
+				roots_count[this.logic.power[i][index]] +=1;
+			}
+		}
+
+		for (i=1; i<this.logic.m; i+=1){
+			if (roots_count[i]>0) this.logic.roots.push(i);
+		}
+		this.logic.roots_count=roots_count;
+	}
+
 	logical_box(){
 		this._logical_find_all_expos();
 		this._logical_find_all_power();
+
+		this._logical_summary();
+		console.log(this.logic.expos_count);
 	}
 
 	_btn_appender(place, name=null, color=-1){
@@ -72,9 +120,57 @@ class Muller extends Partial{
 				this._btn_appender(divs.zdivs[i].buttons, this.logic.power[i][j]);
 			}
 		}
+
+		//Summary
+		var len_1=this.logic.expos.length-1;
+		var len_2=this.logic.roots.length;
+		
+		var left_margin=0, top_margin=0;
+		//this.place - will change; 2?
+		var summary=Representation_utils.proto_divsCreator(1, len_2+3+top_margin, [], null, this.place, this.stylistic);
+		var grid=Representation_utils.gridify_div(summary.zdivs, len_2+3+top_margin, len_1+3+left_margin, this.stylistic);
+
+		var x, y, used_expos=this.logic.expos.slice(1);
+		i=0;
+		for (x of used_expos){
+			grid[0][i+left_margin+1].innerHTML=x;
+			this.Painter(grid[0][i+left_margin+1], 5);
+
+			grid[len_2+2+top_margin][i+left_margin+1].innerHTML=this.logic.expos_count[x];
+			this.Painter(grid[len_2+2+top_margin][i+left_margin+1], 101);
+
+			i+=1;
+		}
+
+		i=0;
+		for (x of this.logic.roots){
+			grid[i+top_margin+1][0].innerHTML=x;
+			this.Painter(grid[i+top_margin+1][0], 5);
+
+			grid[i+top_margin+1][len_1+2+left_margin].innerHTML=this.logic.roots_count[x];
+			this.Painter(grid[i+top_margin+1][len_1+2+left_margin], 101);
+			i+=1;
+		}
+
+		i=0, j=0;
+		for (x of used_expos){
+			for (y of this.logic.roots){
+				btn = grid[j+top_margin+1][i+left_margin+1];
+				console.log(i,j, btn, x,y, this.logic.summary.mr_witnesses[x]);
+				if (!(y in this.logic.summary.mr_witnesses[x]))
+					btn.innerHTML=0;
+				else
+					btn.innerHTML=this.logic.summary.mr_witnesses[x][y];
+				if (y!=this.logic.m-1) this.Painter(btn, 32);
+				else this.Painter(btn, 0);
+
+				j+=1;
+			}
+			j=0, i+=1;
+		}
 	}
 
-	ShowReality(x=-1){
+	ShowReality(){
 		this.starter();
 		this.read_data();
 		this.logical_box();
