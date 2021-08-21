@@ -273,21 +273,45 @@ class Partial extends Algorithm{
 }
 
 class Grid{
-	//Later, perhaps: create grid w/o overlay of divsCreator - no place
-	constructor(n, m, style, place=null){
-		this.grid=Representation_utils.gridify_div(place, n, m, style)
+	//Later, perhaps: create grid w/o overlay of divsCreator - no place; left margin, topmargin
+	constructor(n, m, style, params={'place':null}){
+		Object_utils.merge(params, {'top_margin':0, 'left_margin':0});
+
+		this.grid=Representation_utils.gridify_div(params.place, n+params.top_margin, m+params.left_margin, style);
+		this.left_margin=params.left_margin;
+		this.top_margin=params.top_margin;
 	}
 
-	//Dict: positions:[[a,b], c] or [a, [b,c]]; array (iterable) to fill; color (default 4)
-	filler(to_fill){
-		var is_row=false, elems;
+	//positions:[[a,b], c] or [a, [b,c]]; arr: array (iterable) to fill; Dict: color (default 4)
+	filler(positions, arr, params){
+		var btn, results=[];
+		Object_utils.merge(params, {'color':4});
+
+		var is_row=false, to_update, elem;
 		if (ArrayUtils.is_iterable(positions[0])){
 			is_row=true;
 		}
-		//if (ArrayUtils.is_iterable(positions[1]))
+		if (is_row) to_update=ArrayUtils.range(positions[0][0], positions[0][1]).map(e => [e, positions[1]]);
+		else to_update=ArrayUtils.range(positions[1][0], positions[1][1]).map(e => [positions[0], e]);
 
+		var intertwined=to_update.map((e,i) => [e, arr[i]]);
 
+		for (elem of intertwined){
+			var btn=this.grid[elem[0][0]+this.top_margin][elem[0][1]+this.left_margin];
+			btn.innerHTML = elem[1];
+			Modern_representation.button_modifier(btn, params);
+			results.push(btn);
+			Representation_utils.Painter(btn, params.color);
+		}
+		return results;
+	}
 
+	single_filler(position, value, params={}){
+		Object_utils.merge(params, {'color':4});
+		var btn=this.grid[position[0]+this.top_margin][position[1]+this.left_margin];
+		if (value!=null) btn.innerHTML=value;
+		Representation_utils.Painter(btn, params.color);
+		return btn;
 	}
 }
 
@@ -330,6 +354,10 @@ class Representation_utils{
 		return {'zdivs':zdivs, 'divs':divs, 'full_div':full_div}
 	}
 
+	static gridlike_divs_creator(number_of_rows, to_add, style){
+		return Representation_utils.proto_divsCreator(1, number_of_rows, [], null, to_add, style);
+	}
+
 	static gridify_div(place, n, m, style){
 		var i, j, btn;
 		var grid=ArrayUtils.create_2d(n, m);
@@ -346,6 +374,7 @@ class Representation_utils{
 	
 	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
 	//9: yellow(grey) 10: blue 11: dark gold
+	//Refactor this shit as soon, as possibru
 	static Painter(btn, col=1, only_bg=0){
 		if ('upper' in btn){
 			Representation_utils.Painter(btn.upper, col, only_bg);
@@ -369,10 +398,11 @@ class Representation_utils{
 		if (col==12) btn.style.backgroundColor="#FF3333";
 		if (col==9) btn.style.backgroundColor="#FFFF00";
 
-		//moderater-red, moderate-green, violet
+		//moderate-red, moderate-green, violet, pinko
 		if (col==30) btn.style.backgroundColor="#880000";
 		if (col==31) btn.style.backgroundColor="#008800";
 		if (col==32) btn.style.backgroundColor="#800080";
+		if (col==33) btn.style.backgroundColor="#FF0080";
 
 		if (col==101) btn.style.backgroundColor="#804000";
 
@@ -531,6 +561,51 @@ class Representation_utils{
 		return btn_list;
 	}
 }
+
+class Modern_representation{
+	static button_creator(inner_html, stylistic){
+		var base={
+			'general':{'backgroundColor':'#FFFFFF', 
+				'color':'#FFFFFF',
+				'verticalAlign':'middle',
+			},
+			'px':{
+				'width':40,
+				'height':40,
+				'padding':0,
+				'margin':0,
+			}
+		}
+		var x;
+		for (x in base){
+			stylistic[x]=Object_utils.merge(stylistic[x], base);
+			stylistic[x]=Object_utils.merge(stylistic[x], base);
+		}
+		var button=document.createElement("BUTTON");
+		
+		button.innerHTML=inner_html;
+		for (x in stylistic.general) button.style[x]=stylistic.general[x];
+		for (x in stylistic.px) button.style[x]=`${stylistic.px[x]}px`;
+	}
+
+	//Warn: stylistic + innerHTML
+	static button_modifier(button, packet){
+		if ('inner_html' in packet) button.innerHTML=packet.inner_html;
+
+		if (!('stylistic' in packet)) return;
+
+		packet.stylistic.general = Object_utils.construct_if_null(packet.stylistic.general);
+		packet.stylistic.px = Object_utils.construct_if_null(packet.stylistic.px);
+
+		for (var x in packet.stylistic.general){
+			button.style[x]=packet.stylistic.general[x];
+		}
+		for (var x in packet.stylistic.px){
+			button.style[x]=`${packet.stylistic.px[x]}px`;
+		}
+	}
+}
+
 
 class ChildBigIntMath{
 	sqrt(value) {
@@ -831,6 +906,20 @@ class ArrayUtils{
 		return res;
 	}
 }
+
+class Object_utils{
+	static merge(base, substitute){
+		for (var x in substitute){
+			if (x in base) continue;
+			base[x] = substitute[x];
+		}
+	}
+	static construct_if_null(value){
+		if (value!=null) return value;
+		else return {};
+	}
+}
+
 
 class Graph_utils{
 	//Positions+w/h of v1, v2; v1 below; general_params: h/w of a button

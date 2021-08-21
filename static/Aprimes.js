@@ -44,18 +44,34 @@ class Muller extends Partial{
 			'non_witnesses_minus1': [],
 			'mr_witnesses':{},
 		}
+		this.logic.summaric_amount={'non_coprime':0, 'fermat_witnesses':0, 'mr_witnesses':0, 'non_witnesses':0};
+		for (x in this.logic.summary){
+			this.logic.summaric_amount[x]=0;
+		}
+
 		for (x of this.logic.expos) this.logic.summary.mr_witnesses[x]={};
 
 		for (i=1; i<this.logic.m; i+=1){
-			if (NTMath.gcd(i, this.logic.m) > 1) this.logic.summary.non_coprime.push(i);
-			else if (this.logic.power[i][0]!=1){
-				if (!(this.logic.power[i][0] in this.logic.summary.fermat_witnesses))
-					this.logic.summary.fermat_witnesses[this.logic.power[i][0]]=0;
-				this.logic.summary.fermat_witnesses[this.logic.power[i][0]] += 1;
+			if (NTMath.gcd(i, this.logic.m) > 1) {
+				this.logic.summary.non_coprime.push(i);
+				this.logic.summaric_amount.non_coprime+=1;
+				continue;
 			}
+
+			if (!(this.logic.power[i][0] in this.logic.summary.fermat_witnesses))
+				this.logic.summary.fermat_witnesses[this.logic.power[i][0]]=0;
+			this.logic.summary.fermat_witnesses[this.logic.power[i][0]] += 1;
+
+			if (this.logic.power[i][0]!=1) {
+				this.logic.summaric_amount.fermat_witnesses+=1;
+				continue;
+			}
+
 			else if (this.logic.power[i][this.logic.power[i].length-1]==1) this.logic.summary.non_witnesses_1.push(i);
 			else {
 				if (this.logic.power[i][this.logic.power[i].length-1]==this.logic.m-1) this.logic.summary.non_witnesses_minus1.push(i);
+				else 
+					this.logic.summaric_amount.mr_witnesses+=1;
 				this.logic.expos_count[this.logic.expos[this.logic.power[i].length-1]] += 1;
 
 				index=this.logic.power[i].length-1;
@@ -72,6 +88,7 @@ class Muller extends Partial{
 		for (i=1; i<this.logic.m; i+=1){
 			if (roots_count[i]>0) this.logic.roots.push(i);
 		}
+		this.logic.summaric_amount.non_witnesses=this.logic.summary.non_witnesses_1.length + this.logic.summary.non_witnesses_minus1.length;
 		this.logic.roots_count=roots_count;
 	}
 
@@ -80,7 +97,6 @@ class Muller extends Partial{
 		this._logical_find_all_power();
 
 		this._logical_summary();
-		console.log(this.logic.expos_count);
 	}
 
 	_btn_appender(place, name=null, color=-1){
@@ -92,7 +108,7 @@ class Muller extends Partial{
 		place.appendChild(btn);
 	}
 
-	presentation(){
+	_presentation_basis(){
 		var divs=this.modern_divsCreator(1, this.logic.m, []);
 		var i=0, j, btn;
 		
@@ -110,64 +126,136 @@ class Muller extends Partial{
 				divs.divs[i].style.display="none";
 				this._btn_appender(divs.zdivs[i].buttons, i, 2);
 			}
-			else if (this.logic.power[i].length==1) this._btn_appender(divs.zdivs[i].buttons, i, 5);
-			else if (last!=1 && last!=this.logic.m-1) this._btn_appender(divs.zdivs[i].buttons, i, 8);
+			else if (this.logic.power[i][0]!=1) this._btn_appender(divs.zdivs[i].buttons, i, this.present.colors.fermat_witness);
+			else if (last!=1 && last!=this.logic.m-1) this._btn_appender(divs.zdivs[i].buttons, i, this.present.colors.mr_witness);
 
-			else this._btn_appender(divs.zdivs[i].buttons, i);
+			else this._btn_appender(divs.zdivs[i].buttons, i, this.present.colors.non_witness);
 			this._btn_appender(divs.zdivs[i].buttons);
 
 			for (j=0; j<this.logic.power[i].length; j++){
 				this._btn_appender(divs.zdivs[i].buttons, this.logic.power[i][j]);
 			}
 		}
+	}
 
-		//Summary
+	_presentation_summary_mr(){
+		var i, j, btn;
 		var len_1=this.logic.expos.length-1;
 		var len_2=this.logic.roots.length;
 		
-		var left_margin=0, top_margin=0;
+		var left_margin=2, top_margin=1;
 		//this.place - will change; 2?
 		var summary=Representation_utils.proto_divsCreator(1, len_2+3+top_margin, [], null, this.place, this.stylistic);
-		var grid=Representation_utils.gridify_div(summary.zdivs, len_2+3+top_margin, len_1+3+left_margin, this.stylistic);
+		var grid = new Grid(len_2+3, len_1+3, this.stylistic, {'place':summary.zdivs, 'top_margin':top_margin, 'left_margin':left_margin});
 
 		var x, y, used_expos=this.logic.expos.slice(1);
-		i=0;
-		for (x of used_expos){
-			grid[0][i+left_margin+1].innerHTML=x;
-			this.Painter(grid[0][i+left_margin+1], 5);
 
-			grid[len_2+2+top_margin][i+left_margin+1].innerHTML=this.logic.expos_count[x];
-			this.Painter(grid[len_2+2+top_margin][i+left_margin+1], 101);
+		var _tmp=this.logic.expos_count;
+		grid.filler([0, [1, used_expos.length]], used_expos, {'color':5})
+		grid.filler([len_2+2, [1, used_expos.length]], used_expos.map(e => _tmp[e]), {'color':this.present.colors.summary})
 
-			i+=1;
-		}
+		_tmp=this.logic.roots_count;
+		grid.filler([[1, this.logic.roots.length], 0], this.logic.roots, {'color':5})
+		grid.filler([[1, this.logic.roots.length], len_1+2], this.logic.roots.map(e => _tmp[e]), {'color':this.present.colors.summary})
 
-		i=0;
-		for (x of this.logic.roots){
-			grid[i+top_margin+1][0].innerHTML=x;
-			this.Painter(grid[i+top_margin+1][0], 5);
-
-			grid[i+top_margin+1][len_1+2+left_margin].innerHTML=this.logic.roots_count[x];
-			this.Painter(grid[i+top_margin+1][len_1+2+left_margin], 101);
-			i+=1;
-		}
 
 		i=0, j=0;
 		for (x of used_expos){
 			for (y of this.logic.roots){
-				btn = grid[j+top_margin+1][i+left_margin+1];
-				console.log(i,j, btn, x,y, this.logic.summary.mr_witnesses[x]);
+				btn = grid.grid[j+top_margin+1][i+left_margin+1];
 				if (!(y in this.logic.summary.mr_witnesses[x]))
 					btn.innerHTML=0;
 				else
 					btn.innerHTML=this.logic.summary.mr_witnesses[x][y];
-				if (y!=this.logic.m-1) this.Painter(btn, 32);
-				else this.Painter(btn, 0);
+				if (y!=this.logic.m-1) this.Painter(btn, this.present.colors.mr_witness);
+				else this.Painter(btn, this.present.colors.non_witness);
 
 				j+=1;
 			}
 			j=0, i+=1;
 		}
+	}
+
+	_presentation_summary_fermat(){
+		var t_expo=[], t_count=[];
+		for (var x in this.logic.summary.fermat_witnesses){
+			t_expo.push(x);
+			t_count.push(this.logic.summary.fermat_witnesses[x]);
+		}
+
+		var summer=(acc, starter) => acc+starter;
+		var summa=t_count.reduce(summer, 0);
+
+		var len_1=t_expo.length;
+		var top_margin=2, left_margin=1;
+
+		var summary=Representation_utils.proto_divsCreator(1, 2+top_margin, [], null, this.place, this.stylistic);
+		var grid = new Grid(2, len_1+3+left_margin, this.stylistic, {'place':summary.zdivs, 'top_margin':top_margin, 'left_margin':left_margin});
+
+		grid.filler([0, [1, t_expo.length]], t_expo, {'color':5})
+		grid.filler([1, [1, t_count.length]], t_count, {'color':this.present.colors.fermat_witness});
+
+		grid.single_filler([1, t_expo.length+2], summa, {'color':this.present.colors.summary});
+	}
+
+	_presentation_summary_summary(){
+		var top_margin=2, left_margin=2;
+		var summary=Representation_utils.gridlike_divs_creator(5+top_margin, this.place, this.stylistic);
+		var grid = new Grid(5, 6, this.stylistic, {'place':summary.zdivs, 'top_margin':top_margin, 'left_margin':left_margin});
+		var titles=['Non-Coprime', 'Fermat Witnesses', 'Miller-Rabin Witnesses', 'Non-witnesses'];
+		var btns=grid.filler([[0, titles.length-1], 0], titles, {
+			'stylistic':{
+				'px':{'width':200, 'fontSize':16},
+			},
+			'color':5,
+		});
+
+		Modern_representation.button_modifier(btns[1], {'stylistic':
+			{
+				'general':{'color':'#FF33FF', 'fontFamily':'cursive'}, //Fermat-specific
+				'px':{'fontSize':20},
+			}
+		});
+
+
+		grid.filler([[0, 2], 3], ArrayUtils.steady(3, this.logic.summaric_amount.non_coprime), {'color':this.present.colors.non_coprime});
+		grid.filler([[1, 2], 2], ArrayUtils.steady(2, this.logic.summaric_amount.fermat_witnesses), {'color':this.present.colors.fermat_witness});
+		grid.filler([[2, 2], 1], ArrayUtils.steady(1, this.logic.summaric_amount.mr_witnesses), {'color':this.present.colors.mr_witness});
+		grid.filler([[3, 3], 4], ArrayUtils.steady(1, this.logic.summaric_amount.non_witnesses), {'color':this.present.colors.non_witness});
+
+		var tls=this.logic.summaric_amount;
+		var witnessy=[tls.non_coprime, 
+			tls.non_coprime + tls.fermat_witnesses, 
+			tls.non_coprime + tls.fermat_witnesses + tls.mr_witnesses, 
+			tls.non_witnesses
+		];
+		var m=this.logic.m-1;
+		var finale_witnessy=witnessy.map(e => `${e}/${m} &approx; ${Number.parseFloat(e/m).toFixed(3)}`)
+		grid.filler([[0, 3], 5], finale_witnessy, {'color':this.present.colors.summary, 
+			'stylistic':{'px':{'width':160}}
+		});
+	}
+
+	_presentation_colors_set(){
+		//original: 7, 33, 32, 0, 101, 5
+		this.present.colors={
+			'non_coprime':7,
+			'fermat_witness':33,
+			'mr_witness':32,
+			'non_witness':0,
+			'summary':101,
+			'border':5,
+		}
+	}
+
+	presentation(){
+		this.present={};
+		this._presentation_colors_set();
+		this._presentation_basis();
+		this.place.style.width='max-content';
+		this._presentation_summary_mr();
+		this._presentation_summary_fermat();
+		this._presentation_summary_summary();
 	}
 
 	ShowReality(){
