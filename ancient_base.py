@@ -286,6 +286,10 @@ def AdvPrimes():
 def PrimesCount():
     return Router('NumberTheory/Prcount.html')
 
+@app.route('/logger/<login>')
+def logChecker(login):
+    return Router('System/index.html')
+
 @app.route('/', methods=['GET', 'POST'])
 def Wisdom():
     req=request
@@ -297,11 +301,146 @@ def Wisdom():
         else:
             resp=make_response(render_template_string(show_error('index.html', "There is no such article on this site!")))
 
+        resp.set_cookie('UserID', req.cookies['UserID'])
         return resp
         
+    if (req.method=='POST' and req.form['next']=='unlog'):
+        resp=make_response(render_template('System/index.html'))
+        resp.set_cookie('UserID', '')
+        return resp
     return Router('System/index.html')
 
+@app.route('/signup', methods=['GET', 'POST'])
+def Signer():
+    req=request
+    if (req.method=='POST' and 'pass' in req.form):
+        login=req.form['login']
+        authValue=get_random_string()
+        mail=req.form['email']
+        try:
+            engine.execute(f"insert into logging(mail, login, password, activated, authValue) values('{mail}', '{login}', '{req.form['pass']}', 0, '{authValue}')")
+        except:
+            l1=engine.execute(f"select mail from logging where mail='{mail}'")
+            error_string="This mail is already in use!" if l1.rowcount>0 else "This login was already taken"
 
+            html_file=show_error('signup.html', error_string)
+            resp=make_response(render_template_string(html_file))
+            resp.set_cookie('UserID', '')
+            return resp
+
+
+        #Vulnerable to change
+        cursite=app.config['SNAME']
+
+        wisdom=MIMEText(f"<p>Hi, {login}, here is the activation link for Your account from Nothingness Project:  <a href='{cursite}/validat/{authValue}'> {cursite}/validat/{authValue}</a></p>", 'html')
+        wisdom['Subject'] = 'Nothingness Project activation link'
+        wisdom['From'] = "nothingnessproject@gmail.com"
+        wisdom['To'] = mail
+        sender_of_wisdom(wisdom.as_string(), mail)
+        
+    return Router('System/signup.html')
+
+@app.route('/validat/<auth>', methods=['GET', 'POST'])
+def Palingnesia(auth):
+    engine.execute(f"update logging set activated=1, authValue='{get_random_string()}' where authValue='{auth}'")
+    return Router('Finalized.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def Login():
+    req=request
+    if 'cookies' in dir(req) and 'UserID' in req.cookies:
+        redirect(url_for('Wisdom'))
+        
+    if (req.method=='POST' and 'pass' in req.form):
+        results=engine.execute(f"select * from logging where activated=1 and login='{req.form['login']}' and password='{req.form['pass']}'") 
+
+        if results.rowcount>0:
+            #html_file=modify('index.html', req.form['login'])
+            resp=make_response(redirect('/'))
+            resp.set_cookie('UserID', req.form['login'])
+            return resp
+
+
+        results=engine.execute(f"select * from logging where activated=1 and login='{req.form['login']}'")
+        error_string="Apparently, the password is incorrect" if results.rowcount>0 else "Apparently, either account does not exist or is not activated (this is possible, if You signed up, but did not open link in e-mail from this site)"
+        html_file=show_error('login.html', error_string)
+
+        resp=make_response(render_template_string(html_file))
+        resp.set_cookie('UserID', '')
+        return resp
+
+    return Router('System/login.html')
+
+
+@app.route('/task_adder/<olden>', methods=['GET', 'POST'])
+def TaskAdder(olden="Primez.html"):
+    req=request
+    if (req.method=='POST' and 'link' in req.form): 
+        funeral=transformation.funeral_procession
+        rf=req.form
+        engine.execute(f"insert into vision(login, domain, description, link, name, difficulty) values('{req.cookies['UserID']}', '{funeral[rf['next']]}', '{rf['description']}', '{rf['link']}', '{rf['name']}', '{rf['difficulty']}')")
+
+        return Router('System/task_adder.html', olden=olden)
+    return Router('System/task_adder.html', olden=olden)
+
+@app.route('/recover_password', methods=['GET', 'POST'])
+def PassRecoverer():
+    req=request
+    if (req.method=='POST' and 'email' in req.form):
+        mail=req.form['email']
+        x=engine.execute(f"select authValue, login from logging where mail='{mail}'")
+        if x.rowcount==0:
+            html_file=show_error('reset_pass_mail.html', "This mail does not have an account associated with it!")
+            resp=make_response(render_template_string(html_file))
+            resp.set_cookie('UserID', '')
+            return resp
+            
+        for a in x:
+            authValue=a[0]
+            login=a[1]
+        
+        cursite=app.config['SNAME']
+        wisdom=MIMEText(f"<a href='{cursite}/auth_reset/{authValue}'>{cursite}/auth_reset/{authValue}</a>", 'html')
+        wisdom=MIMEText(f"<p>Hi, {login}, here is the link to regain password for Thine account from Nothingness Project:  <a href='{cursite}/auth_reset/{authValue}'>{cursite}/auth_reset/{authValue}</a></p>", 'html')
+        wisdom['Subject'] = 'Nothingness Project password reset'
+        wisdom['From'] = "nothingnessproject@gmail.com"
+        wisdom['To'] = mail
+        sender_of_wisdom(wisdom.as_string(), mail)
+
+    return Router('System/reset_pass_mail.html')
+
+    
+@app.route('/auth_reset/<auth_value>', methods=['GET', 'POST'])
+def AuthReseter(auth_value):
+    req=request
+    if req.method=='POST' and 'email' not in req.form:
+        return Router('System/index.html')
+
+    if req.method=='POST' and 'email' in req.form:
+        try:
+            engine.execute(f"update logging set login='{req.form['login']}', password='{req.form['pass']}' where mail='{req.form['email']}'")
+        except:
+            html_file=show_error('reset_pass_main.html', "This login is already in use!")
+            resp=make_response(render_template_string(html_file))
+            resp.set_cookie('UserID', '')
+            return resp
+
+        resp=make_response(redirect('/'))
+        resp.set_cookie('UserID', req.form['login'])
+        return resp
+
+    html_file=getBSFileByName('System/reset_pass_main.html')
+    em_cont=engine.execute(f"select mail from logging where authValue='{auth_value}';")
+    engine.execute(f"update logging set authValue='{get_random_string()}' where authValue='{auth_value}';")
+
+    for x in em_cont:
+        email=x[0]
+    html_file.find(id="email")['value']=email
+
+    resp=make_response(render_template_string(html_file.prettify()))
+    resp.set_cookie('UserID', '')
+    return resp
 
 @app.context_processor
 def jinjautils():
@@ -321,6 +460,25 @@ def jinjautils():
 
     topics=[x for x in transformation.inverse_place_mapper if ord(x[0])<92]
     return dict(jipow=jipow, jilog=jilog, ji_expo=ji_expo, ji_formatter=ji_formatter, ji_ge=ji_ge, topics=topics)
+
+def sender_of_wisdom(text, receiver="sebastian.michon10@protonmail.com"):
+    port = 465
+    passwd=os.environ.get("EMAIL_PASSWORD")
+    # Create a secure SSL context
+    context = ssl.create_default_context()
+    sender=os.environ.get("EMAIL_LOGIN")
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+        server.login(sender, passwd)
+        server.sendmail(sender, receiver, text)
+
+@app.before_first_request
+def dbCreator():
+    global engine
+    engine=create_engine(os.environ.get("DATABASE_URL"))
+    app.config['SNAME']=os.environ.get("SNAME")
+    #engine=create_engine(os.environ.get("DATABASE_URL"))
+
 
 
 if __name__=='__main__':

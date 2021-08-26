@@ -15,14 +15,14 @@
 		<h2>Introduction</h2>
 		<p>This article is intended to show properties of multiplicative orders, primitive roots, and Carmichael function. Some of the problems will concentrate on proofs rather than algorithms; first, however, the definitions shall be formulated:</p>
 		<ol>
-			<li>\(ord_n(g)\) where \(ord_n(g)\in N^+\), also called <b>Multiplicative order of g modulo n</b> for such \(g:gcd(g, n)=1\) is minimal such number, such that \(g^{ord_n(g)} \equiv 1 \pmod n\)</li>
-			<li><b>Primitive root modulo n</b> is such number \(g\), such that \(ord_n(g)=\phi(n)\)</li>
+			<li>For \(g: gcd(g, m)=1\), a <b>Multiplicative order of g modulo n</b>, denoted as \(ord_n(g)\) where \(ord_n(g)\in N^+\), is minimal such number, that \(g^{ord_n(g)} \equiv 1 \pmod n\)</li>
+			<li><b>Primitive root modulo n</b> is such number \(g\), that \(ord_n(g)=\phi(n)\)</li>
 			<li>Primitive root modulo \(n\) may exist or not, depending on factorization of \(n\).</li>
 			<li>From <b>Euler's theorem</b>, \(g^{\phi(n)} \equiv 1 \pmod n\) for \(gcd(g, n)=1\) - what follows, \(ord_n(g) \le \phi(n)\) - and so, primitive root has maximal multiplicative order modulo \(n\) possible.</li>
 		</ol>
 		<h3>Orders</h3>
 		{{ algo.neo_algorithm(1, 'Orders modulo given number', '
-			<p>To formulate certain theoremas concerning primitive roots, it may be wise to visualize first what are their values \(ord_m(g)\) for fixed \(m\) and what is their distribution.
+			<p>To formulate certain theorems concerning primitive roots, it may be wise to visualize first what are their values \(ord_m(g)\) for fixed \(m\) and what is their distribution.
 			<p>Input format: value \(m\), for which all orders will be calculated<br>
 			\(m\)<br>
 			</p>
@@ -35,7 +35,7 @@
 		<h3>Fundamental lemmas</h3>
 		<p>Those lemmas will be heavily used in all further paragraphs</p>
 		<h4>0 Lemma: \(x^k \equiv 1 \pmod n \iff ord_n(x)|k\)</h4>
-		<p>To prove by contradiction \(x^k \equiv 1 \pmod n \implies ord_n(x)|k\): Let \(k\) be miniml such number, such that \(x^k \equiv 1 \pmod n \land ord_n(x) \nmid k\). Either \(k \lt ord_n(x)\) - this cannot be, as \(ord_n(x)\) is minimal number, such that \(x^{ord_n(x)} \equiv 1 \pmod n\); or \(k \gt ord_n(x)\) - then, 
+		<p>To prove by contradiction \(x^k \equiv 1 \pmod n \implies ord_n(x)|k\): Let \(k\) be miniml such number, such that \(x^k \equiv 1 \pmod n \land ord_n(x) \nmid k\). Either \(k \lt ord_n(x)\) - this cannot be, as \(ord_n(x)\) is minimal such number, that \(x^{ord_n(x)} \equiv 1 \pmod n\); or \(k \gt ord_n(x)\) - then, 
 		<span class="central">\(x^k \equiv x^{ord_n(x)} \equiv 1 \pmod n\)</span>
 		<span class="central">\(x^{k-ord_n(x)}x^{ord_n(x)} \equiv x^k \equiv 1 \pmod n\)</span>
 		<span class="central">\(x^{k-ord_n(x)}*1 \equiv 1 \pmod n\)</span>
@@ -53,8 +53,29 @@
 		And so, from lemma \(0\), \(ord_d(y)|ord_{dx}(y)\)
 		</p>
 
+        {% set post_lcm="lcm(ord_{p_1^{q_1}}(g), ord_{p_2^{q_2}}(g), \dots, ord_{p_n^{q_n}}(g))" %}
+        <h4>0.75 Lemma \(ord_{p_1^{q_1} p_2^{q_2} \dots p_n^{q_n}}(g) = {{post_lcm}} \)</h4>
+        <p>Later in this lemma, \(m = p_1^{q_1} \dots p_n^{q_n}\)</p>
+        <h5>First half-lemma: \(g^{ {{post_lcm}} } \equiv 1 \pmod m\) for any \(g\)</h5>
+        <p>Proof: Define \(c_1, \dots c_n\) in such way, that \({{post_lcm}}=ord_{p_1^{q_1}}(g)c_1 = ord_{p_2^{q_2}}(g)c_2 = \dots = ord_{p_n^{q_n}}(g)c_n \)
+        $$
+        \begin{cases}
+        {% for x in [1,2] %}
+            g^{ord_{p_{{x}}^{q_{{x}} }}(g) c_{{x}} } \equiv (g^{ord_{p_{{x}}^{q_{{x}} }}(g) })^{c_{{x}} } \equiv 1^{c_{{x}} } \equiv 1 \pmod {p_{{x}}^{q_{{x}} }} \\
+        {% endfor %}
+            ... \\
+            g^{ord_{p_n^{q_n }}(g) c_n } \equiv (g^{ord_{p_n^{q_n }}(g) })^{c_n } \equiv 1^{c_n } \equiv 1 \pmod {p_n^{q_n} } \\
+        \end{cases}
+        $$</p>
+        <p>Thus, from chinese remainder theorem, $$g^{ {{post_lcm}} } \equiv 1 \pmod {p_1^{q_1} p_2^{q_2} \dots p_n^{q_n} }$$</p>
+        <h5>Second half-lemma: for any \(g\) and \(0 \lt h \lt {{post_lcm}}\), \(g^h \not \equiv 1 \pmod m\)</h5>
+        <p>By definition, some \(ord_{p_i^{q_i}}(g) \nmid h\). And from lemma 0.5, 
+        $$ord_{p_i^{q_i}}(g)| ord_{m} (g)$$
+        Thus, \(g^h \not \equiv 1 \pmod m\).</p>
+
+
 		<h3>Primitive roots existence cases: overwiev</h3>
-		<p>First problem quite appropriate to solve before going to the problem itself is: for what \(n\) primitive root exist? There are several cases, which will be covered separately:</p>
+		<p>For what \(n\) primitive root exist? There are several cases, which will be covered separately:</p>
 		<ol>
 			<li>\(n=p\), where \(p\) is a prime</li>
 			<li>\(n=p^k\), \(p\) is an odd prime</li>
@@ -66,9 +87,9 @@
 		<p>Before Proceeding with those cases, there are two lemmas worth stating, that will be useful throughout all further proofs:</p>
 
 		<h4>First Case of the proof: \(n=p\)</h4>
-		<h5>1st Lemma: That equation \(a_0+a_1x+ \dots +a_kx^k \equiv 0 \pmod p\), \(a_k \bmod p \gt 0\) has at most \(k\) solutions \(\bmod p\) - where any \(x \in \lt 0;p-1 \gt\) can be a solution</h5>
+		<h5>1st Lemma: That equation \(a_0+a_1x+ \dots +a_kx^k \equiv 0 \pmod p\), \(p \nmid a_k\) has at most \(k\) solutions \(\bmod p\) - where any \(x \in \lt 0;p-1 \gt\) can be a solution</h5>
 		<ol>
-			<li>For \(k=0,\ a_0 \gt 0\) this polynominal has no zeros - so one may proceed with inductive proof with assumption that \(\exists_k a_0+ \dots +a_{k-1}x^{k-1} \equiv 0\) has at most \(k-1\) solutions</li>
+			<li>For \(k=0,\ p \nmid a_0\) this polynominal has no zeros - so one may proceed with inductive proof with assumption that \(\exists_k a_0+ \dots +a_{k-1}x^{k-1} \equiv 0\) has at most \(k-1\) solutions</li>
 			<li>Polynominal \(f(x)=a_0+a_1x+ \dots +a_kx^k\) has to have at least \(k+1\) zeros to contradict theorem; suppose it has at least \(k\) zeros \(z_1, \dots, z_k\).</li>
 			<li>Then, let \(g(x)=f(x)-a_k(x-z_1)\dots(x-z_k)\). Clearly, every zero of \(f(x)\) is also a zero of \(g(x)\) - so, \(g(x)\) has at least \(k\) zeros - but \(g(x)\) has lower degree than \(f(x)\) - however, by <b>inductive step</b> \(g(x)\) can have at most \(k-1\) zeros or be zero polynominal. What follows, \(g(x) \equiv 0 \pmod p\), so \(f(x) \equiv a_k(x-z_1)\dots(x-z_k) \pmod p\)</li>
 			<li>Suppose \(f(x)\) has at least \(k+1\) zeros, let \(z_{k+1}\) be \(k+1\)-st zero. \(f(z_{k+1})=a_k(z_{k+1}-z_1)\dots(z_{k+1}-z_k)\). None of brackets (neither \(a_k\)) is equal to \(0\), because \(\forall_{1 \le i \le k}z_{k+1} \neq z_i\). What follows, \(p\) does not divide any bracket of \(f(z_k)\), so \(p\) does not divide \(f(z_k)\), and so, \(z_{k+1}\) is not a solution of this equation, which finishes lemma.</li>
@@ -77,7 +98,7 @@
 		<h5>2nd Lemma: for any \(d:d|\phi(p)=p-1\) equation \(x^d-1 \equiv 0 \pmod p\) has \(d\) solutions</h5>
 		<ol>
 			<li>Every number \(x: 1 \le x \le p-1\) fulfills: \(x^{\phi(p)} \equiv 1 \pmod p\). And so, \(x^{\phi(p)}-1 \equiv 0 \pmod p\) has \(p-1\) solutions.</li>
-			<li>Let \(k\) be such number that \(dk=x\) and \(f(x)=x^{0d}+x^{1d}+ \dots x^{(k-1)d}\). Then \(f(x)(x^d-1)=x^{1d}+x^{2d}+\dots+x^{kd}-x^{0d}-x^{1d}- \dots -x^{(k-1)d}=x^{kd}-1=x^{\phi(p)}-1\)</li>
+			<li>Let \(k\) be such number that \(dk=\phi(p)\) and \(f(x)=x^{0d}+x^{1d}+ \dots x^{(k-1)d}\). Then \(f(x)(x^d-1)=x^{1d}+x^{2d}+\dots+x^{kd}-x^{0d}-x^{1d}- \dots -x^{(k-1)d}=x^{kd}-1=x^{\phi(p)}-1\)</li>
 			<li>Each zero of \(x^{\phi(p)}\) is either zero of \(f(x)\) or zero of \(x^d-1\) (this follows same argument as in lemma above). \(f(x)\) can have at most \(d(k-1)\) zeros (from 1st lemma), so \(x^d-1\) have at least \(d\) zeros, furthermore it cannot have more than \(d\) zeros (from 1st lemma), so it has exactly \(d\) zeros</li>
 		</ol>
 		<h5>3rd Lemma - If \(\prod_{i=1}^{m} v_i^{q_i}=\phi(p)\), where \(v_i \in P \land q_i \gt 0\), then for each \(v_i^{q_i}\) there is at least one number \(s\), such that \(ord_n(s)=v_i^{q_i}\)</h5>
@@ -90,29 +111,33 @@
 		And so, \(ord_p(ab)=xy\)</p>
 		<h5>Theorem - for prime number \(p\) there always exists primitive root.</h5>
 		<p>Let \(\phi(p)=v_1^{q_1} \dots v_n^{q_n}\). Let \(s_1, \dots s_n\) be such numbers, such that \(ord_p(s_i)=v_i^{q_i}\) - by lemma 3, such numbers \(s_i\) must exist. Then, \(ord_p(s_1 \dots s_n)=v_1^{q_1} \dots v_n^{q_n}=\phi(p)\) by lemma 4, which finishes the proof.</p>
-		<h4>Second case of the proof: \(n=p^k\), where\(p\) is odd</h4>
+		<h4>Second case of the proof: \(n=p^k\), where \(p\) is odd</h4>
 		<h5>1st Lemma - Either \(g^{\phi(p)}\) or \((g+p)^{\phi(p)}\) cannot be shown as \(mp^2+1\), where \(g\) is primitive root modulo \(p\)</h5>
 		<p>Suppose that \(g^{\phi(p)} \equiv 1 \pmod {p^2}\) (otherwise the problem is already solved). Then,
 		<span class="central">\((g+p)^{\phi(p)}={ {\phi(p)}\choose{0} }g^{\phi(p)}+{ {\phi(p)}\choose{1} }g^{\phi(p)-1}p^1+{ {\phi(p)}\choose{2} }g^{\phi(p)-2}p^2+ \dots \equiv 1+(p-1)g^{\phi(p)}p+0+\dots \pmod {p^2}\)</span>
 		Neither \(p-1\) nor \(g\) have any common divisors with \(p\), so \(p \nmid (p-1)g^{\phi(p)}\) - and so, \((g+p)^{\phi(p)} \neq mp^2+1\).</p>
-		<p>It's worth noting that \(g+p\) is primitive root modulo \(p\), because \(g+p \equiv p \pmod p\)</p>
-		<h5>2nd lemma - If \(g^{\phi(p^k)} \neq 1+mp^{k+1}\), then \(g^{\phi(p^{k+1})} \neq 1+zp^{k+2}\) for any integers \(m, z\) and \(k \ge 2\)</h5>
+		<p>It's worth noting that \(g+p\) is primitive root modulo \(p\), because \(g+p \equiv g \pmod p\)</p>
+        <!-- One can get rid of phis, instead use exp*p, and be justified - also, regular beavior of ord mod p^{k+1} - if ord_pk(g)=h, then ord_p(k+1) (g) =ph for odd p, g\lepk - why?-->
+		<h5>2nd lemma - If \(g^{\phi(p^k)} \neq 1+mp^{k+1}\), then \(g^{\phi(p^{k+1})} \neq 1+zp^{k+2}\) for any integers \(m, z\) and \(k \ge 1\)</h5>
 		<ol>
 			<li>First noteworthy statement is that, by euler's theorem, \(g^{\phi(p^k)}=bp^k+1\) for some integer \(b\)</li>
-			<li>From assumption, \(g^{\phi(p^k)} \neq 1+mp^{k+1}\). What follows, \(b \neq mp\), and so, \(p \nmid b\) - for \(m\) can be any integer.</li>
-			<li>As \(p\) is odd, it can be show as \(2r+1\)</li>
-			<li>\(g^{\phi(p^{k+1})}=g^{\phi(p^k)p}=(1+bp^k)^p={ {p}\choose{0} }1+{ {p}\choose{1} }bp^k+{ {p}\choose{2} }b^2p^{2k}+\dots \equiv 1+bp^{k+1}+\frac{p(p-1)}{2}b^2p^{2k}+\dots \equiv 1+bp^{k+1}+\frac{2r}{2}b^2p^{2k+1}+\dots \equiv 1\pmod {p^{k+2}}\). As \(p \nmid b\), \(g^{\phi(p^{k+1})} \neq zp^{k+2}+1\), which finishes lemma</li>
+			<li>From assumption, \(g^{\phi(p^k)} \neq 1+mp^{k+1}\). What follows, \(b \neq mp\), and so, \(p \nmid b\) - for \(m\) is an arbitrary integer.</li>
+			<li>As \(p\) is odd, it can be shown as \(2r+1\)</li>
+			<li>
+                $$ g^{\phi(p^{k+1})}=g^{\phi(p^k)p}=(1+bp^k)^p={ {p}\choose{0} }1+{ {p}\choose{1} }bp^k+{ {p}\choose{2} }b^2p^{2k}+\dots \equiv 1+bp^{k+1}+\frac{p(p-1)}{2}b^2p^{2k}+\dots \equiv $$ $$ \equiv 1+bp^{k+1}+\frac{2r}{2}b^2p^{2k+1}+\dots \equiv 1 + bp^{k+1} \pmod {p^{k+2}}$$.
+                As \(p \nmid b\), \(g^{\phi(p^{k+1})} \neq zp^{k+2}+1\), which finishes lemma</li>
 		</ol>
-		<p>It's worth noting that \(3k \lt k+2 \implies k \lt 1\), which cannot be the case by assumption stated on start - and so, all further elements in this sum are equivalent to \(0 \pmod {p^{k+2}}\). Furthermore, this proof won't work for \(p=2\), as in the last equation either \(p\) or \(p-1\) is divisible by \(2\) - in case of \(p=2\), it is \(p\), and so, the third element in sum cannot be reduced to \(0 \pmod {p^{k+2}}\) </p>
+		<p>It's worth noting that \(3k \lt k+2 \implies k \lt 1\), which cannot be the case by assumption stated on start - and so, all further elements in this sum are equivalent to \(0 \pmod {p^{k+2}}\). Furthermore, this proof won't work for \(p=2\), as in this case:
+        $$ \frac{p(p-1)}{2}b^2 p^{2k} \equiv \frac{2*1}{2} b^2 2^{2k} \equiv b^2 2^{2k} \pmod {2^{k+2}}$$
+        in the last equation either \(p\) or \(p-1\) is divisible by \(2\) - in case of \(p=2\), it is \(p\), and so, the third element in sum cannot be reduced to \(0 \pmod {p^{k+2}}\) for \(k = 1\).</p>
 		<h5>Theorem - for power of odd prime number \(p^k\) there always exists primitive root.</h5>
 		<ol>
 			<li>For a prime number primitive root exists, so \(\exists_{k,g} ord_{p^k}(g)=\phi(p^k)\) - this allows constructing proof by induction</li>
-			<li>Let \(v=ord_{p^{k+1}}(g)\), where g is a primitive root modulo \(p^k\). Then, \(ord_{p^k}(g)=\phi(p^k)|v\) by lemma 0.5. Also, from lemma 0 and Euler's theorem, \(v|\phi(p^{k+1})\). There can be only two such numbers: \((p-1)p^{k-1}\) and \((p-1)p^k\). 1st lemma allows getting such primitive root, that by 2nd lemma \(g^{\phi(p^{k+1})}\) is not equivalent to \(1 \pmod {p^{k+1}}\) - and so, \(ord_p^{k+1}(g) \neq \phi(p^k)\). What follows, \(ord_{p^{k+1}}(g) = \phi(p^{k+1})\), which finishes the proof.
+            <li>Let \(v=ord_{p^{k+1}}(g)\), where \(g\) is a primitive root modulo \(p^k\). Then, \(ord_{p^k}(g)=\phi(p^k)|v\) by lemma 0.5. Also, from lemma 0 and Euler's theorem, \(v|\phi(p^{k+1})\). There can be only two such numbers: \((p-1)p^{k-1}\) and \((p-1)p^k\). 1st lemma allows getting such primitive root, that by 2nd lemma \(g^{\phi(p^{k+1})}\) is not equivalent to \(1 \pmod {p^{k+1}}\) - and so, \(ord_{p^{k+1}}(g) \neq \phi(p^k)\). What follows, \(ord_{p^{k+1}}(g) = \phi(p^{k+1})\), which finishes the proof.
 		</ol>
 		<h4>Third case of the proof: \(n=mp^k\), where \(p \nmid m \land \phi(m)>1 \land p \equiv 1 \pmod 2\) </h4>
 		<h5>Theorem: for \(n=mp^k\), where \(p \nmid m \land \phi(m)>1 \land p \equiv 1 \pmod 2\) there never exists a primitive root</h5>
 		<ol>
-			<li>\((\phi(m) \gt 1 \implies 2|\phi(m)) \land (\phi(p^k) \gt 1 \implies 2|\phi(p^k))\) - this comes from totient properties shown in different article.</li>
 			<li>\(x^{\phi(mp^k)}=x^{\phi(m)\phi(p^k)}\) - this comes from \(gcd(m, p^k)=1\). The rest of the proof will show that \(x^{\frac{\phi(mp^k)}{2}} \equiv 1 \pmod {mp^k}\)</li>
 			<li>\((x^{\phi(m)})^{\frac{\phi(p^k)}{2}} \equiv 1 \pmod m\) - from Euler's theorem</li>
 			<li>\((x^{\phi(p^k)})^{\frac{\phi(m)}{2}} \equiv 1 \pmod {p^k}\) - also from Euler's theorem</li>
@@ -121,10 +146,22 @@
 				<span class="central">\(y \equiv 1 \pmod {p^k}\)</span>
 				Coincidentally, \(y=1\) solves the equation, and so, \(x^{\frac{\phi(mp^k)}{2}} \equiv 1 \pmod {mp^k}\), so, \(ord_{mp^k}(x) \le \frac{\phi(mp^k)}{2}\) - and the proof ends.
 			</li>
+            <!--
+            <li>\(\phi(n) = \phi(m) \phi(p^k)\)</li>
+            <li>From lemma 0.75, for any \(g\), \(ord_n(g) = lcm(ord_m(g), ord_{p^k}(g)) \le lcm(\phi(m), \phi(p^k))\)</li>
+			<li>\((\phi(m) \gt 1 \implies 2|\phi(m)) \land (\phi(p^k) \gt 1 \implies 2|\phi(p^k))\) - this comes from totient properties shown in different article.</li>
+            <li>Thus, $$ lcm(\phi(m), \phi(p^k)) = \frac{\phi(m)\phi(p^k)}{gcd(\phi(m), \phi(p^k))} \le \frac{\phi(m)\phi(p^k)}{2} \lt \phi(m)\phi(p^k) = \phi(n)$$</li>
+            <li>So, for any \(n\), \(ord_n(g) \le \frac{\phi(n)}{2}</li>
+            -->
 		</ol>
 		<h4>Fourth case of the proof: \(n=2p^k\), where \(p \equiv 1 \pmod 2\)</h4>
 		<h5>Theorem: for \(n=2p^k\), where \(p \equiv 1 \pmod 2\) there always exists primitive root</h5>
-		<p>Let \(g\) be a primitive root \(\pmod {p^k}\). Let \(h=g\) if \(g \equiv 1 \pmod {2}\) and \(h=g+p^k\) otherwise (note that \(h\) is odd primitive root \(\pmod {p^k}\), because \(g+p^k \equiv g \pmod {p^k}\)), then \(gcd(h, 2p^k)=1\) (so \(ord_{2p^k}(h)\) exists), and \(ord_{p^k}(h)=\phi(p^k)|ord_{2p^k}(h)\) by lemma 0.5. As \(\phi(2p^k)=\phi(2)\phi(p^k)=\phi(p^k)\), \(ord_{2p^k}(h)=\phi(p^k)=\phi(2p^k)\) which finishes the proof.
+		<ol>
+            <li>\(\phi(2p^k)=\phi(p^k)\)</li>
+            <li>From lemma 0.75, for any \(g\), \(ord_{2p^k}(g) = lcm(ord_2(g), ord_{p^k}(g)) = ord_{p^k}(g)\) for \(g\) coprime to \(2\).</li>
+            <li>Thus, if \(g\) is a primitive root \(\bmod {p^k}\), then either \(g\) or \(g+p^k\) is a primitive root \(\bmod {2p^k}\) - and primitive root \(\bmod {p^k}\) has to exist.</li>
+        </ol>
+
 		<h4>Fifth case of the proof: \(n=2^k\), where \(k \ge 3\)</h4>
 		<h5>Theorem: for \(n=2^k\), where \(k \ge 3\) there never exists a primitive root</h5>
 		<ol>
@@ -147,20 +184,26 @@
 			<li>\(p^k\), where \(p \equiv 1 \pmod 2\)</li>
 			<li>\(2p^k\), where \(p \equiv 1 \pmod 2\)</li>
 		</ul>
-		<p>This leads to possibility of an algorithm checking, whether a number has primitive root by checking whether it has proper factorization in \(O(\sqrt{m})\).</p>
+		<p>This leads to possibility of an algorithm checking, whether a number has primitive root by checking whether it has proper factorization in \(O(fac(m))\) - time to factorize \(m\).</p>
 		<h2>Problem II: The number of primitive roots modulo \(m\)</h2>
 		<p>One can ask, and benefit from asking the question about number of primitive roots \(\pmod m\). It is enough to establish two theses to answer this problem</p>
 		<h3>Thesis 1: \(\frac{ord_m(g)}{gcd(ord_m(g), x)}=ord_m(g^x)\)</h3>
 		<ol>
 			<li>\((g^x)^{ord_m(g^x)} \equiv 1 \equiv g^{ord_m(g)} \pmod m\)</li>
 			<li>From lemma 0, \(ord_m(g)|x*ord_m(g^x)\)</li>
-			<li>Also, if \(ord_m(g)|xy\), then \(g^{xy} \equiv 1 \pmod m\) - what follows, \(ord_m(g^x)\) must be minimal number, for which \(ord_m(g)|x*ord_m(g^x)\) holds</li>
-			<li>If \(ord_m(g)=p_1^{q_1} \dots p_n^{q_n},\ ord_m(g^x)=p_1^{r_1} \dots p_n^{r_n}\) and \(x=p_1^{s_1} \dots p_n^{s_n}t\), where \(t\) is coprime to \(p_1 \dots p_n\), then \(p_1^{q_1} \dots p_n^{q_n} | p_1^{r_1+s_1} \dots p_n^{r_n+s_n}\). So \(r_i\) have to be such numbers, such that \(r_i \ge q_i-min(q_i, s_i)\). As \(r_i\) have to be minimal, then \(p_1^{q_1-min(s_1, q_1)} \dots p_n^{q_n-min(s_n, q_n)}=\frac{p_1^{q_1} \dots p_n^{q_n}}{p_1^{min(s_1, q_1)} \dots p_n^{min(s_n, q_n)}}= \frac{ord_m(g)}{gcd(ord_m(g), x)} =p_1^{r_1} \dots p_n^{r_n}=ord_m(g^x)\), which finishes proof.
+			<li>Also, for any \(y\), if \(ord_m(g)|xy\), then \(g^{xy} \equiv 1 \pmod m\) - what follows, \(ord_m(g^x)\) must be minimal number, for which \(ord_m(g)|x*ord_m(g^x)\) holds.</li>
+			<li>If \(ord_m(g)=p_1^{q_1} \dots p_n^{q_n},\ ord_m(g^x)=p_1^{r_1} \dots p_n^{r_n}\) and \(x=p_1^{s_1} \dots p_n^{s_n}t\), where \(t\) is coprime to \(p_1 \dots p_n\), then \(p_1^{q_1} \dots p_n^{q_n} | p_1^{r_1+s_1} \dots p_n^{r_n+s_n}\). So \(r_i\) have to be such numbers, that \(r_i \ge q_i-min(q_i, s_i)\). As \(r_i\) have to be minimal, then \(p_1^{q_1-min(s_1, q_1)} \dots p_n^{q_n-min(s_n, q_n)}=\frac{p_1^{q_1} \dots p_n^{q_n}}{p_1^{min(s_1, q_1)} \dots p_n^{min(s_n, q_n)}}= \frac{ord_m(g)}{gcd(ord_m(g), x)} =p_1^{r_1} \dots p_n^{r_n}=ord_m(g^x)\), which finishes proof.
 		</ol>
 		<h3>Thesis 2: if \(g\) is a primitive root \(\pmod m\), then \(\forall_{1 \lt x \lt y \le \phi(m)} g^x \bmod m \neq g^y \bmod m\)</h3>
 		<p>Proof by contradiction: \(g^x \equiv g^y \pmod m \implies g^{y-x} \equiv 1 \pmod m\) - but \(y-x \lt \phi(m)\), which contradicts the assumption that \(ord_m(g)=\phi(m)\)</p>
 		<h3>Implications of those</h3>
-		<p>Suppose that \(g\) is primitive root \(\pmod m\). Then, the question one may ask is: how many there are such numbers \(x\), that \(ord_m(x)=d\) for \(d:d|\phi(m)\)? Certainly, for any number \(y:gcd(y,m)=1\) \(\exists_x g^x \equiv y \pmod m\) - this is from thesis 2, as there are \(\phi(m)\) numbers coprime to \(m\), and for any \(1 \le a, b \le \phi(m)\) \(g^a \bmod m \neq g^b \bmod m\). From thesis 1, \(\frac{ord_m(g)}{gcd(ord_m(g), x)}=ord_m(g^x)\). Using \(ord_m(g)=\phi(m)\), one can get \(\frac{\phi(m)}{gcd(\phi(m), x)}=ord_m(g^x)=d \implies \frac{\phi(m)}{d}=gcd(x, \phi(m))\) - and so, to answer posited question one needs to find number of numbers \(x:gcd(x, \phi(m))=\frac{\phi(m)}{d}=v\). From consequences of totient function, \(|\{x:gcd(m, x)=d\}|=\phi(\frac{m}{d})\). Applying this to the question yields \(|\{x:gcd(\phi(m), x)=\frac{\phi(m)}{d}\}|=\phi(\frac{\phi(m)}{\frac{\phi(m)}{d}})=\phi(d)\) - any primitive root \(g\) has \(ord_m(g)=\phi(m)\), and so, there are \(\phi(\phi(m))\) primitive roots \(\pmod m\)</p>
+        <ol>
+            <li>Suppose that \(g\) is primitive root \(\pmod m\). Then, the question one may ask is: how many there are such numbers \(x: 1 \le x \le m\), that \(ord_m(x)=d\) for \(d:d|\phi(m)\)?</li>
+            <li>Certainly, for any number \(y:gcd(y,m)=1\) \(\exists_x g^x \equiv y \pmod m\) - this is from thesis 2, as there are \(\phi(m)\) numbers coprime to \(m\), and for any \(1 \le a \lt b \le \phi(m)\): \(g^a \bmod m \neq g^b \bmod m\).</li>
+            <li>From thesis 1, \(\frac{ord_m(g)}{gcd(ord_m(g), x)}=ord_m(g^x)\). Using \(ord_m(g)=\phi(m)\), one can get \(\frac{\phi(m)}{gcd(\phi(m), x)}=ord_m(g^x)=d \implies \frac{\phi(m)}{d}=gcd(x, \phi(m))\) - and so, to answer posited question one needs to find number of numbers \(x:gcd(x, \phi(m))=\frac{\phi(m)}{d}=v\). From consequences of totient function, \(|\{x:gcd(m, x)=d\}|=\phi(\frac{m}{d})\). Applying this to the question yields \(|\{x:gcd(\phi(m), x)=\frac{\phi(m)}{d}\}|=\phi(\frac{\phi(m)}{\frac{\phi(m)}{d}})=\phi(d)\) - any primitive root \(g\) has \(ord_m(g)=\phi(m)\), and so, there are \(\phi(\phi(m))\) primitive roots \(\pmod m\)</li>
+            <li>In general, if \(d|\phi(m)\), there are \(\phi(d)\) such numbers \(h\), that \(ord_m(h) = d\) - provided \(m\) has primitive root.</li>
+
+        </ol>
 
 		<h2>Problem III - Finding primitive root modulo \(m\)</h2>
 		<h3>First algorithm</h3>
@@ -170,7 +213,7 @@
 		<h3>Third algorithm</h3>
 		<p>Suppose \(\phi(m)=p_1^{q_1}p_2^{q_2} \dots p_n^{q^n}\) and \(ord_m(x)=p_1^{r_1}p_2^{r_2} \dots p_n^{r_n}\) (from algorithm above, \(ord_m(x)|\phi(m)\)). Either \(\forall_i r_i=q_i\) - then \(x\) is a primitive root - or \(\exists_i r_i \lt q_i\) - then \(x\) is not a primitive root. In the second case, let \(d=p_1^{q_1} \dots p_i^{q_i-1} \dots p_n^{q_n}=\frac{\phi(m)}{p_i}\). Then \(ord_m(x)|d\), because \(\forall_j r_j \le q_j\) and \(r_i \le q_i-1 \lt q_i\). And from lemma 0 \(ord_m(x)|d \implies x^d = x^{\frac{\phi(m)}{p_i}} \equiv 1 \pmod m\). What follows, one can take all primes from factorizing \(\phi(m)\) (whose number may be estimated as \(O(log(\phi(m)))\) or \(O(log(m))\) - and check only for them, whether \(x^{\frac{\phi(m)}{p_i}} \equiv 1 \pmod m\) in order to find out, whether \(x\) is a primitive root. Overall complexity will be \(O(Ans*log(m)*log(m))=O(Ans*log^2(m))\)</p>
 		<h3>Fourth algorithm</h3>
-		<p>One can, instead of rushing towards finding primitive root, check, whether it can exist by checking factorization of \(m\) - this will not change the complexity of this algorithm, but will allow efficient runtime for numbers not having primitive root. Furthermore, for numbers in form \(xp^k\), where \(x=1 \lor x=2\), one can find only primitive root \(\pmod p\), and then, using formulas from proofs find primitive root for \(xp^k\) - this will make complexity for \(k \ge 2\) lower (or even acceptable), and allow for very specific optimization in the last algorithm.</p>
+		<p>For numbers in form \(xp^k\), where \(x=1 \lor x=2\), one can find only primitive root \(\pmod p\), and then, using formulas from proofs find primitive root for \(xp^k\) - this will allow for very specific simplification in the last algorithm.</p>
 		<h3>Reject determinism, embrace probability - last algorithm</h3>
 		<p>One can find - after factorization - primitive roots of \(p\) by subsequently choosing random numbers from interval \(\lt 1;p-1 \gt\) and checking them for being primitive roots in \(O(log^2(p))\). This method is independent of distribution of primitive roots over interval \(\lt 1;p-1 \gt\). Probability that random number from given range is primitive root is \(\frac{\phi(\phi(p))}{p-1}=\frac{\phi(p-1)}{p-1}\).</p>
 		<p>One can show, that \(2\frac{\phi(n)}{n} \ge \frac{1}{\log_2(n)}\), or \(\phi(n)\log_2(n) \ge \frac{n}{2}\):
@@ -195,7 +238,7 @@
 		<h2>Problem IV: maximal order for a given number</h2>
 		<h3>The very definition of the problem and its consequences</h3>
 		<p>For given \(m\), what is the maximal value of \(ord_m(g)\) for any \(g\)? <strong>Carmichael function</strong> denoted as \(\lambda(x)\) is defined as an answer to this problem. More formally, 
-		$$ \lambda(m) = max_{ord_m(g)} \{g \in N^+: gcd(g, m)=1\} $$
+		$$ \lambda(m) = \max_{ord_m(g)} \{g \in N^+: gcd(g, m)=1\} $$
 		There are 3 cases that will be discussed separately:
 		<ol>
 			<li>\(m=p^k\) for odd \(p\) - already covered</li>
@@ -205,7 +248,7 @@
 		<h3>Thesis I: for \(m=2^k\) and \(k \ge 3\) occurs: \(\lambda(m)=\frac{\phi(m)}{2}\)</h3>
 		<p>Note, that above means, that for each \(k \ge 3\) there exists such \(g\), such that:
 			$$ g^{2^{k-3}} \not \equiv 1 \pmod {2^k}$$
-			As proven in 2.2.5 for \(k \ge 3\) \(ord_{2^k}(g) \le \frac{\phi(m)}{2}\), and also, \(\lambda(m) | \phi(m)\) and \(\phi(2^k)=2^{k-1}\), then \(\lambda(2^k)\) has form \(2^l\); showing, that \(\lambda(2^k) \gt 2^{k-3}\) will show that \(\lambda(2^k) = 2^{k-2}\) finishing the proof.</p>
+			As proven in 2.2.5 for \(k \ge 3\) \(ord_{2^k}(g) \le \frac{\phi(m)}{2}\), and also, as \(\lambda(m) | \phi(m)\) and \(\phi(2^k)=2^{k-1}\), then \(\lambda(2^k)\) has form \(2^l\); showing, that \(\lambda(2^k) \gt 2^{k-3}\) will show that \(\lambda(2^k) = 2^{k-2}\) finishing the proof.</p>
 
 			<p>Proof will consist of showing, that if there exists \(g\) for which \(g^{2^{k-3}} \equiv 2^{k-1}+1 \pmod {2^{k}}\), then \(g^{2^{k-2}} \equiv 2^k+1 \pmod {2^{k+1}}\)</p>
 			<p>For \(k=3\), let \(g=5\): then, \(g^{2^{k-3}} \equiv 5^1 \equiv 5 \equiv 2^2+1 \pmod 8\)</p>
@@ -217,9 +260,8 @@
 			$$ 5^{2^{k-2}} \equiv (5^{2^{k-3}})^2 \equiv ((2^{k-1}+1)+c2^k)^2 \equiv (2^{k-1}+1)^2 + 2(2^{k-1}+1)c2^k + c^22^{2k} \equiv (2^{k-1}+1)^2 + (2^{k-1}+1)c2^{k+1} + c^22^{2k} \equiv(2^{k-1}+1)^2 + 0 + 0 \equiv 2^{2k-2}+2*2^{k-1}+1 \equiv 2^k+1 \pmod {2^{k+1}}$$
 			Which shows existence of a number \(g\), for which \(ord_m(g)=\frac{\phi(2^k)}{2}\), and thus, \(\lambda(2^k) = \frac{\phi(2^k)}{2}\) for \(k \ge 3\).</p>
 			{% set lcm="lcm(\lambda(p_1^{q_1}), \dots, \lambda(p_n^{q_n}))" %}
-			{% set post_lcm="lcm(ord_{p_1^{q_1}}(g), \dots, ord_{p_n^{q_n}}(g))" %}
 			<h3>Thesis II: for \(m=p_1^{q_1} \dots p_n^{q_n}\) occurs: \(\lambda(m)={{lcm}}\)</h3>
-			<p>More generally, proven shall be:
+			<p>From lemma 0.75:
 			$$ord_m(g) = lcm(ord_{p_1^{q_1}}(g), ord_{p_2^{q_2}}(g), \dots, ord_{p_n^{q_n}}(g))$$
 			Note, that there exists such \(g\), that for each \(i\): \(ord_{p_i^{q_i}}(g)=\lambda(p_i^{q_i})\) - this comes straight from chinese remainder theorem: namely, one can chose numbers \(c_1, c_2 \dots c_n\), such that \(ord_{p_i^{q_i}}(c_i)=\lambda(p_i^{q_i})\) - and from chinese remainder theorem, there exists exactly one such number \(g\), that
 			$$
@@ -235,25 +277,14 @@
 			</p>
 
 
-			<h4>First lemma: \(g^{ {{post_lcm}} } \equiv 1 \pmod m\) for any \(g\)</h4>
-			<p>Proof: Define \(c_1, \dots c_n\) in such way, that \({{post_lcm}}=ord_{p_1^{q_1}}(g)c_1 = ord_{p_2^{q_2}}(g)c_2 = \dots = ord_{p_n^{q_n}}(g)c_n \)
-			$$
-			\begin{cases}
-			{% for x in [1,2] %}
-				g^{ord_{p_{{x}}^{q_{{x}} }}(g) c_{{x}} } \equiv (g^{ord_{p_{{x}}^{q_{{x}} }}(g) })^{c_{{x}} } \equiv 1^{c_{{x}} } \equiv 1 \pmod {p_{{x}}^{q_{{x}} }} \\
-			{% endfor %}
-				... \\
-				g^{ord_{p_n^{q_n }}(g) c_n } \equiv (g^{ord_{p_n^{q_n }}(g) })^{c_n } \equiv 1^{c_n } \equiv 1 \pmod {p_n^{q_n} } \\
-			\end{cases}
-			$$</p>
-			<p>Thus, from chinese remainder theorem, $$g^{ {{post_lcm}} } \equiv 1 \pmod {p_1^{q_1} p_2^{q_2} \dots p_n^{q_n} }$$</p>
-			<h4>Second lemma: for any \(g\) and \(h \lt {{post_lcm}}\), \(g^h \not \equiv 1 \pmod m\)</h4>
+            <!--
 			<p>Proof: </p>
 			<ol>
 				<li>There has to be some index \(i\), such that \(ord_{p_i^{q_i}}(g) \nmid h\) - because it is lower than \(lcm\) of all \(ord_{p_i^{q_i}}(g)\)</li>
 				<li>Thus, \(g^{h} \not \equiv 1 \pmod {p_i^{q_i}}\).</li>
-				<li>From Chinese Remainder Theorem there is exactly one such sequence of remainders of \(g^h\) modulo \(p_1^{q_1}, \dots, p_n^{q_n}\), that \(g^h \equiv 1 \pmod m\). This sequence is \(1, 1, \dots, 1\). As \(g^h \not \equiv 1 \pmod {p_i^{q_i}}\), then \(g^h \not \equiv 1 \pmod m\), which ends the proof.</li>
+                <li>From Chinese Remainder Theorem there is exactly one such sequence of remainders \((g^h \bmod {p_1^{q_1}}, g^h \bmod {p_2^{q_2}}, \dots, g^h \bmod {p_n^{q_n}})\), that \(g^h \equiv 1 \pmod m\). This sequence is \((1, 1, \dots, 1)\). As \(g^h \not \equiv 1 \pmod {p_i^{q_i}}\), then \(g^h \not \equiv 1 \pmod m\), which ends the proof.</li>
 			</ol>
+            -->
 
 
 

@@ -271,16 +271,16 @@
 
 		<h2>Summary</h2>
 		<ol>
-			<li>Most standard test checking, whether a number is prime - <strong>Fermat test</strong> - relies on checking, whether \(b^{m-1} \equiv 1 \pmod m\) - if, for some base \(b\), it is not true, then \(m\) is composite. If there is one Fermat witness, there are at least \(\frac{m}{2}\) Fermat witnesses modulo \(m\). A number that has no Fermat witnesses is called <strong>Carmichael number</strong></li>
-			<li>Carmichael numbers are odd, have at least 3 prime divisors, and are square free. One can use <strong>Korselt's Criterion</strong> to check, whether \(m\) is a Carmichael number: if and only if \(\forall_{p: p|m} p-1 | m-1\).</li>
-			<li><strong>Miller-Rabin test</strong> does exactly same thing as Fermat test - and additionaly checks, whether there is some \(s: 2^s|(m-1)\) for which \(b^{(m-1)/2^s} \not \equiv \pm 1 \pmod m \land \(b^{(m-1)/2^{s-1}} \equiv 1 \pmod m\) - if so, then \(m\) is not a prime. In contrast to Fermat test, no less than \(\frac{m-1}{2}\) bases are Miller-Rabin witnesses.</li>
-			<li>Miller-Rabin test runs in something like \(O(log^2(m))\) (or \(O(log(m))\), if one assumes, that multiplication occurs in \(O(1)\)).</li>
-			<li>For numbers less than 64-bits, checking pimes up to 37 as bases is enough to determine, whether given number is prime.</li>
+			<li>Most standard test checking, whether a number is prime - <strong>Fermat test</strong> - relies on checking, whether \(b^{m-1} \equiv 1 \pmod m\) - if, for some base \(b\), it is not true, then \(m\) is composite. If there is one Fermat witness, there are at least \(\frac{m}{2}\) Fermat witnesses modulo \(m\). A number that has no Fermat witnesses is called <strong>Carmichael number</strong>.</li>
+			<li>Carmichael numbers are odd, have at least 3 prime divisors, and are square free. One can use <strong>Korselt's Criterion</strong> to check, whether \(m\) is a Carmichael number: if and only if \(\forall_{p: p|m} p-1 | m-1\) for prime \(p\).</li>
+			<li><strong>Miller-Rabin test</strong> does exactly same thing as Fermat test - and additionaly checks, whether there is some \(s: 2^s|(m-1)\) for which \(b^{(m-1)/2^s} \not \equiv \pm 1 \pmod m \land b^{(m-1)/2^{s-1}} \equiv 1 \pmod m\) - if so, then \(m\) is not a prime. In contrast to Fermat test, no less than \(\frac{m-1}{2}\) bases are Miller-Rabin witnesses.</li>
+			<li>Miller-Rabin test runs in something like \(O(log^2(m)\log \log (m))\) (or \(O(log(m))\), if one assumes, that multiplication occurs in \(O(1)\)).</li>
+			<li>For numbers having at most 64 bits, checking primes up to 37 as bases is enough to determine, whether given number is prime.</li>
 
-			<li>Pollard-Rho method allows to factorize a number within on average \(O(m^{1/4})\)</li>
+			<li>Pollard-Rho method allows to factorize a number with complexity on average \(O(m^{1/4})\)</li>
 			<li>Pollard-Rho method relies on finding a cycle in a sequence \((w_0, f(w_0), f(f(w_0)), \dots)\) taken \(\pmod d\), where \(d|m\). Gcd between difference of two equivalent elements and \(m\) yields a number greater than one - factor of \(m\).</li>
 			<li>Sometimes, Pollard-Rho may return \(m\) as a factor - then, this algorithm shall be ran either with different seed (\(w_0\)) or different function \(f\).</li>
-			<li>Running Pollard-Rho on a prime number will always factor out \(m\) - in other words, running Pollard-Rho on a prime number won't yield any factor. It may be wise to usem Pollard-Rho along with primarility testing algorithm.</li>
+			<li>Running Pollard-Rho on a prime number will always factor out \(m\) - in other words, running Pollard-Rho on a prime number won't yield any factor. It may be wise to use Pollard-Rho along with primarility testing algorithm.</li>
 		</ol>
 		<h3>Problems</h3>
 		<p>

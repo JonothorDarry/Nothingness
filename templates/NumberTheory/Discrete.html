@@ -143,9 +143,9 @@
 
 		<h2>Summary</h2>
 		<ol>
-			<li>Discrete logarithm problem - finding \(x: a^x \equiv b \pmod m\) - can be solved using Shanks' algorithm by representing \(x=pn+q\) for \(n \approx \sqrt{m}\) and then dividing problem into finding suitable \(q\) for given \(p\). This one works in \(O(\sqrt{p} \log(p))\), though with some optimizations one can practically reduce it to \(O(\sqrt{p})\).</li>
-			<li>Discrete logarithm lies for any \(a\) in range \(\lt 0;\phi(m)-1\), one can reduce it to \(\lt 0;ord_m(a)-1\). and use it to speed up process of searching a solution.</li>
-			<li>If \(g=gcd(a,m) \gt 1\), then one can, using fact, that \(a \equiv b \pmod m \iff \frac{a}{g} \equiv \frac{b}{g} \pmod {\frac{m}{g}}\) - reduce \(m\) subsequently leading to coprime \(a, m\), finding a soultion in a process if \(b \equiv 1\) or deciding that there are no solution if \(g \nmid gcd(b,m)\).</li>
+			<li>Discrete logarithm problem - finding \(x: a^x \equiv b \pmod m\) - can be solved using Shanks' algorithm by representing \(x=pn+q\) for \(n \approx \sqrt{m}\) and then dividing problem into finding suitable \(q\) for given \(p\). This one works in \(O(\sqrt{m} \log(m))\), though with some optimizations one can practically reduce it to \(O(\sqrt{m})\).</li>
+			<li>Discrete logarithm lies for any \(a\) in range \(\lt 0;\phi(m)-1)\), one can reduce it to \(\lt 0;ord_m(a)-1)\). and use it to speed up process of searching a solution.</li>
+			<li>If \(g=gcd(a,m) \gt 1\), then one can, using fact, that \(a \equiv b \pmod m \iff \frac{a}{g} \equiv \frac{b}{g} \pmod {\frac{m}{g}}\) - reduce \(m\) subsequently leading to coprime \(a, m\), finding a soultion in a process if \(g|b\) or deciding that there are no solutions if \(g \nmid b\).</li>
 			<li>If one knows, that a number \(m\), for which discrete logarithm has to be found is not a prime, then one can use Pohlig-Hellman algorithm in order to find it, finding set of congruences of discrete logarithm to subsequent factors of totient and using intricate exponentation by \(\frac{\phi(m)}{p}\) in order to nullify undesired parts of exponent from an equation.</li>
 
 		</ol>
