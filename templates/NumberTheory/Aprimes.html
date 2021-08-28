@@ -89,7 +89,7 @@
 
 		<h3>Solution II: Miller-Rabin primarility test</h3>
 		<ol>
-			<li>Notice, that if \(m\) has a primitive root, then there are only 2 such numbers \(x\), that \(x^2 \equiv 1 \pmod m\) - namely \(1\) and \(m-1\) - if \(m\) has a primitive root, then number of such numbers \(g\), that \(ord_m(g)=2\) is equal to \(\phi(2)=1\) - this comes from <a href="/proot#27_Problem_II:_The_number_of_primitive_roots_modulo_\(m\)">here</a> (basically, if \(d|\phi(m)\), then there are \(\phi(d)\) such numbers \(h\), that \(ord_m(h)=d\)). </li>
+			<li>Notice, that if \(m\) has a primitive root, then there are only 2 such numbers \(x\), that \(x^2 \equiv 1 \pmod m\) - namely \(1\) and \(m-1\) - if \(m\) has a primitive root, then number of such numbers \(g\), that \(ord_m(g)=2\) is equal to \(\phi(2)=1\) - this comes from <a href="/proot#27_Problem_II:_The_number_of_primitive_roots_modulo_\(m\)">here</a> (basically, if \(d|\phi(m)\) and \(m\) has a primitive root, then there are \(\phi(d)\) such numbers \(h\), that \(ord_m(h)=d\)). </li>
 
 			<li>All prime numbers have at least one primitive root (also powers of odd prime number).</li>
 			<li>Miller-Rabin test involves checking, whether:
@@ -119,13 +119,6 @@
 
 		<h4>Probability of hittin' a witness part I: A short remark on Carmichael numbers</h4>
 		<p>Only Carmichael numbers have less than \(\frac{m}{2}\) witnesses; what can be said about them?</p>
-		<h5>Thesis II: All Carmichael numbers are square-free: that is, they have a form \(m=p_1p_2 \dots p_n\), where all \(p_i\) are distinct</h5>
-		<ol>
-			<li>Suppose, that there is some Carmichael number \(v=p_1^{q_1} \dots p_n^{q_n}\) with some \(q_i \gt 1\), that is not square-free. Also, without loss of generality let \(q_1 \gt 1\)</li>
-			<li>Clearly, \(\phi(p_1^{q_1}) | \lambda(m)\), and as \(\lambda(m) | m-1\), then \(\phi(p_1^{q_1}) | m-1\)</li>
-			<li>\(\phi(p_1^{q_1}) = p_1^{q_1-1}(p_1-1)\)</li>
-			<li>However, as \(p_1 | m\), then \(p_1 \nmid m-1\) - which contradicts our statement.</li>
-		</ol>
 		<h5>Supplement: Korselt's Criterion</h5>
 			<p>Korselt's Criterion states, that for all primes \(p\) dividing \(m\):
 				$$\forall_{p \in P:p|m} p-1 | m-1 \iff m \in C$$
@@ -141,13 +134,23 @@
 			then \(\lambda(m)=lcm(p_1-1, p_2-1, \dots, p_n-1)\) must divide \(m-1\), because:
 			<ol>
 				<li>Let factorization of \(p_i-1=r_1^{s_{i,1}} \dots r_z^{s_{i,z}}\), where some \(s_{i,z}\) may be equal to zero and sequence \(r_i\) is the sequence of all prime divisors of \(p_1-1, p_2-1, \dots p_n-1\).</li>
-				<li>\(\lambda(m)=lcm(p_1-1 \dots p_n-1) = r_1^{MAX_j(s_{j, 1})} \dots r_z^{MAX_j(s_{j, z})}\)</li>
+				<li>\(\lambda(m)=lcm(p_1-1 \dots p_n-1) = r_1^{\max_j(s_{j, 1})} \dots r_z^{\max_j(s_{j, z})}\)</li>
 				<li>For any \(i\) one can argue, that \(r_i^{s_{j,i}} | m-1\) - as \(p_j-1 | m-1\)</li>
 				<li>Thus, \(\lambda(m) | m-1\)</li>
 			</ol>
 			<p>Thus, if for all \(p_i\) one can argue, that \(p_i-1 | m-1\), then \(m\) is a Carmichael number</p>
 
 			</p>
+		<h5>Corollary of the above - divisibility of Carmicahel number by \(2\)</h5>
+		<p>Notice, that Carmichael number cannot be divisible by \(2\) - because it has at least 1 prime divisor, and, by Korselt's criterion, \(p-1 | m-1\) - which is not possible if \(m\) is even and \(p\) is odd.</p>
+
+		<h5>Thesis II: All Carmichael numbers are square-free: that is, they have a form \(m=p_1p_2 \dots p_n\), where all \(p_i\) are distinct and \(m\) is odd.</h5>
+		<ol>
+			<li>Suppose, that there is some Carmichael number \(v=p_1^{q_1} \dots p_n^{q_n}\) with some \(q_i \gt 1\), that is not square-free (and where \(p_i \neq 2\)). Also, without loss of generality let \(q_1 \gt 1\)</li>
+			<li>Clearly, \(\phi(p_1^{q_1}) | \lambda(m)\), and as \(\lambda(m) | m-1\), then \(\phi(p_1^{q_1}) | m-1\)</li>
+			<li>\(\phi(p_1^{q_1}) = p_1^{q_1-1}(p_1-1)\)</li>
+			<li>However, as \(p_1 | m\), then \(p_1 \nmid m-1\) - which contradicts our statement.</li>
+		</ol>
 		<h5>Thesis III: All Carmichael numbers have at least 3 distinct primes in their factorization</h5>
 		<ol>
 			<li>Suppose, that there is some Carmichael number \(v=pq\) with prime, distinct \(p, q\).</li>
@@ -157,10 +160,82 @@
 			<li>\(q-1 | (p-1)(q-1)+(p-1)+(q-1) \implies q-1 | p-1\)</li>
 			<li>Both statements above cannot be true simaltaneously, if \(p \neq q\)</li>
 		</ol>
-		<h5>Corollary of the above - divisibility of Carmicahel number by \(2\)</h5>
-		<p>Notice, that Carmichael number cannot be divisible by \(2\) - because it has at least 1 prime divisor, and, by Korselt's criterion, \(p-1 | m-1\) - which is not possible if \(m\) is even and \(p\) is odd.</p>
 
-		<h4>Probability of hittin' a witness part II: Amount of witnesses among Carmichael numbers.</h4>
+		<h4>Probability of hittin' a witness part II: Amount of witnesses among odd numbers with at least two distinct prime divisors (among them Carmichael numbers).</h4>
+		<p>First, \(m=p_1^{q_1} \dots p_n^{q_n}\) will from now to the end of this proof denote odd number with \(n \ge 2\).</p>
+		<h5>Definitions</h5>
+		<ol>
+			<li>\(\kappa = \frac{m-1}{\nu_2(m-1)}\)</li>
+			<li>\(R = \{x: x^2 \equiv 1 \pmod m\}\)</li>
+			<li>\(\omega_r(h) = \{x: x^h \equiv r \pmod m \land r \in R\}\)</li>
+			<li>\(\Omega_r = \bigcup_{h \in {m-1, (m-1)/2, \dots \kappa}} omega_r(h) \)</li>
+		</ol>
+
+		<h5>Number of non-witnesses</h5>
+		<p>
+		Elements belonging to \(\Omega_{m-1}\) are always Miller-Rabin non-witnesses. Furthermore, if \(b^{\kappa} \equiv 1 \pmod m\), then \(b\) is also a non-witness. Those are only non-witnesses: Thus, Number of Miller-Rabin non-witnesses equals:
+		$$ |\Omega_{m-1}| + |\omega_{1}(\kappa)|$$
+		</p>
+
+		<h5>Outline of the primary proof</h5>
+		<p>A proof will show, that if there are \(|R|\) such numbers \(r\), that \(r^2 \equiv 1 \pmod m\) in form
+		$$ r \equiv s_1 \pmod {p_1^{q_1}} $$
+		$$ r \equiv s_2 \pmod {p_2^{q_2}} $$
+		$$ \dots $$
+		$$ r \equiv s_n \pmod {p_n^{q_n}} $$
+		where \(\forall_i s_i \in \{1,-1\}\), then there are at least \(\frac{|R|-2}{|R|}\) of fermat liars are Miller-Rabin witnesses.
+		</p>
+		<h5>First lemma: if \(|\omega_{m-1}(k)| \ge 1\), then \(\forall_r |\omega_r(k)| = |\omega_{m-1}(k)|\)</h5>
+		<p>
+		Let \(g\) denote some number belonging to \(\omega_{m-1}(k)\). For some \(r \in R\), let \(a_r\) denote such number, that:
+		$$ a_r \equiv t_1 \pmod {p_1^{q_1}} $$
+		$$ a_r \equiv t_2 \pmod {p_2^{q_2}} $$
+		$$ \dots $$
+		$$ a_r \equiv t_n \pmod {p_n^{q_n}} $$
+		where 
+		$$
+		t_i \equiv 
+		\begin{cases}
+		g \pmod {p_i^{q_i}} \text{ iff } r \equiv 1 \pmod {p_i^{q_i}} \\
+		1 \pmod {p_i^{q_i}} \text{ otherwise}
+		\end{cases}
+		$$
+		Then, for some \(h \in \omega_{m-1}(k)\):
+		$$ (h*a_r)^k \equiv 
+		\begin{cases}
+		(h*g)^k \equiv h^kg^k \equiv (-1)*(-1) \equiv 1 \equiv r \pmod {p_i^{q_i}} \text{ iff } r \equiv 1 \pmod {p_i^{q_i}} \\
+		(h*1)^k \equiv h^k \equiv -1 \equiv r \pmod {p_i^{q_i}} \text{ otherwise}
+		\end{cases}
+		$$
+		And, for some \(f \in \omega_{r}(k)\):
+		$$ (f*a_r^{-1})^k \equiv 
+		\begin{cases}
+		(f*g^{-1})^k \equiv f^k(g^k)^{-1} \equiv 1*(-1)^{-1} \equiv -1 \pmod {p_i^{q_i}} \text{ iff } r \equiv 1 \pmod {p_i^{q_i}} \\
+		(f*1)^k \equiv f^k \equiv -1 \pmod {p_i^{q_i}} \text{ otherwise}
+		\end{cases}
+		$$
+		Thus, from lemma 0, \(|\omega_{m-1}(k)| = |\omega_r(k)|\) holds for any \(r \in R\), if \(|\omega_{m-1}(k)| \ge 1\).
+		</p>
+		<h5>Second lemma: \(|\omega_{m-1}(\kappa)| \ge 1\)</h5>
+		<p>
+		One can show, that \(m-1 \in \omega_{m-1}(\kappa)\) - because \(ord_{m}(m-1)=2\); as \(ord_{m}(m-1) \nmid \kappa\), then \((m-1)^{\kappa} \equiv m-1 \pmod m\).
+		</p>
+		<h5>Corollary: at least \(\frac{|R|-2}{|R|}\) of fermat liars are Miller-Rabin witnesses</h5>
+		<ol>
+			<li>\(|\omega_{m-1}(\kappa)| \ge 1 \implies |\omega_1(\kappa)| = |\omega_{m-1}(\kappa)\)| - and \(|\omega_{m-1}(\kappa)| \ge 1\) comes from second lemma.</li>
+			<li>From above, \(|\omega_1(\kappa)| \le |\Omega_{m-1}|\)</li>
+			<li>And \(|\Omega_{m-1}| \le \frac{1}{|R|} \sum_r |\Omega_r|\) - because of first lemma.</li>
+			<li>Thus, \(|\Omega_{m-1}|+|\omega_{m-1}(k)| \le \frac{1}{|R|} \sum_r |\Omega_r| + \frac{1}{|R|} \sum_r |\Omega_r| = \frac{2}{|R|} \sum_r |\Omega_r|\) - because of first lemma.</li>
+			<li>What follows, proportion of Miller-Rabin witnesses to non-witnesses among Fermat liars is higher or equal to \(1-\frac{2}{|R|} = \frac{|R|-2}{|R|}\). Which ends the argument.</li>
+		</ol>
+		<h5>Implications of the above</h5>
+		<ol>
+			<li>For a number which has at least 3 prime divisors, \(|R| \ge 8\). What follows, at least \(\frac{8-2}{8}=\frac{3}{4}\) of numbers coprime to \(m\) are Miller-Rabin witnesses.</li>
+			<li>For odd numbers with at least two distinct prime divisors, \(|R| \ge 4\). At least \(\frac{4-2}{4}=\frac{1}{2}\) of numbers coprime to \(m\) that are fermat liars are Miller-Rabin witnesses. As at least half of numbers coprime to \(m\) are Fermat witnesses, at least \(\frac{1}{2} + \frac{1}{2}*\frac{1}{2} = \frac{3}{4}\) of all number coprime to \(m\) are Miller-Rabin witnesses.</li>
+			<li>Partially related to Miller-Rabin, primarily to Fermat test: if a composite number (say, \(x\)) is even, then at least half except one of numbers in set \(\{1, \dots x-1\}\) is non-coprime to \(x\), and half of numbers in this set are fermat witnesses; in other words, if a number is even, then at least \(\frac{3}{4}\) except one numbers in set \(\{1, \dots x-1\}\) are Fermat witnesses, and thus also Miller-Rabin witnesses.</li>
+		</ol>
+
+		<!--
 		<p>It will be established, that if \(m\) is a Carmichael number, then out of all numbers coprime to \(m\) among \(\{1 \dots m-1\}\) at most \(\frac{1}{4}\) of them are fermat liars. The technique (shown by Bobby Kleinberg in his timeless cult-classic <a href=https://web.archive.org/web/20210415013417/http://www.cs.cornell.edu/courses/cs4820/2010sp/handouts/MillerRabin.pdf>paper</a>) of proving this statement involves distinguishing three non-intersecting sets consisting of elements \(\{1 \dots m-1\}\); Let \(m-1=2^kt\) where \(2 \nmid t\):</p>
 		<ol>
 			<li>\(X\) - all numbers not-coprime to \(m\) - \(x \in X\) is a witness.</li>
@@ -195,6 +270,7 @@
 				Any \(z \in Z1\) multiplied by \(w\) leads to such value \(wz\), that \(s_{(wz)^{2^lt}} = x\). Thus, as \((wz)^{2^{l+1}t} \equiv 1 \pmod m\) (because for all \(p_i: p_i|m\) noticeable nuissance: \((wz)^{2^{l+1}t} \equiv ((wz)^{2^lt})^2 \equiv -1^2 \equiv 1 \pmod {p_i}\) occurs), and as for each \(z_1, \dots z_h \in Z1\) all \(wz_1, \dots wz_h\) are distinct, then for each sequence \(x\) consisting of \(1\)s and \(-1\)s there are at least as many values \(b: s_b=x\) as there are values \(z: s_z=(-1, -1, \dots -1)\). Notice, that \(b\) is certainly a non-witness if \(s_b \neq (-1, -1, \dots -1)\) and \(s_b \neq (1, 1, \dots 1)\) - thus, there are \(2^n-2\) sequences constituting a witness, and so, as \(n \ge 3\), \(|Z1| \le \frac{|Z2|}{8-2} = \frac{|Z2|}{6}\)
 			</li>
 		</ol>
+		-->
 		<h4>One last time, and Miller-Rabin will fade away</h4>
 		<p>To sum it up:</p>
 		<ol>
@@ -208,9 +284,9 @@
 			</li>
 			<li>Every fermat witness is also Miller-Rabin witness.</li>
 			<li>Carmichael numbers have at least 3 prime divisors (and none of them is equal to 2) and are square-free.</li>
-			<li>There are at most \(\frac{m}{4}\) Miller-Rabin liars if \(m\) is a Carmichael number.</li>
-			<li>It was shown (hopefully without mistakes, cardinal mistakes, or papal mistakes), that for any composite number \(m\) probability, that random \(b\) is a witness of compositeness of \(m\) is not lower than \(\frac{1}{2}\) - for all numbers except for Carmichael numbers it is not lower than \(\frac{1}{2}\) using a standard fermat test, and each fermat witness is also miller-rabin witness; and for Carmichael numbers it is not lower than \(\frac{1}{4}\)</li>
-			<li>If one calculates \(d=b^{\frac{m-1}{2^{\nu(m-1)}}}\), and then finds subsequent values to test as \(d^2, (d^2)^2, \dots \), then one can achieve complexity equal to that of Fermat test - that is \(O(\log(m)*mul(m))\), where \(mul(m)\) denotes time needed to multiply two numbers of size \(m\) - something like \(O(\log^2(m)\log\log(m))\).</li>
+			<li>There are at most \(\frac{m}{4}+1\) Miller-Rabin liars if \(m\) has at least two distinct prime divisors or is even.</li>
+			<li>It was shown (hopefully without mistakes, cardinal mistakes, or papal mistakes), that for any composite number \(m\) probability, that random \(b\) is a witness of compositeness of \(m\) is not lower than \(\frac{1}{2}\) - for all numbers except for Carmichael numbers it is not lower than \(\frac{1}{2}\) using a standard fermat test, and each fermat witness is also miller-rabin witness; and for Carmichael numbers it is not lower than \(\frac{1}{4}\).</li>
+			<li>If one calculates \(d=b^{\frac{m-1}{2^{\nu(m-1)}}}\), and then finds subsequent values to test as \(d^2, (d^2)^2, \dots \), then one can achieve complexity equal to that of Fermat test - that is \(O(\log(m)*mul(m))\), where \(mul(m)\) denotes time needed to multiply two numbers of size \(\log(m)\) - something like \(O(\log^2(m)\log\log(m))\).</li>
 			<li>Utilitarian remarks, part I: for \(m \le 2^{64}\) it is enough to check, whether \(test_{MR}(m,b)=0\) for bases \(\{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37\}\); if for each of those bases \(test_{MR}(m,b)=0\), then \(m\) is a prime.</li>
 			<li>Utilitarian remarks, part II: If \(b\) is a miller-rabin witness but not fermat witness, then there is some \(k=2^h\), for which \(b^{\frac{m-1}{k}} \not \equiv \pm 1 \pmod m\), but \(b^{2\frac{m-1}{k}} \equiv 1 \pmod m\). Let \(\kappa = b^{\frac{m-1}{k}}\) (and, \(\kappa^2 \equiv 1 \pmod m\)). Notice, that there is some prime \(p: p|m\), for which \(\kappa \equiv 1 \pmod p\), and some prime \(q: q|m\), for which \(\kappa \equiv -1 \pmod q\). And so, \(gcd(\kappa+1, m) \gt 1\), and \(gcd(\kappa-1, m) \gt 1\). This leads to some conclusions, among them: one can find a factor of Carmichael number in polynominal time.</li>
 		</ol>

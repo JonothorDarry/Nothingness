@@ -203,56 +203,19 @@
                 <li>As each \(p_i \ge 2\), then \(m \le \sum_i q_i \le log_2(x)\).</li>
                 <li>Sieve marks a number no more times than it has distinct prime divisors - thus it will mark any number \(x\) at most \(log_2(x)\) times, and so, complexity of a sieve is \(O(n\log(n))\).</li>
             </ol>
-            <!--
-			<p>
-				There is also simpler proof with assumption, that we only mark numbers after we stumble upon a prime number (e.g., after marking \(4\), we don't start marking \(8,\ 12,\ 16,\ 20, ...)\). How many times one number can be marked using that optimization? It will be marked by all it's prime divisors at most once: so, \(16=2*2*2*2\) will be marked once, because it has one distinct prime component(2).  On the other hand, \(4800=2*2*2*2*2*2*3*5*5\) will be marked at most thrice, because it has three distinct prime divisors \((2,\ 3,\ 5)\). Ultimately, a number \(x\) cannot be marked more times than \(log_2(x)\). So, if \(max(a_i) \le K \), then complexity of this sieve is \(O(n*s)\), where \(s\) is maximal number of distinct prime divisors of any number \(1 \le x \le K\). What can be said about minimal number containing \(s\) distinct prime divisors?:
-			<br><br>
-			<span class="central">(I) If \(x\) can be shown as 
-				\(
 
-				x=
-					{% for j in range(2) %}
-						p_{{j}}^{ q_{{j}} }
-					{% endfor %}
-					...p_n^{q_n}
-				\)
-				then there is \(y \le x\) that can be shown as 
-				
-				\(
-					y=
-					{% for j in range(2) %}
-						p_{{j}}
-					{% endfor %}
-					...p_n
-				\)
-				having same number of distinct prime divisors.
-			</span>
+	    <h2>Problem III - moving sieve</h2>
+	    <p>Suppose, that You are given two numbers \(a,b\), and thine aim is to determine for each number in range \(\lt a; b \gt\) whether it is prime. \(1 \le a \le b \le 10^{12}, b-a \le 10^6\)
+	    </p>
+	    <h3>Standard sieve solution</h3>
+	    <p>Let \(S=\{a, a+1, \dots, b-1, b\}\). Notice, that element of \(S\) is prime if and only if it has no prime divisor in range \(\lt 1; \sqrt{b} \gt\). The idea is thus as follows:</p>
+	    <ol>
+		    <li>Construct a standard sieve in range to \(\sqrt{b}\). All primes within range of this sieve will be denoted by \(P\).</li>
+		    <li>Construct a secondary sieve representing numbers in range \(\lt a;b \gt\).</li>
+		    <li>For each \(p \in P\), mark all numbers divisible by \(p\) in secondary sieve as composite, starting from \(\lfloor \frac{a-1}{p} \rfloor p + p\).</li>
+	    </ol>
+	    <p>Complexity is same as in case of standard sieve, proof is also identical.</p>
 
-			<br>
-			<span class="central">(II) If for given 
-				\(y=
-					{% for j in range(2) %}
-						p_{{j}}
-					{% endfor %}
-					...p_n
-				\)
-
-				there is such prime number \(v\) such that \(\exists_{i} v \lt p_i\) and \(!\exists_{j}v=p_j\), then
-					\(
-					\exists_{z \in N^+} z=\frac{v}{p_i}*y \le y
-					\)
-			</span>
-			<br>
-			What follows, one can construct lowest number with \(s\) distinct prime divisors by multiplying subsequent prime numbers, starting from lowest: \(2*3*5*...*p_m; m \le log_2(n)\), and the proof is finished giving better approximation of number of used steps in this algorithm.
-			</p>	
-            -->
-            <h4>Even more refined, catharctic proof using Euler product and Taylor series</h4>
-            <ol>
-                <li>The well-known Euler product is defined as:
-                    $$ \sum_{i=1}^{\infty} \frac{1}{i}$$
-                
-                </li>
-            </ol>
 
 		<h2>Summary</h2>
 		<ol>
