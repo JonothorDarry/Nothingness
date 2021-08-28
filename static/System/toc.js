@@ -37,4 +37,11 @@ function make_toc(){
 	}
 }
 
+function enter(event, to_attack){
+	if (event.keyCode == 13){
+		//document.getElementById(to_attack);
+		console.log("PENIS");
+	}
+}
+
 make_toc();

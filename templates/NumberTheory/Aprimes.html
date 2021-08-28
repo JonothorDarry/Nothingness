@@ -16,16 +16,36 @@
 		<ol>
 			<li>There are myriads of <strong>tests</strong>, that check, whether a number is prime; every one of tests shown here uses some <strong>base</strong>. Testing consists of two steps:
 				<ol>
-					<li>Choosing a base \(b\)</li>
-					<li>Checking, whether a number is a composite according to the given test. Later, result of this test will be denoted by \(test(m, b) = \begin{cases} 1 \text{ test using base \(b\) shows, that \(m\) is composite} \\0 \text{ otherwise}\\ \end{cases}\)</li>
+					<li>Choosing a base \(b\).</li>
+					<li>Checking, whether a number is a composite according to the given test. Later, result of this test will be denoted by \(test(m, b) = \begin{cases} 1 \text{ test using base \(b\) shows, that \(m\) is composite} \\0 \text{ otherwise}\\ \end{cases}\).</li>
 				</ol>
-				If a number \(m\) is composite, yet, \(test(m,b)=0\) for some base \(b\), then, \(b\) will be called <strong>non-witness</strong> or <strong>liar</strong> regarding compositeness of \(m\). Conversely, if \(test(m, b)=1\) for base \(b\), then \(b\) will be called a <strong>witness</strong> of compositeness of \(m\). Two particular tests will be described later: <strong>Fermat test</strong> and <strong>Miller-Rabin test</strong>.
+				If a number \(m\) is composite, yet, \(test(m,b)=0\) for some base \(b\), then, \(b\) will be called <strong>non-witness</strong> or <strong>liar</strong> regarding compositeness of \(m\) (if \(m\) is not composite such number will be non-witness). Conversely, if \(test(m, b)=1\) for base \(b\), then \(b\) will be called a <strong>witness</strong> of compositeness of \(m\). Two particular tests will be described later: <strong>Fermat test</strong> and <strong>Miller-Rabin test</strong>.
 			</li>
-			<li><strong>Carmichael number</strong> is such number \(m\), that \(\lambda(m) | m-1 \).</li>
+			<li><strong>Carmichael number</strong> is such number \(m\), that \(\lambda(m) | m-1 \), where \(\lambda\) denotes <a href="http://localhost:5000/proot#41_Problem_IV:_maximal_order_for_a_given_number">Carmichael function</a>.</li>
 		</ol>
 
 		<h2>Problem I: Is given number prime?</h2>
 		<p>A number \(m \le 10^{18}\) is given; is this number a prime number?</p>
+		<h3>Fundamental lemmas</h3>
+		<h4>Lemma 0: On set sizes with mapping element</h4>
+		<p>Thesis: Suppose, two sets \(S\) and \(T\) are given, with elements belonging to \(\{0, 1, \dots m-1\}\), all elements of both sets are coprime to \(m\), along with number \(a\) coprime to \(m\). Then, if:
+		$$ \forall_{x \in S} x*a \equiv y \pmod m $$
+		where \(y \in T\), and
+		$$ \forall_{y \in T} y*a^{-1} \equiv z \pmod m $$
+		where \(z \in S\), then \(|T|=|S|\)
+		</p>
+		<p>Proof:</p>
+		<ol>
+			<li>All elements \(x*a\) for \(x \in S\) are distinct; otherwise, for elements \(x_1\) and \(x_2\) belonging to \(S\), where \(x_1*a \equiv x_2*a \pmod m\), but \(x_1 \not \equiv x_2 \pmod m\):
+				$$ x_1*a \equiv x_2 *a \pmod m \ \ \ \ //*a^{-1}$$
+				$$ x_1 \equiv x_2 \pmod m$$
+				Analogous argument can be made for set \(T\) and element \(a^{-1}\).
+			</li>
+
+			<li>From above, \(|S| \le |T|\) - because multiplying element from \(S\) by \(a\) always leads to different element from \(T\). Analogous argument can be made for set \(T\): that is, \(|T| \le |S|\). Thus, \(|T|=|S|\).</li>
+		</ol>
+		<p>Remark: Providing mapping element (\(a\)) for two sets with shows, that sets have same size (provided condition of being coprime is satisfied).</p>
+
 		<h3>Solution I: Fermat primarility test</h3>
 		<p>First test shown relies on special case of euler's theorem (\(gcd(a,m)=1 \implies a^{\phi(m)} \equiv 1 \pmod m\)), namely Fermat's little theorem:
 		 $$a^{p-1} \equiv 1 \pmod p $$
@@ -44,15 +64,12 @@
 			<li>If \(gcd(b, m) \gt 1\), then \(b^{m-1} \not \equiv 1 \pmod m\) - so, instead, a lemma showing that at least half of numbers coprime to \(m\) are fermat witnesses will be shown. 
 				$$\frac{\phi(m)}{2}+(m-\phi(m)) \ge \frac{m}{2}$$
 			</li>
-			<li>Say, there exists such \(b: gcd(b, m)=1\), that \(b^{m-1} \equiv c \pmod m\), where \(c \not \equiv 1 \pmod m\). In other words, \(b\) is a Fermat witness. Then, let set \(H\) denote set of all such numbers \(h\), that: 
-				$$h^{m-1} \equiv 1 \pmod m$$
-				then, for any \(h \in H\)
-				$$ (hb)^{m-1} \equiv h^{m-1}b^{m-1} \equiv 1*c \equiv c \pmod m $$
-				Note, that all \(hb\) for \(h \in H\) are distinct: otherwise two elements of set \(H\) would have to be equivalent \(\pmod m\):
-				$$h_1 b \equiv h_2 b \pmod m \ \ \ //*b^{-1}$$
-				$$h_1 \equiv h_2 \pmod m$$
+			<li>Let \(S=\{b: b^{m-1} \equiv c \pmod m\}\) for some \(c \not \equiv 1 \pmod m \land gcd(c, m)=1\). Let also \(T=\{b: b^{m-1} \equiv 1 \pmod m\}\). If \(|S| \ge 1\), then let \(a\) denote any element from \(S\). Then, for \(b \in S\):
+				$$ (b * a^{-1})^{m-1} \equiv b^{m-1} (a^{m-1})^{-1} \equiv c*c^{-1} \equiv 1 \pmod m$$
+				And for \(b \in T\):
+				$$ (b * a)^{m-1} \equiv b^{m-1} (a^{m-1}) \equiv 1*c \equiv c \pmod m$$
 
-				Thus, $$|\{h: h^{m-1} \equiv 1 \pmod m\}| \le |\{x: x^{m-1} \equiv c \pmod m\}| $$
+				Thus, from lemma 0, if mapping element exists, then $$|\{x: x^{m-1} \equiv 1 \pmod m\}| = |\{x: x^{m-1} \equiv c \pmod m\}| $$
 				<!--
 				Furthermore, let \(X\) denote set of all numbers \(x\) such that \(x^{m-1} \equiv c \pmod m\); notice, that as \(gcd(b, m)=1\), then \(b\) has an inverse modulo \(m\). Then, for any \(x \in X\):
 				$$ (xb^{-1})^{m-1} \equiv x^{m-1}(b^{m-1})^{-1} \equiv c*c^{-1} \equiv 1 \pmod m $$
@@ -96,7 +113,9 @@
 			\(m\)<br>
 			</p>
 			', '15', {'algo_type':'shower', 
-			'color_description':{'standard':'Non-witness', 'stagnant':'Both Fermat witness and Miller-Rabin witness', 'crucial':'Miller-rabin witness'} }) }}
+			'color_description':{'standard':'Non-witness', '_pink':'Both Fermat witness and Miller-Rabin witness', '_violet':'Miller-rabin witness'}, 
+			'add_on':'checkbox', 'added_elements':['summary_exec', 'Summary Execution']
+			}) }}
 
 		<h4>Probability of hittin' a witness part I: A short remark on Carmichael numbers</h4>
 		<p>Only Carmichael numbers have less than \(\frac{m}{2}\) witnesses; what can be said about them?</p>

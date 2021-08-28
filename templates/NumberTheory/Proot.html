@@ -56,7 +56,7 @@
         {% set post_lcm="lcm(ord_{p_1^{q_1}}(g), ord_{p_2^{q_2}}(g), \dots, ord_{p_n^{q_n}}(g))" %}
         <h4>0.75 Lemma \(ord_{p_1^{q_1} p_2^{q_2} \dots p_n^{q_n}}(g) = {{post_lcm}} \)</h4>
         <p>Later in this lemma, \(m = p_1^{q_1} \dots p_n^{q_n}\)</p>
-        <h5>First half-lemma: \(g^{ {{post_lcm}} } \equiv 1 \pmod m\) for any \(g\)</h5>
+        <h5>First half-lemma: \(g^{ {{post_lcm}} } \equiv 1 \pmod m\) for any \(g\) coprime to \(m\)</h5>
         <p>Proof: Define \(c_1, \dots c_n\) in such way, that \({{post_lcm}}=ord_{p_1^{q_1}}(g)c_1 = ord_{p_2^{q_2}}(g)c_2 = \dots = ord_{p_n^{q_n}}(g)c_n \)
         $$
         \begin{cases}

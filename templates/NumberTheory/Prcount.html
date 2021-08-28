@@ -122,7 +122,7 @@
 			$$\phi(n, h)=P_0(n, h) + P_1(n, h) + P_2(n, h) + \dots $$
 		</p>
 		<p>How to calculate \(P_k(n, a)\) though? The banal solution, for \(k \ge 2\):
-		$$P_k(n, a)=\sum_{i_1=a+1}^{\pi(n^{1/2})} \sum_{i_2=i_1}^{\pi(n^{1/2})} \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1/2})} MAX(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1}, 0) $$
+		$$P_k(n, a)=\sum_{i_1=a+1}^{\pi(n^{1/2})} \sum_{i_2=i_1}^{\pi(n^{1/2})} \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1/2})} \max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1}, 0) $$
 		It counts, for each possible result of multiplying \(k-1\) primes, where \(P_{i_v} \le P_{i_v+1}\), in how many ways last prime (that may be greater than \(n^{1/2}\), and has to be greater or equal to \(P_{i_{k-1}}\)) can be chosen?
 		</p>
 		<p>One can move a bit further - arguing, that, if \((P_{i_1} \le P_{i_2} \le \dots \le P_{i_k})\), then, better bounds on each \(i_x\) may be placed: </p>
@@ -133,7 +133,7 @@
 			<li>Thus, single element of this product \(P_{i_g} \le n^\frac{ {1-(g-1)L} }{k-g+1}\)</li>
 		</ol>
 		<p>The above allows to represent the formula for \(P_k(n,a)\) in a different way:
-		$$P_k(n, a) = \sum_{i_1=a+1}^{\pi(n^{1/k})} \sum_{i_2=i_1}^{\pi(n^{\frac{1-1/L}{k-1} }) } \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1-(k-1)/L}) }  MAX(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1}, 0) $$
+		$$P_k(n, a) = \sum_{i_1=a+1}^{\pi(n^{1/k})} \sum_{i_2=i_1}^{\pi(n^{\frac{1-1/L}{k-1} }) } \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1-(k-1)/L}) }  \max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1}, 0) $$
 		In general, presenting formula in this form does not seem to be extremely bright idea - it will be discussed as a special case of applying the above.
 		</p>
 

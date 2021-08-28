@@ -311,7 +311,12 @@ class Grid{
 		var btn=this.grid[position[0]+this.top_margin][position[1]+this.left_margin];
 		if (value!=null) btn.innerHTML=value;
 		Representation_utils.Painter(btn, params.color);
+		Modern_representation.button_modifier(btn, params);
 		return btn;
+	}
+
+	get(a, b){
+		return this.grid[a+this.top_margin][b+this.left_margin];
 	}
 }
 
@@ -372,9 +377,7 @@ class Representation_utils{
 		return grid;
 	}
 	
-	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
-	//9: yellow(grey) 10: blue 11: dark gold
-	//Refactor this shit as soon, as possibru
+
 	static Painter(btn, col=1, only_bg=0){
 		if ('upper' in btn){
 			Representation_utils.Painter(btn.upper, col, only_bg);
@@ -386,31 +389,11 @@ class Representation_utils{
 		if (col==0 || col==1 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14 || col==15) btn.style.color="#FFFFFF";
 		else btn.style.backgroundColor="#FFFFFF";
 
-		if (col==0) btn.style.backgroundColor="#440000";
-		else if (col==1) btn.style.backgroundColor="#004400";
-		else if (col==2 || col==7 || col==9) btn.style.color="#666666";
-		else if (col==3) btn.style.color="#FFFFFF";
-		else if (col==5) btn.style.backgroundColor="#000000";
-		else if (col==6) btn.style.backgroundColor="#888888";
-		else if (col==8) btn.style.backgroundColor="#8A7400";
-		else if (col==10) btn.style.backgroundColor="#0000FF";
-		else if (col==11) btn.style.backgroundColor="#222200";
-		if (col==12) btn.style.backgroundColor="#FF3333";
-		if (col==9) btn.style.backgroundColor="#FFFF00";
+		if (col==2 || col==7 || col==9) btn.style.color="#666666";
+		if (col==3) btn.style.color="#FFFFFF";
 
-		//moderate-red, moderate-green, violet, pinko
-		if (col==30) btn.style.backgroundColor="#880000";
-		if (col==31) btn.style.backgroundColor="#008800";
-		if (col==32) btn.style.backgroundColor="#800080";
-		if (col==33) btn.style.backgroundColor="#FF0080";
-
-		if (col==101) btn.style.backgroundColor="#804000";
-
-		//Colors for additional post-green
-		if (col==13) btn.style.backgroundColor="#669900";
-		if (col==14) btn.style.backgroundColor="#00B359";
-		//Colors for tmp information - post-orange
-		if (col==15) btn.style.backgroundColor="#E64C00";
+		if (col in Modern_representation.colors)
+			btn.style.backgroundColor=Modern_representation.colors[col];
 
 		if (col==7){
 			btn.style.border="1px solid";
@@ -563,6 +546,34 @@ class Representation_utils{
 }
 
 class Modern_representation{
+	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
+	//9: yellow(grey) 10: blue 11: dark gold
+	//Refactor this shit as soon, as possibru
+	static colors={
+		0:'#440000',
+		1:'#004400',
+		5:'#000000',
+		6:'#888888',
+		8:'#8A7400',
+		10:'#0000FF',
+		11:'#222200',
+		12:'#FF3333',
+		
+		//Colors for additional post-green
+		13:'#669900',
+		14:'#00B359',
+		//Colors for tmp information - post-orange
+		15:'#E64C00',
+
+		//moderate-red, moderate-green, violet, pinko
+		30:'#880000',
+		31:'#008800',
+		32:'#800080',
+		33:'#FF0080',
+
+		101:'#804000',
+	}
+
 	static button_creator(inner_html, stylistic){
 		var base={
 			'general':{'backgroundColor':'#FFFFFF', 
@@ -855,6 +866,11 @@ class ArrayUtils{
 		var elements=[];
 		for (var i=0; i<num; i++) elements.push(elem);
 		return elements;
+	}
+
+	static sum(arr){
+		var summer=(acc, starter) => acc+starter;
+		return arr.reduce(summer, 0);
 	}
 
 	static is_iterable(value){

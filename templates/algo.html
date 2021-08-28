@@ -71,6 +71,9 @@
 				'exponent':{'color':'#804000', 'meaning':'Value associated with another value, usually some index.'},
 				'iterator':{'color':'#E64C00', 'meaning':'Some iterator or set of iterators.'},
 				'half-dead':{'color':'#888888', 'meaning':'Partially processed data.'},
+
+				'_violet':{'color':'#800080', 'meaning':''},
+				'_pink':{'color':'#FF0080', 'meaning':''},
 			}
 			%}
 			<h4 class={{argos.algo_type}}>{{header_text}}</h4>
@@ -102,9 +105,9 @@
 			{% endautoescape %}
 
 			<div id="Inputter{{id}}">
-				<form>
+				<form method="get">
 					{% if argos.input_type=='input' %}
-						<input class="inputter" id="SomeInput{{id}}" name="SomeInput" value="{{start_value}}">
+						<input class="inputter" id="SomeInput{{id}}" name="SomeInput" value="{{start_value}}"  onkeypress="enter(event, 'Sender{{id}}');">
 					{% else %}
 						{% autoescape off %}
 						<textarea class="inputter" id="SomeInput{{id}}" name="SomeInput">{{start_value}}</textarea>
@@ -115,27 +118,27 @@
 
 			{% if argos.algo_type=='algo' %}
 			<div id="Buttons{{id}}" style="position:sticky; top:0; left:0; z-index:2; display:inline-block;">
-					<button id="Sender{{id}}" class="sender">Begin</button>
+				<button id="Sender{{id}}" class="sender">Begin</button>
 					<button id="Prever{{id}}" class="previous">Previous Move</button>
 					<button id="Nexter{{id}}" class="next">Next Move</button>
 					<button id="Finisher{{id}}" class="finish">Finish</button>
-
-					{% if argos.add_on=='radio' %}
-						{% set y=argos.added_elements[0] %}
-						<input type="radio" id="{{y}}" name="algoType" checked><label for="{{y}}">{{y}}</label>
-						{% for x in argos.added_elements[1:] %}
-							<input type="radio" id="{{x}}" name="algoType"><label for="{{x}}">{{x}}</label>
-						{% endfor %}
-					{% endif %}
-
-					{% if argos.add_on=='checkbox' %}
-						<input type="checkbox" id="{{argos.added_elements}}{{id}}" name="shower"><label for="{{argos.added_elements}}{{id}}">Show only table</label> <!--GCD-targeted-->
-					{% endif %}
-			</div>
-
 			{% else %}
+			<div id="Buttons{{id}}" style="display:inline-block;">
 				<button id="Show{{id}}" class="show">Show</button>
 			{% endif %}
+
+			{% if argos.add_on=='radio' %}
+				{% set y=argos.added_elements[0] %}
+				<input type="radio" id="{{y}}" name="algoType" checked><label for="{{y}}">{{y}}</label>
+				{% for x in argos.added_elements[1:] %}
+					<input type="radio" id="{{x}}" name="algoType"><label for="{{x}}">{{x}}</label>
+				{% endfor %}
+			{% endif %}
+
+			{% if argos.add_on=='checkbox' %}
+				<input type="checkbox" id="{{argos.added_elements[0]}}{{id}}" name="shower"><label for="{{argos.added_elements[0]}}{{id}}">{{argos.added_elements[1]}}</label> <!--GCD-targeted-->
+			{% endif %}
+			</div>
 
 			<div class="breakAlgo"></div>
 			<div id="Primez{{id}}" class="primez"></div>
