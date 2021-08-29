@@ -157,6 +157,20 @@
 		</p>
 		<p>So, the complexity of this algorithm is \(O(n^{3/4} \log \log n)\).</p>
         <h3>Solution III: It's been years, since persistent segment trees came in</h3>
+	<h4>Different algorithm for calculating \(\phi(n,a)\): Idea I</h4>
+	<p>Say, You're given \(q\) queries in form \(\phi(n,a)\), where \(n,q \le 3*10^7\), and You can answer them offline. How cope?</p>
+	<p>Instead of constructing recursive solutions, one can:</p>
+	<ol>
+		<li>Construct a standard interval tree: insert in point, query in range over a sieve.</li>
+		<li>Segment tree counts amount of not-sieved integers in range.</li>
+		<li>After sieving \(k\)-th prime, answer all questions in form \(\phi(a, k)\) - that is, query a range \(\lt 1, a \gt\).</li>
+	</ol>
+	<p>Overall complexity is \(O(n\log(n) + n\log\log(n) + q\log(n)) = O(n\log(n) + q\log(n))\) - \(O(n \log(n))\) for at most \(n\) changes - marking number as composite, \(O(n \log\log(n))\) for a sieve, and \(O(q \log(n))\) for query answering.</p>
+	<p>There is one particular consequence of this method: If one wants to calculate \(\phi(n, a)\), one can use recursion-like structures to calculate \(\phi(x,\_)\) for \(x \ge n^{2/3}\), and use sieve with superimposed segment tree otherwise; If \(a=n^{1/3}\), Then number of queries passed to sieve along with number of nodes in recursion-like structure will be lower or equal to \(n^{2/3}\) (\(n^{1/3}\) values \(z\) in recursion in form \(\phi(z, \_)\) for \(z \ge n^{2/3}\) spawning at most \(a=n^{1/3}\) queries/nodes each), and so, complexity for calculating \(\phi(n, n^{1/3})\) will be equal to \(O(n^{2/3} \log(n))\).</p>
+	<h4>Different algorithm for calculating \(\phi(n,a)\): Idea II</h4>
+	<p>
+	Notice, that one can use persistent segment tree to preserve information about updates; this doesn't change anything except possibility to execute queries online and necessity to have \(O(n^{2/3} \log(n))\) memory - which can be cumbersome, given usual constraints in this type of problems.
+	</p>
 
 
 		<h2>Summary</h2>

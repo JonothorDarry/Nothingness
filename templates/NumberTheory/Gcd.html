@@ -17,14 +17,14 @@
 				<span class="central">\(d|x \iff \exists_{k \in Z}dk=x\)</span>
 				If \(d|x\), then \(x\) is divisible by \(d\).<br>
 			</li>
-			<li><b>Greatest common divisor (gcd)</b>: An integer \(g \in N^+\) is gcd of numbers \(w, v\) if and only if:<br>
+			<li><b>Greatest common divisor (gcd)</b>: An integer \(g \in N^+\) is gcd of integers \(w, v\) if and only if:<br>
 				<span class="central">\(g=gcd(w, v) \iff g|w \land g|v \land !\exists_h (h|w \land h|v \land h&gt;g)\)</span>
-				In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater number \(h\) that divides both \(w\) and \(v\).<br>
+				In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater integer \(h\) that divides both \(w\) and \(v\).<br>
 			</li>
-			<li><b>Least common multiple (lcm)</b>: An integer \(l \in N^+\) is lcm of numbers \(w, v\) if and only if:<br>
+			<li><b>Least common multiple (lcm)</b>: An integer \(l \in N^+\) is lcm of integers \(w, v\) if and only if:<br>
 				<span class="central">\(l=lcm(w, v) \iff w|l \land v|l \land !\exists_h (w|h \land v|h \land h&lt;l)\)</span><br>
 			</li>
-			<li><b>Remainder from dividing</b> number \(x\) by number \(m \in N^+\), denoted later by \(x\%m\), is equal to:<br>
+			<li><b>Remainder from dividing</b> integer \(x\) by integer \(m \in N^+\), denoted later by \(x\%m\), is equal to:<br>
 				<span class="central">\(m \gt x\%m=x-\lfloor \frac{x}{m} \rfloor m \ge 0\)</span><br>
 			</li>
 			<li><b>Two integers \(a\), \(b\) are equivalent modulo m</b>, if:<br>
@@ -34,19 +34,21 @@
 		</ol>
 
 		<h2>Problem I: Finding \(gcd(w,v)\)</h2>
-		<p>Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le n=10^{18}\)? First solution not being absolute brute force (checking all integers \(x \in \lt 2;min(w,v) \gt \) whether they're gcd - works in \(O(q*\min(w,v))\)) is discussed below:</p>
-		<h3>First sane idea: \(O(q\sqrt{\min(w,v)})\)</h3>
+		<p>Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le n=10^{18}\)? First solution not being absolute brute force (checking all integers \(x \in \{ 2, 3, \dots \min(w,v)\}\) whether they're gcd - works in \(O(q*\min(w,v))\)) is discussed below:</p>
+		<h3>Solution I: using distribution of divisors in \(O(q\sqrt{\min(w,v)})\)</h3>
 		<h4>Distribution of all divisors of a number and their upper estimate</h4>
-		<p>If \(d\) is a divisor of \(x\), where \(d,x \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction is trivial: if \(d|x\) then, there exists such integer \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\) occurs \(|\{d:d|x \land d \ge 1\}| \le 2\sqrt{x}\) - because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
+		<p>If \(d\) is a divisor of \(x\), where \(d,x \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction: if \(d|x\), then there exists such integer \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\): 
+			$$ |\{d:d|x \land d \ge 1\}| \le 2\sqrt{x} $$
+		because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
 		</p>
-		<h4>First solution</h4>
+		<h4>Solution using distribution</h4>
 		<p>
-		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(k: k|w\) one need to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this solution will work in \(O(q*\sqrt{\min(w,v)})\).
+		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural numbers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such number. To find all divisors \(\{k: k|w\}\) one needs to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this solution will work in \(O(q*\sqrt{\min(w,v)})\).
 		</p>
 
 		<h3>Viable solution: Euclidean algorithm in \(O(q\log(\min(w,v)))\)</h3>
 		<p>
-		Let's create arrays \(a_i\) and \(b_i\) such that \(a_0=w\), \(b_0=v\). One can define these arrays for \(i &gt; 0\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\%b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
+		Let's create arrays \(a_i\) and \(b_i\) such that \(a_1=w\), \(b_1=v\). One can define these arrays for \(i \gt 0\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\%b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
 
 		</p>
 		{{ algo.algorithm(1, 'Euclidean Algorithm', '
@@ -62,11 +64,10 @@
 			Proof by induction: For \(i=0\) \(gcd(a_i, b_i)=gcd(w, v)\), because \(a_0=w, b_0=v\). So: \(\exists_i gcd(a_i, b_i)=gcd(w, v)\). To finish proof is to show that for any \(i\) either \(gcd(a_i, b_i)=gcd(a_{i+1}, b_{i+1})\), or \(b_i=0\)<br>
 			What can be said about any divisor \(g\) dividing both \(a_i\) and \(b_i\)? If \(a_i\) is shown as \(sb_i +m\), where \(s \in Z\), then:
 			
-			<br><span class="central">\(a_i = gk, b_i =gl, a_i=sb_i +m\)</span>
-			<span class="central">\(gk=sgl+m\)</span>
-			<span class="central">\(gk-sgl=g*(k-sl)=m\)</span><br>
-			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\%b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\%b_i, b_i)=gcd(b_i, a_i\%b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any integer divides \(0\), and so any number that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of a number \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Furthermore, it shows, that every divisor of both \(w, v\) is also a divisor of \(gcd(w,v)\)
-
+			$$ a_i = gk, b_i = gl$$
+			$$ a_i = sb_i+m $$
+			$$ a_i-sb_i = gk-sgl=g*(k-sl) = m $$
+			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\%b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\%b_i, b_i)=gcd(b_i, a_i\%b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any integer divides \(0\), and so any number that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of an integer \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Furthermore, it shows, that every divisor of both \(w\) and, \(v\) is also a divisor of \(gcd(w,v)\).
 		</p>
 		<h4>Complexity proof</h4>
 		<p>
@@ -77,16 +78,16 @@
 			<br><span class="central">(1) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} &gt; \frac{a_i+b_i}{2b_i} &ge; \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span>
 
 			<br><span class="central">(2) \(\frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} = \frac{a_i+b_i}{b_i+a_i-b_i} = \frac{a_i+b_i}{a_i} = 1+\frac{b_i}{a_i} &gt; 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2}\)</span><br>
-			And so, maximum number of operations can be bounded by \(O(q*\log(\min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after second iteration \(b_2 \lt a_2 \le min(w,v)\), and after \(k\) iterations sum \(a_k+b_k\) becomes lower at least \((\frac{3}{2})^{k-1}\) times than \(a_0+b_0\).
+			And so, maximum number of operations can be bounded by \(O(q*\log(\min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after first iteration \(b_2 \lt a_2 \le \min(w,v)\), and after \(k\) iterations sum \(a_k+b_k\) becomes lower at least \((\frac{3}{2})^{k-1}\) times than \(a_1+b_1\).
 		</p>
-		<h2>Second Problem</h2>
+		<h2>Problem II: finding \(x,y\), for which \(wx+vy=gcd(w,v)\)</h2>
 		<p>
 		Let's say that sole \(gcd(w,v)\) is not enough: You want to find such numbers \(x, y\) such that: \(wx+vy=gcd(w,v)\).
 		<h3>Solution - Extending eclidean algorithm</h3>
-		<p>One can use same mechanism to solve this problem, but calculate also arrays \(p, q\), such that for each \(i\) following stands:
-			<br><span class="central">\(p_iw+q_iv=b_i\)<br>
-				\(p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1\)<br>
-				for \(i &gt; 1\) following stands: \(b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}\)<br></span>
+		<p>One can use same mechanism to solve this problem, but also construct sequences \(p, q\), such that for each \(i\) following stands:
+			$$p_iw+q_iv=b_i$$
+			$$p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1$$
+			$$ \text{ for \(i \gt 1\) following stands: } b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}$$</span>
 			It is possble to show \(b_{i-1}\) as \(b_{i-1}=p_{i-1}w+q_{i-1}v\). But what with \(a_{i-1}\)? It's equal to \(b_{i-2}\), except when \(i=2\)... unless \(b_0=a_1=w\). Let also, for simplicity, \(z_i=\lfloor \frac{a_i}{b_i} \rfloor\). Then: <br>
 			<span class="central">\(p_0=1, q_0=0 \implies wp_0+vq_0=w=b_0\)<br>
 				\(b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z_i(p_iw + q_iv)= w(p_{i-1} - z_ip_i)+ v(q_{i-1} - z_iq_i)\)</span>

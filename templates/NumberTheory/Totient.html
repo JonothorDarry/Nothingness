@@ -46,18 +46,8 @@
 					<li> \((gcd(a,x)=1 \land gcd(b, x)=1) \implies gcd(ab, x)=1\) - this follows from Euclid's lemma.</li>
 					<li> If each pair \(c_1, c_2\) uniquely defines \(x \in &lt;0;ab-1&gt;\), then one can prove theorem combinatorically: \(gcd(x, ab)=1 \iff (gcd(c_1, a)=1 \land gcd(c_2, b)=1)\). How many there are numbers \(c_1\), such that \(gcd(a, c_1)=1\) and \(c_1 \le a\)? \(\phi(a)\). Analogously for \(b\). And so, there are \(\phi(a) \phi(b)\) pairs \(c_1, c_2\) identifying \(x: gcd(x, ab)=1\), which finishes the proof.</li>
 				</ol>
-			</li>
-			<li>Another proof, that \(\phi(ab)=\phi(a)\phi(b)\) for coprime \(a, b\), this time using inclusion-exclusion principle, perhaps simpler:
-				<ol>
-					<li>For \(x=p_1^{q_1} \dots p_n^{q_n}\): \(\phi(x)=x-\sum_{i} \frac{x}{p_i} + \sum_{i \lt j} \frac{x}{p_i p_j} - \dots + (-1)^n\frac{x}{p_1p_2 \dots p_n}\) - this comes from inclusion-exclusion principle, defining sets \(P_1, P_2, \dots, P_n\) of numbers divisible by \(p_1, \dots p_n\) lower or equal to \(x\) and finding, how many elements belong to neither of those sets.</li>
-					<li>For coprime \(x=p_1^{q_1} \dots p_n^{q_n}, y=r_1^{s_1} \dots r_m^{s_m}\) (also, let sequence \(t\) denote concatenation of sequences \(p, r\): \(\phi(x)\phi(y)=x(1-\sum_i \frac{1}{p_i} + \sum_{i \lt j} \frac{1}{p_i p_j} + \dots +(-1)^n\frac{1}{p_1 \dots p_n}) * y(1-sum_i \frac{1}{r_i} + \sum_{i \lt j} \frac{1}{r_i r_j} - \dots +(-1)^m \frac{1}{r_1 \dots r_n}) = xy(1-\sum_i \frac{1}{t_i} + \sum_{i \lt j} \frac{1}{t_i t_j} - \dots +(-1)^{n+m} \frac{1}{t_1 \dots t_{n+m}}) = \phi(xy)\)</li>
-				</ol>
-			</li>
-		</ol>
-		<p>
-		To sum up the proof: each \(x\) identifies one pair \(0 \le c_1 \lt a, 0 \le c_2 \lt b\), and each \(c_1, c_2\) identifies exactly one \(x \in &lt; 0;ab-1 &gt;\). If and only if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(x\) defined by \(c_1, c_2\) is coprime to \(ab\). There are \(\phi (a)\) numbers, such that \(gcd(c_1, x)=1\), and \(\phi (b)\) numbers, such that \(gcd(c_2, x)=1\) - and so, there are \(\phi(a) \phi(b)\) distinct pairs \(c_1, c_2\) such that \(x &lt; ab\) identified by them is coprime to \(ab\), and for any \(ab \ge 1:\ gcd(ab, ab) = gcd(0, ab)\).<br>
-		</p><p>
-		This proof won't work for not coprime \(a, b\) (and it shouldn't - \( \phi(32)=16 \neq \phi(4) \phi(8) = 8 \)), because \(c_1, c_2\) are not mapping uniquely to \( \lt 0;ab-1 \gt\), but to \( \lt 0;lcm(ab)-1 \gt\), and some \(c_1, c_2\) have no solutions: for example, for \(a=4, b=8, x \lt ab\):
+				To sum up the proof: each \(x\) identifies one pair \(0 \le c_1 \lt a, 0 \le c_2 \lt b\), and each \(c_1, c_2\) identifies exactly one \(x \in &lt; 0;ab-1 &gt;\). If and only if \(gcd(c_1, a)=gcd(c_2, b)=1\), then \(x\) defined by \(c_1, c_2\) is coprime to \(ab\). There are \(\phi (a)\) numbers, such that \(gcd(c_1, x)=1\), and \(\phi (b)\) numbers, such that \(gcd(c_2, x)=1\) - and so, there are \(\phi(a) \phi(b)\) distinct pairs \(c_1, c_2\) such that \(x &lt; ab\) identified by them is coprime to \(ab\), and for any \(ab \ge 1:\ gcd(ab, ab) = gcd(0, ab)\).<br>
+				This proof won't work for not coprime \(a, b\) (and it shouldn't - \( \phi(32)=16 \neq \phi(4) \phi(8) = 8 \)), because \(c_1, c_2\) are not mapping uniquely to \( \lt 0;ab-1 \gt\), but to \( \lt 0;lcm(ab)-1 \gt\), and some \(c_1, c_2\) have no solutions: for example, for \(a=4, b=8, x \lt ab\):
 		<span class="central">\(
 			\begin{cases}
 			x \equiv 1\ (mod\ 4)\\
@@ -70,10 +60,18 @@
 			\end{cases} \iff x \in \{5, 13, 21, 29\}
 			\)
 		</span>
-		</p>
+			</li>
+			<li>Another proof, that \(\phi(ab)=\phi(a)\phi(b)\) for coprime \(a, b\), this time using inclusion-exclusion principle, perhaps simpler:
+				<ol>
+					<li>For \(x=p_1^{q_1} \dots p_n^{q_n}\): \(\phi(x)=x-\sum_{i} \frac{x}{p_i} + \sum_{i \lt j} \frac{x}{p_i p_j} - \dots + (-1)^n\frac{x}{p_1p_2 \dots p_n} = x(1-\frac{1}{p_1}) \dots (1-\frac{1}{p_2}) \dots (1-\frac{1}{p_n})\) - this comes from inclusion-exclusion principle, defining sets \(P_1, P_2, \dots, P_n\) of numbers divisible by \(p_1, \dots p_n\) lower or equal to \(x\) and finding, how many elements belong to neither of those sets.</li>
+					<li>For coprime \(x=p_1^{q_1} \dots p_n^{q_n}, y=r_1^{s_1} \dots r_m^{s_m}\): 
+					$$ \phi(x)\phi(y) = x(1-\frac{1}{p_1}) (1-\frac{1}{p_2}) \dots (1-\frac{1}{p_n}) y(1-\frac{1}{r_1})(1-\frac{1}{r_2}) \dots (1-\frac{1}{r_m}) = xy(1-\frac{1}{p_1}) \dots (1-\frac{1}{p_n}) (1-\frac{1}{r_1}) \dots (1-\frac{1}{r_m}) = \phi(xy)$$</li>
+				</ol>
+			</li>
+		</ol>
 		<h4>Consequence of properties: factorization</h4>
 		<p>	
-		What follows, if one can factorise \(x=p_1^{q_2} p_1^{q_2} \dots p_n^{q_n}\), then \(\phi (x) = \phi (p_1^{q_1} p_1^{q_1} \dots p_n^{q_n}) = \phi (p_1^{q_1}) \phi(p_2^{q_2} \dots p_n^{q_n})= \dots =\phi (p_1^{q_1}) \phi(p_2^{q_2}) \dots \phi(p_n^{q_n})=(p_1-1)p_1^{q_1-1}(p_2-1)p_2^{q_2-1} \dots (p_n-1)p_n^{q_n-1}=p_1^{q_1}* \frac{p_1-1}{p_1}* p_2^{q_2}* \frac{p_2-1}{p_2}* \dots p_n^{q_n}* \frac{p_n-1}{p_n}=x*\frac{(p_1-1)}{p_1}* \frac{(p_2-1)}{p_2}* \dots \frac{(p_n-1)}{p_n}\).
+		What follows, if one can factorize \(x=p_1^{q_2} p_1^{q_2} \dots p_n^{q_n}\), then \(\phi (x) = \phi (p_1^{q_1} p_1^{q_1} \dots p_n^{q_n}) = \phi (p_1^{q_1}) \phi(p_2^{q_2} \dots p_n^{q_n})= \dots =\phi (p_1^{q_1}) \phi(p_2^{q_2}) \dots \phi(p_n^{q_n})=(p_1-1)p_1^{q_1-1}(p_2-1)p_2^{q_2-1} \dots (p_n-1)p_n^{q_n-1}=p_1^{q_1}* \frac{p_1-1}{p_1}* p_2^{q_2}* \frac{p_2-1}{p_2}* \dots p_n^{q_n}* \frac{p_n-1}{p_n}=x*\frac{(p_1-1)}{p_1}* \frac{(p_2-1)}{p_2}* \dots \frac{(p_n-1)}{p_n}\).
 		</p>
 		<h3>Full solution</h3>
 		<p>
@@ -83,10 +81,10 @@
 				<li>\(gcd(m, x)=y \iff gcd(\frac{m}{y}, \frac{x}{y})=1\)</li>
 				<li>\(x \le m \iff \frac{x}{y} \le \frac{m}{y}\) </li>
 			</ol>
-			<p>And so, \( |\{x:\ gcd(x, m)=y\}|=\phi(\frac{m}{y}) \). One can solve problem by factorizing \(\frac{m}{y}\) and using formula above: complexity will be \(O(\sqrt{\frac{m}{y}})\).</p>
+			<p>And so, \( |\{x:\ gcd(x, m)=y\}|=\phi(\frac{m}{y}) \). One can solve problem by factorizing \(\frac{m}{y}\) and using formula above: complexity will be \(O(fac(\frac{m}{y}))\), where \(fac\) denotes time needed to factorize a number.</p>
 		</p>
 		<h3>Consequence #1</h3>
-		<p>It's worth noting, that every number \(x \le m\) has \(gcd(x, m) \in \lt 1;m \gt \). What follows, \(\sum_{d:\ d|m} \phi(\frac{m}{d})=m\)</p>
+		<p>It's worth noting, that every number \(x \le m\) has \(gcd(x, m) \in \{ 1, 2, \dots m \} \). What follows, \(\sum_{d:\ d|m} \phi(\frac{m}{d})=m\)</p>
 
 		<!--<h3>Consequence #2</h3>
 		<p>Furthermore, </p>-->
@@ -94,7 +92,7 @@
 		<h2>Problem II</h2>
 		<p>What if there are \(q\ (q \le 5*10^5)\) queries, and you have to solve identical problem as above with different constraints: for \(m, y\ (1 \le m, y \le n=5*10^6)\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
 		<h3>Solution with sieve for finding totient</h3>
-		<p>Note that in practice it is enough to find totient for each number in range \(\lt 1; 5*10^6\gt\) before processing queries and be able to find \(gcd\) in \(O(log(m+y))\) - for example using Euclid's algorithm - in order to solve this problem in satisfying \(O(n\log(\log(n))+q\log(n))\). To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve.</p>
+		<p>Note that in practice it is enough to find totient for each number in range \(\lt 1; 5*10^6\gt\) before processing queries and be able to find \(gcd\) in \(O(log(m+y))\) - for example using Euclid's algorithm - in order to solve this problem in satisfying \(O(n\log\log(n)+q\log(n))\). To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve.</p>
 
 		{{ algo.neo_algorithm(1, 'Totient sieve', '
 			<p>Input format: One number \(n\) is the size of the sieve used to find totients.<br>
@@ -107,7 +105,7 @@
 
 		<h2>Problem III</h2>
 		<p> Suppose You are given numbers \(2 \le a_0, a_1, .. a_{n-1}, m \le 10^9+7, n \le 10^5\) and have to find value of such expression:
-		<span class="central" style="font-size:20px;">$$a_0^{ ({a_1} ^{( {a_2} ^ {(\dots a_{n-1})})})} mod\ m$$</span>
+		<span class="central" style="font-size:20px;">$$a_0^{ ({a_1} ^{( {a_2} ^ {(\dots ^ {a_{n-1}})})})} mod\ m$$</span>
 		<h3>Observations concerning the essence of this problem</h3>
 		<p>To solve this problem, one may first find value of exponent, and then evaluate full expression: \(a_0^{c} \equiv x\ (mod\ m)\). Exponent can be calculated in the same way, until end of sequence is reached... but modulo what? It is rather impossible to store whole number as exponent or do any calculations on such arduous numbers. To calculte c, it would be wise to know such a number \(x\), such that \(a^b \equiv a^{b+x}\ (mod\ m)\) - at least for coprime \(a, m\). Such number must exist, because number of possible values of \(a^b \pmod m\) is finite (not higher than \(m\), to be precise), and so, from pigeonhole principle, there exist such \(s_1 \lt s_2\), such that \(a^{s_1} \equiv a^{s_2}\ (mod\ m)\). What follows, \(x=s_2-s_1\) (there must be more solutions, perhaps some are lower). Then, 
 		<span class="central">\( a^b \equiv a^{b+x}\ (mod\ m)\) <br>
