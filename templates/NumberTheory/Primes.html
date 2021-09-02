@@ -18,35 +18,36 @@
 		This article will cover sieving technique and it's complexity, showing it's use in solving primes-related problems. To approach those problems, first certain definitions shall be formulated:</p>
 		<ol>
 			<li><b>Prime number</b>: a number \(p \in N^+\) is prime (or \(p \in P\), where \(P\) is set of all primes), if and only if<br>
-			<span class="central">\(p \in P \iff |\{d:d|p \land d \ge 1\}|=2\)<br></span>
+			$$ p \in P \iff |\{d:d|p \land d \ge 1\}|=2\) $$
 			In other words, \(p\) needs to have exactly \(2\) different positive divisors - one and itself (note that \(1\) is not a prime, as it has only \(1\) divisor). For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A <b>composite number</b> is a number which is neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number.
 			</li>
-			<li><b>Factorization of a number \(x\) into primes</b> is representation of a number as a product of prime numbers:
-				<span class="central">\(x=p_1p_2 \dots p_m\)</span>
+			<li><b>Factorization of a number \(x\) into primes</b> is representation of an integer as a product of prime numbers:
+				$$ x=p_1p_2 \dots p_m $$
 				Where \(p_i \in P\). One can also represent it as:
-				<span class="central">\(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\)</span>
-				Where \(q_i \ge 0\) are certain exponents and all \(p_i\) are distinct. For example, \(100\) can be represented as \(100=2*2*5*5=2^25^2\). One can also consider infinite sequence \(v_x=(q_1, q_2, \dots)\) such that \(x=p_1^{q_1} p_2^{q_2} \dots\), where \(p_i\) is the \(i\)-th prime number (that is, \(p=(2,3,5 \dots)\)), and treat is as a factorization of \(x\). A prime factoriztion of \(x\) is unique if there is only one \(v_x\) - it will be shown later, that any number has unique factorization into primes.
+				$$ x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n} $$
+				Where \(q_i \ge 0\) are certain exponents and all \(p_i\) are distinct. For example, \(100\) can be represented as \(100=2*2*5*5=2^25^2\). One can also consider infinite sequence \(\upsilon_x=(q_1, q_2, \dots)\) such that \(x=p_1^{q_1} p_2^{q_2} \dots\), where \(p_i\) is the \(i\)-th prime number (that is, \(p=(2,3,5 \dots)\)), and treat it as a factorization of \(x\). A prime factoriztion of \(x\) is unique if there is only one \(\upsilon_x\) - it will be shown later, that any number has unique factorization into primes.
 			</li>
 		<br>
 		</ol>
 
-		<h2>Problem I</h2>
-		<p>Let's say \(q\) queries \((q \le 10^6)\) are given: Is given number \(a_i (1 \le a_i \le 10^6)\) a prime?</p>
-		<h3>First Solution</h3>
-		<p id="sol1">This algorithm contains depictions of absolute brutality. One can check whether \(a_i\) is prime by checking whether any integer \(x \in \lt 2;a_i-1 \gt\) is it's divisor: if it is, then \(a_i\) is not prime. This solution works in \(O(q*max(a_i))\), which is obvious if all numbers given in queries are prime - \(q\) numbers needs to be checked whether they have third divisor, and single check works in \(O(a_i)\)
-		</p><br>
-
-		<h3>Second Solution</h3>
-		<p id="sol2">If a number \(x\) is divisible by \(d\), then either \(d \le \sqrt{x}\), or \(\frac{x}{d} \le \sqrt{x}\) - and so, one needs to check only integers between \(\lt 1;\sqrt{a_i} \gt\) whether they divide \(a_i\) to check whether \(a_i\) is prime. That makes the algorithm run in \(O(q\sqrt{max(a_i)})\)
-		</p><br>
-
-		<h3>Third Solution - sieve</h3>
-		<p id="sol3">However, problem can be solved with preprocessing and answering query in O(1) by creating array of all elements, initially marked as primes, then taking subsequent numbers marked as primes starting from 2 and marking all numbers divisible by it except itself as non-primes; then going to the next number number marked as prime (3), repeat procedure, and so on, as on visualization:
+		<h2>Problem I: checking primarility for integers in a range</h2>
+		<p>For each integer \(a \in \{1, 2 \dots n\}\) determine, whether it is a prime number. Constraint: \(n \le 10^6\).</p>
+		<h3>Solution I: check everything</h3>
+		<p id="sol1">This algorithm contains depictions of absolute brutality. One can check whether \(a\) is prime by checking whether any integer \(x \in \{ 2,3, \dots, a_i-1\}\) is it's divisor: if it is, then \(a\) is not a prime. Solution relying on applying for each integer in a range this technique works in \(O(n^2)\).
 		</p>
-		
+		<h3>Solution II: use distribution of divisors</h3>
+		<p id="sol2">If an integer \(x\) is divisible by \(d\), then either \(d \le \sqrt{x}\), or \(\frac{x}{d} \le \sqrt{x}\) - and so, to check whether \(a\) is prime, one needs to check only integers in \(\{ 2, 3, \dots \lfloor \sqrt{a} \rfloor \}\) whether they divide \(a\). That makes the algorithm run in \(O(n \sqrt{n})\)
+		</p><br>
 
+		<h3>Solution III: sieve</h3>
+		<p id="sol3">Let sequence \(SIEVE\) of length \(n\) denote, whether integer is considered a prime. At the start of the process, \(SIEVE=(1, 1, 1, \dots, 1)\) - everything is considered prime. Then, two things happen:</p>
+		<ol>
+			<li>\(SIEVE_0 = SIEVE_1 = 0\) - by definition.</li>
+			<li>If \(SIEVE_i=1\) (or even for any \(i\)), mark \(SIEVE_{2i} = 0, SIEVE_{3i} = 0, \dots\).</li>
+		</ol>
+		<p>At the end of this process, every prime number will be marked (\(SIEVE_p = 1\)), and composite not-marked - because it is divisible by some prime.</p>
 		{{ algo.neo_algorithm(1, 'Sieve', '
-			<p>Input format: One number \(n\) is the size of the sieve.<br>
+			<p>Input format: One integer \(n\) is the size of the sieve.<br>
 			\(n\)
 			</p>
 		'
@@ -55,8 +56,8 @@
 		}) }}
 
 		<p id="Anime-Descr">
-		Begin starts the sieve with a given limit. Next move moves forward current sieve, Previous move moves backward. This sieve has 2 optimizations: first, if a number is marked as non-prime, then all numbers it could mark were already marked by it's divisor. Proof:<br><br>
-		<span class="central">\(a|b \land b|c \implies \exists_{k, l \in N} (ka=b \land lb=lka=c) \implies a|c\)</span><br><br>
+		Begin starts the sieve with a given limit. Next move moves forward current sieve, Previous move moves backward. This sieve has 2 optimizations: first, if an integer is marked as non-prime, then all numbers it could mark were already marked by it's divisor. Proof:<br><br>
+		$$ a|b \land b|c \implies \exists_{k, l \in N} (ka=b \land lb=lka=c) \implies a|c\) $$
 
 		Secondly, for given \(x\), no composite number \(y \lt x^2\) has lowest divisor \(d \gt 1\) greater or equal to \(x\), which was shown in 2nd solution to this problem - and so, marking can start from \(x^2\)
 		</p>
@@ -64,7 +65,7 @@
 		<h4>Sieve complexity proof</h4>
         <!--<p>Later, upper limit on \(a_i\) will be denoted as \(n\).</p>-->
 		<p id="Complexity">
-		It can be easily proven, that sieve, even without any optimizations works in \(O(n*log(n))\): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marks numbers. Marking numbers works in \(O(n*log(n))\), because it's sum of iterations on the table with difference equal to some prime: when sieve marks numbers divisible by \(2\), it passes at most \(\frac{n}{2}\) numbers; when it marks numbers divisible by \(3\), it passes at most \(\frac{n}{3}\) numbers, etc. So, algorithm works in:
+		It can be easily proven, that sieve, even without any optimizations works in \(O(n*\log(n))\): In each operation, one either searches for next prime number: sum of all searches is just linear walk from the beginning to the end of table, so it's linear; or marks numbers. Marking numbers works in \(O(n*\log(n))\), because sum of reciprocals of \(n\) first integers can be estimated by \(O(\log(n))\): when sieve marks numbers divisible by \(2\), it passes at most \(\frac{n}{2}\) numbers; when it marks numbers divisible by \(3\), it passes at most \(\frac{n}{3}\) numbers, etc. So, algorithm works in:
 			<br>
 				$$
 				{% for i in [2, 3, 5, 7, 11, 13] %}
@@ -77,7 +78,7 @@
 					+
 				{% endfor %}
 				...+\frac{n}{n} \le $$
-                $$ \le 
+				$$ \le 
 				{% for i in range(1, 4) %}
 					{% set s=jipow(2, i) %}
 					{% for j in range(s) %}
@@ -100,40 +101,33 @@
 
 				\sum^{\lfloor log_2(n) \rfloor}_{i=1} i*\frac{n}{i}=
 				n*\sum^{\lfloor log_2(n) \rfloor}_{i=1}1=
-				n \lfloor log_2(n) \rfloor=O(n*log(n))
+				n \lfloor log_2(n) \rfloor=O(n*\log(n))
 				$$
-			</span>
 			<br>
-			Furthermore, the second inequality in this proof also shows, that sum of number of divisors over all numbers in a range \(&lt;1; n&gt;\) can be estimated by \(O(n*logn)\) - because every divisor \(d\) has exactly \(\lfloor \frac{n}{d} \rfloor\) numbers divisible by it, and this sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*logn)\).
+			Furthermore, the second inequality in this proof also shows, that sum of amount of divisors over all integers in a set \(\{1, 2, 3, \dots n\}\) can be estimated by \(O(n*\log(n))\) - because every divisor \(d\) has exactly \(\lfloor \frac{n}{d} \rfloor\) integers divisible by it, and thus sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*\log(n))\).
 		</p>
-		<br>
-		<p id="gutSieve">
-			Query answering can be done in \(O(q)\), because for each query \(a_i\) one only needs to look whether it is marked as prime or not - that can be done in \(O(1)\). So total complexity for a given task is at most \(O(n*log(n)+q)\), where \(n\) is number, for which we run sieve, that is \(n \ge max(a_i)\). 
-		</p>
-				
-				
-				
-			<h2>Problem II</h2>
+			<h2>Problem II: factorizing integers in a range</h2>
 			<p id="ZwieteProbleme">
-				This sieve can be used to much more sophisticated tasks: let's say You have to find a factorization of \(q\ (q\le10^6)\) numbers \(a_i (1 \le a_i \le n=10^6)\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). First question, that should be addressed before solving problem itself - is such factorization unique?
+			Let's say You have to find a factorization all integers \(a \in \{2, 3, \dots, n\}\), where \(n \le 10^6\), i.e. find it's representation as product of prime numbers. For example, \(2852=2*2*23*31\). First question, that should be addressed before solving problem itself - is such factorization unique?
 			</p>
-
 			<h3>Fundamental theorem of arithmetic</h3>
 			<p>One can prove, that each number \(x \in N^+\) has unique factorization: if \(x\) is shown as \(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\), where \(p_i \in P \land q_i \in N \land p_i \lt p_{i+1}\) (it is always possible to show \(x\) in such manner - this will also be proven) and also as \(x=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\), where \(r_i \in P \land s_i \in N^+ \land r_i \lt r_{i+1}\), then \(m=n \land \forall_i (p_i=r_i \land s_i=q_i)\). It may be wise to prove certain lemmas first:</p>
 			<ol>
 				<li> Euclid's lemma: if prime number \(p \in P\) is given, \(a,b \in N\) and \(p|ab\), then \(p|a\) or \(p|b\). Proof:
-					<span class="central">If \(p|a\), then the statement is true. Otherwise, if \(p \nmid a\) and \(pk=ab\), then:</span>
-					<span class="central"> \(\exists_{x,y \in Z} ax+py=gcd(a, p)=1\), because \(p\) has two divisors: one is \(p \nmid a\), second is one. Equation follows from bezout identity.</span>
-					<span class="central"> \(abx+pby=b\)</span>
-					<span class="central"> \(pkx+pby=b\)</span>
-					<span class="central"> \(p(kx+by)=b \implies p|b\)</span>
+
+					If \(p|a\), then the statement is true. Otherwise, if \(p \nmid a\) and \(pk=ab\), then:
+					$$ \exists_{x,y \in Z} ax+py=gcd(a, p)=1$$
+					because \(p\) has two divisors: one is \(p \nmid a\), second is one. Equation follows from bezout identity.
+					$$ abx+pby=b $$
+					$$ pkx+pby=b $$
+					$$ p(kx+by)=b \implies p|b $$
 				</li>
 				<li>Direct consequence of euclid's lemma: \(p|v_1v_2 \dots v_k \implies p|v_1 \lor p|v_2v_3...v_k \implies \dots \implies p|v_1 \lor p|v_2 \lor p|v_3 \lor \dots \lor p|v_k\)</li>
-				<li>Any prime number \(p\) has an unique factorization into primes: \(p=p\) - by definition it cannot be shown as product of different primes. Number \(1\) can be shown as \(p^0\) for any prime \(p\) - so factorization is unique.</li>
+				<li>Any prime number \(p\) has an unique factorization into primes: \(p=p\) - by definition it cannot be shown as product of different primes. Number \(1\) can be shown as \(\upsilon_1=(0, 0, 0 \dots)\) - so its factorization is unique.</li>
 				<li>Existence of factorization: suppose integer \(y \in N^+\) is a minimal number not having any factorization into primes: so, \(y\) cannot be a prime number (otherwise, its factorization would be \(y\)). Therefore, it can be shown as \(y=kl\), where \(y \gt k,l \ge 2\), but \(k=p_1^{g_1}p_2^{g_2} \dots p_n^{g_n}\) and \(l=p_1^{h_1}p_2^{h_2} \dots p_n^{h_n}\) (where \(h_i, g_i \ge 0\)) as they have some factorization, so, \(y=kl=p_1^{h_1+g_1}p_2^{h_2+g_2} \dots p_n^{h_n+g_n}\), which contradicts assumption - so, any natural number have a factorization into primes.</li>
 				<li>Uniqueness of factorization: suppose integer \(y \in N^+\) is a minimal number having at least two factorizations into primes: then, \(y=p_1^{q_1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1}r_2^{s_2} \dots r_m^{s_m}\). From euclid's lemma consequences, \(p_1|r_1 \lor p_1|r_2 \lor \dots \lor p_1|r_m\) - without loss of generality, suppose, that \(p_1|r_1\). As both \(p_1\) and \(r_1\) are primes, then, \(p_1=r_1\). Then, \(\frac{y}{p_1}=p_1^{q_1-1}p_2^{q_2} \dots p_m^{q_m}=r_1^{s_1-1}r_2^{s_2} \dots r_m^{s_m}\). But \(\frac{y}{p_1}\) has one factorization, which contradicts assumption and finishes the proof.</li>
 			</ol>
-			<h3>Simple solution: checking all possible divisors of a single number in \(O(\sqrt{n})\)</h3>
+			<h3>Solution I: checking all possible divisors of a all integers in a range in \(O(n\sqrt{n})\)</h3>
 			<p>First simple solution for finding all primes dividing a number \(x\) (and how many times they divide \(x\)) consists of checking, whether \(x\) is divisible by subsequent numbers in range \(\lt 2;\lfloor \sqrt{x} \rfloor \gt\) and dividing \(x\) by all its found divisors as many times, as \(x\) is divisible by them. Formally, let \(x'_1=x\) and let \(x'_h\) denote value of \(x\) after dividing \(x'_h\) by \(h\) as many times, as \(x'_{h-1}\) was divisible by \(h\). Notice, that:</p>
 			<ol>
 				<li>If a divisor \(d\) of \(x\) is not prime, then it has some factorization consisting of smaller prime numbers. As \(x'_{d-1}\) will be divided by those factors before checking, whether \(x'_{d-1}\) is divisible by \(d\), \(x'_{d-1}\) will not be divisible by \(d\).</li>
@@ -150,8 +144,8 @@
 			
 
 
-			<h3>Enchanced Sieve of Erastothenes</h3>
-			<p>Marking each number with it's lowest divisor (instead of sole information whether it's prime) leads to solving this problem in the same way as problem above, in complexity \(O(nlog(n)+qlog(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)</p>
+			<h3>Solution II: Enchanced Sieve of Erastothenes</h3>
+			<p>Marking each number with it's lowest divisor (instead of sole information whether it's prime) leads to solving this problem in the same way as problem above, in complexity \(O(n \log(n)+q \log(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)</p>
 		<br><br>
 
 		<div id="Algo2" class="pureAlgo" style="position:sticky">
@@ -199,20 +193,20 @@
 		</div>
 			<h4>Different complexity proof of a sieve using fundamental theorem</h4>
             <ol>
-                <li>Each number \(x\) can be represented by its unique factorization: \(x=p_1^{q_1} p_2^{1_2} \dots p_m^{q_m}\).</li>
+                <li>Each number \(x\) can be represented by its unique factorization: \(x=p_1^{q_1} p_2^{q_2} \dots p_m^{q_m}\).</li>
                 <li>As each \(p_i \ge 2\), then \(m \le \sum_i q_i \le log_2(x)\).</li>
                 <li>Sieve marks a number no more times than it has distinct prime divisors - thus it will mark any number \(x\) at most \(log_2(x)\) times, and so, complexity of a sieve is \(O(n\log(n))\).</li>
             </ol>
 
-	    <h2>Problem III - moving sieve</h2>
-	    <p>Suppose, that You are given two numbers \(a,b\), and thine aim is to determine for each number in range \(\lt a; b \gt\) whether it is prime. \(1 \le a \le b \le 10^{12}, b-a \le 10^6\)
+	    <h2>Problem III: hoisting sieve</h2>
+	    <p>Suppose, that You are given two integers \(a,b\), and thine aim is to determine for each number in range \(\lt a; b \gt\) whether it is prime. \(1 \le a \le b \le 10^{12}, b-a \le 10^6\)
 	    </p>
 	    <h3>Standard sieve solution</h3>
 	    <p>Let \(S=\{a, a+1, \dots, b-1, b\}\). Notice, that element of \(S\) is prime if and only if it has no prime divisor in range \(\lt 1; \sqrt{b} \gt\). The idea is thus as follows:</p>
 	    <ol>
-		    <li>Construct a standard sieve in range to \(\sqrt{b}\). All primes within range of this sieve will be denoted by \(P\).</li>
-		    <li>Construct a secondary sieve representing numbers in range \(\lt a;b \gt\).</li>
-		    <li>For each \(p \in P\), mark all numbers divisible by \(p\) in secondary sieve as composite, starting from \(\lfloor \frac{a-1}{p} \rfloor p + p\).</li>
+		    <li>Construct a standard sieve in range to \(\sqrt{b}\). All primes within range of this sieve will be denoted by \(PS\).</li>
+		    <li>Construct a secondary sieve representing integers in range \(\lt a;b \gt\).</li>
+		    <li>For each \(p \in PS\), mark all numbers divisible by \(p\) in secondary sieve as composite, starting from \(\lfloor \frac{a-1}{p} \rfloor p + p\).</li>
 	    </ol>
 	    <p>Complexity is same as in case of standard sieve, proof is also identical.</p>
 
@@ -220,15 +214,15 @@
 		<h2>Summary</h2>
 		<ol>
 			<li>One can check a single number \(x\) whether it is prime by checking, whether it has any divisor \(2 \le d \le \sqrt{x}\) - this solution works in \(O(\sqrt{x})\).</li>
-			<li>One can check for any number in range \(\lt 1;n \gt\) whether it is prime with <b>sieve of Erastothnes</b>, using fact, that a number is prime if it is not divisible by any other prime; this algorithm runs in \(O(nlog(n))\)</li>
-			<li>One can estimate sum in form \(\sum_{i=1}^{n} \frac{1}{n}+\frac{2}{n}+\dots+\frac{n}{n}=O(log(n))\); from this follows thesis, that sum of amount of divisors of all numbers in range \(\lt 1;n \gt\) can be estimated by \(O(nlog(n))\)
+			<li>One can check for any number in range \(\lt 1;n \gt\) whether it is prime with <b>sieve of Erastothnes</b>, using fact, that a number is prime if and only if it is not divisible by any other prime; this algorithm runs in \(O(n \log(n))\)</li>
+			<li>One can estimate sum in form \(\sum_{i=1}^{n} \frac{1}{1}+\frac{1}{2}+\dots+\frac{1}{n}=O(\log(n))\); from this follows thesis, that sum of amount of divisors of all integers in range \(\lt 1;n \gt\) can be estimated by \(O(n\log(n))\)
 			<li><b>Euclid's lemma</b> states that for \(p \in P\) occurs: \(p|ab \implies (p|a \lor p|b)\) furthermore, \(p|a_1a_2 \dots a_n \implies (p|a_1 \lor p|a_2 \lor \dots \lor p|a_n)\)</li>
 			<li><b>Fundamental theorem of arithmetic</b> states that every number \(x \in N^+\) has one unique factorization into prime numbers.</li>
 			<li>Sieve can be utilized to find factorization of all numbers in range \(\lt 1;n \gt\).</li>
 		</ol>
 		<h3>Problems</h3>
 		<p id="Summary">
-		Sieves allow solving multitude of problems, including among others finding Euler totient function or applying includion/exclusion principle on divisors. Example problems regarding sieves from codeforces: <a href="https://codeforces.com/contest/300/problem/E">Empire Strikes Back</a>, <a href="https://codeforces.com/problemset/problem/73/E">Morrowindows</a>, <a href="https://codeforces.com/problemset/problem/839/D">Winter is Here</a>
+		Sieves allow solving multitude of problems, including among others finding Euler totient function or applying inclusion/exclusion principle on divisors. Example problems regarding sieves from codeforces: <a href="https://codeforces.com/contest/300/problem/E">Empire Strikes Back</a>, <a href="https://codeforces.com/problemset/problem/73/E">Morrowindows</a>, <a href="https://codeforces.com/problemset/problem/839/D">Winter is Here</a>
 		</p>
 		<div id="problems"></div>
 		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>

@@ -299,9 +299,9 @@ class Grid{
 		for (elem of intertwined){
 			var btn=this.grid[elem[0][0]+this.top_margin][elem[0][1]+this.left_margin];
 			btn.innerHTML = elem[1];
+			Representation_utils.Painter(btn, params.color);
 			Modern_representation.button_modifier(btn, params);
 			results.push(btn);
-			Representation_utils.Painter(btn, params.color);
 		}
 		return results;
 	}
@@ -392,8 +392,12 @@ class Representation_utils{
 		if (col==2 || col==7 || col==9) btn.style.color="#666666";
 		if (col==3) btn.style.color="#FFFFFF";
 
-		if (col in Modern_representation.colors)
-			btn.style.backgroundColor=Modern_representation.colors[col];
+		if (col in Modern_representation.colors){
+			btn.style.background=Modern_representation.colors[col];
+		}
+		else if (ArrayUtils.is_iterable(col)){
+			btn.style.background = `linear-gradient(to right bottom, ${Modern_representation.colors[col[0]]} 50%, ${Modern_representation.colors[col[1]]} 50%)`;						
+		}
 
 		if (col==7){
 			btn.style.border="1px solid";
@@ -523,6 +527,9 @@ class Representation_utils{
 		style.bs_butt_width_h=Math.max(cur_ln, mx.toString().length*10);
 		style.bs_butt_width=`${style.bs_butt_width_h}px`;
 	}
+	static get_width(mx, cur_ln=40){
+		return Math.max(cur_ln, mx.toString().length*10);
+	}
 
 	static fill_with_buttons_horizontal(style, place, names, color, ln=-1, creator=Representation_utils.button_creator, additional_args=null){
 		var single_name=false, single_color=false, btn_list=[], btn, cur_name, cur_color;
@@ -585,24 +592,32 @@ class Modern_representation{
 				'height':40,
 				'padding':0,
 				'margin':0,
+				'border':0,
 			}
 		}
-		var x;
-		for (x in base){
-			stylistic[x]=Object_utils.merge(stylistic[x], base);
-			stylistic[x]=Object_utils.merge(stylistic[x], base);
+		return Modern_representation.element_creator('BUTTON', inner_html, stylistic, base);
+	}
+
+	static div_creator(inner_html, stylistic={}){
+		var base={
+			'general':{'backgroundColor':'#FFFFFF', 
+				'color':'#FFFFFF',
+				'verticalAlign':'top',
+				'display':'inline-block',
+				'width':'max-content',
+				'position':'relative',
+			},
+			'px':{
+				'padding':0,
+				'margin':0,
+			}
 		}
-		var button=document.createElement("BUTTON");
-		
-		button.innerHTML=inner_html;
-		for (x in stylistic.general) button.style[x]=stylistic.general[x];
-		for (x in stylistic.px) button.style[x]=`${stylistic.px[x]}px`;
+		return Modern_representation.element_creator('DIV', inner_html, stylistic, base);
 	}
 
 	//Warn: stylistic + innerHTML
 	static button_modifier(button, packet){
 		if ('inner_html' in packet) button.innerHTML=packet.inner_html;
-
 		if (!('stylistic' in packet)) return;
 
 		packet.stylistic.general = Object_utils.construct_if_null(packet.stylistic.general);
@@ -614,6 +629,21 @@ class Modern_representation{
 		for (var x in packet.stylistic.px){
 			button.style[x]=`${packet.stylistic.px[x]}px`;
 		}
+	}
+
+	static element_creator(element_name, inner_html, stylistic, base){
+		var x;
+		for (x in base){
+			stylistic[x]=Object_utils.construct_if_null(stylistic[x]);
+			Object_utils.merge(stylistic[x], base[x]);
+		}
+		var element=document.createElement(element_name);
+		
+		element.innerHTML=inner_html;
+		for (x in stylistic.general) element.style[x]=stylistic.general[x];
+		for (x in stylistic.px) element.style[x]=`${stylistic.px[x]}px`;
+		for (x in stylistic['%']) element.style[x]=`${stylistic['%'][x]}%`;
+		return element;
 	}
 }
 

@@ -14,17 +14,18 @@
 
 		<h2>Introduction</h2>
 		<p>This article shows properties of divisors, mobius function and introducees notion of numeral systems.</p>
-		<h2>Problem I - number of divisors</h2>
+		<h2>Problem I: number of divisors</h2>
 		<p>Suppose You are given \(n (n \le 10^6)\) numbers \(p_i, q_i (p_i,q_i \le 10^9)\) and Your aim is to evaluate number of divisors of \(x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\) and present result \(mod\ 10^{9}+7\)</p>
 		<h3>What numbers are divisors</h3>
 		<p>
 		What can be said about number \(d\) such that \(d|x\)? Both \(d\) and \(x\) can be shown as \(x=p_1^{q_1}...p_n^{q_n}\), \(d=r_1^{s_1}...r_m^{s_m}\), where \(\forall_{i \neq j} p_i \neq p_j, r_i \neq r_j\). First thing worth noting is that \(\forall_{i \le m} \exists_{j} r_i=p_j\) - this comes from the fact, that \(\exists_{k \in N} x=dk \land (a|d \implies a|dk \implies a|x)\) - and so, any prime dividing \(d\) must also divide \(x\). What follows, \(d\) can be shown as \(d=p_1^{t_1}...p_n^{t_n}\), where some \(t_i\) may be equal to \(0\). Furthermore, \(\forall_i t_i \le q_i\) - this is immediate consequence of lemma above, because if one assumes (without loss of generality) that \(t_1=q_1+x \gt q_1\), then:
-		<span class="central">\(dk=x\)</span>
-		<span class="central">\(p_1^{q_1+x}p_2^{t_2}...p_n^{t_n}k=p_1^{q_1}p_2^{q_2}...p_n^{q_n}\) // divide by \(p_1^{q_1}\)</span>
-		<span class="central">\(p_1^{x}p_2^{t_2}...p_n^{t_n}k=p_2^{q_2}...p_n^{q_n}\) //Right side not divisible by \(p_1\) - from lemma 1, \(d \nmid x\)</span>
-		And so, \((d|x \land x=p_1^{q_1}...p_n^{q_n}) \implies (d=p_1^{t_1}...p_n^{t_n} \land \forall_{i} 0 \le t_i \le q_i)\). Any such number \(d\) divides x, because
-		<span class="central">\(p_1^{t_1}p_2^{t_2}...p_n^{t_n}*p_1^{q_1-t_1}p_2^{q_1-t_2}...p_n^{q_1-t_n}=p_1^{q_1}...p_n^{q_n}\)</span>
-		And so, \((d=p_1^{t_1} \dots p_n^{t_n} \land x=p_1^{q_1} \dots p_n^{q_n} \land \forall_{i} 0 \le t_i \le q_i) \iff d|x\).
+		$$ dk=x $$
+		$$ p_1^{q_1+x}p_2^{t_2}...p_n^{t_n}k=p_1^{q_1}p_2^{q_2}...p_n^{q_n} \text{ // divide by } p_1^{q_1} $$
+		$$ p_1^{x}p_2^{t_2}...p_n^{t_n}k=p_2^{q_2}...p_n^{q_n} \text{ //Right side not divisible by \(p_1\)  - from lemma 1, \(d \nmid x\)} $$
+		And so, \((d|x \land x=p_1^{q_1}...p_n^{q_n}) \implies (d=p_1^{t_1}...p_n^{t_n} \land \forall_{i} 0 \le t_i \le q_i)\). Any such number \(d\) divides \(x\), because
+		$$ p_1^{t_1}p_2^{t_2}...p_n^{t_n}*p_1^{q_1-t_1}p_2^{q_1-t_2}...p_n^{q_1-t_n}=p_1^{q_1}...p_n^{q_n} $$
+		And so, 
+		$$ (d=p_1^{t_1} \dots p_n^{t_n} \land x=p_1^{q_1} \dots p_n^{q_n} \land \forall_{i} 0 \le t_i \le q_i) \iff d|x $$
 		</p>
 		<h3>Sigma function</h3>
 		<p>

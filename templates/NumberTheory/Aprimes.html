@@ -291,7 +291,7 @@
 			<li>Utilitarian remarks, part II: If \(b\) is a miller-rabin witness but not fermat witness, then there is some \(k=2^h\), for which \(b^{\frac{m-1}{k}} \not \equiv \pm 1 \pmod m\), but \(b^{2\frac{m-1}{k}} \equiv 1 \pmod m\). Let \(\kappa = b^{\frac{m-1}{k}}\) (and, \(\kappa^2 \equiv 1 \pmod m\)). Notice, that there is some prime \(p: p|m\), for which \(\kappa \equiv 1 \pmod p\), and some prime \(q: q|m\), for which \(\kappa \equiv -1 \pmod q\). And so, \(gcd(\kappa+1, m) \gt 1\), and \(gcd(\kappa-1, m) \gt 1\). This leads to some conclusions, among them: one can find a factor of Carmichael number in polynominal time.</li>
 		</ol>
 		
-		<h2>Second problem - finding a factorization</h2>
+		<h2>Problem II: finding a factorization</h2>
 		<p>Suppose You are given a number \(m: m \le 10^{18}\), and thine aim is to find a factorization of \(m\) into primes; that is, such values \(p_1, q_1, p_2, q_2, \dots p_n, q_n\), that \(m=p_1^{q_1} \dots p_n^{q_n}\) for prime \(p_1, \dots p_n\).</p>
 		<h3>Solution: Pollard's rho algorithm</h3>
 
