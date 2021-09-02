@@ -42,11 +42,11 @@
 		, '6 17 23', {'input_type':'textarea',
 		'color_description':{'standard':'', 'change':'', 'exponent':'Value of exponent', 'iterator':'Either iterator moving over large table or iterator evaluated for binary search moving over small table.', 'crucial':'Resulting two values \(p, q\), such that \(a^{ps+q} \equiv b \pmod m\)', 'helper1':''}
 		}) }}
-		<h3>Remark regarding search technique: using \(ord_m(a)\)</h3>
+		<h4>Remark regarding search technique: using \(ord_m(a)\)</h4>
 		<p>Notice, that for particular \(a\) not \(\phi(m)-1\), but \(ord_m(a)-1\) can be upper bound on range, where minimal discrete logarithm solving \(a^x \equiv b \pmod m\) can be found. Passing maximal possible exponent may drastically speed up computation time. Using this information within algorithm will be crucial for one algorithm shown later.</p>
-		<h3>Remark regarding implementation: hash table</h3>
+		<h4>Remark regarding implementation: hash table</h4>
 		<p>Instead of using sort and binary search, one can use hash table with, say, \(s\) bins for storing values \(a^q\). On average, in each bin there will be exactly one value - if values of \(a^q\) come from some uniform random distribution. Also, on average, each bin will be accessed once if values of \(a^{-ps}\) come from some uniform random distribution. Both statements will be false if \(ord_m(a)\) is lower than maximal exponent, for which the search is executed. Otherwise, values of \(a^q\) or \(a^{-ps}\) are quite problematic to predict; empirically, there is a good reason to believe, that it usually should run much faster than standard version.</p>
-		<h2>Problem II - discrete logarithm without insurance</h2>
+		<h2>Problem II - discrete logarithm for not necessarily coprime numbers</h2>
 		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{12}\), and thine aim is to find such \(x\) that \(a^x \equiv b \pmod m\).</p>
 		<h3>Simple solution</h3>
 		<p>Solving this problem relies on changing values \(a, b, m\) in such way, that \(gcd(a, m)=1\) anew, then one can pass problem to any other algorithm solving discrete logarithm problem.</p>
@@ -70,7 +70,7 @@
 			<li>Obviously, reduced version has to be passed to some discrete logarithm solving algorithm in order to solve this equation to the end.</li>
 		</ol>
 
-		<h2>Problem III - less standard discrete logarithm</h2>
+		<h2>Problem III - discrete logarithm knowing factorization of \(m\)</h2>
 		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{18}\), where \(gcd(a, m)=1\), factorization of \(m\) can be represented as \(m=g_1^{e_1}g_2^{e_2} \dots g_r^{e_r}\) where \( \forall_i g_i \le 10^9\), and thine aim is to find such \(x\) that \(a^x \equiv b \pmod m\).</p>
 		<h3>The all-too-human approach of Pohlig-Hellman</h3>
 		<ol>
@@ -131,7 +131,7 @@
 		<ol>
 			<li>First, factorization of \(m\) has to be found - it will be equal to some \(O(fac(m))\), for \(fac\) dependent on used way of factorizing integer; one can use primitive factorization obtaining completely unstaisfying \(O(m^{1/2})\), one can instead use something more magical - for example pollard rho method with primarility testing working on average in \(O(m^{1/4})\).</li>
 			<li>Factorization gives totient, some of its parts also have to be factorized. Aim is obtaining full factorization of \(\phi(m)=p_1^{q_1} \dots p_s^{q_s}\).</li>
-			<li>For each \(p_i^{s_i}\), in order to find single \(c_{i,k}\) one has to execute some constant amount of binary exponantations \(\pmod m\), and then find discrete logarithm \(\pmod m\) - but with only \(p_i\) possible values of discrete logarithm - thus, with standard Shanks' approach, without hash table, finding one solution will work in \(O(\sqrt{p_i})\). Thus, finding one \(c_{i,k}\) takes \(O(\sqrt{p_i} \log(p_i) + \log(m))\)</li>
+			<li>For each \(p_i^{s_i}\), in order to find single \(c_{i,k}\) one has to execute some constant amount of binary exponantations \(\pmod m\), and then find discrete logarithm \(\pmod m\) - but with only \(p_i\) possible values of discrete logarithm - thus, with standard Shanks' approach, without hash table, finding one solution will work in \(O(\sqrt{p_i} \log(p_i))\). Thus, finding one \(c_{i,k}\) takes \(O(\sqrt{p_i} \log(p_i) + \log(m))\)</li>
 			<li>To find single \(c_i\) one has to do all same operations \(q_i\) times, resulting in complexity \(O(q_i(\sqrt{p_i} \log(p_i)+\log(m)))\)</li>
 			<li>Thus, finding all \(c_i\)'s will take \(O(\sum_{i=0}^{s} q_i(\sqrt{p_i} \log(p_i)+\log(m)))\).</li>
 			<li>Last part, most straightforward - solving system of \(s\) linear congruences should take \(O(s \log(m))\).</li>
@@ -145,7 +145,7 @@
 		<ol>
 			<li>Discrete logarithm problem - finding \(x: a^x \equiv b \pmod m\) - can be solved using Shanks' algorithm by representing \(x=pn+q\) for \(n \approx \sqrt{m}\) and then dividing problem into finding suitable \(q\) for given \(p\). This one works in \(O(\sqrt{m} \log(m))\), though with some optimizations one can practically reduce it to \(O(\sqrt{m})\).</li>
 			<li>Discrete logarithm lies for any \(a\) in range \(\lt 0;\phi(m)-1)\), one can reduce it to \(\lt 0;ord_m(a)-1)\). and use it to speed up process of searching a solution.</li>
-			<li>If \(g=gcd(a,m) \gt 1\), then one can, using fact, that \(a \equiv b \pmod m \iff \frac{a}{g} \equiv \frac{b}{g} \pmod {\frac{m}{g}}\) - reduce \(m\) subsequently leading to coprime \(a, m\), finding a soultion in a process if \(g|b\) or deciding that there are no solutions if \(g \nmid b\).</li>
+			<li>If \(g=gcd(a,m) \gt 1\), then one can, using fact, that \(a \equiv b \pmod m \iff \frac{a}{g} \equiv \frac{b}{g} \pmod {\frac{m}{g}}\) - reduce \(m\) subsequently leading to coprime \(a, m\), possibly finding a soultion in a process if \(g|b\) or deciding that there are no solutions if \(g \nmid b\).</li>
 			<li>If one knows, that a number \(m\), for which discrete logarithm has to be found is not a prime, then one can use Pohlig-Hellman algorithm in order to find it, finding set of congruences of discrete logarithm to subsequent factors of totient and using intricate exponentation by \(\frac{\phi(m)}{p}\) in order to nullify undesired parts of exponent from an equation.</li>
 
 		</ol>

@@ -1,6 +1,7 @@
 class Order extends Partial{
 	constructor(block, x){
 		super(block);
+		this.place.position="relative";
 		this.ShowReality(x);
 	}
 
@@ -9,9 +10,13 @@ class Order extends Partial{
 		if (x==-1) x=this.input.value;
 		toth=this.sieve_mark(x);
 		this.logic.lambda=this.find_carmichael(x);
-		console.log(this.logic.lambda);
 
 		this.place.innerHTML='';
+
+		this.present={}
+		this.present.content = Modern_representation.div_creator('', {'general':{'position':'relative'}});
+		this.place.appendChild(this.present.content);
+
 		this.create_upper_div(x, toth);
 
 		this.known=[];
@@ -51,7 +56,6 @@ class Order extends Partial{
 			while (x%i==0) x=Math.floor(x/i), pw=pw*i, k+=1;
 			if (i==2 && k>=3) lambda=NTMath.lcm(lambda, Math.floor(pw/4));
 			else lambda=NTMath.lcm(lambda, pw-Math.floor(pw/i));
-			console.log(i, pw, lambda);
 		}
 		if (x>1) lambda=NTMath.lcm(lambda, (x-1));
 		return lambda;
@@ -60,9 +64,8 @@ class Order extends Partial{
 	create_standard_div(g, mod, toth){
 		var i, a=g;
 		var dv=document.createElement("DIV"), btn=[];
-		this.place.position="relative";
 		dv.style.position="relative";
-		dv.style.width=`${(mod-1+5)*40}px`;
+		dv.style.width=`${(this.logic.lambda+6)*40}px`;
 		dv.style.height="40px"
 		var lst=['x', g, 'x', 0, 'x'];
 		for (i=1;i<mod;i++){
@@ -75,25 +78,33 @@ class Order extends Partial{
 
 		for (i=0; i<lst.length; i++){
 			btn.push(this.buttCreator(lst[i]));
-			btn[i].style.position="relative";
+			if (i==1) {
+				btn[i].style.position='sticky';
+				btn[i].style.left=0;
+			}
+			else {
+				btn[i].style.position='relative';
+				btn[i].style.zIndex=-1;
+			}
 			btn[i].style.display="inline-block";
+
 			if (lst[i]=='x') this.Painter(btn[i], 3);
 			dv.append(btn[i]);
 		}
 		//Tocjent
 		if (lst[3]==toth) this.Painter(btn[1], 8);
-		this.place.append(dv);
+		this.present.content.appendChild(dv);
 	}
 
 	create_upper_div(x, toth){
 		var i;
 		var dv=document.createElement("DIV"), btn=[];
 		this.place.position="relative";
-		dv.style.position="relative";
-		dv.style.width=`${(x-1+5)*40}px`;
+		dv.style.position="sticky";
+		dv.style.top=0;
+		dv.style.width=`${(this.logic.lambda+6)*40}px`;
 		dv.style.height="40px"
 		var lst=['x', 'g', `ord<sub>${x}</sub>(g)`, 'g<sup>i</sup>; i='];
-
 
 		for (i=1; i<=this.logic.lambda; i++) lst.push(i);
 		for (i=0; i<lst.length; i++){
@@ -101,10 +112,11 @@ class Order extends Partial{
 			btn[i].style.position="relative";
 			btn[i].style.display="inline-block";
 			if (lst[i]=='x') this.Painter(btn[i], 3);
+			else this.Painter(btn[i], 5);
 			dv.append(btn[i]);
 		}
 		btn[2].style.width="80px";
-		this.place.append(dv);
+		this.present.content.appendChild(dv);
 	}
 
 	create_summary(x, toth){
@@ -120,6 +132,7 @@ class Order extends Partial{
 			if (this.known[i]>0){
 				btn=this.buttCreator(i);
 				if (i==toth) this.Painter(btn, 8);
+				else this.Painter(btn, 5);
 				dv_upper_r.append(btn);
 			}
 		}

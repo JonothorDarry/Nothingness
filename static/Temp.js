@@ -600,7 +600,7 @@ class Modern_representation{
 
 	static div_creator(inner_html, stylistic={}){
 		var base={
-			'general':{'backgroundColor':'#FFFFFF', 
+			'general':{
 				'color':'#FFFFFF',
 				'verticalAlign':'top',
 				'display':'inline-block',
