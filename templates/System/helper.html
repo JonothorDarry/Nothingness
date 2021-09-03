@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
+
+<html lang="en">
+	<head>
+		<title>Informations</title>
+		{{ headers.meta() }}
+	</head>
+
+	<body>
+		{{ headers.full_upper('Meta', 'System') }}
+		<h2>Methodological Manifesto</h2>
+		<p>What can be said about <strong>based</strong> website presenting information about processes/ideas possible to model mathematically?</p>
+		<ol>
+			<li><strong>Sense of finiteness</strong> - there is limited number of structured domains divided into articles.</li>
+			<li><strong>Sense of completeness</strong> - every argument, that had to be posited was posited.</li>
+			<li><strong>Homogenity of structure</strong> - every single article has same outer structure.</li>
+			<li><strong>Identity of an article</strong> - every article has some elements distinguishing it from other articles.</li>
+			<li><strong>Dual provability</strong>
+				<ul>
+					<li>Every proof from a given domain vital to prove shown theorem should be shown explicitly.</li>
+					<li>Amount of theorems without proof outside of given domain left unproved should be as small as possible.</li>
+				</ul>
+			</li>
+			<li><strong>Visual representation</strong> - A process or idea, that can be put in visualization shall be visualized if possible.</li>
+		</ol>
+		<p>While this website is not very based, it can become very based sooner or later.</p>
+		<p>The aim of this website is to make something like <a href="https://cp-algorithms.com/">https://cp-algorithms.com/</a> - but containing more thorough prooving, visualizations and well-structured.</p>
+		<h2>Visualizations</h2>
+		<p>Currently, there are 3 types of visualizations:</p>
+		<ol>
+			<li>Showing a process: Four buttons 'begin' (starts a visualization with given input), 'next move', 'previous move', 'finish'.</li>
+			<li>Showing an idea: One button 'show' showing some offspring of an idea.</li>
+			<li>Showing a query mechanism: Two visualizations: one shows preprocessing, second shows results of asking query; first has to be finished before second.</li>
+		</ol>
+		<p>Begin gets input and starts process with given input. Finish executes all remaining moves in the algorithm, next/previous executes next or previous move in an algorithm. Note, that only clicking 'Begin' and 'Show' buttons results in using input in any form.</p>
+		<h2>Credits: resources, that turned out to be useful</h2>
+		<h3>Number theory</h3>
+		<ol>
+			<li>For article on Primitive roots, <a href="http://www.witno.com/philadelphia/notes/won5.pdf">http://www.witno.com/philadelphia/notes/won5.pdf</a>. Also, some used lemmas were present in <a href="http://www.witno.com/philadelphia/notes/won2.pdf">http://www.witno.com/philadelphia/notes/won2.pdf</a></li>
+			<li>For article on Miller-Rabin, <a href="https://www.cs.cornell.edu/courses/cs4820/2010sp/handouts/MillerRabin.pdf">https://www.cs.cornell.edu/courses/cs4820/2010sp/handouts/MillerRabin.pdf</a></li>
+			<li>One can deduce, how Pohlig-Hellman works from <a href="http://www-math.ucdenver.edu/~wcherowi/courses/m5410/phexam.html">http://www-math.ucdenver.edu/~wcherowi/courses/m5410/phexam.html</a></li>
+		</ol>
+		{{ footers.full_lower() }}
+	</body>
+</html>

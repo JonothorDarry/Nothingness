@@ -18,7 +18,7 @@
 		This article will cover sieving technique and it's complexity, showing it's use in solving primes-related problems. To approach those problems, first certain definitions shall be formulated:</p>
 		<ol>
 			<li><b>Prime number</b>: a number \(p \in N^+\) is prime (or \(p \in P\), where \(P\) is set of all primes), if and only if<br>
-			$$ p \in P \iff |\{d:d|p \land d \ge 1\}|=2\) $$
+			$$ p \in P \iff |\{d:d|p \land d \ge 1\}|=2 $$
 			In other words, \(p\) needs to have exactly \(2\) different positive divisors - one and itself (note that \(1\) is not a prime, as it has only \(1\) divisor). For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A <b>composite number</b> is a number which is neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number.
 			</li>
 			<li><b>Factorization of a number \(x\) into primes</b> is representation of an integer as a product of prime numbers:
@@ -57,7 +57,7 @@
 
 		<p id="Anime-Descr">
 		Begin starts the sieve with a given limit. Next move moves forward current sieve, Previous move moves backward. This sieve has 2 optimizations: first, if an integer is marked as non-prime, then all numbers it could mark were already marked by it's divisor. Proof:<br><br>
-		$$ a|b \land b|c \implies \exists_{k, l \in N} (ka=b \land lb=lka=c) \implies a|c\) $$
+		$$ a|b \land b|c \implies \exists_{k, l \in N} (ka=b \land lb=lka=c) \implies a|c $$
 
 		Secondly, for given \(x\), no composite number \(y \lt x^2\) has lowest divisor \(d \gt 1\) greater or equal to \(x\), which was shown in 2nd solution to this problem - and so, marking can start from \(x^2\)
 		</p>
@@ -104,7 +104,7 @@
 				n \lfloor log_2(n) \rfloor=O(n*\log(n))
 				$$
 			<br>
-			Furthermore, the second inequality in this proof also shows, that sum of amount of divisors over all integers in a set \(\{1, 2, 3, \dots n\}\) can be estimated by \(O(n*\log(n))\) - because every divisor \(d\) has exactly \(\lfloor \frac{n}{d} \rfloor\) integers divisible by it, and thus sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*\log(n))\).
+			Furthermore, the second inequality in this proof also shows, that sum of amount of divisors over all integers in a set \(\{1, 2, 3, \dots n\}\) can be estimated by \(O(n*\log(n))\) - because every divisor \(d\) has exactly \(\lfloor \frac{n}{d} \rfloor\) integers divisible by it, and sum \(\sum_{i=1}^{n} \frac{n}{i}\) can be estimated by \(O(n*\log(n))\).
 		</p>
 			<h2>Problem II: factorizing integers in a range</h2>
 			<p id="ZwieteProbleme">

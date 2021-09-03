@@ -9,7 +9,7 @@ class Ntt extends Algorithm{
 		else this.logic.inv_n=1/this.logic.n;
 	}
 	_logical_proot(){
-		if (this.logic.is_ntt) this.logic.proot=NTMath.find_proot(this.logic.q);
+		if (this.logic.is_ntt) this.logic.proot=NTMath.find_proot(this.logic.q, false);
 		else this.logic.proot=new Complex(Math.cos(2*Math.PI/this.logic.n), Math.sin(2*Math.PI/this.logic.n));
 	}
 	_logical_single_unity_root(){
@@ -432,7 +432,7 @@ class Ntt extends Algorithm{
 		var s=this.lees[l-1], equiv=this.logic.is_ntt?`&equiv;`:`=`;
 		var strr=``;
 		if (s[0]==0) strr=`At the start of the algorithm, the polynominals A(x), B(x) are padded with 0's, so that it will be possible to find their values in not less than o+m+1=${this.o+this.m+1} &le; ${this.logic.n} places`
-		if (s[0]==1 && (this.logic.proot || this.logic.is_fft)) strr=`${this.logic.is_ntt?`Primitive root modulo q=${this.logic.q} is found`:`${this.logic.n}-th root of unity is found`}, it is equal to ${this.logic.proot} ${this.logic.is_ntt?`(to attain this root probabilistic algorithm was used).`:``}`;
+		if (s[0]==1 && (this.logic.proot || this.logic.is_fft)) strr=`${this.logic.is_ntt?`Primitive root modulo q=${this.logic.q} is found`:`${this.logic.n}-th root of unity is found`}, it is equal to ${this.logic.proot} ${this.logic.is_ntt?`(to attain this root deterministic algorithm was used).`:``}`;
 		else if (s[0]==1) strr=`Primitive root modulo q=${this.logic.q} cannot be found, as it doesn't exist - calculations are not performed`;
 
 		if (s[0]==2 && this.logic.is_ntt) strr=`As root was found, new aim is to find such value g, that ord<sub>${this.logic.q}</sub>(g)=${this.logic.n} - this value is proot<sup>&#x3d5;(q)/n</sup> mod q=${this.logic.proot}<sup>${this.logic.toth}/${this.logic.n}</sup> mod ${this.logic.q}=${this.logic.w}. Besides, I also fill value of ${wn}=${w0}=1`;
