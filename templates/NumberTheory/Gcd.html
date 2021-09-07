@@ -52,12 +52,14 @@
 		Let's create arrays \(a_i\) and \(b_i\) such that \(a_1=w\), \(b_1=v\). One can define these arrays for \(i \gt 1\) as \(a_i=b_{i-1}\) and \(b_i=a_{i-1}\%b_{i-1}\). When \(b_i=0\) then \(a_i\) is the solution.
 
 		</p>
-		{{ algo.algorithm(1, 'Euclidean Algorithm', '
+		{{ algo.neo_algorithm(1, 'Euclidean Algorithm', '
 			<p>Input format: Two natural integers \(w, v\), specifying values, for which \(gcd(w,v)\) has to be calculated.<br>
 			\(w, v\)
 			</p>
 		'
-		, '84 35', 'input', 'algo', 'checkbox', 'Nothingness') }}
+        , '84 35', {'add_on':'checkbox', 'added_elements':['Nothingness', 'Show only table'],
+			'color_description':{'standard':'', 'change':'', 'helper2':'', 'crucial':'\(gcd(w, v)\)'}, 
+        }) }}
 
 		<h4>Correctness proof</h4>
 		<p>
@@ -103,12 +105,14 @@
 			$$ \text{for \(i \gt 1\): } b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z_i(p_iw + q_iv)= w(p_{i-1} - z_ip_i)+ v(q_{i-1} - z_iq_i) $$
 			And so, \(p_{i+1}=p_{i-1}-z_ip_i\) and \(q_{i+1}=q_{i-1}-z_iq_i\). The existence of solution to this equation is called bezout's identity.
 		</p>
-		{{ algo.algorithm(2, 'Extended Euclidean Algorithm', '
+		{{ algo.neo_algorithm(2, 'Extended Euclidean Algorithm', '
 			<p>Input format: Two positive integers \(w, v\), specifying values, for which extended euclid algorithm will be run.<br>
 			\(w, v\)
 			</p>
 		'
-		, '84 35', 'input', 'algo', 'checkbox', 'Nothingness') }}
+        , '84 35', {'add_on':'checkbox', 'added_elements':['Nothingness', 'Show only table'],
+			'color_description':{'standard':'', 'change':'', 'helper1':'', 'helper2':'', 'crucial':'\(gcd(w, v)\)', 'iterator':'\(q\) and \(v\), for which \(wp+vq=gcd(w,v)\)', 'exponent':'\(p\) and \(w\), for which \(wp+vq = gcd(w, v)\)'}, 
+            }) }}
 
 			<h4>Proof concerning Extended Euclid overflow - estimation of \(p_i, q_i\)</h4>
 			<p>Die-hard utilitarist may notice, that \(p_i, q_i\) may overflow regardless of value of \(gcd(w,v)\) - this concern will be addressed below.</p>

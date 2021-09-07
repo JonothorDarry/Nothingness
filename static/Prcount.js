@@ -296,6 +296,7 @@ class PostPhi extends Algorithm{
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
+        return ``;
 
 		if (s[0]==0 || s[0]==1 || s[0]==2){
 			layer=s[1], p1=s[2], p2=s[3], h=s[4];

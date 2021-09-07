@@ -27,11 +27,12 @@
 				$$P_k(n, a)=|\{x: x \le n \land \forall_{i \le a} P_i \nmid x \land x=p_1p_2 \dots p_k\}|$$
 			</li>
 		</ol>
+        <p>In this article, whenever there is reference to \(\frac{a}{b}\), then it is reference to \(\lfloor \frac{a}{b} \rfloor\); in other words, all values used in this article are integers.</p>
 		<h2>Problem I - Number of coprime numbers in a range, or special case of more general problem</h2>
 		<p>A sequence \(S\) of \(m\) pairwisely coprime numbers \(m \le 100, S_i \le 10^5\) is given. How many there are numbers less or equal to \(n\) (\(n \le 10^{13})\) not divisible by any element of \(S\)?</p>
 		<h3>Solution I: almost Legendre's formula</h3>
 		<p>Let \(C_S(n)\) denote answer to given question. First, answer is equal to amount of numbers in a range except numbers divisible by at least one number from sequence. From inclusion-exclusion principle, 
-		$$C_S(n) = n - \sum_{i=1}^{m} \lfloor \frac{n}{S_i} \rfloor + \sum_{i=1}^{m} \sum_{j=1}^{m} \lfloor \frac{n}{S_i S_j} \rfloor - \dots + (-1)^m \lfloor \frac{n}{S_1 S_2 \dots S_m} \rfloor$$
+		$$C_S(n) = n - \sum_{i=1}^{m} \lfloor \frac{n}{S_i} \rfloor + \sum_{i=1}^{m} \sum_{j=i+1}^{m} \lfloor \frac{n}{S_i S_j} \rfloor - \dots + (-1)^m \lfloor \frac{n}{S_1 S_2 \dots S_m} \rfloor$$
 		Note that as all numbers are coprime, it is not necessary to calculate any \(lcm\) (otherwise there would be \(lcm(S_{i_1}, S_{i_2}, \dots S_{i_l})\) instead of \(S_{i_1} S_{i_2} \dots S_{i_l}\)
 		</p>
 
@@ -64,8 +65,7 @@
 		</p>
 		<p> And the sought value is \(\phi_S(n, |S|)\). While this formula is immediate consequence of Legendre's formula, it gives the possibility to reformulate the solution in moderately elegant way:</p>
 		<ol>
-			<li>Below, \(\frac{a}{b}\) will mean \(\lfloor \frac{a}{b} \rfloor\).</li>
-			<li>Let \(m=|S|\) - length of sequence \(S\). First, let the formula be reformulated:
+			<li>Let \(m=|S|\) - length of sequence \(S\). First, notice, that:
 				$$ \phi_S(n, m)=\phi_S(n, m-1)-\phi_S(\lfloor \frac{n}{S_m} \rfloor, m-1) = $$
 				$$ = \phi_S(n, m-2)- \phi_S(\lfloor \frac{n}{S_{m-1}} \rfloor, m-2) - \phi_S(\lfloor \frac{n}{S_m} \rfloor, m-2) + \phi_S(\lfloor \frac{n}{S_m S_{m-1}} \rfloor, m-2) = \dots = $$
 				$$ = \phi_S(n, 0) - \sum_{i} \phi_S(\lfloor \frac{n}{S_i} \rfloor, 0) + \sum_{i,j} \phi_S(\lfloor \frac{n}{S_i S_j} \rfloor, 0) - \dots + (-1)^m \phi_S(\lfloor \frac{n}{S_1 \dots S_{m}} \rfloor, 0) = $$
@@ -89,9 +89,9 @@
 			<li>\(\phi(w,i)\) has to be calculated if and only if \(w \in L_i\).</li>
 		</ol>
 		{{ algo.neo_algorithm(1, 'Calculating \(\phi(n, a)\)', '
-			<p></p>
+			<p>Input: two values \(n,a\), for which \(\phi(n,a)\) will be calculated; note, that it will be calculated for sequence of prime numbers.</p>
 		'
-		, '121 7', {'color_description':{'standard':'', 'change':'', 'crucial':'Value \(\phi(n,a)\) to calculate'} }) }}
+        , '121 7', {'color_description':{'standard':'', 'change':'', 'crucial':'Value \(\phi(n,a)\) to calculate', 'iterator':'Iterator for \(\phi( \\frac{n}{P_a}, a-1)\)', 'exponent':'Iterator for \(\phi( n, a-1)\)', '_red':'Value \(\phi( \\frac{n}{P_a}, a-1)\) to subtract', '_green':'Value \(\phi(n, a-1)\) to add', 'helper2':''} }) }}
 
 		<h2>Problem 2: number of primes in a range</h2>
 		<p>A number \(n \le 10^{11}\) is given; how many there are primes in range \(\lt 1;n \gt\)?</p>
@@ -122,27 +122,27 @@
 			$$\phi(n, h)=P_0(n, h) + P_1(n, h) + P_2(n, h) + \dots $$
 		</p>
 		<p>How to calculate \(P_k(n, a)\) though? The banal solution, for \(k \ge 2\):
-		$$P_k(n, a)=\sum_{i_1=a+1}^{\pi(n^{1/2})} \sum_{i_2=i_1}^{\pi(n^{1/2})} \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1/2})} \max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1}, 0) $$
-		It counts, for each possible result of multiplying \(k-1\) primes, where \(P_{i_v} \le P_{i_v+1}\), in how many ways last prime (that may be greater than \(n^{1/2}\), and has to be greater or equal to \(P_{i_{k-1}}\)) can be chosen?
+		$$P_k(n, a)=\sum_{i_1=a+1}^{\pi(n^{1/2})} \sum_{i_2=i_1}^{\pi(n^{1/2})} \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1/2})} \max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1} + 1, 0) $$
+        It counts, for each possible result of multiplying \(k-1\) primes, where \(P_{i_v} \le P_{i_{v+1}}\), in how many ways last prime (that may be greater than \(n^{1/2}\), and has to be greater or equal to \(P_{i_{k-1}}\)) can be chosen?
 		</p>
 		<p>One can move a bit further - arguing, that, if \((P_{i_1} \le P_{i_2} \le \dots \le P_{i_k})\), then, better bounds on each \(i_x\) may be placed: </p>
 		<ol>
 			<li>What is smallest possible \(P_{i_1}\)? It is equal to \(P_{a+1}\).</li>
-			<li>When is \(P_{i_g}\) largest? When \(P_{i_1} \le P_{i_2} \dots P_{i_{g-1}} = P_{a+1} \ge n^{1/L}\), and \(P_{i_g} = P_{i_{g+1}} = \dots P_{i_k}\)</li>
+			<li>When is \(P_{i_g}\) largest? When \(P_{i_1} = P_{i_2} = \dots = P_{i_{g-1}} = P_{a+1} \ge n^{1/L}\), and \(P_{i_g} = P_{i_{g+1}} = \dots P_{i_k}\)</li>
 			<li>The product of \(P_{i_g} P_{i_{g+1}} \dots P_{i_k} \le n^{1-(g-1)L}\) - because product of those values has to be lower than \(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{g-1}}}\)</li>
 			<li>Thus, single element of this product \(P_{i_g} \le n^\frac{ {1-(g-1)L} }{k-g+1}\)</li>
 		</ol>
 		<p>The above allows to represent the formula for \(P_k(n,a)\) in a different way:
-		$$P_k(n, a) = \sum_{i_1=a+1}^{\pi(n^{1/k})} \sum_{i_2=i_1}^{\pi(n^{\frac{1-1/L}{k-1} }) } \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1-(k-1)/L}) }  \max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1}, 0) $$
+		$$P_k(n, a) = \sum_{i_1=a+1}^{\pi(n^{1/k})} \sum_{i_2=i_1}^{\pi(n^{\frac{1-1/L}{k-1} }) } \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1-(k-1)/L}) }  \max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1} + 1, 0) $$
 		In general, presenting formula in this form does not seem to be extremely bright idea - it will be discussed as a special case of applying the above.
 		</p>
 
-		<p>Another problem: many values of \(\pi(x)\) have to be calculated to use this formula; to solve this problem, one can use standard erastotenes sieve. The greatest amount of primes has to be sieved when finding \(P_2(n, a)\) - namely, \(\pi(\frac{n}{P_a})\) - thus, for certain \(L\), \(\pi(n^{1-1/L})\) has to be calculated in something like \(O(n^{1-1/L} \log\log(n))\).</p>
+        <p>Another problem: many values of \(\pi(x)\) have to be calculated to use this formula; to solve this problem, one can use standard erastothenes sieve. The greatest amount of primes has to be sieved when finding \(P_2(n, a)\) - namely, \(\pi(\frac{n}{P_{a+1}})\) - thus, for certain \(L\), \(\pi(n^{1-1/L})\) has to be calculated in something like \(O(n^{1-1/L} \log\log(n))\).</p>
 		<h4>Particular application of ideas above</h4>
 		<p>Say, \(L=4\) - then:</p>
 		<ol>
 			<li>Complexity of calculating \(\phi(w,i)\) can be limited by \(O(\sqrt{n}n^{1/L}) = O(n^{3/4})\) - or, if someone believes in Prime Number Theorem, even \(O(\frac{n^{3/4}}{\log(n)})\)</li>
-			<li>One has to construct a sieve of size \(O(n^{1-1/4}=O(n^{3/4})\) - complexity is equal to \(O(n^{3/4} \log \log(n))\).</li>
+			<li>One has to construct a sieve of size \(O(n^{1-1/4})=O(n^{3/4})\) - complexity is equal to \(O(n^{3/4} \log \log(n))\).</li>
 			<li>To calculate 
 				$$ P_2(n, \pi(n^{1/4})) = \sum_{i=\pi(n^{1/4})+1}^{\pi(n^{1/2})} \pi(\frac{n}{P_i})$$
 			One has to do \(O(n^{1/2})\) operations.</li>
@@ -158,7 +158,7 @@
 		<p>So, the complexity of this algorithm is \(O(n^{3/4} \log \log n)\).</p>
         <h3>Solution III: It's been years, since persistent segment trees came in</h3>
 	<h4>Different algorithm for calculating \(\phi(n,a)\): Idea I</h4>
-	<p>Say, You're given \(q\) queries in form \(\phi(n,a)\), where \(n,q \le 3*10^7\), and You can answer them offline. How cope?</p>
+	<p>Say, You're given \(q\) queries in form \(\phi(n,a)\), where \(n,q \le 3*10^7\), and You have to answer them offline. How cope?</p>
 	<p>Instead of constructing recursive solutions, one can:</p>
 	<ol>
 		<li>Construct a standard interval tree: insert in point, query in range over a sieve.</li>
@@ -185,10 +185,6 @@
 			<li><a href="https://codeforces.com/problemset/problem/93/E">Lostborn</a></li>
 			<li><a href="https://codeforces.com/problemset/problem/665/F">Four Divisors</a></li>
 		</ol>
-
-
-
-
 		<!--
 			as \(\pi( {{partial_sq}} ) \approx 10^3 \), setting constant \(C\) for dp/recursion tradeoff to \(10^3\) seems to be a reasonable
 		-->
