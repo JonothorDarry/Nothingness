@@ -21,9 +21,13 @@
 		\(a^b\) can be shown as: 
 		<span class="central">\(a^b=a^{2 \lfloor \frac{b}{2} \rfloor +b\ mod\ 2}=a^{2 \lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2} = (a^2)^{\lfloor \frac{b}{2} \rfloor } *a^{b\ mod\ 2}\)</span>
 		And so, \(a^b\ mod\ m=(((a^2)^{\lfloor \frac{b}{2} \rfloor}\ mod\ m)*(a^{b\ mod\ 2}\ mod\ m))\ mod\ m\). Value of \(b\ mod\ 2\) is either \(0\) or \(1\) - and so, calculating \(a^{b\ mod\ 2}\ mod\ m\) takes \(O(1)\) time complexity. Calculating \(a^2\ mod\ m\) also takes \(O(1)\) time complexity, and repeating calculations recursively until \(b &gt; 0\) takes at most \(log_2(b)\) iterations. Overall complexity of the algorithm is therefore \(O(log(b))\). One can keep result \(res=1\) at the beginning of the algorithm and update values in each iteration:
-		<span class="central">1) \(res=res*a^{b\ mod\ 2}\ mod\ m\)</span>
-		<span class="central">2) \(b=\lfloor \frac{b}{2} \rfloor\)</span>
-		<span class="central">3) \(a=(a*a)\ mod\ m\)</span>
+        $$
+        \begin{align}
+		res &= res*a^{b\ mod\ 2}\ mod\ m \\
+		b &= \lfloor \frac{b}{2} \rfloor \\
+		a &= (a*a)\ mod\ m \\
+        \end{align}
+        $$
 		Until \(b=0\) - this makes process iterative.
 		</p>
 
@@ -112,10 +116,10 @@
 		<ol>
 			<li>One can use equation \(a^b=(a^2)^{\lfloor \frac{b}{2} \rfloor}*a^{b \% 2}\) in order to calculate value \(a^b \equiv x \pmod m\) in \(O(\log(b))\)</li>
 			<li>One can notice, that binary exponentation may be used to power matrices of size \(k\) to the power of \(n\) in the same way in \(O(k^3\log(n))\)</li>
-			<li>\(n\)-th elements of certain linear recurrence equations of \(k\)-th degree can be calculated in \(O(k^3\log(n))\). In order to solve it a map from one vector of solutions \([f_i, f_{i+1} \dots f_{i+n-1}]\) to next vector \([f_{i+2}, f_{i+3}, \dots f_{i+n}]\) may come in handy.</li>
+			<li>\(n\)-th elements of certain linear recurrence equations of \(k\)-th degree can be calculated in \(O(k^3\log(n))\). In order to solve it a map from one vector of solutions \([f_i, f_{i+1} \dots f_{i+n-1}]\) to next vector \([f_{i+1}, f_{i+2}, \dots f_{i+n}]\) may come in handy.</li>
 		</ol>
 		<h3>Problems</h3>
-		<p>Problems involving binary exponentation can be found literally everywhere, most interesting ones usually involve sequence trick or number of paths in a graph of certain length.<br>
+		<p>Problems involving binary exponentation can be found literally everywhere, most interesting ones usually involve recursive sequence trick or number of paths in a graph of certain length.<br>
 		<a href="https://codeforces.com/problemset/problem/226/C">Anniversary</a>, 
 		<a href="https://codeforces.com/problemset/problem/1182/E">Product Oriented Recurrence</a>, 
 		<a href="https://codeforces.com/problemset/problem/551/D">GukiZ and Binary Operations</a>, 

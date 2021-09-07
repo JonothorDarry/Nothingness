@@ -28,7 +28,7 @@
 					<li>For all \(q \in \lt 0;s-1 \gt\) compute \(a^q\). This can be done in \(O(s)\).</li>
 					<li>Sort all pairs \(\{q, a^q\}\) by \(a^q\). This takes \(O(s\log(s))\).</li>
 					<li>For all subsequent values \(p \in \lt 0;n \gt\) find \(d=ba^{-sp} \pmod m\). One could find single inverse with extended euclid in \(O(\log(n))\). Overall the complexity of this step would be \(O(n \log(n))\)</li>
-					<li>For all subsequent values \(p\) find, using binary search, element \(a^q\), for which \(a^q=d\). This element may, or may not exist - in particular, if \(a\) is primitive root \(\pmod m\), and \(gcd(b,m)=1\), there will be exactly one pair \(\{p,q\}\), for which \(a^{sp+q} \equiv b \pmod m\). This can be done in \(O(\log(s))\), overall considering all steps in \(O(n \log(s))\).</li>
+					<li>For all subsequent values \(p\) find, using binary search, element \(a^q\), for which \(a^q=d\). This element may, or may not exist - in particular, if \(a\) is primitive root \(\pmod m\), and \(gcd(b,m)=1\), there will be exactly one pair \(\{p,q\}\), for which \(a^{sp+q} \equiv b \pmod m\). This can be done for a single \(p\) in \(O(\log(s))\), overall considering all values \(p\) in \(O(n \log(s))\).</li>
 				</ol>
 			</li>
 			<li>Setting \(s=\lceil \sqrt{m} \rceil\) leads to \(s \approx n\) and, consequently, complexity \(O(\sqrt{n} \log(n))\).</li>

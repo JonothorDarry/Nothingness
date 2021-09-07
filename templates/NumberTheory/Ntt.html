@@ -12,15 +12,15 @@
 	<body>
 		{{ headers.full_upper('Number Theoretic Transform', 'NumberTheory') }}
 		<h2>Introduction</h2>
-		<p>This article describes techniques of multiplying two polynominals of size \(o, m\) in \(O((o+m)\log(o+m))\) and use of those techniques for solving problems regarding generating functions.</p>
-		<h2>Problem I - multiplying polynominals</h2>
-		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_o\) and \(b_0, b_1, \dots, b_m\) of two polynominals \(A(x), B(x)\), \(1 \le o,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{o+m}\) such that \(A(x)B(x)=(a_0+a_1x+a_2x^2+\dots+a_ox^o)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+o}x^{m+o})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \gt m+o\) and \(2 \nmid x\)</p>
+		<p>This article describes techniques of multiplying two polynomials of size \(o, m\) in \(O((o+m)\log(o+m))\) and use of those techniques for solving problems regarding generating functions.</p>
+		<h2>Problem I - multiplying polynomials</h2>
+		<p>Suppose You are given coefficients \(a_0, a_1, \dots, a_o\) and \(b_0, b_1, \dots, b_m\) of two polynomials \(A(x), B(x)\), \(1 \le o,m,a_i,b_i \le 10^5\), and Your aim is to multiply them; in other words, You have to find such sequence \(c_0, c_1, \dots, c_{o+m}\) such that \(A(x)B(x)=(a_0+a_1x+a_2x^2+\dots+a_ox^o)(b_0+b_1x+b_2x^2+\dots+b_mx^m)=(c_0+c_1x+c_2x^2+\dots+c_{m+o}x^{m+o})=C(x)\). This problem can be solved in at least \(2\) versions: when You have to calculate coefficients as they are, or \(\pmod x\), where \(x\) has a primitive root and \(\exists_k 2^k|\phi(x) \land 2^k \gt m+o\) and \(2 \nmid x\)</p>
 		<h3>First solution</h3>
 		<p>One can multiply each element in the first bracket with element from second bracket, then add resulting \(om\) elements to correct coefficient \(c_i\); this solution works in \(O(om)\)
 		<h3>Threshold of transformation - solution in \(O((o+m)\log(o+m))\)</h3>
 		<ol>
-			<li>If \(m+o=k\), then let \(n\) be minimal number, such that \(n \gt k \land \exists_{l \in Z} n=2^l\). Then, the result will be calculated as \(n\) coefficients, and polynominals \(A(x), B(x)\) will be used as if they had \(n\) coefficients (The additional coefficients, say, for \(A(x)\) they will be \(a_{o+1}, a_{o+2} \dots a_{n-1}\) will be evaluated to \(0\))</li>
-			<li>One may change the methodology of obtaining a polynominal a little bit: instead of directly finding the coefficients of \(C(x)\), one may find \(n\) values \(x_i\), obtain values of both \(A(x_i)\) and \(B(x_i)\) in those points, then multiply values \(A(x_i)B(x_i)=C(x_i)=y_i\), and transform \(n\) values of polynominal \(C(x)\) in points \(x_i: C(x_i)=y_i\) into its coefficients \(c_i\) - this process is called interpolation of a polynominal.</li>
+			<li>If \(m+o=k\), then let \(n\) be minimal number, such that \(n \gt k \land \exists_{l \in Z} n=2^l\). Then, the result will be calculated as \(n\) coefficients, and polynomials \(A(x), B(x)\) will be used as if they had \(n\) coefficients (The additional coefficients, say, for \(A(x)\) they will be \(a_{o+1}, a_{o+2} \dots a_{n-1}\) will be evaluated to \(0\))</li>
+			<li>One may change the methodology of obtaining a polynomial a little bit: instead of directly finding the coefficients of \(C(x)\), one may find \(n\) values \(x_i\), obtain values of both \(A(x_i)\) and \(B(x_i)\) in those points, then multiply values \(A(x_i)B(x_i)=C(x_i)=y_i\), and transform \(n\) values of polynomial \(C(x)\) in points \(x_i: C(x_i)=y_i\) into its coefficients \(c_i\) - this process is called interpolation of a polynomial.</li>
 			<li>Let 
 				<span class="central">\(A(x)=a_0+a_1x+ \dots + a_{n-1}x^{n-1}\)<br>
 					\(A_1(x)=a_1+a_3x+a_5x^2+ \dots a_{n-1}x^{n/2-1}\)<br>
@@ -28,18 +28,18 @@
 				</span>
 				What follows, 
 				<span class="central">\(A(x)=A_0(x^2)+xA_1(x^2)\)</span>
-				What follows, one can calculate recursively values of polynominals \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the values of \(A(x)\) that can be easily calculated are \(A(x_i^{1/2})\) and \(A(-(x_i^{1/2}))\) - so one needs to find suitable points for evaluating polynominal for subsequent iterations. </li><br>
-			<li>Let \(w_n^k=f^{\frac{k}{n}}\), where \(f\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynominal will be calculated.
+				What follows, one can calculate recursively values of polynomials \(A_0\),\(A_1\), then find the value of \(A(x)\) - the process will take \(O(nlog(n))\), if one problem will be addressed - if \(A_0(x_i)\) was found, then the values of \(A(x)\) that can be easily calculated are \(A(x_i^{1/2})\) and \(A(-(x_i^{1/2}))\) - so one needs to find suitable points for evaluating polynomial for subsequent iterations. </li><br>
+			<li>Let \(w_n^k=f^{\frac{k}{n}}\), where \(f\) is some predefined value. Then, if in \(i\)-th iteration one uses values \(w_{n/2}^0, w_{n/2}^1, \dots, w_{n/2}^{n/2}\), in next iteration one can use values \(w_n^0, w_n^1, \dots, w_n^{n/2}\) without any problems as next places, in which value of polynomial will be calculated.
 				<span class="central">\(h \le \frac{n}{2} \implies A(w_n^h)=A_0(w_n^{2h})+w_n^hA_1(w_n^{2h})=A_0(w_{n/2}^h)+w_n^hA_1(w_{n/2}^h)\)</span>
-				Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); <b>this leads to establish \(w_n^{n/2}=-1\), and \(f=w_n^n=1\);</b> then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynominal \(A(x)\) in \(n\) points if values of \(A_0(x), A_1(x)\) in certain \(\frac{n}{2}\) points were calculated.
+				Furthermore, \(w_n^{s+n/2}=w_n^{n/2}w_n^s\), where \(s \le \frac{n}{2}\); <b>this leads to establish \(w_n^{n/2}=-1\), and \(f=w_n^n=1\);</b> then, \(w_n^{s+n/2}=w_n^{n/2}w_n^s=-w_n^s\), and \(w_n^{2(s+n/2)}=w_n^nw_n^{2s}=1w_{n/2}^s\) - so, one can calculate easily values of polynomial \(A(x)\) in \(n\) points if values of \(A_0(x), A_1(x)\) in certain \(\frac{n}{2}\) points were calculated.
 				<span class="central">\(h=\frac{n}{2}+s \gt \frac{n}{2} \implies A(w_n^h)=A_0(w_n^{2h})+w_n^hA_1(w_n^{2h})=A_0(w_n^{2(n/2+s)})+w_n^hA_1(w_n^{2(n/2+s)})=A_0(w_n^nw_n^{2s})+w_n^hA_1(w_n^nw_n^{2s})=A_0(w_n^{2s})+w_n^hA_1(w_n^{2s})=A_0(w_{n/2}^s)+w_n^hA_1(w_{n/2}^s)\)</span>
-				All roots \(w_n^k\) have to be different, otherwise the last part of the algorithm will not work (because many polynominals of degree \( \lt n\) can have same values in \(\lt n\) points and the result would be ambiguous).</li><br>
+				All roots \(w_n^k\) have to be different, otherwise the last part of the algorithm will not work (because many polynomials of degree \( \lt n\) can have same values in \(\lt n\) points and the result would be ambiguous).</li><br>
 
 			<li>It may be beneficial to get rid of recursion before things start getting messy; to find value of \(A(x)\) in \(n\) points, one needs to find values of \(A_0(x)=a_0+a_2x+\dots+a_{n-2}x^{n/2-1}\) and \(A_1(x)=a_1+a_3x+\dots+a_{n-1}x^{n/2-1}\) in \(\frac{n}{2}\) points. Then, to find values of \(A_0(x)\) one needs to find values of \(a_0+a_4x+a_8x^2+\dots+a_{n-4}x^{n/4}\) and \(a_2+a_6x+a_{10}x^2+\dots+a_{n-2}x^{n/4}\) in \(\frac{n}{4}\) points, etc.<br><br>
 
-				One can generalize the notion of polynominal on each level of recursion: if \(n=2^k\), then let \(A_{k,0}(x)\) be the polynominal given at the start; then, one can define \(A_{lev,pol}\) as \(pol\)-th polynominal calculated on \(lev\)-th level of recursion. \(A_{lev,pol}(x)=A_{lev-1,2pol}(x^2)+xA_{lev-1,2pol+1}(x^2)\) - the \(2pol\) and \(2pol+1\) emerge from fact, that every previous polynominal on the same level has exactly 2 polynominals on lower level. There will be \(k\) levels of recursion, on \(lev\)-th each level polynominal consists of \(2^{lev}\) coefficients (perhaps with leading 0's) - on lowest level of recursion it will consist of one coefficient, so its value is constant, equal to this coefficient.<br><br>
+				One can generalize the notion of polynomial on each level of recursion: if \(n=2^k\), then let \(A_{k,0}(x)\) be the polynomial given at the start; then, one can define \(A_{lev,pol}\) as \(pol\)-th polynomial calculated on \(lev\)-th level of recursion. \(A_{lev,pol}(x)=A_{lev-1,2pol}(x^2)+xA_{lev-1,2pol+1}(x^2)\) - the \(2pol\) and \(2pol+1\) emerge from fact, that every previous polynomial on the same level has exactly 2 polynomials on lower level. There will be \(k\) levels of recursion, on \(lev\)-th level polynomial consists of \(2^{lev}\) coefficients (perhaps with leading 0's) - on lowest level of recursion it will consist of one coefficient, so its value is constant, equal to this coefficient.<br><br>
 				
-				For example, for \(n=16\), the subsequent coefficients of polynominals in recursion will be:
+				For example, for \(n=16\), the subsequent coefficients of polynomials in recursion will be:
 				{% set pows=[1, 2, 4, 8, 16] %}
 				{% set ns = namespace(start=0, broke=1) %}
 				{% for cur in range(0, 5) %}
@@ -70,15 +70,15 @@
 					\)</span>
 				{% endfor %}
 				<br>
-				But only on the lowest level of recursion those coefficients are useful; in higher levels of recursion finding values of a polynominal in a point - is only dependant on that point and previous values of polynominals: \(A_{lev,pol}(x)=A_{lev-1,2pol}(x^2)+xA_{lev-1,2pol+1}(x^2)\). On a lowest level, value of a polynominal in form \(A_{0,pol}(x)=a_i\) is the coefficient itself; the question arises, how to construct such sequence as in the lowest level of recursion? This allows to process subsequent polynominals as pair of two next polynominals from level below. Let group mean sequence of coefficients in a polynominal on some level. One can observe, that:
+				But only on the lowest level of recursion those coefficients are useful; in higher levels of recursion finding values of a polynomial in a point - is only dependant on that point and previous values of polynomials: \(A_{lev,pol}(x)=A_{lev-1,2pol}(x^2)+xA_{lev-1,2pol+1}(x^2)\). On a lowest level, value of a polynomial in form \(A_{0,pol}(x)=a_i\) is the coefficient itself; the question arises, how to construct such sequence as in the lowest level of recursion? This allows to process subsequent polynomials as pair of two next polynomials from level below. Let group mean sequence of coefficients in a polynomial on some level. One can observe, that:
 				<ul>
 					<li>In a group there are subsequent numbers with same difference between them: At the start, there is one group with difference \(1\); in each partition, a group is divided into two groups with every second element each; as the difference is constant between each - say \(d\), then in group on lower level there will be subsequent numbers with difference \(2d\). Furhermore, difference within one group is equal to \(2^l\), as on the highest level difference is \(1\), and in each lower level the difference becomes twice higher.</li>
 					<li>As in each group \(g_0\) there are subsequent elements with difference \(d\), then after division into groups \(g_1\) and \(g_2\) difference between \(k\)-th element of \(g_2\) and \(g_1\) is equal to \(d=2^{l-1}\), as subsequent elements from \(g_0\) go to different groups. Furthermore, both groups since then are divided in same way - then this holds after subsequent division and going deeper into recursion (that \(g_2(k)-g_1(k)=2^{l-1}\)).</li>
 				</ul>
 				So, one can create such algorithm for attaining subsequent numbers in this seqence, call it \(S\) with element \(S(i)\): at the beginning, \(S(0)=0\), then, whenever \(2^x\) for some \(x\) is reached, then all subsequent elements up to \(2^{x+1}-1\) are evaluated as \(S(i)=S(i-2^x)+2^{k-x-1}\), where \(2^{k}=n\); the \(2^{k-x-1}\) follows from fact, that \(k-x-1\) is number of splits into \(2\) groups before this one.
 			</li><br>
-			<li>After finding salvation from abyss of abstract, absolutely brutal and unforgiving realm of finding values of two polynominals in \(n\) points in \(O(nlog(n))\), it may be wise to multiply values of both polynominals in those points: \(C(x_i)=A(x_i)B(x_i)\) - this step works in \(O(n)\)</li>
-			<li>The final problem is finding from values \(C(x_0), C(x_1), \dots C(x_n)\) coefficients \(c_0, c_1, \dots, c_{n-1}\) of a polynominal \(C(x)\). One can represent the problem as matrix equation:
+			<li>After finding salvation from abyss of abstract, absolutely brutal and unforgiving realm of finding values of two polynomials in \(n\) points in \(O(nlog(n))\), it may be wise to multiply values of both polynomials in those points: \(C(x_i)=A(x_i)B(x_i)\) - this step works in \(O(n)\)</li>
+			<li>The final problem is finding from values \(C(x_0), C(x_1), \dots C(x_n)\) coefficients \(c_0, c_1, \dots, c_{n-1}\) of a polynomial \(C(x)\). One can represent the problem as matrix equation:
 			<span class="central">
 			$$
 			\begin{bmatrix}
@@ -212,7 +212,7 @@
 		</ol>
 
 		{{ algo.neo_algorithm(1, 'Transformation', '
-			<p>Input format: two sequences of \(o+1, m+1\) numbers denoting coefficients of polynominals \(A(x), B(x)\); then if NTT is chosen, also \(q\) - number modulo which those coefficients will be found. (\(q\) is not parsed if DFT is chosen)<br>
+			<p>Input format: two sequences of \(o+1, m+1\) numbers denoting coefficients of polynomials \(A(x), B(x)\); then if NTT is chosen, also \(q\) - number modulo which those coefficients will be found. (\(q\) is not parsed if DFT is chosen)<br>
 			\(o\)<br>
 			\(a_0, a_1, \dots, a_o\)<br>
 			\(m\)<br>
@@ -221,66 +221,66 @@
 			</p>
 		'
 		, '6&#10;2 7 3 12 43 25 19&#10;7&#10;4 6 7 1 2 3 4 132&#10;257', {'input_type':'textarea', 'add_on':'radio', 'added_elements':['NTT', 'DFT'], 'vehement':true, 
-		'color_description':{'standard':'', 'change':'', 'crucial':'Coefficient of a resulting polynominal', 'merge-standard':'Distinguishes two polynominals to merge or sets of values to interpolate.', 'helper1':'in expression y=ax+b shows values a and x', 'helper2':'in expression y=ax+b shows value b'} }) }}
+		'color_description':{'standard':'', 'change':'', 'crucial':'Coefficient of a resulting polynomial', 'merge-standard':'Distinguishes two polynomials to merge or sets of values to interpolate.', 'helper1':'in expression y=ax+b shows values a and x', 'helper2':'in expression y=ax+b shows value b'} }) }}
 
 		<h2>Problem II - more-or-less standard knapsack dp</h2>
-		<p>Joshua has sequence \(S\) of \(n\) candies. \(i\)-th candy has some natural number \(s_i\) written on it. For each \(d \in \lt 0;\sum_{i=0}^{n-1} s_i \gt\): in how many ways Joshua can chose some subset of his candies in such way that sum of numbers written on candies in this set is equal to \(d\)? Two ways are different if there is such \(k\), that one set contains \(k\)-th candie while the second don't. Output result \(\pmod {998244353}\) $$ n, \sum_{i=0}^{n-1} s_i \le 10^5 $$</p>
+		<p>Joshua has sequence \(S\) of \(n\) candies. \(i\)-th candy has some natural number \(s_i\) written on it. For each \(d \in \lt 0;\sum_{i=1}^{n} s_i \gt\): in how many ways Joshua can chose some subset of his candies in such way that sum of numbers written on candies in this set is equal to \(d\)? Two ways are different if there is such \(k\), that one set contains \(k\)-th candie while the second don't. Output result \(\pmod {998244353}\) $$ n, \sum_{i=1}^n s_i \le 10^5 $$</p>
+        <p>To simplify notation, from now on, \(m = \sum_{i=1}^n s_i\)</p>
 		<h3>Standard dp solution</h3>
 		<ol>
 			<li>The sum of values on candies in a set will be called later set sum.</li>
 			<li>One can notice, that if one can find a number of ways to create subset of set sum with elements of sequence \(S\) up to index \(i\), then one can find number of ways to create subset of any set sum with elements up to index \(i+1\) using fact, that either an element is not chosen (then set sum stays the same) or chosen (then set sum gets larger by \(s_{i+1}\)).</li>
 			<li>Let \(dp[k][x]\) denote number of ways to chose subset with set sum equal to \(x\) using first \(k\) candies. Then \(dp[k][x]=dp[k-1][x]+dp[k-1][x-s_k]\) provided, that \(x-s_k \ge 0\) - subset with set sum \(x\) can be created by not adding anything to existing set or adding \(s_k\) to a set with set sum equal to \(x-s_k\). At the beginning, \(dp[0][0]=1\) - one can create set of value 0 out of empty set in exactly one way.</li>
-			<li>One can lower the amount of memory needed to solve this task - as only value of \(dp[n][x]\) for all \(x\) are interesting, first dimension is not needed. One can remove it without temporary array by updating values from highest to lowest: \(dp[x]=dp[x]+dp[x-s_k]\) for \(x\) from \(\sum_{i=0}^{k-1} s_i\) to \(s_k\), because one always uses only information present iteration before.</li>
-			<li>This method works in \(O(n \sum_{i=0}^{n-1} s_i)\), which is unsatisfying - however, it is more flexible than solution that soon will be presented.</li>
+			<li>One can lower the amount of memory needed to solve this task - as only value of \(dp[n][x]\) for all \(x\) are interesting, first dimension is not needed. One can remove it without temporary array by updating values from highest to lowest: \(dp[x]=dp[x]+dp[x-s_k]\) for \(x\) from \(\sum_{i=1}^{k-1} s_i\) to \(s_k\), because one always uses only information present iteration before.</li>
+			<li>This method works in \(O(n m)\), which is unsatisfying - however, it is more flexible than solution that soon will be presented.</li>
 		</ol>
 		<h3>Generating functions</h3>
-		<p>One can notice, that the formula above is in fact polynominal multiplication, where modifying \(dp\) with some \(s_i\) represents a polynominal multiplied by \(x^{s_k}+1\).</p>
-		<p>Let coefficients \(a_i\) and \(b_i\) of polynominal \(a_mx^m+a_{m-1}x^{m-1}+\dots+a_0\) and \(b_lx^l+b_{l-1}x^{l-1}+\dots+b_0\) represent number of ways to create subsets of set sum equal to \(i\) for two disjoint sets \(A, B\). Then, multiplying those polynominals leads to:
-		<span class="central">$$(\sum_{i=0}^{m} a_ix^i) (\sum_{j=0}^{l} b_jx^j) = \sum_{i=0}^{m} \sum_{j=0}^{l} a_ib_jx^{i+j}$$</span>
+		<p>One can notice, that the formula above is in fact polynomial multiplication, where modifying \(dp\) with some \(s_i\) represents a polynomial multiplied by \(x^{s_k}+1\).</p>
+		<p>Let coefficients \(a_i\) and \(b_i\) of polynomial \(a_rx^r+a_{r-1}x^{r-1}+\dots+a_0\) and \(b_tx^t+b_{t-1}x^{t-1}+\dots+b_0\) represent number of ways to create subsets of set sum equal to \(i\) for two disjoint sets \(A, B\). Then, multiplying those polynomials leads to:
+		$$ (\sum_{i=0}^r a_ix^i) (\sum_{j=0}^t b_jx^j) = \sum_{i=0}^r \sum_{j=0}^t a_ib_jx^{i+j} $$
 		Thus:
 		<ol>
-			<li>Value of coefficient by \(x^k\) is equal to \(\sum_{i=0}^{k} a_ib_{k-i}\) assuming, that \(\forall_{v \gt m} a_v=0\) and \(\forall_{w \gt l} b_w=0\). It is equal to number of ways to choose certain amount of elements with given set sum from set \(A, B\) in such way, such that the sum of their set sums is equal to \(k\)</li>
+            <li>Value of coefficient by \(x^k\) is equal to \(\sum_{i=0}^{k} a_ib_{k-i}\).<!-- It is equal to number of ways to choose certain amount of elements with given set sum from sets \(A, B\) in such way, such that the sum of their set sums is equal to \(k\)--></li>
 			<li>By rule of product, number of ways to choose \(i\) elements from set \(A\) and \(k-i\) elements from set \(B\) is equal to \(a_ib_{k-i}\)</li>
 			<li>To choose \(k\) elements from both sets one has to choose some elements from set \(A\) and some from set \(B\) (perhaps 0, but not more than \(k\) from any set).</li>
 			<li>What follows, the coefficient by \(x^k\) is equal to number of ways to choose some elements from set \(A\) and some from set \(B\) in such way, that the sum set of union of those subsets is equal to \(k\).</li>
 		</ol>
 		</p>
 		<p>So, one can represent solution to the stated problem as follows:
-		<span class="central">$$(x^{s_0}+1)(x^{s_1}+1) \dots (x^{s_{n-1}}+1)$$</span>
-		And coefficient by \(x^d\) in resulting polynominal is answer to the problem for set sum equal to \(d\).
+		<span class="central">$$(x^{s_1}+1)(x^{s_2}+1) \dots (x^{s_n}+1)$$</span>
+		And coefficient by \(x^d\) in resulting polynomial is answer to the problem for set sum equal to \(d\).
 		</p>
 		<h3>Proper utilization of forementioned observation - replacing dp with NTT</h3>
-		<p>There is still one obstacle one has to remove in order to bathe this problem solution in glorious capabilities of NTT: how to multiply polynominals, so that complexity will become significantly lower than for dp approach? Multipying them one by one will result in disastrous \(O(n\log(n)(\sum_{i=0}^{n}s_i))\) without better estimation.</p>
-		<p>Before constructing lemma, let \(m=\sum_{i=0}^{n-1}s_i\).</p>
-		<p>Let \(pol_{0, i}=x^{s_i}+1\). Then, what if the polynominals are multiplied in layers, in such way, that \(pol_{level,i}=pol_{level-1, 2i}*pol_{level-1, 2i+1}\) (or \(pol_{level,i}=pol_{level-1, 2i}\) for odd number of polynominals in previous layer in the last polynominal of the layer)?</p>
+		<p>There is still one obstacle one has to remove in order to bathe this problem solution in glorious capabilities of NTT: how to multiply polynomials, so that complexity will become significantly lower than for dp approach? Multipying them one by one will result in disastrous \(O(nm \log n)\) without better estimation.</p>
+		<p>Let \(pol_{0, i}=x^{s_i}+1\). Then, what if the polynomials are multiplied in layers, in such way, that \(pol_{level,i}=pol_{level-1, 2i}*pol_{level-1, 2i+1}\) (or \(pol_{level,i}=pol_{level-1, 2i}\) for odd number of polynomials in previous layer in the last polynomial of the layer)?</p>
 
 		{{ algo.neo_algorithm(2, 'Sum of elements', '
 			<p>Input format: value \(n\) and sequence of \(n\) values \(s_i\) - numbers written on each candy.<br>
 			\(n\)<br>
-			\(s_0, s_1, \dots, s_{n-1}\)<br>
+			\(s_1, s_2, \dots, s_n\)<br>
 			</p>
 		'
 		, '6&#10;2 3 5 4 2 3', {'input_type':'textarea',
-		'color_description':{'standard':'', 'change':'Polynominal resulting from multiplication', 'crucial':'Coefficient of a resulting polynominal', 'helper2':'Two multiplied polynominals (or rewritten polynominal - special case)', 'exponent':'Exponent of a polynominal'} }) }}
+		'color_description':{'standard':'', 'change':'Polynomial resulting from multiplication', 'crucial':'Coefficient of a resulting polynomial', 'helper2':'Two multiplied polynomials (or rewritten polynomial - special case)', 'exponent':'Exponent of a polynomial'} }) }}
 
 
 		<h4>Complexity of such approach</h4>
 		<ol>
-			<li>In layer 0, all polynominals have form \(pol_{0,i}=x^{s_i}+1\).</li>
-			<li>There will be at most \(\lceil log_2(n) \rceil+1\) layers, as in each layer number of polynominals decreases two times (possibly without one element).</li>
+			<li>In layer 0, all polynomials have form \(pol_{0,i}=x^{s_i}+1\).</li>
+			<li>There will be at most \(\lceil log_2(n) \rceil+1\) layers, as in each layer number of polynomials decreases two times (possibly without one element).</li>
 			<li>In layer \(x\), number of operations can be estimated by<br>
 				<span class="central">\((s_0+s_1+\dots+s_{2^x-1})\log(s_0+s_1+\dots+s_{2^x-1})+(s_{2^x}+s_{2^x+1}+\dots+s_{2*2^x-1})\log(s_{2^x}+s_{2^x+1}+\dots+s_{2^x-1})+\dots+(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1})\log(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1}) \le\)</span>
 				<span class="central">\(\le (s_0+s_1+\dots+s_{2^x-1})\log(m)+(s_{2^x}+s_{2^x+1}+\dots+s_{2*2^x-1})\log(m)+\dots+(s_{c*2^x}+s_{c*2^x+1}+\dots+s_{n-1})\log(m)=\)</span>
 				<span class="central">\(= (s_0+s_1+\dots+s_{2^x}+s_{2^x+1}+ \dots + s_{n-1})log_2(m)\)</span>
 				<span class="central">\(= mlog_2(m)\)</span>
 			</li>
-			<li>Adding this information to estimation of number of layers, one can conclude, that this algorithm works in \(O(m\log_2(m)\log_2(n))\), which is compelling solution for given problem.</li>
+			<li>Adding this information to estimation of number of layers, one can conclude, that this algorithm works in \(O(m \log (m) \log (n))\), which is compelling solution for given problem.</li>
 		</ol>
 		<h2>Summary</h2>
 		<ol>
-			<li>Two polynominals of degrees \(a, b\) with \(a+b=n\) can be multiplied in \(O(nlog(n))\) using DFT or NTT. DFT uses imaginary numbers and may lead to imprecise results because of rounding errors; NTT gives precise results and can be calculated modulo some prime number \(p\), for which \(\exists_k 2^k \gt n \land 2^k | p-1\). In order to apply NTT, one has to find (or know) primitive root \(\pmod p\).</li>
-			<li>Certain solutions to combinatorical problems can be represented by generating functions - polynominals - and sometimes, by product rule, multiplying those polynominals leads to a polynominal solving greater instance of a problem - this sometimes leads to possibility of solving problem using NTT instead of standard dp approach.</li>
-			<li>Polynominal multiplication may be treated as answer to the problem: "There are two disjoint sequences of natural numbers \(A\) and \(B\) of size \(n, m\) respectively. Number of ways to select some (possibly 0) elements of sequence \(A\) so that their sum is equal to \(i\) is equal to \(a_i\), analogously \(b_i\) for sequence \(B\). In how many ways one can select some elements of union of those sequences C in order to obtain set with sum of elements \(j\) for every \(j \in \lt 0;n+m \gt\)?" The answer for each \(j\) will be denoted as \(c_j\). Then problem can be represented as \((a_nx^n+a_{n-1}x^{n-1} \dots a_0)(b_mx^m+b_{m-1}x^{m-1}+b_0)=c_{n+m}x^{n+m}+c_{n+m-1}x^{n+m-1}+ \dots +c_0\). Which leads back to multiplying a polynominal.</li>
+			<li>Two polynomials of degrees \(a, b\) with \(a+b=n\) can be multiplied in \(O(nlog(n))\) using DFT or NTT. DFT uses imaginary numbers and may lead to imprecise results because of rounding errors; NTT gives precise results and can be calculated modulo some prime number \(p\), for which \(\exists_k 2^k \gt n \land 2^k | p-1\). In order to apply NTT, one has to find (or know) primitive root \(\pmod p\).</li>
+			<li>Certain solutions to combinatorical problems can be represented by generating functions - polynomials - and sometimes, by product rule, multiplying those polynomials leads to a polynomial solving greater instance of a problem - this sometimes leads to possibility of solving problem using NTT instead of standard dp approach.</li>
+			<li>Polynomial multiplication may be treated as answer to the problem: "There are two disjoint sequences of natural numbers \(A\) and \(B\) of size \(n, m\) respectively. Number of ways to select some (possibly 0) elements of sequence \(A\) so that their sum is equal to \(i\) is equal to \(a_i\), analogously \(b_i\) for sequence \(B\). In how many ways one can select some elements of union of those sequences C in order to obtain set with sum of elements \(j\) for every \(j \in \lt 0;n+m \gt\)?" The answer for each \(j\) will be denoted as \(c_j\). Then problem can be represented as \((a_nx^n+a_{n-1}x^{n-1} \dots a_0)(b_mx^m+b_{m-1}x^{m-1}+b_0)=c_{n+m}x^{n+m}+c_{n+m-1}x^{n+m-1}+ \dots +c_0\). Which leads back to multiplying a polynomial.</li>
 		</ol>
 		<h3>Problems</h3>
 		<ol>

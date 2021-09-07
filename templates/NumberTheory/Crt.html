@@ -31,7 +31,7 @@
 			</span>
 			where \(0 \le c_i \lt s_i \le 10^9 \land lcm(s_1, s_2, \dots, s_m) \le 10^{18}\) The problem is: find \(x\) satisfying these equations
 		</p>
-		<h3>Solution: banal boring algebra in \(O(m\log(\max(s_i)))\)</h3>
+		<h3>Solution: banal boring algebra in \(O(m\log( lcm(s_1, s_2, \dots s_m) ))\)</h3>
 		<h4>The first thesis</h4>
 		<p id="Solution">
 			If it is possible to show equivalent equation for two different equations, then one can reduce number of equations by one:<br>
@@ -77,7 +77,7 @@
 			for certain integers \(a,\ b\). What follows, <br>
 			<span class="central">\(s_1a+c_1 = s_2b+c_2\)</span>
 			<span class="central">\(s_1a-s_2b=c_2-c_1\)</span><br>
-			One can solve equation \(s_1k+s_2l=gcd(s_1, s_2)\) in \(O(\log(\min(s_1, s_2)))\) using extended euclid; If \(gcd(s_1,s_2) \nmid (c_2-c_1)\), then one can go out and solve different problems, for there are no integer solutions: <br>
+			One can solve equation \(s_1k+s_2l=gcd(s_1, s_2)\) in \(O(\log(s_1+s_2))\) using extended euclid; If \(gcd(s_1,s_2) \nmid (c_2-c_1)\), then one can go out and solve different problems, for there are no integer solutions: <br>
 			<span class="central">\(s_1a-s_2b=c_2-c_1\)</span>
 			<span class="central">\(gcd(s_1,s_2)|(s_1a-s_2b)\)</span>
 			<span class="central">\(gcd(s_1,s_2) \nmid (c2-c1)\)</span>
@@ -133,7 +133,7 @@
 
 		<h3>The Chinese Remainder Theorem-in-itself</h3>
 		<p>
-		Chinese Remainder Theorem states, that if all \(s_i\) are pairwise coprime, then solution exists and is unique \(mod\ \prod_{i=1}^{m}s_i\). Using method described above, the theory can be proven with following lemmas:<br>
+        Chinese Remainder Theorem states, that if all \(s_i\) are pairwise coprime, then solution exists and is unique \(\pmod {\prod_{i=1}^{m}s_i}\). Using method described above, the theory can be proven with following lemmas:<br>
 		</p>
 		<ol>
 			<li>From Euclid's lemma, \(p|ab \implies p|a \lor p|b\). What follows, \(p \nmid a \land p \nmid b \implies p \nmid ab\)</li>
@@ -147,7 +147,7 @@
 			<ol>
 				<li>System of \(m\) congruential equations in form \(x \equiv c_i \pmod {s_i}\) can be solved in \(O(m\log(lcm(s_1, s_2, \dots s_m)))\)</li>
 				<li>Worth noting consequence of Euclid's lemma: \(gcd(a, c)=1 \land gcd(b, c)=1 \implies gcd(ab, c)=1\).</li>
-				<li><b>Chimese Remainder Theorem</b> states, that if all \(s_i\) are pairwise coprime, then there is exactly one solution \(\pmod {\prod s_i}\)</li>
+				<li><b>Chimese Remainder Theorem</b> states, that if all \(s_i\) are pairwise coprime, then there is exactly one solution to a system of linear congruential equations \(\pmod {\prod_i s_i}\)</li>
 			</ol>
 
 			<h3>Problems</h3>

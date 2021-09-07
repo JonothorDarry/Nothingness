@@ -145,13 +145,14 @@
 
 
 			<h3>Solution II: Enchanced Sieve of Erastothenes</h3>
-			<p>Marking each number with it's lowest divisor (instead of sole information whether it's prime) leads to solving this problem in the same way as problem above, in complexity \(O(n \log(n)+q \log(n))\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)</p>
+			<p>Marking each number with it's lowest divisor (instead of sole information whether it's prime) leads to solving this problem in the same way as problem above, in complexity \(O(n \log n)\): below is an animation of inner workings of such sieve and query mechanism (which works only after finishing sieve)</p>
 		<br><br>
 
 		<div id="Algo2" class="pureAlgo" style="position:sticky">
 			<h4 class="querier">Enchanced Sieve and factorization</h4>
 			<div id="sieveSection">
 				<p>Enchanced Sieve</p>
+                <p>\(lpf(x)\) denotes least prime factor of \(x\) - for example, \(lpf(45) = lpf(3^2*5) = 3\)
 				<p>Input format: One number \(n\) is the maximal number, for which a minimal divisor has to be found:<br>
 				\(n\)
 				</p>
@@ -195,8 +196,13 @@
             <ol>
                 <li>Each number \(x\) can be represented by its unique factorization: \(x=p_1^{q_1} p_2^{q_2} \dots p_m^{q_m}\).</li>
                 <li>As each \(p_i \ge 2\), then \(m \le \sum_i q_i \le log_2(x)\).</li>
-                <li>Sieve marks a number no more times than it has distinct prime divisors - thus it will mark any number \(x\) at most \(log_2(x)\) times, and so, complexity of a sieve is \(O(n\log(n))\).</li>
+                <li>Sieve marks a number no more times than it has distinct prime divisors - thus it will mark any number \(x\) at most \(log_2(x)\) times, and so, complexity of a sieve is \(O(n\log n)\).</li>
             </ol>
+            <h4>Not shown complexity proof</h4>
+            <p>Apparently, one can prove, that sum of reciprocals of primes up o \(n\) can be estimated by \(O(n \log \log n)\):
+            $$ \sum_{p \in P \land p \le n} \frac{1}{p} = O(n \log \log n) $$
+            Hence, one can estimate complexity of a sieve by \(O(n \log \log n)\).
+            </p>
 
 	    <h2>Problem III: hoisting sieve</h2>
 	    <p>Suppose, that You are given two integers \(a,b\), and thine aim is to determine for each number in range \(\lt a; b \gt\) whether it is prime. \(1 \le a \le b \le 10^{12}, b-a \le 10^6\)
@@ -216,6 +222,7 @@
 			<li>One can check a single number \(x\) whether it is prime by checking, whether it has any divisor \(2 \le d \le \sqrt{x}\) - this solution works in \(O(\sqrt{x})\).</li>
 			<li>One can check for any number in range \(\lt 1;n \gt\) whether it is prime with <b>sieve of Erastothnes</b>, using fact, that a number is prime if and only if it is not divisible by any other prime; this algorithm runs in \(O(n \log(n))\)</li>
 			<li>One can estimate sum in form \(\sum_{i=1}^{n} \frac{1}{1}+\frac{1}{2}+\dots+\frac{1}{n}=O(\log(n))\); from this follows thesis, that sum of amount of divisors of all integers in range \(\lt 1;n \gt\) can be estimated by \(O(n\log(n))\)
+                <li style="color:red">UNPROVEN: One can estimate complexity of a sieve by \(O(n \log \log n)\) - because sum of reciprocals of primes up to \(n\): \(\sum_{p \le n} \frac{1}{p}\) can be estimated by \(O(n\log\log n)\).</li>
 			<li><b>Euclid's lemma</b> states that for \(p \in P\) occurs: \(p|ab \implies (p|a \lor p|b)\) furthermore, \(p|a_1a_2 \dots a_n \implies (p|a_1 \lor p|a_2 \lor \dots \lor p|a_n)\)</li>
 			<li><b>Fundamental theorem of arithmetic</b> states that every number \(x \in N^+\) has one unique factorization into prime numbers.</li>
 			<li>Sieve can be utilized to find factorization of all numbers in range \(\lt 1;n \gt\).</li>

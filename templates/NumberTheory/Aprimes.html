@@ -17,11 +17,24 @@
 			<li>There are myriads of <strong>tests</strong>, that check, whether a number is prime; every one of tests shown here uses some <strong>base</strong>. Testing consists of two steps:
 				<ol>
 					<li>Choosing a base \(b\).</li>
-					<li>Checking, whether a number is a composite according to the given test. Later, result of this test will be denoted by \(test(m, b) = \begin{cases} 1 \text{ test using base \(b\) shows, that \(m\) is composite} \\0 \text{ otherwise}\\ \end{cases}\).</li>
+					<li>Checking, whether a number is composite according to the given test. Later, result of this test will be denoted by: $$test(m, b) = \begin{cases} 1 \text{ test using base \(b\) shows, that \(m\) is composite} \\0 \text{ otherwise}\\ \end{cases} $$.</li>
 				</ol>
-				If a number \(m\) is composite, yet, \(test(m,b)=0\) for some base \(b\), then, \(b\) will be called <strong>non-witness</strong> or <strong>liar</strong> regarding compositeness of \(m\) (if \(m\) is not composite such number will be non-witness). Conversely, if \(test(m, b)=1\) for base \(b\), then \(b\) will be called a <strong>witness</strong> of compositeness of \(m\). Two particular tests will be described later: <strong>Fermat test</strong> and <strong>Miller-Rabin test</strong>.
+				If \(test(m,b)=0\) for some base \(b\), then, \(b\) will be called <strong>non-witness</strong> or - if \(m\) is composite - <strong>liar</strong> regarding compositeness of \(m\). Conversely, if \(test(m, b)=1\) for base \(b\), then \(b\) will be called a <strong>witness</strong> of compositeness of \(m\). Two particular tests will be described later: <strong>Fermat test</strong> and <strong>Miller-Rabin test</strong>.
 			</li>
-			<li><strong>Carmichael number</strong> is such number \(m\), that \(\lambda(m) | m-1 \), where \(\lambda\) denotes <a href="http://localhost:5000/proot#41_Problem_IV:_maximal_order_for_a_given_number">Carmichael function</a>.</li>
+			<li><strong>Carmichael number</strong> is such number \(m\), that \(\lambda(m) | m-1 \), where \(\lambda\) denotes <a href="http://localhost:5000/proot#41_Problem_IV:_maximal_order_for_a_given_number">Carmichael function</a>. For example, \(561\) is a Carmichael number, as:
+                \begin{align}
+
+                561 &= 3*11*17 \\
+                \lambda(561) &= lcm(\lambda(3), \lambda(11), \lambda(17)) \\
+                \lambda(561) &= lcm(2, 10, 16) \\
+                \lambda(561) &= 80 \\
+                561-1 &= 80*7 \\
+                \lambda(561) &| 561-1 \\
+                \end{align}
+            
+            </li>
+
+            <li>In this article, \(\nu_p(m)\) denotes maximal exponent \(h\), for which \(p^h | m\). For example, \(\nu_2(96) = \nu_2(2^5 3) = 5\). This is used here only to simplify notation.</li>
 		</ol>
 
 		<h2>Problem I: Is given number prime?</h2>
@@ -37,8 +50,12 @@
 		<p>Proof:</p>
 		<ol>
 			<li>All elements \(x*a\) for \(x \in S\) are distinct; otherwise, for elements \(x_1\) and \(x_2\) belonging to \(S\), where \(x_1*a \equiv x_2*a \pmod m\), but \(x_1 \not \equiv x_2 \pmod m\):
-				$$ x_1*a \equiv x_2 *a \pmod m \ \ \ \ //*a^{-1}$$
-				$$ x_1 \equiv x_2 \pmod m$$
+                $$
+                \begin{align}
+				x_1*a &\equiv x_2 *a \pmod m \ \ \ \ //*a^{-1} \\
+                x_1 &\equiv x_2 \pmod m \\ 
+                \end{align}
+                $$
 				Analogous argument can be made for set \(T\) and element \(a^{-1}\).
 			</li>
 
@@ -70,12 +87,6 @@
 				$$ (b * a)^{m-1} \equiv b^{m-1} (a^{m-1}) \equiv 1*c \equiv c \pmod m$$
 
 				Thus, from lemma 0, if mapping element exists, then $$|\{x: x^{m-1} \equiv 1 \pmod m\}| = |\{x: x^{m-1} \equiv c \pmod m\}| $$
-				<!--
-				Furthermore, let \(X\) denote set of all numbers \(x\) such that \(x^{m-1} \equiv c \pmod m\); notice, that as \(gcd(b, m)=1\), then \(b\) has an inverse modulo \(m\). Then, for any \(x \in X\):
-				$$ (xb^{-1})^{m-1} \equiv x^{m-1}(b^{m-1})^{-1} \equiv c*c^{-1} \equiv 1 \pmod m $$
-				Thus, if there is at least one such number \(b\), such that \(b^{m-1} \equiv c \pmod m\), then there are exactly as many numbers \(h\), such that \(h^{m-1} \equiv 1 \pmod m\), as there are such numbers \(x\), that \(x^{m-1} \equiv c \pmod m\). In other words:
-				$$ \exists_{b: gcd(b, m)=1} b^{m-1} \equiv c \pmod m \implies |\{h: h^{m-1} \equiv 1 \pmod m\}|=|\{x: x^{m-1} \equiv c \pmod m\}| $$
-				-->
 				What follows, if there is at least one witness \(\pmod m\), there are no less fermat witnesses than non-witnesses \(\pmod m\).
 			</li>
 			<li>When does a number \(m\) not have any witness? When, for all \(h: h^{m-1} \equiv 1 \pmod m\). Note, that if \(\lambda(m) \nmid m-1\), this won't happen - if \(g\) is such number, that \(ord_m(g)=\lambda(m)\), then \(g^y \equiv 1 \pmod m\) if and only if \(\lambda(m) | y\). Conversely, if \(\lambda(m) | m-1\), this <strong>will</strong> happen - as for any \(g: ord_m(g) | \lambda(m)\), so 
@@ -89,7 +100,7 @@
 
 		<h3>Solution II: Miller-Rabin primarility test</h3>
 		<ol>
-			<li>Notice, that if \(m\) has a primitive root, then there are only 2 such numbers \(x\), that \(x^2 \equiv 1 \pmod m\) - namely \(1\) and \(m-1\) - if \(m\) has a primitive root, then number of such numbers \(g\), that \(ord_m(g)=2\) is equal to \(\phi(2)=1\) - this comes from <a href="/proot#27_Problem_II:_The_number_of_primitive_roots_modulo_\(m\)">here</a> (basically, if \(d|\phi(m)\) and \(m\) has a primitive root, then there are \(\phi(d)\) such numbers \(h\), that \(ord_m(h)=d\)). </li>
+			<li>Notice, that if \(m\) has a primitive root, then there are only 2 such numbers \(x\), that \(x^2 \equiv 1 \pmod m\) - namely \(1\) and \(m-1\) - if \(m\) has a primitive root, then number of such numbers \(g\), that \(ord_m(g)=2\) is equal to \(\phi(2)=1\) - this comes from <a href="/proot#30_Problem_II:_The_number_of_primitive_roots_modulo_\(m\)">here</a> (basically, if \(d|\phi(m)\) and \(m\) has a primitive root, then there are \(\phi(d)\) such numbers \(h\), that \(ord_m(h)=d\)). </li>
 
 			<li>All prime numbers have at least one primitive root (also powers of odd prime number).</li>
 			<li>Miller-Rabin test involves checking, whether:
@@ -168,7 +179,7 @@
 			<li>\(\kappa = \frac{m-1}{\nu_2(m-1)}\)</li>
 			<li>\(R = \{x: x^2 \equiv 1 \pmod m\}\)</li>
 			<li>\(\omega_r(h) = \{x: x^h \equiv r \pmod m \land r \in R\}\)</li>
-			<li>\(\Omega_r = \bigcup_{h \in {m-1, (m-1)/2, \dots \kappa}} omega_r(h) \)</li>
+			<li>\(\Omega_r = \bigcup_{h \in {m-1, (m-1)/2, \dots \kappa}} \omega_r(h) \)</li>
 		</ol>
 
 		<h5>Number of non-witnesses</h5>
@@ -234,43 +245,6 @@
 			<li>For odd numbers with at least two distinct prime divisors, \(|R| \ge 4\). At least \(\frac{4-2}{4}=\frac{1}{2}\) of numbers coprime to \(m\) that are fermat liars are Miller-Rabin witnesses. As at least half of numbers coprime to \(m\) are Fermat witnesses, at least \(\frac{1}{2} + \frac{1}{2}*\frac{1}{2} = \frac{3}{4}\) of all number coprime to \(m\) are Miller-Rabin witnesses.</li>
 			<li>Partially related to Miller-Rabin, primarily to Fermat test: if a composite number (say, \(x\)) is even, then at least half except one of numbers in set \(\{1, \dots x-1\}\) is non-coprime to \(x\), and half of numbers in this set are fermat witnesses; in other words, if a number is even, then at least \(\frac{3}{4}\) except one numbers in set \(\{1, \dots x-1\}\) are Fermat witnesses, and thus also Miller-Rabin witnesses.</li>
 		</ol>
-
-		<!--
-		<p>It will be established, that if \(m\) is a Carmichael number, then out of all numbers coprime to \(m\) among \(\{1 \dots m-1\}\) at most \(\frac{1}{4}\) of them are fermat liars. The technique (shown by Bobby Kleinberg in his timeless cult-classic <a href=https://web.archive.org/web/20210415013417/http://www.cs.cornell.edu/courses/cs4820/2010sp/handouts/MillerRabin.pdf>paper</a>) of proving this statement involves distinguishing three non-intersecting sets consisting of elements \(\{1 \dots m-1\}\); Let \(m-1=2^kt\) where \(2 \nmid t\):</p>
-		<ol>
-			<li>\(X\) - all numbers not-coprime to \(m\) - \(x \in X\) is a witness.</li>
-			<li>\(Y\) - \(y \in Y \iff y^t \equiv 1 \pmod m\) - \(y \in Y\) is a non-witness.</li>
-			<li>\(Z1\) - \(z \in Z1 \iff z^{2^ht} \equiv m-1 \pmod m\) for some \(h\) - \(z \in Z1\) is a non-witness.</li>
-			<li>\(Z2\) - \(z \in Z2 \iff z^{2^ht} \not \equiv \pm 1 \pmod m \land z^{2^{h+1}t} \equiv 1 \pmod m\) for some \(h\) - \(z \in Z2\) is a witness.</li>
-		</ol>
-		<p>The point will be made, that \(|Y| \le \frac{m-1}{8}\), \(|Z1| \le \frac{|Z1|+|Z2|}{7}\): This will imply, that \(|Y|+|Z1| \le |Y| + \frac{m-1-|Y|}{7} = \frac{7|Y|+m-1-|Y|}{7} = \frac{6|Y|+m-1}{7} \le \frac{6m-6}{7*8}+\frac{m-1}{7} = \frac{6m+8m-18-6}{8*7} = \frac{14(m-1)}{8*7} = \frac{m-1}{4}\) - thus, choosing any base leads to probability greater than half of choosing miller-rabin witness for any base.</p>
-		<h5>Proof of Miller-Rabin probability of a hit for Carmicahel numbers, part I: \(|Y| \le \frac{m-1}{8}\)</h5>
-		<p>Proof:</p>
-		<ol>
-			<li>An argument will go like this: for a single prime divisor \(p\) of \(m\), there are at most \(\frac{p-1}{2}\) such values \(b\), that \(b^t \equiv 1 \pmod p\). Thus, from Chinese remainder theorem, there are at most \(\frac{(p_1-1)(p_2-1) \dots (p_n-1)}{2^n}\) such values \(b\), that \(b^t \equiv 1 \pmod m\). As each Carmichael number has at least 3 prime divisors, then \(|Y| \le \frac{m}{8}\). What is left to show is that, for a single prime, there are at most \(\frac{p-1}{2}\) such values \(b\), that \(b^t \equiv 1 \pmod m\).</li>
-			<li>Notice, that for prime divisor \(p\) of \(m: \lambda(p)=\phi(p)\) is even (as \(p\) is odd), and thus, there is some \(b\) with \(ord_p(b)=\phi(p)\), for which \(t \nmid ord_p(b)\) - because \(t\) is not divisible by \(2\) - for this \(b: b^t \not \equiv 1 \pmod p\), and, consequently, \(b^t \not \equiv 1 \pmod m\).</li>
-			<li>From Thesis I, if there is one such \(b\), that \(b^t \not \equiv 1 \pmod m\), then at most half of all values \(s \in \{1, \dots, m-1\}\) fulfills: \(s^t \equiv 1 \pmod m\) which ends the proof.</li>
-		</ol>
-		<h5>Proof of Miller-Rabin probability of a hit for Carmichael numbers, part II: \(|Z1| \le \frac{|Z2|}{6}\)<b style="color:red">WARNING: BAD PROOF</b></h5>
-		<p>Proof:</p>
-		<ol>
-			<li>Suppose, there is at least one element \(z \in Z1\) (otherwise there would be no need to show anything): thus, for some \(l\), 
-				$$
-				\begin{cases}
-					z^{2^lt} \equiv -1 \pmod {p_1} \\
-					\dots \\
-					z^{2^lt} \equiv -1 \pmod {p_n} \\
-				\end{cases}\\
-				$$
-				Then, for some \(v\), let \(s_v\) denote sequence \((v \pmod {p_1}, \dots v \pmod {p_n})\). Notice, that for any sequence \(x\) consisting of \(1\)s and \(-1\)s there exists some \(w\), for which \(s_{(zw)^{2^lt}}=x\):
-				<ol>
-					<li>If \(x(i)=-1\), then \(w \equiv 1 \pmod {p_i}\)</li>
-					<li>If \(x(i)=1\), then \(w \equiv z \pmod {p_i}\)</li>
-				</ol>
-				Any \(z \in Z1\) multiplied by \(w\) leads to such value \(wz\), that \(s_{(wz)^{2^lt}} = x\). Thus, as \((wz)^{2^{l+1}t} \equiv 1 \pmod m\) (because for all \(p_i: p_i|m\) noticeable nuissance: \((wz)^{2^{l+1}t} \equiv ((wz)^{2^lt})^2 \equiv -1^2 \equiv 1 \pmod {p_i}\) occurs), and as for each \(z_1, \dots z_h \in Z1\) all \(wz_1, \dots wz_h\) are distinct, then for each sequence \(x\) consisting of \(1\)s and \(-1\)s there are at least as many values \(b: s_b=x\) as there are values \(z: s_z=(-1, -1, \dots -1)\). Notice, that \(b\) is certainly a non-witness if \(s_b \neq (-1, -1, \dots -1)\) and \(s_b \neq (1, 1, \dots 1)\) - thus, there are \(2^n-2\) sequences constituting a witness, and so, as \(n \ge 3\), \(|Z1| \le \frac{|Z2|}{8-2} = \frac{|Z2|}{6}\)
-			</li>
-		</ol>
-		-->
 		<h4>One last time, and Miller-Rabin will fade away</h4>
 		<p>To sum it up:</p>
 		<ol>

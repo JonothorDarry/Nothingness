@@ -58,7 +58,15 @@ class ExtendedSieve extends Sieve{
 	}
 
 	buttCreator(v){
-		return this.doubleButtCreator(v, Representation_utils.button_creator)[0];
+		var btn = this.doubleButtCreator(v, Representation_utils.button_creator);
+		btn[1].innerHTML = 'lpf(' + btn[1].innerHTML + ')';
+		for (var x of btn){
+			x.style.width='80px';
+		}
+		btn[0].style.border = '1px solid grey';
+		btn[0].style.verticalAlign = 'top';
+
+        return btn[0];
 	}
 }
 

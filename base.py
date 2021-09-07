@@ -34,7 +34,7 @@ systems=[
         ['choice', 'Choice', 'Combinatorics/Choice.html', 'Choice', 'Choice'],
         ['iep', 'Iep', 'Combinatorics/Iep.html', 'Inclusion Exclusion Principle', 'Inclusion_Exclusion_Principle'],
         ['romance', 'Romance', 'Combinatorics/Unholy_romance.html', 'Number theory in combinatorics', 'Number_theory_in_combinatorics'],
-        ['isomorphism', 'TreeIsomorphism', 'Trees/Tree_isomorphism.html', 'Tree Isomorphism', 'Tree Isomorphism'],
+        ['isomorphism', 'Isomorphisms', 'Trees/Tree_isomorphism.html', 'Tree Isomorphism', 'Tree Isomorphism'],
 
         ['treewalk', 'TreeBasic', 'Trees/TreeBasics.html', 'Tree Walk', 'Tree_Walk'],
         ['lca', 'Lca', 'Trees/Lca.html', 'Lowest Common Ancestor', 'Lowest_Common_Ancestor']

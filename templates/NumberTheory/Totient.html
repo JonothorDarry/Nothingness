@@ -18,11 +18,11 @@
 				In other words, \(\phi(x)\) defines number of natural positive numbers not higher than \(x\) coprime to \(x\).
 			</li>
 		</ol>
-		<h2>Problem I</h2>
+		<h2>Problem I: Basic properties of totient</h2>
 		<p>
 			Suppose You are given following problem: For given numbers \(m, y\ (1 \le m, y \le 10^{13})\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
 		</p>
-		<h3>Special case</h3>
+		<h3>Special case: defining totient</h3>
 		<p>It is approprite to solve problem for \(y=1\) (where the solution is denoted by totient function) before proceeding to general case. What can be said about totient function? </p>
 
 		<h4>Properties of totient</h4>
@@ -83,16 +83,16 @@
 			</ol>
 			<p>And so, \( |\{x:\ gcd(x, m)=y\}|=\phi(\frac{m}{y}) \). One can solve problem by factorizing \(\frac{m}{y}\) and using formula above: complexity will be \(O(fac(\frac{m}{y}))\), where \(fac\) denotes time needed to factorize a number.</p>
 		</p>
-		<h3>Consequence #1</h3>
+		<h3>Consequence of totient definition</h3>
 		<p>It's worth noting, that every number \(x \le m\) has \(gcd(x, m) \in \{ 1, 2, \dots m \} \). What follows, \(\sum_{d:\ d|m} \phi(\frac{m}{d})=m\)</p>
 
 		<!--<h3>Consequence #2</h3>
 		<p>Furthermore, </p>-->
 
-		<h2>Problem II</h2>
-		<p>What if there are \(q\ (q \le 5*10^5)\) queries, and you have to solve identical problem as above with different constraints: for \(m, y\ (1 \le m, y \le n=5*10^6)\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
+		<h2>Problem II: Totient in a range</h2>
+        <p>For all \(x \in \{1, 2, \dots, n\}\), where \(n \le 10^6\), what is the value of \(\phi(x)\)?</p>
 		<h3>Solution with sieve for finding totient</h3>
-		<p>Note that in practice it is enough to find totient for each number in range \(\lt 1; 5*10^6\gt\) before processing queries and be able to find \(gcd\) in \(O(log(m+y))\) - for example using Euclid's algorithm - in order to solve this problem in satisfying \(O(n\log\log(n)+q\log(n))\). To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve.</p>
+		<p>To find totient of each number in range \(\lt 1;n \gt\), one can utilize standard sieve: initialize each number's totient with itself, and each time a prime number \(p\) is found, multiply totients of all numbers \(x:\ p|x \land x \le n\) by \(\frac{p-1}{p}\): the only nuance, which diffrentiates it from standard sieve is necessity of changing totients starting from \(p\), not \(p*p\), as in normal sieve. This leads to an algorithm with standard sieve complexity - \(O(n \log \log n)\) (assuming multiplication works in \(O(1)\)).</p>
 
 		{{ algo.neo_algorithm(1, 'Totient sieve', '
 			<p>Input format: One number \(n\) is the size of the sieve used to find totients.<br>
@@ -107,12 +107,12 @@
 		<p> Suppose You are given numbers \(2 \le a_0, a_1, .. a_{n-1}, m \le 10^9+7, n \le 10^5\) and have to find value of such expression:
 		<span class="central" style="font-size:20px;">$$a_0^{ ({a_1} ^{( {a_2} ^ {(\dots ^ {a_{n-1}})})})} mod\ m$$</span>
 		<h3>Observations concerning the essence of this problem</h3>
-		<p>To solve this problem, one may first find value of exponent, and then evaluate full expression: \(a_0^{c} \equiv x\ (mod\ m)\). Exponent can be calculated in the same way, until end of sequence is reached... but modulo what? It is rather impossible to store whole number as exponent or do any calculations on such arduous numbers. To calculte c, it would be wise to know such a number \(x\), such that \(a^b \equiv a^{b+x}\ (mod\ m)\) - at least for coprime \(a, m\). Such number must exist, because number of possible values of \(a^b \pmod m\) is finite (not higher than \(m\), to be precise), and so, from pigeonhole principle, there exist such \(s_1 \lt s_2\), such that \(a^{s_1} \equiv a^{s_2}\ (mod\ m)\). What follows, \(x=s_2-s_1\) (there must be more solutions, perhaps some are lower). Then, 
+		<p>To solve this problem, one may first find value of exponent, and then evaluate full expression: \(a_0^{c} \equiv x\ (mod\ m)\). Exponent can be calculated in the same way, until end of sequence is reached... but modulo what? It is rather impossible to store whole number as exponent or do any calculations on such arduous numbers. To calculate \(c\), it would be wise to know such a number \(x\), such that \(a^b \equiv a^{b+x}\ (mod\ m)\) - at least for coprime \(a, m\). Such number must exist, because number of possible values of \(a^b \pmod m\) is finite (not higher than \(m\), to be precise), and so, from pigeonhole principle, there exist such \(s_1 \lt s_2\), such that \(a^{s_1} \equiv a^{s_2}\ (mod\ m)\). What follows, \(x=s_2-s_1\) (there must be more solutions, perhaps some are lower). Then, 
 		<span class="central">\( a^b \equiv a^{b+x}\ (mod\ m)\) <br>
 			\( a^b \equiv a^ba^x\ (mod\ m)\ \ \ //*(a^b)^{-1}\) - it exists, because \(gcd(a, m)=1\)<br>
 			\( 1 \equiv a^x\ (mod\ m)\)<br>
 		</span>
-		And so, \(a^c \equiv a^{c\ mod\ x}\ (mod\ m)\). Let's denote \(a\) as \(a_i\), \(x\) as \(x_i\). For all numbers coprime to \(m\): \(a_1, a_2 \dots a_{\phi(n)}\) there is \(x_j\), such  that \(a_j^{x_j} \equiv 1\). Let \(f(m)=lcm(x_1, x_2, \dots, x_{\phi(m)})\). Then, \(\forall_j a_j^{f(m)} \equiv 1\ (mod\ m)\). And so, for any \(m\) there exist function \(f\), such that \(\forall_{x: gcd(x, m)=1} x^{f(m)} \equiv 1\ (mod\ m)\). Now, the problem is: what function can be \(f\)?
+		And so, \(a^c \equiv a^{c\ mod\ x}\ (mod\ m)\). For all numbers coprime to \(m\): \(a_1, a_2 \dots a_{\phi(n)}\) there is \(x_j\), such  that \(a_j^{x_j} \equiv 1\). Let \(f(m)=lcm(x_1, x_2, \dots, x_{\phi(m)})\). Then, \(\forall_j a_j^{f(m)} \equiv 1\ (mod\ m)\). And so, for any \(m\) there exist function \(f\), such that \(\forall_{x: gcd(x, m)=1} x^{f(m)} \equiv 1\ (mod\ m)\). Now, the problem is: what function can be \(f\)?
 		</p>
 
 		<h3>Euler's Theorem</h3>
@@ -125,20 +125,24 @@
 		<span class="central">\(ba_i \equiv ba_j\pmod m\ \ //*b^{-1}\) - modular inverse must exist, for \(gcd(b, m)=1\)<br>
 			\(a_i \equiv a_j\pmod m\)
 		</span>
-		But from definition \(a_i \neq a_j\), both being lower than \(m\), so they are distinct. And so, both sequnces consist only of numbers coprime to \(m\), size of both sequences is \(\phi(m)\), each sequence have pairwise distinct elements modulo \(m\), and both sequences consist of set of same elements. In other words sequence \(a\) is permutation of the sequence \(b\). And so, 
-		<span class="central">\(a_1a_2 \dots a_{\phi(m)} \equiv ba_1ba_2 \dots ba_{\phi(m)} \pmod m\)<br>
-			\(a_1a_2 \dots a_{\phi(m)} \equiv b^{\phi(m)}a_1a_2 \dots a_{\phi(m)} \pmod m\ \ //*a_1^{-1}a_2^{-1}...a_{\phi(m)}^{-1}\)  - modular inverse exists, for all numbers are coprime to \(m\)<br>
-			\(1 \equiv b^{\phi(m)} \pmod m\)
+		But from definition \(a_i \neq a_j\), both being lower than \(m\), so they are distinct. And so, both sequnces consist only of numbers coprime to \(m\), size of both sequences is \(\phi(m)\), each sequence have pairwise distinct elements modulo \(m\), and both sequences consist of set of same elements. In other words sequence \(a\) is permutation of the sequence \(ba\) (all elements of \(a\) multiplied by \(b\)). And so, 
+		$$
+        \begin{align}
+        a_1a_2 \dots a_{\phi(m)} &\equiv ba_1ba_2 \dots ba_{\phi(m)} \pmod m \\
+        a_1a_2 \dots a_{\phi(m)} &\equiv b^{\phi(m)}a_1a_2 \dots a_{\phi(m)} \pmod m\ \ //*a_1^{-1}a_2^{-1}...a_{\phi(m)}^{-1} \text{ - modular inverse exists, for all numbers are coprime to \(m\)} \\
+			1 &\equiv b^{\phi(m)} \pmod m \\
+            \end{align}
+            $$
 		</span>
 		And so, lo, behold, function was found, \(f=\phi\): \(\forall_{x: gcd(x, m)=1} x^{\phi(m)} \equiv 1\ (mod\ m)\)
 		</p>
 		<h4>Generalized Euler's theorem</h4>
 		<p>
-		The question arises: what if one wants to find \(a^{huge} \bmod m\) with \(gcd(a, m) \gt 1\)? one can represent \(m, a\), for \(v, w \in N \land p_1p_2...p_n|m \land p_1p_2...p_n|a\) (where \(p_1...p_n\) are only common prime divisors of \(m, a\)) in such way:
+		The question arises: what if one wants to find \(a^{huge} \bmod m\) with \(gcd(a, m) \gt 1\)? One can represent \(m, a\), for \(v, w \in N \land p_1p_2...p_n|m \land p_1p_2...p_n|a\) (where \(p_1...p_n\) are only common prime divisors of \(m, a\) in such way:
 		<span class="central">\(m=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}v\)</span>
 		<span class="central">\(a=p_1^{r_1}p_2^{r_2} \dots p_n^{r_n}w\)</span>
-		<span class="central">\(a^c=p_1^{cr_1}p_2^{cr_2} \dots p_n^{cr_n}w\)</span>
-		Suppose that \(c\) is such a number, that \(cr_1 \ge q_1, cr_2 \ge q_2 \dots cr_n \ge q_n\). Then, suppose that \(g=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\). Clearly, \(gcd(a^c, m)= p_1^{min(q_1, cr_1)}p_2^{min(q_2, cr_2)} \dots p_n^{min(q_n, cr_n)} = p_1^{q_1}p_2^{q_2} \dots p_n^{q_n} = g\). It would be wise to show some lemmas before proceeding further:
+		<span class="central">\(a^c=p_1^{cr_1}p_2^{cr_2} \dots p_n^{cr_n}w^c\)</span>
+		Suppose that \(c\) is such a number, that \(cr_1 \ge q_1, cr_2 \ge q_2 \dots cr_n \ge q_n\). Then, suppose that \(g=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n}\). Clearly, \(gcd(a^c, m)= p_1^{\min(q_1, cr_1)}p_2^{\min(q_2, cr_2)} \dots p_n^{\min(q_n, cr_n)} = p_1^{q_1}p_2^{q_2} \dots p_n^{q_n} = g\). It would be wise to show some lemmas before proceeding further:
 		</p>
 		<ol>
 			<li>
@@ -166,7 +170,7 @@
 			There are still some unresolved things, however.
 			<ol>
 				<li>
-					For \(a^z, z \lt\) minimal \(c: a^c \equiv a^{c\ mod\ \phi(m)+\phi(m)} \pmod m\), is there such \(h \gt 0\), such that \(a^z \equiv a^{z+h} \pmod m\)?<br>
+					For \(z \lt\) minimal \(c: a^c \equiv a^{c\ mod\ \phi(m)+\phi(m)} \pmod m\), is there such \(h \gt 0\), such that \(a^z \equiv a^{z+h} \pmod m\)?<br>
 					There isn't: if \(gcd(a^z, m) \neq gcd(a^{z+1}, m)\), and \(\forall_{i \in N_+} gcd(a^i, m) \le gcd(a^{i+1}, m)\) - because \(g|a \implies \forall_{k \in N_+} g|ka\), then there is no such \(h \in N_+\), such that \(gcd(a^{z+h}, m)=gcd(a^z, m)\) - and because mod operation preserves \(gcd\), then \(a^z \not \equiv a^{z+h} \pmod m\).
 				</li>
 				<li>
@@ -176,7 +180,7 @@
 						<li>\(\phi(m)=m \frac{p_1-1}{p_1} \dots \frac{p_n-1}{p_n} \ge m \frac{1}{2} \frac{2}{3} \frac{3}{4} ... \frac{n}{n+1} = m \frac{1}{n+1} \ge m \frac{1}{\lfloor log_2(m) \rfloor +1}\)</li>
 						<li>\(\phi(m)-\lfloor log_2(m) \rfloor \ge \frac{m}{\lfloor log_2(m) \rfloor+1}-\lfloor log_2(m) \rfloor=\frac{1}{\lfloor log_2(m) \rfloor+1}(m-(\lfloor log_2(m) \rfloor)^2-\lfloor log_2(m) \rfloor )\)</li>
 					</ol>
-					If last equation is greater equal 0, the theorem is correct (but not only in those cases). For large numbers, it's obvious, for small ones, You can check it Yourself.
+					If last equation is greater equal to 0, the theorem is correct (but not only in those cases). For large numbers, it's obvious, for small ones, You can check it Yourself.
 			</ol>
 		</p>
 
