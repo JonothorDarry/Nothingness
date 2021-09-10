@@ -1,0 +1,4 @@
+== 10.09.2021
+ - [Text] Vital changes - Primarility testing - corrected hopefully most of controversial statements.
+ - [Text] Typo in CRT
+ - [Infr] Removed unnecessary stuff from base

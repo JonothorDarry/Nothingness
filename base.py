@@ -1,12 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, request, make_response, render_template_string
-from sqlalchemy import create_engine
 from bs4 import BeautifulSoup
-import smtplib, ssl
-from email.mime.text import MIMEText
 import re
-import random
-import string
-import os
 from math import log
 
 app=Flask(__name__)
@@ -68,11 +62,6 @@ class transformation:
     html_to_place={
             **{x.path:x.base for x in systems},
     }
-
-
-def get_random_string(N=40):
-    return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
-
 
 def comeBackin(place, old_place):
     places=transformation.places
@@ -194,28 +183,11 @@ def getBSFileByName(name):
 
 def Router(htmlName, olden=None):
     req=request
-
     if (req.method=='POST'):
-        if ('remove' in req.form):
-            engine.execute(f'delete from vision where id={req.form["remove"]}')
-            return comeBackin(transformation.html_to_place[htmlName], htmlName)
         s=req.form['next']
         return comeBackin(s, htmlName)
     else:
-        if 'UserID' in  req.cookies:
-            if (req.cookies['UserID']!=''):
-                html_full=modify(htmlName, req.cookies['UserID'])
-                if (htmlName=='System/task_adder.html'):
-                    html_full=input_fill(html_full, olden)
-
-                resp=make_response(render_template_string(html_full))
-            else:
-                resp=make_response(render_template(htmlName))
-            resp.set_cookie('UserID', req.cookies['UserID'])
-
-        else:
-            resp=make_response(render_template(htmlName))
-            resp.set_cookie('UserID', '')
+        resp=make_response(render_template(htmlName))
         return resp
 
 
@@ -324,14 +296,4 @@ def jinjautils():
 
 
 if __name__=='__main__':
-    #engine.execute("delete from vision")
-    #engine.execute("delete from logging")
-
-    #engine.execute("drop table vision")
-    #engine.execute("drop table logging")
-
-    #engine.execute("create table logging(id int primary key generated always as identity, mail text unique not null, login text unique not null, password text, authValue text, activated int)")
-    #engine.execute("create table vision(id int primary key generated always as identity, login text references logging(login) on update cascade, domain text, description text, link text, name text, difficulty text)")
-
-    #engine.execute("insert into logging values('Stefan', 'Stannis', 'kappa')")
     app.run()

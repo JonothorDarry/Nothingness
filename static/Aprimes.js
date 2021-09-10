@@ -214,7 +214,7 @@ class Muller extends Partial{
 		}
 
 		grid.single_filler([0, 0], `b<sup>x</sup>\\x`, {'color':this.present.colors.info});
-		grid.single_filler([-1, 0], `Miller-Rabin test: |{b: b<sup>2x</sup> &equiv; 1 (mod m)}|`, {'color':this.present.colors.info, 'stylistic':{'px':{'width':240}} });
+		grid.single_filler([-1, 0], `Miller-Rabin test: |{b: b<sup>2x</sup> &equiv; 1 (mod m)}|`, {'color':this.present.colors.info, 'stylistic':{'px':{'width':280}} });
 	}
 
 	_presentation_summary_fermat(){
@@ -243,7 +243,7 @@ class Muller extends Partial{
 		grid.single_filler([1, t_expo.length+2], summa, {'color':this.present.colors.summary});
 
 		//Titles
-		var description_width=140;
+		var description_width=180;
 		grid.single_filler([-1, 0], `Fermat test`, {'color':this.present.colors.info, 'stylistic':{'px':{'width':description_width}} } );
 		grid.single_filler([0, 0], `x`, {'color':this.present.colors.info, 'stylistic':{'px':{'width':description_width}} } );
 		grid.single_filler([1, 0], `|{b:b<sup>m-1</sup> &equiv; x (mod m)}|`, {'color':this.present.colors.info, 'stylistic':{'px':{'width':description_width}} } );

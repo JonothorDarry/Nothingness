@@ -163,7 +163,6 @@ class Ntt extends Algorithm{
 		//Currently unused
 		this.buttons={'inv_n':null, 'proot':null, 'k':[], 'a':[], 'b':[], 'w':[], 'A':[], 'B':[], 'w2':[], 'A2':[], 'B2':[], 'y':[], 'Y':[], 'res':[]};
 		var mx_all, i;
-		console.log(this.logic);
 
 		//System-specific feats: either read q or not, then find inverse n and minsize of button (perhaps too large for fft)
 		if (this.logic.is_ntt) mx_all=Math.max(4, this.logic.q.toString().length)*10;
@@ -431,7 +430,7 @@ class Ntt extends Algorithm{
 		var l=this.lees.length, w1=wfun(1), wn=wfun('n'), w0=wfun(0), wi=wfun('i'), wi_1=wfun('i-1');
 		var s=this.lees[l-1], equiv=this.logic.is_ntt?`&equiv;`:`=`;
 		var strr=``;
-		if (s[0]==0) strr=`At the start of the algorithm, the polynominals A(x), B(x) are padded with 0's, so that it will be possible to find their values in not less than o+m+1=${this.o+this.m+1} &le; ${this.logic.n} places`
+		if (s[0]==0) strr=`At the start of the algorithm, the polynominals A(x), B(x) are padded with 0's, so that it will be possible to find their values in not less than o+m+1=${this.logic.o+this.logic.m+1} &le; ${this.logic.n} places`
 		if (s[0]==1 && (this.logic.proot || this.logic.is_fft)) strr=`${this.logic.is_ntt?`Primitive root modulo q=${this.logic.q} is found`:`${this.logic.n}-th root of unity is found`}, it is equal to ${this.logic.proot} ${this.logic.is_ntt?`(to attain this root deterministic algorithm was used).`:``}`;
 		else if (s[0]==1) strr=`Primitive root modulo q=${this.logic.q} cannot be found, as it doesn't exist - calculations are not performed`;
 

@@ -14,14 +14,14 @@
 		<h2>Introduction</h2>
 		<p>This article is intended to show efficient, not necessarily elegant methods of finding whether particular number is prime, and also its factorization. Definitions introduced in this article include:</p>
 		<ol>
-			<li>There are myriads of <strong>tests</strong>, that check, whether a number is prime; every one of tests shown here uses some <strong>base</strong>. Testing consists of two steps:
+			<li>There are myriads of <strong>tests</strong>, that check, whether a number \(m\) is prime; every one of tests shown here uses some <strong>base</strong>. Testing consists of two steps:
 				<ol>
-					<li>Choosing a base \(b\).</li>
-					<li>Checking, whether a number is composite according to the given test. Later, result of this test will be denoted by: $$test(m, b) = \begin{cases} 1 \text{ test using base \(b\) shows, that \(m\) is composite} \\0 \text{ otherwise}\\ \end{cases} $$.</li>
+                    <li>Choosing a base \(b\). In this article, it is assumed, that \(b \in \{1, 2, \dots, m-1\}\).</li>
+					<li>Checking, whether a number is composite according to the given test. Later, result of this test will be denoted by: $$test(m, b) = \begin{cases} 1 \text{ test using base \(b\) shows, that \(m\) is composite} \\0 \text{ otherwise}\\ \end{cases} $$</li>
 				</ol>
-				If \(test(m,b)=0\) for some base \(b\), then, \(b\) will be called <strong>non-witness</strong> or - if \(m\) is composite - <strong>liar</strong> regarding compositeness of \(m\). Conversely, if \(test(m, b)=1\) for base \(b\), then \(b\) will be called a <strong>witness</strong> of compositeness of \(m\). Two particular tests will be described later: <strong>Fermat test</strong> and <strong>Miller-Rabin test</strong>.
+                If \(test(m,b)=0\) for some base \(b\), then, \(b\) will be called <strong>non-witness</strong> or - if \(m\) is composite - <strong>liar</strong> regarding compositeness of \(m\). Conversely, if \(test(m, b)=1\) for base \(b\), then \(b\) will be called a <strong>witness</strong> of compositeness of \(m\). Two particular tests will be described later: <strong>Fermat test</strong> and <strong>Miller-Rabin test</strong>. Later, such witness \(x\) of compositeness of \(m\), that \(gcd(x, m) \neq 1\) will be called <strong>trivial witness</strong>, and any other witness - <strong>non-trivial witness</strong>.
 			</li>
-			<li><strong>Carmichael number</strong> is such number \(m\), that \(\lambda(m) | m-1 \), where \(\lambda\) denotes <a href="http://localhost:5000/proot#41_Problem_IV:_maximal_order_for_a_given_number">Carmichael function</a>. For example, \(561\) is a Carmichael number, as:
+			<li><strong>Carmichael number</strong> is such composite number \(m\), that \(\lambda(m) | m-1 \), where \(\lambda\) denotes <a href="http://localhost:5000/proot#41_Problem_IV:_maximal_order_for_a_given_number">Carmichael function</a>. For example, \(561\) is a Carmichael number, as:
                 \begin{align}
 
                 561 &= 3*11*17 \\
@@ -41,7 +41,7 @@
 		<p>A number \(m \le 10^{18}\) is given; is this number a prime number?</p>
 		<h3>Fundamental lemmas</h3>
 		<h4>Lemma 0: On set sizes with mapping element</h4>
-		<p>Thesis: Suppose, two sets \(S\) and \(T\) are given, with elements belonging to \(\{0, 1, \dots m-1\}\), all elements of both sets are coprime to \(m\), along with number \(a\) coprime to \(m\). Then, if:
+		<p>Thesis: Suppose, two sets \(S\) and \(T\) are given, with elements belonging to \(\{1, 2, \dots m-1\}\), along with number \(a\) coprime to \(m\). Then, if:
 		$$ \forall_{x \in S} x*a \equiv y \pmod m $$
 		where \(y \in T\), and
 		$$ \forall_{y \in T} y*a^{-1} \equiv z \pmod m $$
@@ -58,7 +58,6 @@
                 $$
 				Analogous argument can be made for set \(T\) and element \(a^{-1}\).
 			</li>
-
 			<li>From above, \(|S| \le |T|\) - because multiplying element from \(S\) by \(a\) always leads to different element from \(T\). Analogous argument can be made for set \(T\): that is, \(|T| \le |S|\). Thus, \(|T|=|S|\).</li>
 		</ol>
 		<p>Remark: Providing mapping element (\(a\)) for two sets with shows, that sets have same size (provided condition of being coprime is satisfied).</p>
@@ -66,8 +65,8 @@
 		<h3>Solution I: Fermat primarility test</h3>
 		<p>First test shown relies on special case of euler's theorem (\(gcd(a,m)=1 \implies a^{\phi(m)} \equiv 1 \pmod m\)), namely Fermat's little theorem:
 		 $$a^{p-1} \equiv 1 \pmod p $$
-		 For a prime number \(p\). If there is such \(a \lt p\), that \(a^{p-1} \not \equiv 1 \pmod p\), then \(p\) is not a prime.</p>
-		<p>Let \(test_F(m, b)\) denote results of Fermat test testing compositeness of \(m\) for a base \(b\).
+         For a prime number \(p\) and \(a\) coprime to \(p\). If there is such \(a \in \{1, 2, \dots m-1\}\), that \(a^{m-1} \not \equiv 1 \pmod p\), then \(p\) is not a prime.</p>
+		<p>Let \(test_F(m, b)\) denote results of Fermat test testing compositeness of \(m\) using a base \(b\).
 		$$test_F(m,b)=
 		\begin{cases} 
 			1 \text{ if \(b^{m-1} \not \equiv 1  \pmod m\)} \\
@@ -76,40 +75,40 @@
 		$$
 		</p>
 
-		<h4>Thesis I: if a number \(m\) is neither a prime nor a Carmichael number, then there are at least \(\frac{m}{2}\) fermat witnesses for \(m\)</h4>
+		<h4>Thesis I: if a number \(m\) is neither a prime nor a Carmichael number, then there are at least \(\frac{m-1}{2}\) fermat witnesses for \(m\)</h4>
 		<ol>
-			<li>If \(gcd(b, m) \gt 1\), then \(b^{m-1} \not \equiv 1 \pmod m\) - so, instead, a lemma showing that at least half of numbers coprime to \(m\) are fermat witnesses will be shown. 
-				$$\frac{\phi(m)}{2}+(m-\phi(m)) \ge \frac{m}{2}$$
+			<li>If \(gcd(b, m) \gt 1\), then \(b^{m-1} \not \equiv 1 \pmod m\) - so, instead, a lemma showing that at least half of numbers coprime to \(m\) are fermat witnesses will be shown:
+				$$\frac{\phi(m)}{2}+(m-1-\phi(m)) \ge \frac{m-1}{2}$$
 			</li>
-			<li>Let \(S=\{b: b^{m-1} \equiv c \pmod m\}\) for some \(c \not \equiv 1 \pmod m \land gcd(c, m)=1\). Let also \(T=\{b: b^{m-1} \equiv 1 \pmod m\}\). If \(|S| \ge 1\), then let \(a\) denote any element from \(S\). Then, for \(b \in S\):
+			<li>Let \(S=\{b: b^{m-1} \equiv c \pmod m\}\) for some \(c \not \equiv 1 \pmod m\) where \(gcd(c, m)=1\). Let also \(T=\{b: b^{m-1} \equiv 1 \pmod m\}\). If \(|S| \ge 1\), then let \(a\) denote any element from \(S\). Then, for \(b \in S\):
 				$$ (b * a^{-1})^{m-1} \equiv b^{m-1} (a^{m-1})^{-1} \equiv c*c^{-1} \equiv 1 \pmod m$$
 				And for \(b \in T\):
 				$$ (b * a)^{m-1} \equiv b^{m-1} (a^{m-1}) \equiv 1*c \equiv c \pmod m$$
 
 				Thus, from lemma 0, if mapping element exists, then $$|\{x: x^{m-1} \equiv 1 \pmod m\}| = |\{x: x^{m-1} \equiv c \pmod m\}| $$
-				What follows, if there is at least one witness \(\pmod m\), there are no less fermat witnesses than non-witnesses \(\pmod m\).
+				What follows, if there is at least one witness \(\pmod m\), there are no less non-trivial fermat witnesses than non-witnesses \(\pmod m\).
 			</li>
-			<li>When does a number \(m\) not have any witness? When, for all \(h: h^{m-1} \equiv 1 \pmod m\). Note, that if \(\lambda(m) \nmid m-1\), this won't happen - if \(g\) is such number, that \(ord_m(g)=\lambda(m)\), then \(g^y \equiv 1 \pmod m\) if and only if \(\lambda(m) | y\). Conversely, if \(\lambda(m) | m-1\), this <strong>will</strong> happen - as for any \(g: ord_m(g) | \lambda(m)\), so 
+			<li>When does a number \(m\) not have any non-trivial witness? When for all \(h\) coprime to \(m\): \(h^{m-1} \equiv 1 \pmod m\). Note, that if \(\lambda(m) \nmid m-1\), this won't happen - if \(g\) is such number, that \(ord_m(g)=\lambda(m)\), then \(g^y \equiv 1 \pmod m\) if and only if \(\lambda(m) | y\). Conversely, if \(\lambda(m) | m-1\), this <strong>will</strong> happen - as for any \(g\) coprime to \(m\): \(ord_m(g) | \lambda(m)\), so 
 				$$ g^{m-1} \equiv g^{\lambda(m)*\_tmp} \equiv g^{ord_m(g)*\_tmp2} \equiv (g^{ord_m(g)})^{\_tmp2} \equiv 1^{\_tmp2} \equiv 1 \pmod m $$.
-			Such number are either prime numbers or Carmichael numbers.
+			Such numbers are either prime numbers or Carmichael numbers.
 			</li>
 		</ol>
 		<h4>Summarizing Fermat test</h4>
-		<p>To sum it up: Fermat test consists of testing for a base \(b\), whether \(b^{m-1} \not \equiv 1 \pmod m\) - if so, then \(m\) is composite; otherwise, \(m\) might be prime. If there is a witness of compositeness of \(m\), then there are not less than \(\frac{m}{2}\) witnesses of compositeness of \(m\). There are numbers, for which there are no Fermat's witnesses of compositeness - prime numbers and Carmichael numbers, that is numbers, for which \(\lambda(m) | m-1\) holds.
+		<p>To sum it up: Fermat test consists of testing for a base \(b\), whether \(b^{m-1} \not \equiv 1 \pmod m\) - if so, then \(m\) is composite; otherwise, \(m\) might be prime. If there is a non-trivial witness of compositeness of \(m\), then there are not less than \(\frac{m-1}{2}\) non-trivial witnesses of compositeness of \(m\). There are numbers, for which there are no non-trivial Fermat's witnesses of compositeness - prime numbers and Carmichael numbers, that is numbers, for which \(\lambda(m) | m-1\) holds.
 		</p>
 
 		<h3>Solution II: Miller-Rabin primarility test</h3>
 		<ol>
-			<li>Notice, that if \(m\) has a primitive root, then there are only 2 such numbers \(x\), that \(x^2 \equiv 1 \pmod m\) - namely \(1\) and \(m-1\) - if \(m\) has a primitive root, then number of such numbers \(g\), that \(ord_m(g)=2\) is equal to \(\phi(2)=1\) - this comes from <a href="/proot#30_Problem_II:_The_number_of_primitive_roots_modulo_\(m\)">here</a> (basically, if \(d|\phi(m)\) and \(m\) has a primitive root, then there are \(\phi(d)\) such numbers \(h\), that \(ord_m(h)=d\)). </li>
+            <li>Notice, that if \(m\) has a primitive root, then there are only 2 such numbers \(x\), that \(x^2 \equiv 1 \pmod m\) - namely \(1\) and \(m-1\) - if \(m\) has a primitive root, then number of such numbers \(g\), that \(ord_m(g)=2\) is equal to \(\phi(2)=1\) - this comes from <a href="/proot#30_Problem_II:_The_number_of_primitive_roots_modulo_\(m\)">here</a> (basically, if \(d|\phi(m)\) and \(m\) has a primitive root, then there are \(\phi(d)\) such numbers \(h \in \{1, 2, \dots, m-1\}\), that \(ord_m(h)=d\)). </li>
 
 			<li>All prime numbers have at least one primitive root (also powers of odd prime number).</li>
 			<li>Miller-Rabin test involves checking, whether:
 				<ol>
 					<li>\(g^{m-1} \not \equiv 1 \pmod m\) - if so, then \(m\) is not a prime.</li>
-					<li>If \(g^{\frac{m-1}{2^h}} \equiv 1 \pmod m\) for some \(h: 2^h | m-1\), the test checks whether \(g^{\frac{m-1}{2^h}} \equiv \pm 1 \pmod m\) - if not, then \(m\) is a prime.</li>
+                    <li>If \(g^{(m-1)/2^h} \equiv 1 \pmod m\) for some \(h: h+1 \le \nu_2(m-1)\), the test checks whether \(g^{(m-1)/2^{h+1}} \equiv \pm 1 \pmod m\) - if not, then \(m\) is a prime.</li>
 				</ol>
 			</li>
-			In other words, if \(test_{MR}(m,b)\) denotes, whether Miller-Rabin test found a witness of compositeness of \(m\)
+			In other words, if \(test_{MR}(m,b)\) denotes, whether Miller-Rabin test found a witness of compositeness of \(m\), then:
 			$$test_{MR}(m,b)=
 			\begin{cases} 
 			1 \text{ if \(b^{m-1} \not \equiv 1  \pmod m\)} \lor (\exists_{k \in \{\frac{m-1}{2}, \frac{m-1}{4}, \dots \frac{m-1}{2^l} \}} b^k \not \equiv \pm 1 \pmod m \land b^{2k} \equiv 1 \pmod m) \text{ for \(l=\nu_2(m-1)\)}\\
@@ -129,7 +128,22 @@
 			}) }}
 
 		<h4>Probability of hittin' a witness part I: A short remark on Carmichael numbers</h4>
-		<p>Only Carmichael numbers have less than \(\frac{m}{2}\) witnesses; what can be said about them?</p>
+		<p>Only Carmichael numbers have less than \(\frac{m-1}{2}\) witnesses; what can be said about them?</p>
+        <h5>Thesis I: Carmichael numbers are not divisible by 2</h5>
+        <ol>
+            <li>If a number \(m\) is even, then \(2 \nmid m-1\).</li>
+            <li>If a composite number is divisible by 4, then \(2 | \lambda(m)\) - hence \(\lambda(m) \nmid m-1\).</li>
+            <li>If a composite number is divisible by 2 but not by 4, then - as it has to be composite number - it is divisible by some odd prime \(p\). Then, \(p-1 | \lambda(m)\), hence \(2 | \lambda(m)\), and \(\lambda(m) \nmid m-1\).</li>
+            <li>Thus, Carmichael number cannot be divisible by 2.</li>
+        </ol>
+
+		<h5>Thesis II: All Carmichael numbers are square-free: that is, they have a form \(m=p_1p_2 \dots p_n\), where all \(p_i\) are distinct.</h5>
+		<ol>
+			<li>Suppose, that there is some Carmichael number divisible by \(p^q\) where \(q \gt 1\) and \(p\) is odd.</li>
+			<li>Clearly, \(\phi(p^q) | \lambda(m)\), and as \(\lambda(m) | m-1\), then \(\phi(p^q) | m-1\)</li>
+            <li>\(\phi(p^q) = p^{q-1}(p-1)\)</li>
+			<li>However, as \(p | m\), then \(p \nmid m-1\) - which contradicts our statement.</li>
+		</ol>
 		<h5>Supplement: Korselt's Criterion</h5>
 			<p>Korselt's Criterion states, that for all primes \(p\) dividing \(m\):
 				$$\forall_{p \in P:p|m} p-1 | m-1 \iff m \in C$$
@@ -144,24 +158,10 @@
 			$$p_i-1 | m-1$$, 
 			then \(\lambda(m)=lcm(p_1-1, p_2-1, \dots, p_n-1)\) must divide \(m-1\), because:
 			<ol>
-				<li>Let factorization of \(p_i-1=r_1^{s_{i,1}} \dots r_z^{s_{i,z}}\), where some \(s_{i,z}\) may be equal to zero and sequence \(r_i\) is the sequence of all prime divisors of \(p_1-1, p_2-1, \dots p_n-1\).</li>
-				<li>\(\lambda(m)=lcm(p_1-1 \dots p_n-1) = r_1^{\max_j(s_{j, 1})} \dots r_z^{\max_j(s_{j, z})}\)</li>
-				<li>For any \(i\) one can argue, that \(r_i^{s_{j,i}} | m-1\) - as \(p_j-1 | m-1\)</li>
-				<li>Thus, \(\lambda(m) | m-1\)</li>
+                <li>\(m-1\) is common multiple of \(p_1-1, p_2-1, \dots, p_n-1\)</li>
+                <li>\(\lambda(m)\) is lowest common multiple of \(p_1-1, p_2-1, \dots, p_n-1\)</li>
 			</ol>
-			<p>Thus, if for all \(p_i\) one can argue, that \(p_i-1 | m-1\), then \(m\) is a Carmichael number</p>
-
-			</p>
-		<h5>Corollary of the above - divisibility of Carmicahel number by \(2\)</h5>
-		<p>Notice, that Carmichael number cannot be divisible by \(2\) - because it has at least 1 prime divisor, and, by Korselt's criterion, \(p-1 | m-1\) - which is not possible if \(m\) is even and \(p\) is odd.</p>
-
-		<h5>Thesis II: All Carmichael numbers are square-free: that is, they have a form \(m=p_1p_2 \dots p_n\), where all \(p_i\) are distinct and \(m\) is odd.</h5>
-		<ol>
-			<li>Suppose, that there is some Carmichael number \(v=p_1^{q_1} \dots p_n^{q_n}\) with some \(q_i \gt 1\), that is not square-free (and where \(p_i \neq 2\)). Also, without loss of generality let \(q_1 \gt 1\)</li>
-			<li>Clearly, \(\phi(p_1^{q_1}) | \lambda(m)\), and as \(\lambda(m) | m-1\), then \(\phi(p_1^{q_1}) | m-1\)</li>
-			<li>\(\phi(p_1^{q_1}) = p_1^{q_1-1}(p_1-1)\)</li>
-			<li>However, as \(p_1 | m\), then \(p_1 \nmid m-1\) - which contradicts our statement.</li>
-		</ol>
+			<p>Thus, if for all \(p_i\) one can argue, that if \(p_i-1 | m-1\), then \(m\) is a Carmichael number</p>
 		<h5>Thesis III: All Carmichael numbers have at least 3 distinct primes in their factorization</h5>
 		<ol>
 			<li>Suppose, that there is some Carmichael number \(v=pq\) with prime, distinct \(p, q\).</li>
@@ -173,19 +173,21 @@
 		</ol>
 
 		<h4>Probability of hittin' a witness part II: Amount of witnesses among odd numbers with at least two distinct prime divisors (among them Carmichael numbers).</h4>
-		<p>First, \(m=p_1^{q_1} \dots p_n^{q_n}\) will from now to the end of this proof denote odd number with \(n \ge 2\).</p>
-		<h5>Definitions</h5>
+		<p>First, \(m=p_1^{q_1} \dots p_n^{q_n}\) will from now on to the end of this proof denote odd number with \(n \ge 2\).</p>
+		<h5>Symbols used</h5>
 		<ol>
-			<li>\(\kappa = \frac{m-1}{\nu_2(m-1)}\)</li>
-			<li>\(R = \{x: x^2 \equiv 1 \pmod m\}\)</li>
-			<li>\(\omega_r(h) = \{x: x^h \equiv r \pmod m \land r \in R\}\)</li>
-			<li>\(\Omega_r = \bigcup_{h \in \{m-1, (m-1)/2, \dots \kappa\}} \omega_r(h) \)</li>
+            <li>\(\tau = \frac{m-1}{2^{\nu_2(m-1)}}\)</li>
+            <li>\(R = \{x \in \{1, 2, \dots m-1\}: x^2 \equiv 1 \pmod m\}\)</li>
+            <li>\(\omega_r(h) = \{x \in \{1, 2, \dots m-1\}: x^h \equiv r \pmod m \land r \in R\}\)</li>
+			<li>\(\Omega_r = \bigcup_{h \in \{m-1, (m-1)/2, \dots \tau\}} \omega_r(h) \)</li>
 		</ol>
 
 		<h5>Number of non-witnesses</h5>
 		<p>
-		Elements belonging to \(\Omega_{m-1}\) are always Miller-Rabin non-witnesses. Furthermore, if \(b^{\kappa} \equiv 1 \pmod m\), then \(b\) is also a non-witness. Those are only non-witnesses: Thus, Number of Miller-Rabin non-witnesses equals:
-		$$ |\Omega_{m-1}| + |\omega_{1}(\kappa)|$$
+		Elements belonging to \(\Omega_{m-1}\) are always Miller-Rabin non-witnesses. Furthermore, if \(b^{\tau} \equiv 1 \pmod m\), then \(b\) is also a non-witness. Those are only non-witnesses: Thus, number of Miller-Rabin non-witnesses equals:
+		$$ |\Omega_{m-1}| + |\omega_{1}(\tau)|$$
+        It will be shown, that for all composite numbers with at least two distinct prime divisors (among them Carmichael numbers):
+        $$ |\Omega_{m-1}| + |\omega_{1}(\tau)| \le \frac{m-1}{4}$$
 		</p>
 
 		<h5>Outline of the primary proof</h5>
@@ -194,7 +196,7 @@
 		$$ r \equiv s_2 \pmod {p_2^{q_2}} $$
 		$$ \dots $$
 		$$ r \equiv s_n \pmod {p_n^{q_n}} $$
-		where \(\forall_i s_i \in \{1,-1\}\), then there are at least \(\frac{|R|-2}{|R|}\) of fermat liars are Miller-Rabin witnesses.
+		where \(\forall_i s_i \in \{1,-1\}\), then at least \(\frac{|R|-2}{|R|}\) of fermat liars are Miller-Rabin witnesses.
 		</p>
 		<h5>First lemma: if \(|\omega_{m-1}(k)| \ge 1\), then \(\forall_r |\omega_r(k)| = |\omega_{m-1}(k)|\)</h5>
 		<p>
@@ -227,14 +229,14 @@
 		$$
 		Thus, from lemma 0, \(|\omega_{m-1}(k)| = |\omega_r(k)|\) holds for any \(r \in R\), if \(|\omega_{m-1}(k)| \ge 1\).
 		</p>
-		<h5>Second lemma: \(|\omega_{m-1}(\kappa)| \ge 1\)</h5>
+		<h5>Second lemma: \(|\omega_{m-1}(\tau)| \ge 1\)</h5>
 		<p>
-		One can show, that \(m-1 \in \omega_{m-1}(\kappa)\) - because \(ord_{m}(m-1)=2\); as \(ord_{m}(m-1) \nmid \kappa\), then \((m-1)^{\kappa} \equiv m-1 \pmod m\).
+		One can show, that \(m-1 \in \omega_{m-1}(\tau)\) - because \(ord_{m}(m-1)=2\); as \(ord_{m}(m-1) \nmid \tau\), then \((m-1)^{\tau} \equiv m-1 \pmod m\).
 		</p>
 		<h5>Corollary: at least \(\frac{|R|-2}{|R|}\) of fermat liars are Miller-Rabin witnesses</h5>
 		<ol>
-			<li>\(|\omega_{m-1}(\kappa)| \ge 1 \implies |\omega_1(\kappa)| = |\omega_{m-1}(\kappa)\)| - and \(|\omega_{m-1}(\kappa)| \ge 1\) comes from second lemma.</li>
-			<li>From above, \(|\omega_1(\kappa)| \le |\Omega_{m-1}|\)</li>
+			<li>\(|\omega_{m-1}(\tau)| \ge 1 \implies |\omega_1(\tau)| = |\omega_{m-1}(\tau)|\) - and \(|\omega_{m-1}(\tau)| \ge 1\) comes from second lemma.</li>
+			<li>From above, \(|\omega_1(\tau)| \le |\Omega_{m-1}|\)</li>
 			<li>And \(|\Omega_{m-1}| \le \frac{1}{|R|} \sum_r |\Omega_r|\) - because of first lemma.</li>
 			<li>Thus, \(|\Omega_{m-1}|+|\omega_{m-1}(k)| \le \frac{1}{|R|} \sum_r |\Omega_r| + \frac{1}{|R|} \sum_r |\Omega_r| = \frac{2}{|R|} \sum_r |\Omega_r|\) - because of first lemma.</li>
 			<li>What follows, proportion of Miller-Rabin witnesses to non-witnesses among Fermat liars is higher or equal to \(1-\frac{2}{|R|} = \frac{|R|-2}{|R|}\). Which ends the argument.</li>
@@ -242,27 +244,26 @@
 		<h5>Implications of the above</h5>
 		<ol>
 			<li>For a number which has at least 3 prime divisors, \(|R| \ge 8\). What follows, at least \(\frac{8-2}{8}=\frac{3}{4}\) of numbers coprime to \(m\) are Miller-Rabin witnesses.</li>
-			<li>For odd numbers with at least two distinct prime divisors, \(|R| \ge 4\). At least \(\frac{4-2}{4}=\frac{1}{2}\) of numbers coprime to \(m\) that are fermat liars are Miller-Rabin witnesses. As at least half of numbers coprime to \(m\) are Fermat witnesses, at least \(\frac{1}{2} + \frac{1}{2}*\frac{1}{2} = \frac{3}{4}\) of all number coprime to \(m\) are Miller-Rabin witnesses.</li>
-			<li>Partially related to Miller-Rabin, primarily to Fermat test: if a composite number (say, \(x\)) is even, then at least half except one of numbers in set \(\{1, \dots x-1\}\) is non-coprime to \(x\), and half of numbers in this set are fermat witnesses; in other words, if a number is even, then at least \(\frac{3}{4}\) except one numbers in set \(\{1, \dots x-1\}\) are Fermat witnesses, and thus also Miller-Rabin witnesses.</li>
+			<li>For odd numbers with at least two distinct prime divisors, \(|R| \ge 4\). At least \(\frac{4-2}{4}=\frac{1}{2}\) of numbers coprime to \(m\) that are fermat liars are Miller-Rabin witnesses. As at least half of numbers coprime to \(m\) are Fermat witnesses, at least \(\frac{1}{2} + \frac{1}{2}*\frac{1}{2} = \frac{3}{4}\) of all numbers coprime to \(m\) are Miller-Rabin witnesses.</li>
+			<li>Partially related to Miller-Rabin, primarily to Fermat test: if a composite number (say, \(x\)) is even, then at least half except one of numbers in set \(\{1, \dots x-1\}\) are non-coprime to \(x\) (they are trivial witnesses), and at least half of other numbers in this set are non-trivial fermat witnesses; in other words, if a number is even, then at least \(\frac{3}{4} x - 1\) numbers from set in set \(\{1, \dots x-1\}\) are Fermat witnesses, and thus also Miller-Rabin witnesses.</li>
 		</ol>
 		<h4>One last time, and Miller-Rabin will fade away</h4>
 		<p>To sum it up:</p>
 		<ol>
-			<li>The aim of Miller-Rabin test is checking, whether some number \(m\) is composite. It chooses a base \(b\),  and then, checks, whether running a test with a given base shows, that a number is composite.</li>
+            <li>The aim of Miller-Rabin test is checking, whether some number \(m\) is composite. It chooses a base \(b \in \{1, 2, \dots, m-1\}\),  and then, checks, whether running a test with a given base shows, that a number is composite.</li>
 			<li>Miller Rabin test first checks, whether \(b^{m-1} \equiv 1 \pmod m\) if not, then \(m\) is composite.</li>
-			<li>Then, it checks, for subsequent \(k=2, 4, \dots 2^{\nu_2(m)}\), whether \(b^{\frac{m-1}{k}} \equiv 1 \pmod m\). If not, there are two possible outcomes:
+			<li>Then, it checks, for subsequent \(k=2, 4, \dots 2^{\nu_2(m-1)}\), whether \(b^{(m-1)/k} \equiv 1 \pmod m\). If not, there are two possible outcomes:
 				<ul>
-					<li>\(b^{\frac{m-1}{k}} \equiv -1 \pmod m\) - then \(b\) is not a witness of compositeness of \(m\), thus, \(test_{MR}(b)=0\).</li>
-					<li>\(b^{\frac{m-1}{k}} \not \equiv -1 \pmod m\) - \(b\) is a witness of compositeness of \(m\), thus, \(test_{MR}(b)=1\).</li>
+                    <li>\(b^{(m-1)/k} \equiv -1 \pmod m\) - then \(b\) is not a witness of compositeness of \(m\), thus, \(test_{MR}(b)=0\).</li>
+					<li>\(b^{(m-1)/k} \not \equiv -1 \pmod m\) - \(b\) is a witness of compositeness of \(m\), thus, \(test_{MR}(b)=1\).</li>
 				</ul>
 			</li>
 			<li>Every fermat witness is also Miller-Rabin witness.</li>
 			<li>Carmichael numbers have at least 3 prime divisors (and none of them is equal to 2) and are square-free.</li>
-			<li>There are at most \(\frac{m}{4}+1\) Miller-Rabin liars if \(m\) has at least two distinct prime divisors or is even.</li>
-			<li>It was shown (hopefully without mistakes, cardinal mistakes, or papal mistakes), that for any composite number \(m\) probability, that random \(b\) is a witness of compositeness of \(m\) is not lower than \(\frac{1}{2}\) - for all numbers except for Carmichael numbers it is not lower than \(\frac{1}{2}\) using a standard fermat test, and each fermat witness is also miller-rabin witness; and for Carmichael numbers it is not lower than \(\frac{1}{4}\).</li>
-			<li>If one calculates \(d=b^{\frac{m-1}{2^{\nu(m-1)}}}\), and then finds subsequent values to test as \(d^2, (d^2)^2, \dots \), then one can achieve complexity equal to that of Fermat test - that is \(O(\log(m)*mul(m))\), where \(mul(m)\) denotes time needed to multiply two numbers of size \(\log(m)\) - something like \(O(\log^2(m)\log\log(m))\).</li>
+            <li>Composite number \(m\) has at most \(\frac{m-1}{4}+1\) Miller-Rabin liars if \(m\) has at least two distinct prime divisors or is even. <span style="color:#FF0000">UNPROVEN: this will hold for all composite \(m\) - case \(m=p^q\) remains unproven.</span></li>
+			<li>If one calculates \(d=b^{\frac{m-1}{2^{\nu(m-1)}}}\), and then finds subsequent values to test as \(d^2, (d^2)^2, \dots \), then one can achieve complexity equal to that of a Fermat test - that is \(O(\log(m)*mul(m))\), where \(mul(m)\) denotes time needed to multiply two numbers of size \(\log(m)\) - something like \(O(\log^2(m)\log\log(m))\).</li>
 			<li>Utilitarian remarks, part I: for \(m \le 2^{64}\) it is enough to check, whether \(test_{MR}(m,b)=0\) for bases \(\{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37\}\); if for each of those bases \(test_{MR}(m,b)=0\), then \(m\) is a prime.</li>
-			<li>Utilitarian remarks, part II: If \(b\) is a miller-rabin witness but not fermat witness, then there is some \(k=2^h\), for which \(b^{\frac{m-1}{k}} \not \equiv \pm 1 \pmod m\), but \(b^{2\frac{m-1}{k}} \equiv 1 \pmod m\). Let \(\kappa = b^{\frac{m-1}{k}}\) (and, \(\kappa^2 \equiv 1 \pmod m\)). Notice, that there is some prime \(p: p|m\), for which \(\kappa \equiv 1 \pmod p\), and some prime \(q: q|m\), for which \(\kappa \equiv -1 \pmod q\). And so, \(gcd(\kappa+1, m) \gt 1\), and \(gcd(\kappa-1, m) \gt 1\). This leads to some conclusions, among them: one can find a factor of Carmichael number in polynominal time.</li>
+            <li>Utilitarian remarks, part II: If \(b\) is a miller-rabin witness but not fermat witness, then there is some \(k=b^{(m-1)/2^h}\), for which \(k \not \equiv \pm 1 \pmod m\), but \(k^2 \equiv 1 \pmod m\). Notice, that there is some prime \(p: p|m\), for which \(k \equiv 1 \pmod p\), and some prime \(q: q|m\), for which \(k \equiv -1 \pmod q\). And so, \(gcd(k+1, m) \gt 1\), and \(gcd(k-1, m) \gt 1\). This leads to some conclusions, among them: one can find a factor of Carmichael number in polynomial time.</li>
 		</ol>
 		
 		<h2>Problem II: finding a factorization</h2>
