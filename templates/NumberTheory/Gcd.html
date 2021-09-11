@@ -99,7 +99,7 @@
 		<p>One can use same mechanism to solve this problem, but also construct sequences \(p, q\), such that for each \(i\) following stands:
 			$$p_iw+q_iv=b_i$$
 			$$p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1$$
-			$$ \text{ for \(i \gt 1\): } b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}$$</span>
+			$$ \text{ for \(i \gt 1\): } b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}$$
 			It is possble to show \(b_{i-1}\) as \(b_{i-1}=p_{i-1}w+q_{i-1}v\). But what with \(a_{i-1}\)? It's equal to \(b_{i-2}\), except when \(i=2\)... unless \(b_0=a_1=w\). Let also, for simplicity, \(z_i=\lfloor \frac{a_i}{b_i} \rfloor\). Then: <br>
 			$$ p_0=1, q_0=0 \implies wp_0+vq_0=w=b_0 $$
 			$$ \text{for \(i \gt 1\): } b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z_i(p_iw + q_iv)= w(p_{i-1} - z_ip_i)+ v(q_{i-1} - z_iq_i) $$
@@ -128,12 +128,11 @@
 			</ol>
 			{% set z="\\lfloor \\frac{b_{i-1}}{b_i} \\rfloor " %}
 			{% set z2="\\lfloor \\frac{b_{i-2}}{b_{i-1}} \\rfloor " %}
-			<p>One can also notice, that \(|p_{i-1}b_i-p_ib_{i-1}|=v\), and also \(|q_{i-1}b_i-q_ib_{i-1}|=w\) - proof is same for both, so inductive step will be shown only for \(p_i\)
+			<p>One can also notice, that \(|p_{i-1}b_i-p_ib_{i-1}|=v\), and also \(|q_{i-1}b_i-q_ib_{i-1}|=w\) - proof is same for both, so inductive step will be shown only for \(p_i\)</p>
 			<ol>
 				<li>\(|p_0b_1-p_1b_0|=|b_1-0|=v\), also \(|q_0b_1-q_1b_0|=|0-b_0|=w\)</li>
 				<li>\(|p_ib_{i+1}-p_{i+1}b_i|=|p_i(b_{i-1}-{{z}} b_i)-(p_{i-1}-{{z}} p_i)b_i|=|p_ib_{i-1}-{{z}} p_ib_i-p_{i-1}b_i+{{z}} p_ib_i|=|p_{i-1}b_i-p_ib_{i-1}|=v\)</li>
 			</ol>
-			</p>
 			<p>These two lemmas show, that:</p>
 			<ol>
 				<li>Values of \(|p_i|, |q_i|\) for \(i \ge 3\) are not decreasing, as \(|p_i|=|p_{i-2}-{{z2}}p_{i-1}|=|p_{i-2}|+|{{z2}}p_{i-1}| \ge |p_{i-2}|+|p_{i-1}|\) and since \(i=3\) occurs \(a_{i-1}=b_{i-2} \ge b_{i-1}\)</li>

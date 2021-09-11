@@ -126,9 +126,8 @@
             $$\pi(n) = P_1(n,h) + h $$
             $$\pi(n) = h + \phi(n, h) - P_0(n,h) - P_2(n,h) - \dots $$
 		</p>
-		<p>How to calculate \(P_k(n, a)\) though? The banal solution, for \(k \ge 3\):
+		<p>How to calculate \(P_k(n, a)\) though? The banal solution, for \(k \ge 2\):
 		$$P_k(n, a)=\sum_{i_1=a+1}^{\pi(n^{1/2})} \sum_{i_2=i_1}^{\pi(n^{1/2})} \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1/2})} \max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1} + 1, 0) $$
-        </p><p>For \(k=2\) formula is the same, except instead of \(\max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1} + 1, 0)\) there is \(\pi(\frac{n}{P_i})\).</p><p>
         It counts, for each possible result of multiplying \(k-1\) primes, where \(P_{i_v} \le P_{i_{v+1}}\), in how many ways last prime (that may be greater than \(n^{1/2}\), and has to be greater or equal to \(P_{i_{k-1}}\)) can be chosen?
 		</p>
 		<p>One can move a bit further - arguing, that, if \((P_{i_1} \le P_{i_2} \le \dots \le P_{i_k})\), then, better bounds on each \(i_x\) may be placed: </p>
@@ -185,7 +184,7 @@
             <li>One can calculate \(\pi(n^{1/3})\) in \(O(n^{1/3} \log \log(n))\)</li>
             <li>One can calculate \(\phi(n, \pi(n^{1/3}))\) in \(O(n^{2/3} \log(n))\) - this is the consequence of the segment tree.</li>
             <li>One can calculate \(P_2(n, \pi(n^{1/3}))\) in \(O(n^{2/3} \log \log(n) + n^{1/2})\) - first for sieve, second for calculating
-                $$ P_2(n, h) = \sum_{i=h+1}^{\sqrt{n}} \pi(\frac{n}{P_i}) $$
+                $$ P_2(n, h) = \sum_{i=h+1}^{\sqrt{n}} \pi(\frac{n}{P_i}) - i + 1 $$
             </li>
         </ol>
         <p>Consequently, one can find \(\pi(n)\) in \(O(n^{2/3} \log(n))\).</p>

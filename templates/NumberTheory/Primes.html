@@ -17,7 +17,7 @@
 		<p id="Theory">
 		This article will cover sieving technique and it's complexity, showing it's use in solving primes-related problems. To approach those problems, first certain definitions shall be formulated:</p>
 		<ol>
-			<li><b>Prime number</b>: a number \(p \in N^+\) is prime (or \(p \in P\), where \(P\) is set of all primes), if and only if<br>
+			<li><b>Prime number</b>: a number \(p \in N^+\) is prime (or \(p \in P\), where \(P\) is set of all primes), if and only if:
 			$$ p \in P \iff |\{d:d|p \land d \ge 1\}|=2 $$
 			In other words, \(p\) needs to have exactly \(2\) different positive divisors - one and itself (note that \(1\) is not a prime, as it has only \(1\) divisor). For example, \(2,\ 3,\ 5,\ 31\) are prime numbers. A <b>composite number</b> is a number which is neither \(1\) nor prime number: for example, \(20=2*2*5\) is a composite number.
 			</li>
@@ -27,7 +27,6 @@
 				$$ x=p_1^{q_1}p_2^{q_2} \dots p_n^{q_n} $$
 				Where \(q_i \ge 0\) are certain exponents and all \(p_i\) are distinct. For example, \(100\) can be represented as \(100=2*2*5*5=2^25^2\). One can also consider infinite sequence \(\upsilon_x=(q_1, q_2, \dots)\) such that \(x=p_1^{q_1} p_2^{q_2} \dots\), where \(p_i\) is the \(i\)-th prime number (that is, \(p=(2,3,5 \dots)\)), and treat it as a factorization of \(x\). A prime factoriztion of \(x\) is unique if there is only one \(\upsilon_x\) - it will be shown later, that any number has unique factorization into primes.
 			</li>
-		<br>
 		</ol>
 
 		<h2>Problem I: checking primarility for integers in a range</h2>
