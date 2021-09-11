@@ -74,6 +74,7 @@ h1{
 body{
 	margin: 0;
 	padding: 0;
+    position: relative;
 	font-family:sans-serif;
 }
 
@@ -105,3 +106,27 @@ header{
 }
 
 .signer:hover{background-color:#444444;}
+.footer{
+    background-color: #d5f9b8;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    height: 240px;
+    bottom: 0;
+}
+
+.buffer{
+    background-color: #FFFFFF;
+    position: relative;
+    top: 0;
+    height: 180px;
+    width: 100%;
+}
+.disc{
+    background-color: #d5f9b8;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    height: 20px;
+    bottom: 0;
+}

@@ -2,3 +2,10 @@
  - [Text] Vital changes - Primarility testing - corrected hopefully most of controversial statements.
  - [Text] Typo in CRT
  - [Infr] Removed unnecessary stuff from base
+ 
+== 11.09.2021
+ - [Visu] Chrome Discrete log - fix sorting
+ - [Text] Some minor typos in Pollard-rho
+ - [Text] Prime-Counting - minor problems with +-1 solved
+ - [Infr] Add licence
+ - [Infr] Add footer with github link

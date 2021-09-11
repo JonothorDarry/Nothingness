@@ -86,7 +86,7 @@
 				$$ (b * a)^{m-1} \equiv b^{m-1} (a^{m-1}) \equiv 1*c \equiv c \pmod m$$
 
 				Thus, from lemma 0, if mapping element exists, then $$|\{x: x^{m-1} \equiv 1 \pmod m\}| = |\{x: x^{m-1} \equiv c \pmod m\}| $$
-				What follows, if there is at least one witness \(\pmod m\), there are no less non-trivial fermat witnesses than non-witnesses \(\pmod m\).
+				What follows, if there is at least one non-trivial witness \(\pmod m\), there are no less non-trivial fermat witnesses than non-witnesses \(\pmod m\).
 			</li>
 			<li>When does a number \(m\) not have any non-trivial witness? When for all \(h\) coprime to \(m\): \(h^{m-1} \equiv 1 \pmod m\). Note, that if \(\lambda(m) \nmid m-1\), this won't happen - if \(g\) is such number, that \(ord_m(g)=\lambda(m)\), then \(g^y \equiv 1 \pmod m\) if and only if \(\lambda(m) | y\). Conversely, if \(\lambda(m) | m-1\), this <strong>will</strong> happen - as for any \(g\) coprime to \(m\): \(ord_m(g) | \lambda(m)\), so 
 				$$ g^{m-1} \equiv g^{\lambda(m)*\_tmp} \equiv g^{ord_m(g)*\_tmp2} \equiv (g^{ord_m(g)})^{\_tmp2} \equiv 1^{\_tmp2} \equiv 1 \pmod m $$.
@@ -272,41 +272,41 @@
 
 		<p>Pollard's Rho algorithm relies on following ideas:</p>
 		<ol>
-			<li>If an infinite sequence of elements \(w_0, w_1, w_2, \dots \) is given, all \(w_i \in \{0, 1, \dots m-1\}\), then there are some indexes \(x,y\), for which \(w_x = w_y\) - as \(w_i\) has one of \(m\) possible values. Furthermore, if \(w_i=g(w_{i-1})\) for any function \(g\), then sequences \((w_x, w_{x+1}, w_{y-1})\) and \((w_y, w_{y+1} \dots w_{2y-x-1})\) are identical.</li>
-			<li>Suppose \(p|m\): if \(x \equiv y \pmod p \implies g(x) \equiv g(y) \pmod p\), then the sequence \(w\) taken \(\pmod p\) will also have a cycle of elements \(w_a, \dots w_{b-1}\) if \(w_a \equiv w_b \pmod p\) for some \(a, b\).</li>
-			<li>Suppose, that \(g(x)\) taken \(\pmod p\) gives pseudorandom output (with uniform probability of each value). When will the cycle start? One can use birthday paradox to solve this problem: say, a sequence \(s_1, \dots s_k\) of random elements from uniform distribution, each \(s_i \in \{ 1, \dots p-1\}\) is given; for what \(k\) is the probability that it has two equal elements larger than \(\frac{1}{2}\)? By birthday paradox, \(k=O(\sqrt{p})\)</li>
-			<li>If \(w_a \equiv w_b \pmod p\) for \(p: p|m\), then \(gcd(w_a-w_b, m) \gt 1\). Thus, to find a cycle in the sequence \(\pmod p\), it is enough to find for some pair of elements \(w_a, w_b\), then check, whether \(gcd(w_a-w_b, m) \gt 1\). And this \(gcd\) provides a factor of \(m\).</li>
+			<li>If an infinite sequence of elements \(w_0, w_1, w_2, \dots \) is given, all \(w_i \in \{0, 1, \dots m-1\}\), then there are some indexes \(x,y\), for which \(w_x = w_y\) - as \(w_i\) has one of \(m\) possible values. Furthermore, if \(w_i=g(w_{i-1})\) for any function \(g\), then sequences \((w_x, w_{x+1}, \dots, w_{y-1})\) and \((w_y, w_{y+1}, \dots, w_{2y-x-1})\) are identical.</li>
+			<li>Suppose \(p|m\): if \(x \equiv y \pmod p \implies g(x) \equiv g(y) \pmod p\), then the sequence \(w\) taken \(\pmod p\) will also have a cycle of elements \((w_a, \dots, w_{b-1})\) if \(w_a \equiv w_b \pmod p\) for some \(a, b\).</li>
+			<li>Suppose, that \(g(x)\) taken \(\pmod p\) gives pseudorandom output (that is, when defining function, for any \(k\) value \(g(k)\) is chosen randomly with uniform probability of each value). When will the cycle start? One can use birthday paradox to solve this problem: say, a sequence \(s_1, \dots s_t\) of random elements from uniform distribution, each \(s_i \in \{ 1, \dots p-1\}\) is given; for what \(t\) is the probability that it has two equal elements larger than \(\frac{1}{2}\)? By birthday paradox, \(t=O(\sqrt{p})\)</li>
+			<li>If \(w_a \equiv w_b \pmod p\) for \(p: p|m\), then \(gcd(w_a-w_b, m) \gt 1\). Thus, to find a cycle in the sequence \(\pmod p\), it is enough to find it for some pair of elements \(w_a, w_b\), then check, whether \(gcd(w_a-w_b, m) \gt 1\). And this \(gcd\) provides a factor of \(m\).</li>
 		</ol>
-		<p>To summarize the above; if one finds some function \(f\) satisfying above, generates a sequence \(w_i=f(w_{i-1})\), and finds a cycle in linear time (that is, elements, for which \(gcd(w_a-w_b, m) \in \lt 1; m-1 \gt \)), then one has an algorithm finding a divisor of \(m\) in \(O(\sqrt{least\_prime\_divisor\_of\_m} * \log(m))\). The remaining three questions: what function is appropriate, how to find a cycle in non-explicitly given graph, and what is the overall complexity with some caveats regarding use of this algorithm.</p>
+        <p>To summarize the above; if one finds some function \(f\) satisfying above, generates a sequence \(w_i=f(w_{i-1})\), and finds a cycle in linear time (that is, elements, for which \(gcd(w_a-w_b, m) \in \{ 1, 2, \dots, m-1 \} \)), then one has an algorithm finding a divisor of \(m\) in \(O(\sqrt{least\_prime\_divisor\_of\_m} * \log(m))\). The remaining three questions: what function is appropriate, how to find a cycle in non-explicitly given graph, and what is the overall complexity with some caveats regarding use of this algorithm.</p>
 
 		<h4>Part I: defining a function</h4>
 		<p>Let's define certain function \(f\):</p>
 		<ul>
 			<li>\(f: \{0, 1, 2, \dots m-1\} \mapsto \{0, 1, 2, \dots m-1\}\)</li>
 			<li>For any \(d: d|m\), $$x \equiv y \pmod d \implies f(x) \equiv f(y) \pmod d$$</li>
-			<li>Values of \(f\) modulo any prime \(p: p|m\) are pseudorandom, uniformly chosen from \(\{1,\dots ,p\}\) (or, at least, their behavior is unpredictable).</li>
+			<li>Values of \(f\) modulo any prime \(p: p|m\) are pseudorandom, uniformly chosen from \(\{0, 1,\dots, p-1\}\) (or, at least, their behavior is unpredictable).</li>
 		</ul>
 		<p>Those are the conditions that are imposed upon \(f\). It turns out, that any polynominal will do point \(2\); from assumption, that 
 		$$ x-y=kd+lm $$
 		one can prove, that:
 		$$ f(x)-f(y) = a_0+a_1x^1+\dots+a_nx^n-a_0-a_1y-\dots-a_ny^n = $$
-	       	$$ =a_1(x-y)+a_2(x^2-y^2)+\dots+a_n(x^n-y^n) = a_1(x-y)+a_2(x^2-y^2) + \dots a_n(x^n-y^n) = $$
+	       	$$ =a_1(x-y)+a_2(x^2-y^2)+\dots+a_n(x^n-y^n) = $$
 		$$ = a_1(x-y) + a_2(x-y)(x+y) + a_n(x-y)(y^{n-1}+x^1y^{n-2}+\dots+x^{n-2}y + x^{n-1}) = $$
 		$$ = (x-y)*s = (kd+lm)*s $$
-		For some \(s \in N\). Thus, \(f(x)-f(y) \equiv 0 \pmod d\)
-		Polynominal \(x^2+1\) should be enough to solve point (3).</p>
+        For some \(s \in N\). Thus, \(f(x)-f(y) \equiv 0 \pmod d\).</p>
+        <p>Polynominal \(x^2+1\) should be enough to make the sequence pseudorandom.</p>
 		<h4>Part II: Floyd's cycle-finding algorithm</h4>
-		<p>The problem is posited as follows: suppose, there is a sequence \(c_0, f(c_0), f(f(c_0)), \dots\), and some relation of equivalence between elements, such that \(x \equiv y \implies f(x) \equiv f(y)\). Also, for simplicity, let \(c_i=f(c_{i-1})\). At some point, \(c_a \equiv c_b\) for some \(a, b\) (and thus, there is a cycle in this sequence). How to find two same (equivalent) elements in this cycle? Note, that checking for equivalence of \(a,b\) may be non-trivial - in case of pollard's rho, a divisor \(d\), modulo which all elements \(c_i\) are considered, is not known - in other words, representation, in which the numbers are equivalent, is not known; thus, \(gcd\) for two elements of sequence will be checked.</p>
-		<p>Let \(l\) denote length of a part of the sequence, that is not a part of the cycle, let \(o\) denote length of a cycle</p>
+		<p>The problem is posited as follows: suppose, there is a sequence \(c_0, f(c_0), f(f(c_0)), \dots\), and some relation of equivalence between elements, such that \(x \equiv y \implies f(x) \equiv f(y)\). Also, for simplicity, let \(c_i=f(c_{i-1})\). At some point, \(c_a \equiv c_b\) for some \(a, b\) (and thus, there is a cycle in this sequence). How to find two same (equivalent) elements in this cycle? Note, that checking for equivalence of \(a,b\) may be non-trivial - in case of pollard's rho, a divisor \(d\), modulo which all elements \(c_i\) are considered, is not known - in other words, representation, in which the numbers are equivalent, is not known; thus, \(gcd\) for two elements of this sequence will be checked.</p>
+		<p>Let \(l\) denote length of a part of the sequence, that is not a part of the cycle, let \(o\) denote length of a cycle.</p>
 		<p>Solution is, for example, Floyd's cycle finding algorithm: checking for equivalence \(c_k\) and \(c_{2k}\) in \(k\)-th check. Notice, that once \(c_k\) is a part of cycle, then \(c_{2k}\) also has to be a part of this cycle. Furthermore, if \(o\) is the length of the cycle, then exactly one of \((c_{2k} \equiv c_k, c_{2k+2} \equiv c_{k+1}, \dots c_{2k+2o-2}, \equiv c_{k+o-1})\) is true - because \(c_a, c_b\) are equivalent exactly when \(o|b-a\) and \(a \gt l \land b \gt l\). Thus, this algorithm will finish in \(O(l+o)\) comparisions.</p>
 
 		<h4>Part III: Complexity, caveats, controversies</h4>
 		<ol>
-			<li>It may happen, that a cycle is found, for some \(a, b\), \(gcd(w_a-w_b, m) \gt 1)\) - most fortunate. However, \(gcd(w_a-w_b, m)=m)\) - not a single divisor is found. There are three questions associated with this inconvenience:
+			<li>It may happen, that a cycle is found, for some \(a, b\), \(gcd(w_a-w_b, m) \gt 1\) - most fortunate. However, \(gcd(w_a-w_b, m)=m\) - not a single divisor is found. There are three questions associated with this inconvenience:
 				<ol>
 					<li>What does it mean? Let \(o_{p_i}\) denote length of the cycle for \(i\)-th prime divisor of \(m\). Then, \(\forall_i o_{p_i}|b-a\). After running this algorithm further (that is, just as if \(gcd(w_a-w_b, m)=1\)), it may either turn out, that all \(o_{p_i}\) are equal - thus, always \(w_x \equiv w_y \implies o|x-y\), or not. Things can also get messy, when \(m\) is not square-free in this simple analysis.</li>
 					<li>How cope? Finding different seed \(w_0\) or polynominal \(f\) seems plausible.</li>
-					<li>What is the probability of such occurence? Low.</li>
+                    <li>What is the probability of such occurence? Low. <span style="color:#FF0000">UNPROVEN: Something almost certainly much lower than \(\frac{1}{2}\) if \(m\) is not prime.</span></li>
 				</ol>
 			</li>
 			<li>As one can see, complexity of this method is \(O(\sqrt{least\_prime\_divisor\_of\_m}\log(m))\) - applying it to factorize whole number leads to complexity like 
@@ -342,16 +342,16 @@
 
 		<h2>Summary</h2>
 		<ol>
-			<li>Most standard test checking, whether a number is prime - <strong>Fermat test</strong> - relies on checking, whether \(b^{m-1} \equiv 1 \pmod m\) - if, for some base \(b\), it is not true, then \(m\) is composite. If there is one Fermat witness, there are at least \(\frac{m}{2}\) Fermat witnesses modulo \(m\). A number that has no Fermat witnesses is called <strong>Carmichael number</strong>.</li>
+			<li>Most standard test checking, whether a number is prime - <strong>Fermat test</strong> - relies on checking, whether \(b^{m-1} \equiv 1 \pmod m\) - if, for some base \(b\), it is not true, then \(m\) is composite. If there is one Fermat witness, there are at least \(\frac{m-1}{2}\) Fermat witnesses modulo \(m\). A composite number that has no Fermat witnesses is called <strong>Carmichael number</strong>.</li>
 			<li>Carmichael numbers are odd, have at least 3 prime divisors, and are square free. One can use <strong>Korselt's Criterion</strong> to check, whether \(m\) is a Carmichael number: if and only if \(\forall_{p: p|m} p-1 | m-1\) for prime \(p\).</li>
-			<li><strong>Miller-Rabin test</strong> does exactly same thing as Fermat test - and additionaly checks, whether there is some \(s: 2^s|(m-1)\) for which \(b^{(m-1)/2^s} \not \equiv \pm 1 \pmod m \land b^{(m-1)/2^{s-1}} \equiv 1 \pmod m\) - if so, then \(m\) is not a prime. In contrast to Fermat test, no less than \(\frac{m-1}{2}\) bases are Miller-Rabin witnesses.</li>
+            <li><strong>Miller-Rabin test</strong> does exactly same thing as Fermat test - and additionaly checks, whether there is some \(s: 2^s|(m-1)\) for which \(b^{(m-1)/2^s} \not \equiv \pm 1 \pmod m \land b^{(m-1)/2^{s-1}} \equiv 1 \pmod m\) - if so, then \(m\) is not a prime. In contrast to Fermat test, no less than \(\frac{m-1}{2}\) bases are Miller-Rabin witnesses if \(m\) is composite <span style="color:#FF0000">(UNPROVEN: no less than \(\frac{3(m-1)}{4}\))</span>.</li>
 			<li>Miller-Rabin test runs in something like \(O(log^2(m)\log \log (m))\) (or \(O(log(m))\), if one assumes, that multiplication occurs in \(O(1)\)).</li>
 			<li>For numbers having at most 64 bits, checking primes up to 37 as bases is enough to determine, whether given number is prime.</li>
 
 			<li>Pollard-Rho method allows to factorize a number with complexity on average \(O(m^{1/4})\)</li>
 			<li>Pollard-Rho method relies on finding a cycle in a sequence \((w_0, f(w_0), f(f(w_0)), \dots)\) taken \(\pmod d\), where \(d|m\). Gcd between difference of two equivalent elements and \(m\) yields a number greater than one - factor of \(m\).</li>
 			<li>Sometimes, Pollard-Rho may return \(m\) as a factor - then, this algorithm shall be ran either with different seed (\(w_0\)) or different function \(f\).</li>
-			<li>Running Pollard-Rho on a prime number will always factor out \(m\) - in other words, running Pollard-Rho on a prime number won't yield any factor. It may be wise to use Pollard-Rho along with primarility testing algorithm.</li>
+			<li>Running Pollard-Rho on a prime number will always factor out \(m\) - in other words, running Pollard-Rho on a prime number won't yield any interesting factor. It may be wise to use Pollard-Rho along with primarility testing algorithm.</li>
 		</ol>
 		<h3>Problems</h3>
 		<p>

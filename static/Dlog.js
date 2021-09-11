@@ -5,8 +5,8 @@ class Dlog extends Algorithm{
 		this.logic.s=Math.ceil(Math.sqrt(this.logic.m));
 		var single_an=Number(NTMath.pow(this.logic.a, this.logic.s, this.logic.m));
 		var inverse_an=NTMath.inverse(single_an, this.logic.m);
-		var comparer_sort= (a,b) => a[1]<=b[1];
-		var comparer_binaria= (a,b) => a[1]<b[1];
+		var comparer_sort= function(a,b){return (a[1]<=b[1] ? 1 : -1)};
+		var comparer_binaria= function(a,b) {return a[1]<b[1]};
 		var iters=Math.floor(this.logic.m/this.logic.s);
 
 		var i;
@@ -23,6 +23,7 @@ class Dlog extends Algorithm{
 		for (i=1; i<this.logic.s; i++) this.logic.ax.push([i, (this.logic.ax[i-1][1]*this.logic.a)%this.logic.m]);
 		this.logic.sorted_ax=[...this.logic.ax];
 		this.logic.sorted_ax.sort(comparer_sort).reverse();
+        console.log(this.logic.sorted_ax);
 		this.logic.march_of_the_binars=[];
 
 		var x;
