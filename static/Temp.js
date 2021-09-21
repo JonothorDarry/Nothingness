@@ -716,6 +716,20 @@ class NTMath{
 		return [a, p[lst-2], q[lst-2]];
 	}
 
+    //returns lowest prime factor list
+    static sievify(n){
+        var i, j, nothing=-1;
+        var lpf=ArrayUtils.steady(n+1, nothing);
+
+        for (i=2; i<=n; i++){
+            if (lpf[i]==nothing) lpf[i]=i;
+            for (j=i*i; j<=n; j+=i){
+                if (lpf[j]==nothing) lpf[j]=i;
+            }
+        }
+        return lpf;
+    }
+
 	static inverse(a, m){
 		var s=NTMath.ext_gcd(a, m);
 		if (s[0]==0) return null;

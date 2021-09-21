@@ -70,10 +70,6 @@ class ExtendedSieve extends Sieve{
 	}
 }
 
-
-
-
-
 class Querier extends Algorithm{
 	constructor(value, block, assocSieve){
 		super(block)
@@ -285,13 +281,13 @@ var feral4=Algorithm.ObjectParser(document.getElementById('Algo4'));
 var eg4=new Simple_factorizer(feral4, 84);
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var sk=new Sieve(feral, 100);
+var sk=new Sieve(feral, 40);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var sk2=new ExtendedSieve(feral2, 100);
+var sk2=new ExtendedSieve(feral2, 40);
 
 var foul=Algorithm.ObjectParser(document.getElementById('querySection'));
-var sk3=new Querier(132, foul, sk2);
+var sk3=new Querier(30, foul, sk2);
 
 //x.value="Jonasz";
 //var butt = document.createButton(1);
