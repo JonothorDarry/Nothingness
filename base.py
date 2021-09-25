@@ -249,7 +249,6 @@ def Lca():
 def Isomorphisms():
     return Router('Trees/Tree_isomorphism.html')
 
-
 @app.route('/advpr', methods=['GET', 'POST'])
 def AdvPrimes():
     return Router('NumberTheory/Aprimes.html')
@@ -272,7 +271,6 @@ def Wisdom():
         return resp
         
     return Router('System/index.html')
-
 
 
 @app.context_processor

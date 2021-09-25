@@ -1,3 +1,23 @@
+{% set algo_colors={
+	'standard':{'color':'#440000', 'meaning':'Data that is still meaningful (or shows something important) and can be used in the future.'},
+	'change':{'color':'#004400', 'meaning':'Difference introduced by last action.'},
+	'dead':{'color':'#FFFFFF', 'meaning':'Something not important, that is not a subject to change; dead, that is.'},
+	'stagnant':{'color':'#000000', 'meaning':'Something important, that is not a subject to change.'},
+	'crucial':{'color':'#8A7400', 'meaning':'Results of the algorithm.'},
+	'merge-standard':{'color':'#FF3333', 'meaning':'Data used in one part of merge-like procedure.'},
+	'helper1':{'color':'#00B359', 'meaning':'Source of last change.'},
+	'helper2':{'color':'#669900', 'meaning':'Yet another source of last change.'},
+	'exponent':{'color':'#804000', 'meaning':'Value associated with another value, usually some index.'},
+	'iterator':{'color':'#E64C00', 'meaning':'Some iterator or set of iterators.'},
+	'half-dead':{'color':'#888888', 'meaning':'Partially processed data.'},
+
+	'_violet':{'color':'#800080', 'meaning':''},
+	'_pink':{'color':'#FF0080', 'meaning':''},
+	'_red':{'color':'#880000', 'meaning':''},
+	'_green':{'color':'#008800', 'meaning':''},
+}
+%}
+
 {% macro algorithm(id, header_text, input_format, start_value, input_type='input', algo_type='algo', add_on=none, added_elements=none, vehement=false) %}
 		<div id="Algo{{id}}" class="pureAlgo">
 			<h4 class={{algo_type}}>{{header_text}}</h4>
@@ -59,25 +79,6 @@
 		{% set _=argos.update(kvargos) %}
 
 		<div id="Algo{{id}}" class="pureAlgo">
-			{% set algo_colors={
-				'standard':{'color':'#440000', 'meaning':'Data that is still meaningful (or shows something important) and can be used in the future.'},
-				'change':{'color':'#004400', 'meaning':'Difference introduced by last action.'},
-				'dead':{'color':'#FFFFFF', 'meaning':'Something not important, that is not a subject to change; dead, that is.'},
-				'stagnant':{'color':'#000000', 'meaning':'Something important, that is not a subject to change.'},
-				'crucial':{'color':'#8A7400', 'meaning':'Results of the algorithm.'},
-				'merge-standard':{'color':'#FF3333', 'meaning':'Data used in one part of merge-like procedure.'},
-				'helper1':{'color':'#00B359', 'meaning':'Source of last change.'},
-				'helper2':{'color':'#669900', 'meaning':'Yet another source of last change.'},
-				'exponent':{'color':'#804000', 'meaning':'Value associated with another value, usually some index.'},
-				'iterator':{'color':'#E64C00', 'meaning':'Some iterator or set of iterators.'},
-				'half-dead':{'color':'#888888', 'meaning':'Partially processed data.'},
-
-				'_violet':{'color':'#800080', 'meaning':''},
-				'_pink':{'color':'#FF0080', 'meaning':''},
-                '_red':{'color':'#880000', 'meaning':''},
-                '_green':{'color':'#008800', 'meaning':''},
-			}
-			%}
 			<h4 class={{argos.algo_type}}>{{header_text}}</h4>
 
 			{% if argos.color_description != false %}
