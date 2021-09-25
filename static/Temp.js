@@ -159,6 +159,8 @@ class Algorithm{
 
 	//Operations starting BeginningExecutor
 	starter(){
+		if (this.querier=true) this.reset_state_machine();
+
 		this.lees=[];
 		this.state_transformation=[];
 		this.place.innerHTML='';
@@ -166,6 +168,11 @@ class Algorithm{
 		this.ephemeral={'staat':null, 'passer':null};
 		this.pass_to_next_state=[];
 		this.logic={};
+	}
+
+	reset_state_machine(){
+		while(this.lees.length>1) this.StateUnmaker();
+		if (this.lees.length==1) this.StateUnmaker();
 	}
 
 	//Reversing operation

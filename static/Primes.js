@@ -101,70 +101,21 @@ class Sieve extends Algorithm{
 		if (last[0]==100) strr=`${prev[1]+1}*${prev[1]+1} > ${this.logic.n} (given limit) - and so, all prime numbers up to the given limit were found, sieve ends.`;
 		return strr;
 	}
-
 }
 
-
 class ExtendedSieve extends Sieve{
-	//Unmake last move in list of states
-	StateUnmaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1];
-		if (s[0]==1 && this.marked[s[2]]==s[2])	this.marked[s[2]]=0;
-		super.StateUnmaker();
+	logical_box(){
+		this.logic.lpf = NTMath.sievify(this.logic.n);
 	}
-	
-	//When is algorithm ending?
-	EscapeCondition(v, lim){
-		if (v+1>lim) return 1;
-		return 0;
-	}
-	
-	Darken(v){
-		var bt=this.place.getElementsByTagName("div")[v];
-		super.Darken(v, "fullNumb");
-		super.Darken(v, "divisNumb");
-		if (this.PrimeCheck(v)==1){
-			this.marked[v]=v;
-			bt.getElementsByClassName("divisNumb")[0].innerHTML=this.marked[v];
+
+	_presentation_colors_set(){
+		this.present.colors={
+			'composite':2,
+			'iterated':15,
 		}
 	}
 
-	MarkNormally(v){
-		var bt=this.place.getElementsByTagName("div")[v];
-		super.MarkNormally(v, "fullNumb");
-		super.MarkNormally(v, "divisNumb");
-		bt.getElementsByClassName("divisNumb")[0].innerHTML=this.marked[v];
-	}
-
-	//Color prime and change subscript note
-	PrimeColor(v1, v2){
-		var bt=this.place.getElementsByTagName("div")[v1];
-		super.PrimeColor(v1, v2, "fullNumb");
-		super.PrimeColor(v1, v2, "divisNumb");
-		bt.getElementsByClassName("divisNumb")[0].innerHTML=this.marked[v1];
-	}
-	
-	//Statement printed on the output
-	StatementComprehension(){
-		var l=this.lees.length;
-		if (l==1) return `This is just before the beginning of the sieve - I mark 0 as not factorizable, by definition`;
-		if (l==2) return `This is just before the beginning of the sieve - I mark 0 and 1 as not divisible factorizable, by definition`;
-
-
-		var prev=this.lees[l-2], last=this.lees[l-1];
-		var strr=``;
-		if (prev[0]==0 && last[0]==1) strr=`I've already marked all integers lower or equal to limit divisible by ${prev[3]}, so I search for next primes, starting from last prime I've found +1 - ${prev[3]+1}. `;
-		if (prev[0]==1 && last[0]==1) strr=`Last number I checked (${prev[2]}) was not a prime, so I search further. `;
-		if (prev[0]==1 && last[0]==0) strr=`I found a prime (${last[3]}), so I start finding numbers divisible by it, starting from ${last[3]}*${last[3]}=${last[2]}, because every lower number divisible by ${last[3]} is already marked and it's lowest divisor must be lower than ${last[3]} - read proof(2) above. `;
-		if (last[0]==0) strr+=`This number's lowest divisor >1 is ${this.marked[last[2]]!=last[3]?`not ${last[3]}, but ${this.marked[last[2]]} - so it was already marked with it's lowest divisor.`:`${last[3]} - so it's marked with it's lowest divisor just from now.`} `;
-		if (last[0]==1 && super.EscapeCondition(last[2], last[1])==false) strr+=`This number is ${this.PrimeCheck(last[2])?`a prime - so I'll mark this prime with it's lowest prime divisor - itself and start marking perhaps-primes as divisible by it.`:`not a prime - so I have to search further.`}`;
-		else if (last[0]==1) strr+=`This number is ${this.PrimeCheck(last[2])?`a prime and I mark it's lowest divisor as itself, but I won't start marking other numbers as divisible by it because ${last[2]}*${last[2]}>${last[1]}}`:`not a prime - so I have to search further.`}`;
-		if (last[0]==100) strr=`${prev[2]}+1 > ${prev[1]} (given limit) - and so, all prime numbers up to the given limit were found along with their lowest divisors, sieve ends.`;
-		return strr;
-	}
-
-	buttCreator(v){
+	_presentation_button_creator(v){
 		var btn = this.doubleButtCreator(v, Representation_utils.button_creator);
 		btn[1].innerHTML = 'lpf(' + btn[1].innerHTML + ')';
 		for (var x of btn){
@@ -173,104 +124,229 @@ class ExtendedSieve extends Sieve{
 		btn[0].style.border = '1px solid grey';
 		btn[0].style.verticalAlign = 'top';
 
-        return btn[0];
+		return btn[0];
 	}
-}
 
-class Querier extends Algorithm{
-	constructor(value, block, assocSieve){
-		super(block)
-		this.sieve=assocSieve;
-		this.post_lees=[];
+	presentation(){
+		this.present={};
+		this._presentation_colors_set();
+		var buttons={'sieve':[]}, i=0, j=0, btn;
+		var dv = Modern_representation.div_creator('', {'general':{'width':null}});
+		for (i=0; i<=this.logic.n; i++){
+			btn = this._presentation_button_creator(i);
+			buttons.sieve.push(btn);
+			dv.appendChild(btn);
+		}
+		this.place.appendChild(dv);
+		this.buttons=buttons;
+	}
+
+	palingnesia(){
+		this.logical_box();
+		this.presentation();
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.logic.n=c.get_next();
+	}
+
+	constructor(block, n){
+		super(block);
+		this.logic.n=n;
+		this.version=4;
+		this.palingnesia();
 	}
 
 	BeginningExecutor(){
-		for (var j=0;j<this.post_lees.length;j++){
-			if (this.post_lees[j][0]==0) this.sieve.MarkNormally(this.post_lees[j][1]);
-		}
-		this.post_lees=[];
-
-		var fas=this.input.value;
-		var ts=this.sieve.lees;
-		
-		if (ts[ts.length-1][0]!=100 || ts[ts.length-2][1]<parseInt(fas)) return;
-		this.place.textContent=fas+" : ";
-
-		this.lees.push([0, fas]);
-		this.post_lees=this.lees.slice();
+		this.read_data();
+		this.palingnesia();
+		this.lees.push([0]);
 	}
-	
-	//Go to the next state of the algorithm
+
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1];
+		var s=this.lees[l-1], staat=[], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
-		if (s[0]==0 && s[1]!=1){
-			this.place.textContent+=this.sieve.marked[s[1]];
-			if (this.sieve.marked[s[1]]!=s[1]){
-				this.place.textContent+="*";
-			}
+		if (s[0]==0){
+			this.pass_color(this.buttons.sieve[0], 0, 1, this.present.colors.composite);
+			this.pass_color(this.buttons.sieve[1], 0, 1, this.present.colors.composite);
 		}
-		if (s[0]!=100)	{
-			this.Painter(this.sieve.place.getElementsByClassName("divisNumb")[s[1]], 10, 1);
-			this.Painter(this.sieve.place.getElementsByClassName("fullNumb")[s[1]], 10, 1);
+		if (s[0]==1){
+			this.pass_color(this.buttons.sieve[s[2]], 0, 1, this.present.colors.composite);
+			this.pass_color(this.buttons.sieve[s[1]], 0, 15, 0);
+			if (s[1]==this.logic.lpf[s[2]]) staat.push([1, this.buttons.sieve[s[2]].lower, this.buttons.sieve[s[2]].lower.innerHTML, this.logic.lpf[s[2]]]);
 		}
-		if (l>1){
-			var prv=this.lees[l-2]
-			this.Painter(this.sieve.place.getElementsByClassName("divisNumb")[prv[1]], 11, 1);
-			this.Painter(this.sieve.place.getElementsByClassName("fullNumb")[prv[1]], 11, 1)
+		if (s[0]==2){
+			var prime_color = (this.logic.lpf[s[1]]==s[1])?0:this.present.colors.composite;
+			this.pass_color(this.buttons.sieve[s[1]], prime_color, this.present.colors.iterated, prime_color);
 		}
-		this.post_lees=this.lees.slice();
-		//Debug line
-		//document.getElementById('debug').innerHTML=this.lees;
 	}
 
-	//Make the last state in list of states
-	StateUnmaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], prv=this.lees[l-2];
-		var tex=this.place.textContent;
-		var tlen=tex.length;
-		var i;
-		if (s[0]!=100)	this.sieve.MarkNormally(s[1]);
-		if (s[0]!=100 && s[1]!=1) {
-			for (i=tlen-2;i>=0;i--){
-				if (tex[i]==':' || tex[i]=='*' || tex[i]=='\n') break;
-			}
-			this.place.textContent=tex.slice(0, i+1);
-		}
-		this.Painter(this.sieve.place.getElementsByClassName("divisNumb")[prv[1]], 10, 1);
-		this.Painter(this.sieve.place.getElementsByClassName("fullNumb")[prv[1]], 10, 1);
-	
-		super.StateUnmaker();
-		this.post_lees=this.lees.slice();
-	}
-
-
-	//Unmake last move in list of states
 	NextState(){
 		var l=this.lees.length;
-		var s=this.lees[l-1];
-		if (s[0]==0){
-			if (s[1]==1)	this.lees.push([100]);
-			else{
-				var sv=Math.floor(s[1]/this.sieve.marked[s[1]]);
-				if (s[1]!=1)	this.lees.push([0, sv]);
-				else this.lees.push([100]);
-			}
+		var s=this.lees[l-1], staat=[], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0]==0) return [2, 2];
+		if (s[0]==1){
+			if (s[2]+s[1] <= this.logic.n) return [1, s[1], s[1]+s[2]];
+			else if ((s[1]+1)*(s[1]+1) <= this.logic.n) return [2, s[1]+1];
+			else return [100];
+		}
+
+		else if (s[0]==2){
+			if (s[1]*s[1] >= this.logic.n) return [100];
+			else if (this.logic.lpf[s[1]]==s[1] && s[1]*s[1]<=this.logic.n) return [1, s[1], s[1]*s[1]];
+			else return [2, s[1]+1];
 		}
 	}
-
 
 	StatementComprehension(){
 		var l=this.lees.length;
-		
-		var last=this.lees[l-1];
+		if (l==1) return `This is just before the beginning of the sieve - I mark 0 and 1 as non-primes with factorizations: undefined (for 0) and consisting of 1 (for 1), by definition. Furthermore, I set (just for convenience) lowest prime factor of each number to itself.`;
+
+		var prev=this.lees[l-2], last=this.lees[l-1];
 		var strr=``;
-		if (last[0]==0 && last[1]==1) strr=`I've already factorized given number by finding all it's prime divisors, 1 cannot be divided further - query is finished`;
-		else if (last[0]==0) strr=`Now I have to find factorization of ${last[1]} - I divide it by it's lowest prime divisor - ${this.sieve.marked[last[1]]}`;
-		if (last[0]==100) strr=`Query is finished`;
+		if (prev[0]==1 && last[0]==2) strr=`I've already marked all integers lower or equal to limit divisible by ${prev[1]}, so I search for next primes, starting from last prime I've found +1 - ${prev[1]+1}. `;
+		if (prev[0]==2 && last[0]==2) strr=`Last number I checked (${prev[1]}) was not a prime, so I search further. `;
+		if (prev[0]==1 && last[0]==1) strr=`I mark the next number (${last[2]-last[1]}+${last[1]}=${last[2]}) as composite number, because it is divisible by ${last[1]}. `;
+		if (prev[0]==2 && last[0]==1) strr=`I found a prime (${last[1]}), so I start finding numbers divisible by it, starting from ${last[1]}*${last[1]}=${last[2]}, because every lower number divisible by ${last[1]} is already marked. `;
+		if (last[0]==1) strr+=`${(this.logic.lpf[last[2]]!=last[1])?`This number was already marked, so I don't change its lowest prime factor.`:`This number is marked just from now - thus, lpf(${last[2]}) = ${last[1]}.`} `;
+		if (last[0]==2) strr+=`This number is ${(this.logic.lpf[last[1]]==last[1])?`a prime - so I'll start marking composite numbers as divisible by it, possibly changing their lowest prime factor.`:`not a prime - so I have to search further.`}`;
+		if (last[0]==100) strr=`${prev[1]+1}*${prev[1]+1} > ${this.logic.n} (given limit) - and so, all lowest divisors of numbers up to ${this.logic.n} were found, sieve ends.`;
 		return strr;
+	}
+}
+
+class Factorizer extends Algorithm{
+	//Provide standard representation for Temp libraries
+	_logical_defactor(){
+		var factories=[];
+		for (var x of this.logic.factor_list){
+			factories.push({'base':x, 'expo':this.logic.factors[x]})
+		}
+		this.logic.factories = factories;
+	}
+
+	logical_box(){
+		this.logic.lpf=this.sieve.logic.lpf;
+		this.logic.factors={};
+		var x=this.logic.a;
+
+		while (x!=1){
+			if (this.logic.lpf[x] in this.logic.factors)
+				this.logic.factors[this.logic.lpf[x]]+=1;
+			else
+				this.logic.factors[this.logic.lpf[x]]=1;
+			x=Math.floor(x/this.logic.lpf[x]);
+		}
+		this.logic.factor_list = Object.keys(this.logic.factors).map(x => Number(x));
+		this.logic.factor_list.sort(function(a, b){return a - b;});
+
+		this.logic.map_factor_to_index={};
+		for (var i=0; i<this.logic.factor_list.length; i+=1){
+			this.logic.map_factor_to_index[this.logic.factor_list[i]]=i;
+		}
+		this._logical_defactor();
+	}
+
+	presentation(){
+		Representation_utils.change_button_width(this.stylistic, this.logic.a);
+		this.buttons={'factors':null};
+		
+		var construction_site=this.modern_divsCreator(1, 1, null, `${this.stylistic.bs_butt_width_h+10}px`).zdivs;
+		this.buttons.factors=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site[0].buttons, this.logic.factories, 4, -1, Representation_utils.expo_style_button_creator, {'size':20});
+	}
+
+	palingnesia(){
+		this.logical_box();
+		this.presentation();
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.logic.a=c.get_next();
+	}
+
+	constructor(block, a, associated_sieve){
+		super(block);
+		this.querier=true;
+		this.logic.a=a;
+		this.sieve=associated_sieve;
+		this.version=4;
+		this.palingnesia();
+	}
+
+	BeginningExecutor(){
+		this.read_data();
+		this.reset_state_machine();
+		if (this.sieve.finito==false){
+			this.lees.push([101]);
+		}
+		else if (this.logic.a > this.sieve.logic.n) {
+			this.lees.push([102]);
+		}
+		else{
+			this.palingnesia();
+			this.lees.push([0, this.logic.a, this.logic.lpf[this.logic.a], 1]);
+		}
+	}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], staat=[], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0]==0){
+			if (s[1]!=1){
+				var elem = this.buttons.factors[this.logic.map_factor_to_index[s[2]]];
+				if (s[3]==1){
+					this.pass_color(elem.expo, 4, 1, 0);
+					this.pass_color(elem.base, 4, 1, 0);
+				}
+				else if (s[3]>1){
+					this.pass_color(elem.expo, 0, 1, 0);
+				}
+				if (s[3]>=1){
+					staat.push([1, elem.expo, elem.expo.innerHTML, s[3]])
+				}
+			}
+			var color = ((this.logic.lpf[s[1]]==s[1])?0:2);
+			this.pass_color(this.sieve.buttons.sieve[s[1]], color, 1, color);
+		}
+
+		if (s[0]==100){
+			for (var x of this.buttons.factors){
+				staat.push([0, x.base, 0, 8]);
+				staat.push([0, x.expo, 0, 8]);
+			}
+		}
+
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		var next = Math.floor(s[1]/this.logic.lpf[s[1]]);
+
+		if (s[1]==1) return [100];
+		if (this.logic.lpf[next] == s[2]) return [0, next, s[2], s[3]+1];
+		return [0, next, this.logic.lpf[next], 1];
+	}
+
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], x=s[1];
+
+		if (s[0]==0 && s[1]!=1) return `As lowest factor of ${s[1]} is equal to ${this.logic.lpf[s[1]]}, then ${this.logic.lpf[s[1]]} is added to factorization of ${this.logic.a}, and remaining factors of ${this.logic.a} are factors of ${s[1]}/${this.logic.lpf[s[1]]} = ${Math.floor(s[1]/this.logic.lpf[s[1]])}`;
+		if (s[0]==0) return `And so, 1 was reached, so full factorization of ${this.logic.a} was obtained.`;
+		if (s[0]==100) return `${this.logic.a} was already factorized: ${this.logic.a} = ${NTMath_presentation.show_factorization(this.logic.factories)}`;
+		if (s[0]==101) return `In order to start query You need to finish the sieve.`;
+		if (s[0]==102) return `In order to start query You need to provide number lower than limit of the sieve - that is, ${this.sieve.logic.n}`; 
 	}
 }
 
@@ -394,7 +470,7 @@ var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 var sk2=new ExtendedSieve(feral2, 30);
 
 var foul=Algorithm.ObjectParser(document.getElementById('querySection'));
-var sk3=new Querier(24, foul, sk2);
+var sk3=new Factorizer(foul, 24, sk2);
 
 //x.value="Jonasz";
 //var butt = document.createButton(1);

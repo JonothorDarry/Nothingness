@@ -1,5 +1,3 @@
 Flask
-Flask-Migrate
-Flask-SQLAlchemy
 gunicorn
 beautifulsoup4

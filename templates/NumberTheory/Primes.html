@@ -177,7 +177,7 @@
 				</p>
 				<div id="Inputter3">
 					<form>
-						<input type="number" id="Querier" class="inputter" name="query" value="12">
+						<input type="number" id="Querier" class="inputter" name="query" value="24">
 					</form>
 					<button id="Sender3" class="sender">Begin</button>
 					<button id="Prever3" class="previous">Previous Move</button>
@@ -233,7 +233,6 @@
 		<div id="problems"></div>
 		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
 
-		<script src="{{url_for('static', filename='Sieve.js')}}"></script>
 		<script src="{{url_for('static', filename='Primes.js')}}"></script>
 		<form id="page" style="display:none"></form>
 		{{ footers.full_lower() }}
