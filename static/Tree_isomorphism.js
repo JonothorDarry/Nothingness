@@ -170,14 +170,61 @@ class Isomorphic_rooted extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1], staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+	}
 
-		/*
-		if (s[0]==0){
-			for (i=0; i<=this.logic.L; i++){
-				this.pass_color(this.buttons.counts[i], 0, 1);
-			}
-		}
-		*/
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+
+		if (s[0]==0) return [100];
+	}
+
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], x=s[1];
+
+		if (s[0]==0) return `Whatever`;
+	}
+}
+
+class Encode_prufer extends Algorithm{
+	logical_box(){
+		console.log(this.logic.tree.pre);
+	}
+	presentation(){
+		var buttons={};
+	}
+
+	palingenesia(){
+		this.logical_box();
+		this.presentation();
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		var edges = Modern_tree.tree_reader(c);
+		this.logic.tree = Modern_tree(edges, edges.length+1);
+	}
+
+	constructor(block, n, edges){
+		super(block);
+		this.logic.tree = new Modern_tree(edges, edges.length+1);
+
+		this.version=4;
+		this.palingenesia();
+	}
+
+	BeginningExecutor(){
+		this.read_data();
+		this.palingnesia();
+		this.lees.push([0]);
+	}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], staat=[], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 	}
 
 	NextState(){
@@ -197,3 +244,6 @@ class Isomorphic_rooted extends Algorithm{
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var eg1=new Isomorphic_rooted(feral, 3);
+
+var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+var eg2=new Encode_prufer(feral, 8, [[1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [3, 7], [7, 8]]);

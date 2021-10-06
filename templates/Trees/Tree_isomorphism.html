@@ -17,19 +17,19 @@
 		<ol>
 			<li>Two labeled trees consisting of \(n\) vertices each are considered isomorphic if and only if for each pair of vertices \(a, b\) edge connecting them either exists in both trees or none of them.</li>
 			<li>Two unlabeled trees consisting of \(n\) vertices each are considered isomorphic if there exists such permutation \(p:\{1,\dots,n\} \mapsto \{1 \dots n\}\) that for some labeling of trees the edge connecting vertices \((u, v)\) is present in the first tree if and only if the edge \((p_u, p_v)\) is present in the second tree.</li>
-			<li>Two unlabeled trees with one disinguished element (unlabeled rooted trees) consisting of \(n\) vertices each are considered isomorphic if there exists such permutation \(p:\{1,\dots,n\} \mapsto \{1 \dots n\}\) where \(p_1=1\) and label \(1\) denotes a distinguished element in both trees, that for some labeling of trees the edge connecting vertices \((u, v)\) is present in the first tree if and only if the edge \((p_u, p_v)\) is present in the second tree.</li>
+			<li>Two unlabeled trees with one disinguished element (unlabeled rooted trees) consisting of \(n\) vertices each are considered isomorphic if there exists such permutation \(p:\{1,\dots,n\} \mapsto \{1 \dots n\}\) where \(p_1=1\) and label \(1\) is assigned to a distinguished element in both trees, that for some labeling of trees the edge connecting vertices \((u, v)\) is present in the first tree if and only if the edge \((p_u, p_v)\) is present in the second tree.</li>
 		</ol>
 
 		<h2>Problem I: Number of unlabeled rooted trees</h2>
-		<p>A different formulation of this query will be answered: How many there are unlabeled trees with \(n\) nodes and greatest subtree of a root has size equal to \(k\)?</p>
-		<h3>Solution: dynamic poetry with elements of combinatorics at its finest</h3>
+		<p>A different formulation of this query will be answered: How many there are unlabeled trees with \(n\) nodes and greatest subtree of any of root's sons has size equal to \(k\)?</p>
+		<h3>Solution: dynamics with elements of combinatorics at its finest</h3>
 		<p>Let \(dp_{n,k}\) denote amount of trees of size \(n\) with largest subtree having size \(k\). Notice, that</p>
 		<ol>
 			<li>There is exactly one rooted tree with one node - the root itself - thus, \(dp_{1,0}=1\)</li>
 			<li>Every rooted tree has its largest subtrees - one or many such subtrees.</li>
 			<li>All rooted trees having \(n\) vertices and largest subtree of size \(k\) are trees that can be constructed by adding to some rooted tree of size \(n-s*k\) and largest subtree of size \( \lt k\) exactly \(s\) subtrees of size \(k\): thus, \(dp_{n,k}=\sum_{s=0}^{s=\lfloor \frac{n}{k} \rfloor} some\_function(k,s) * (\sum_{l=0}^{k-1} dp_{n-s*k, l})\), where \(some\_function(k,s)\) denotes number of different multisets of size \(s\) consisting of subtrees of size \(k\) that can be added to a rooted tree.</li>
 
-			<li>Now - How many there are trees \(T\) consisting of root and \(s\) subtrees, each of them having size \(k\)? One has to <b>choose</b> \(s\) subtrees out of \(\sum_{i=0}^k dp_{k, i}\) trees of size \(k\), the <b>order of subtrees is meaningless</b>, and one <b>subtree can appear any number of times</b> in \(T\): thus, it is combination with repetition equal to \(\binom{s+\sum_{i=0}^k dp_{k, i}-1}{s}\) (choosing \(s\) elements belonging to one of \(\sum_{i=0}^k dp_{k, i}\) types - different trees).</li>
+			<li>Now - How many there are trees \(T\) consisting of a root and \(s\) subtrees, each of them having size \(k\)? One has to <b>choose</b> \(s\) subtrees out of \(\sum_{i=0}^k dp_{k, i}\) trees of size \(k\), the <b>order of subtrees is meaningless</b>, and one <b>subtree can appear any number of times</b> in \(T\): thus, it is combination with repetition equal to \(\binom{s+\sum_{i=0}^k dp_{k, i}-1}{s}\) (choosing \(s\) elements belonging to one of \(\sum_{i=0}^k dp_{k, i}\) types - different trees).</li>
 			<li>This allows to proceed to crème de la crème of this paragraph: 
 				$$ dp_{n,k}=\sum_{s=1}^{\lfloor \frac{n}{k} \rfloor} \binom{s+(\sum_{i=0}^{k} dp_{k, i})-1}{s} (\sum_{l=0}^{k-1} dp_{n-s*k, l})$$
 			</li>
@@ -82,32 +82,49 @@
 		<h3>Solution: built upon previous solution</h3>
 		<p>First, each tree has a centroid; it can have either one or two centroids (<s>Insert a reference to a proof in sometime: but first, write it down</s>). There are two possible situations:</p>
 		<ol>
-			<li>Tree has odd number of nodes: then, it has exactly one centroid; largest subtree of a tree rooted at a centroid has size \( \le \frac{n-1}{2} \). Thus, \(T_n=csc_{n,\frac{n-1}{2}}\) for \(n=2k+1\).</li>
-			<li>Tree has even number of nodes; it can have either one or two centroids; thus, \(t_n=c1_n+c2_n\) for \(c1_n\) and \(c2_n\) denoting number of trees with even number of vertices and one or two centroids, respectively. How to calculate them, however?
+			<li>Tree has odd number of nodes: then, it has exactly one centroid; largest subtree of a tree rooted at a centroid has size \( \le \frac{n-1}{2} \). Thus, \(T_n=csc_{n,(n-1)/2}\) for \(n=2k+1\).</li>
+			<li>Tree has even number of nodes; it can have either one or two centroids; thus, \(T_n=c1_n+c2_n\) for \(c1_n\) and \(c2_n\) denoting number of trees with even number of vertices and one or two centroids, respectively. How to calculate them, however?
 				<ol>
-					<li>In case of one centroid, analogously to case with one node: \(c1_n=csc_{n, \frac{n-2}{2}}\).</li>
-					<li>In case of two centroids, largest subtree of a tree rooted at centroid has size \(\frac{n}{2}\). Notice, that there is an edge between centroids. Then, in \(dp_{n}{\frac{n}{2}}\), after removing edge between centroids either:
+					<li>In case of one centroid, analogously to case with one node: \(c1_n=csc_{n, (n-2)/2}\).</li>
+					<li>In case of two centroids, largest subtree of a tree rooted at centroid has size \(\frac{n}{2}\). Notice, that there is an edge between centroids. Then, in \(dp_{n,\frac{n}{2}}\), after removing edge between centroids either:
 						<ol>
-							<li>Trees created after removing edge are different: thus, this tree was calculated twice in \(dp_{n,\frac{n}{2}}\)</li>
-							<li>Trees created after removing edge are isomorphic (with respect to distinguished vertices - centroids): they were calculated once in \(dp_{n,\frac{n}{2}}\). How many there are such trees? As many, as isomorphic rooted trees with \(\frac{n}{2}\) vertices - because both trees created by removing edge have to be identical with respect to distinguished element - centroid, and both created trees have \(\frac{n}{2}\) nodes.</li>
+							<li>Trees created after removing edge are different: thus, this tree was calculated twice in \(dp_{n,n/2}\)</li>
+							<li>Trees created after removing edge are isomorphic (with respect to distinguished vertices - centroids): they were calculated once in \(dp_{n,n/2}\). How many there are such trees? As many, as isomorphic rooted trees with \(\frac{n}{2}\) vertices - because both trees created by removing edge have to be identical with respect to distinguished element - centroid, and both created trees have \(\frac{n}{2}\) nodes.</li>
 						</ol>
 						This implies, that \(c2_n=\frac{dp_{n,n/2}-csc_{n/2, n/2-1}}{2}+csc_{n/2, n/2-1}\)
 					</li>
 				</ol>
-				Thus, \(T_n=c1_n+c2_n = csc_{n, \frac{n-2}{2}} + \frac{dp_{n,n/2}-csc_{n/2, n/2-1}}{2}+csc_{n/2, n/2-1}\)
+				Thus, \(T_n=c1_n+c2_n = csc_{n, (n-2)/2} + \frac{dp_{n,n/2}-csc_{n/2, n/2-1}}{2}+csc_{n/2, n/2-1}\)
 			</li>
 		</ol>
 		<p>
 		To summarize, 
 		$$T_n=\begin{cases}
-		csc_{n,\frac{n-1}{2}} \text{  for \(n: 2 \nmid n\)} \\
-		csc_{n, \frac{n-2}{2}} + \frac{dp_{n,n/2}-csc_{n/2, n/2-1}}{2}+csc_{n/2, n/2-1} \text{  for \(n: 2 | n\)} \\
+		csc_{n,(n-1)/2} \text{  for \(n: 2 \nmid n\)} \\
+		csc_{n, (n-2)/2} + \frac{dp_{n,n/2}-csc_{n/2, n/2-1}}{2}+csc_{n/2, n/2-1} \text{  for \(n: 2 | n\)} \\
 			
 		\end{cases}
 		$$
-
 		</p>
 
+		<h2>Problem III: Number of labeled trees</h2>
+		{{ algo.neo_algorithm(2, 'Prüfer code - encoding sequence from tree', '
+			<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree.<br>
+			\(n\)<br>
+			\(a_1, b_1\)<br>
+			\(\dots\)<br>
+			\(a_{n-1}, b_{n-1}\)
+			</p>
+		'
+		, '8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8', {'input_type':'textarea', 'color_description':{'standard':''} }) }}
+
+		{{ algo.neo_algorithm(3, 'Prüfer code - decoding tree from sequence', '
+			<p>Input format: \(n\) is the number of vertices, \(a_i\)s are elements of Prüfer sequence.<br>
+			\(n\)<br>
+			\(a_1, a_2, \dots, a_{n-2}\)<br>
+			</p>
+		'
+		, '8&#10;', {'input_type':'textarea', 'color_description':{'standard':''} }) }}
 
 
 		<div id="problems"></div>

@@ -1,5 +1,10 @@
 class XXXX extends Algorithm{
-	palingnesia(){
+	logical_box(){
+	}
+	presentation(){
+	}
+
+	palingenesia(){
 		this.logical_box();
 		var buttons={};
 	}
@@ -14,7 +19,7 @@ class XXXX extends Algorithm{
 		super(block);
 		this.logic.n=n;
 		this.version=4;
-		this.palingnesia();
+		this.palingenesia();
 	}
 
 	BeginningExecutor(){

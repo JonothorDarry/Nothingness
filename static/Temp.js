@@ -159,7 +159,7 @@ class Algorithm{
 
 	//Operations starting BeginningExecutor
 	starter(){
-		if (this.querier=true) this.reset_state_machine();
+		if (this.querier==true) this.reset_state_machine();
 
 		this.lees=[];
 		this.state_transformation=[];
@@ -1265,7 +1265,7 @@ class Modern_tree{
 	constructor(edges, root=1){
 		var tree=Modern_tree.edges_to_edge_list(edges)
 		this.n=tree.length-1;
-		this.root=1;
+		this.root=root;
 		this.tr=tree;
 		this.edge_list=edges;
 
@@ -1279,8 +1279,8 @@ class Modern_tree{
 
 		var s=[root], ij=ArrayUtils.steady(this.n+1, 0).map(function(e,i){return tree[i].length});
 		this.kids=ArrayUtils.steady(this.n+1, 0).map(e => []);
-		this.depth[1]=0;
-		this.pre[1]=root, this.apre[root]=1;
+		this.depth[root]=0;
+		this.pre[root]=1, this.apre[1]=root;
 
 		while(s.length>0){
 			a=s[s.length-1];
@@ -1301,6 +1301,7 @@ class Modern_tree{
 				}
 			}
 		}
+		console.log(root, this.apre[root]);
 	}
 
 	//Adds system_depth
