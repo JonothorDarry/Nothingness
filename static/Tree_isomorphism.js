@@ -194,7 +194,7 @@ class Encode_prufer extends Algorithm{
 	}
 
 	presentation(){
-		var buttons={'prufer':[], 'iterator':[]};
+		var buttons={};
 
 		var treeDiv=document.createElement("DIV");
 		treeDiv.style.position="relative";
@@ -216,9 +216,10 @@ class Encode_prufer extends Algorithm{
 		var super_div = document.createElement("DIV");
 
 		var system = [
-			['Iterator: ', ArrayUtils.range(1, this.logic.tree.n), 'iterator'],
-			['Current degree: ', this.logic.tree.tr.slice(1).map(e => e.length), 'degree'],
-			['Prufer sequence: ', this.logic.tree.prufer_code, 'prufer'],
+			['Vertex: ', ArrayUtils.range(1, this.logic.tree.n), 'tree_vertex', 0],
+			['Parent: ', this.logic.tree.par.slice(1).map(e => (e==0?'-':e)), 'tree_parent', 0],
+			['Current degree: ', this.logic.tree.tr.slice(1).map(e => e.length), 'degree', 0],
+			['Prufer sequence: ', this.logic.tree.prufer_code, 'prufer', 4],
 		];
 		for (var x of system){
 			var div = Modern_representation.div_creator('', {'general':{'display':null}});
@@ -226,8 +227,10 @@ class Encode_prufer extends Algorithm{
 			var title = Modern_representation.button_creator(x[0], {'px':{'width':200}});
 			Representation_utils.Painter(title, 5);
 			div.appendChild(title);
-			buttons[x[2]] = Modern_representation.fill_with_buttons_horizontal({'general':{'backgroundColor':'#440000'}}, div, x[1], 0);
+			buttons[x[2]] = Modern_representation.fill_with_buttons_horizontal({'general':{'backgroundColor':'#440000'}}, div, x[1], x[3]);
 		}
+		buttons.vertexes = this.tree_presentation.buttons.vertexes;
+		buttons.edges = this.tree_presentation.buttons.edges;
 
 		this.place.appendChild(super_div);
 		this.buttons=buttons;
@@ -262,32 +265,50 @@ class Encode_prufer extends Algorithm{
 
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+		var s=this.lees[l-1], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==1){
 			this.pass_color(this.buttons.prufer[s[2]-1], 4, 1, 8);
-			this.pass_color(this.buttons.iterator[s[1]-1], 0, 1, 2);
-			this.pass_color(this.buttons.degree[s[1]-1], 0, 14, 2);
-			passer.push([1, this.buttons.degree[s[1]-1], 1, 0]);
+			this.pass_color(this.buttons.tree_vertex[s[1]-1], 0, 15, 2);
+			this.pass_color(this.buttons.degree[s[1]-1], 0, 14, 0);
 
-			var deg = this.buttons.degree[this.logic.tree.par[s[1]]-1].innerHTML;
-			passer.push([1, this.buttons.degree[this.logic.tree.par[s[1]]-1], deg, deg-1]);
+			this.pass_color(this.buttons.tree_parent[s[1]-1], 0, 14, 0);
 		}
 		if (s[0]==2){
-			this.pass_color(this.buttons.iterator[s[1]-1], 0, 15, 0);
+			this.pass_color(this.buttons.tree_vertex[s[1]-1], 0, 15, 0);
 			this.pass_color(this.buttons.degree[s[1]-1], 0, 14, 0);
 		}
 
 		if (s[0]==3){
-			this.pass_color(this.buttons.iterator[s[3]-1], 0, 1, 2);
-			this.pass_color(this.buttons.iterator[s[1]], 0, 15, 0);
 			this.pass_color(this.buttons.prufer[s[2]-1], 4, 1, 8);
-			this.pass_color(this.buttons.degree[s[3]-1], 0, 14, 2);
+			this.pass_color(this.buttons.tree_vertex[s[3]-1], 0, 1, 2);
+			this.pass_color(this.buttons.tree_vertex[s[1]], 0, 15, 0);
+			this.pass_color(this.buttons.degree[s[3]-1], 0, 14, 0);
 
-			passer.push([1, this.buttons.degree[s[3]-1], 1, 0]);
-			var deg = this.buttons.degree[this.logic.tree.par[s[3]]-1].innerHTML;
-			passer.push([1, this.buttons.degree[this.logic.tree.par[s[3]]-1], deg, deg-1]);
+			this.pass_color(this.buttons.tree_parent[s[3]-1], 0, 14, 0);
+		}
+
+		if (s[0]==4){
+			var x=-1;
+			if (s[3]==1) x=s[1];
+			else x=s[4];
+			var par=this.logic.tree.par[x];
+
+			this.pass_color(this.buttons.tree_vertex[s[1]], 0, 15, 0);
+			this.pass_color(this.buttons.tree_vertex[par-1], 0, 14, 0);
+			this.pass_color(this.buttons.degree[x-1], 0, 1, 2);
+			this.pass_color(this.buttons.degree[par-1], 0, 1, 0);
+
+			console.log(this.buttons.vertexes[x]);
+			//Why pass color works, and bare staat not?
+			staat.push([0, this.buttons.vertexes[x], 0, 4]);
+			staat.push([0, this.buttons.edges[x], 0, 4]);
+			//this.pass_color(this.buttons.vertexes[x], 0, 8, 0);
+
+			staat.push([1, this.buttons.degree[x-1], 1, 0]);
+			var deg = this.buttons.degree[par-1].innerHTML;
+			staat.push([1, this.buttons.degree[par-1], deg, deg-1]);
 		}
 	}
 
@@ -295,13 +316,17 @@ class Encode_prufer extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 		
+		if (s[0] == 1) return [4, s[1], s[2], s[0]];
+		if (s[0] == 3) return [4, s[1], s[2], s[0], s[3]];
 		if (s[2] >= this.logic.tree.prufer_removed.length) return [100];
+
+		//4 or 2
 		if (s[1]+1 == this.logic.tree.prufer_removed[s[2]]) return [1, s[1]+1, s[2]+1];
 		if (s[1] < this.logic.tree.prufer_removed[s[2]]) return [2, s[1]+1, s[2]];
 
 		//3 - zejście do ojca
-		if (s[0]==1) return [3, s[1], s[2]+1, this.logic.tree.par[s[1]]]
-		else return [3, s[1], s[2]+1, this.logic.tree.par[s[3]]];
+		if (s[3]==1) return [3, s[1], s[2]+1, this.logic.tree.par[s[1]]]
+		else return [3, s[1], s[2]+1, this.logic.tree.par[s[4]]];
 	}
 
 	StatementComprehension(){
