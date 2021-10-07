@@ -161,6 +161,7 @@ class Isomorphic_rooted extends Algorithm{
 
 	BeginningExecutor(){
 		this.read_data();
+		console.log(this.logic.n);
 		this.palingnesia();
 		this.lees.push([0]);
 	}
@@ -189,10 +190,47 @@ class Isomorphic_rooted extends Algorithm{
 
 class Encode_prufer extends Algorithm{
 	logical_box(){
-		console.log(this.logic.tree.pre);
+		this.logic.tree.encode_prufer();
 	}
+
 	presentation(){
-		var buttons={};
+		var buttons={'prufer':[], 'iterator':[]};
+
+		var treeDiv=document.createElement("DIV");
+		treeDiv.style.position="relative";
+		treeDiv.style.width=`1300px`;
+		treeDiv.style.display="inline-block";
+		treeDiv.style.height=`1300px`;
+
+		this.tree_presentation = new Modern_tree_presenter(this.logic.tree, 
+			{'div':treeDiv, 'width':1300, 'height':1300}, 
+			{
+				'vertex':{'width':40, 'height':40, 'radius':100},
+				'edge':{'height':2},
+				'nonsense':this.stylistic
+			}
+		);
+		this.place.appendChild(treeDiv);
+
+		//var itera_div = Modern_representation.div_creator('', {'px':{'height':40}})
+		var super_div = document.createElement("DIV");
+
+		var system = [
+			['Iterator: ', ArrayUtils.range(1, this.logic.tree.n), 'iterator'],
+			['Current degree: ', this.logic.tree.tr.slice(1).map(e => e.length), 'degree'],
+			['Prufer sequence: ', this.logic.tree.prufer_code, 'prufer'],
+		];
+		for (var x of system){
+			var div = Modern_representation.div_creator('', {'general':{'display':null}});
+			super_div.appendChild(div);
+			var title = Modern_representation.button_creator(x[0], {'px':{'width':200}});
+			Representation_utils.Painter(title, 5);
+			div.appendChild(title);
+			buttons[x[2]] = Modern_representation.fill_with_buttons_horizontal({'general':{'backgroundColor':'#440000'}}, div, x[1], 0);
+		}
+
+		this.place.appendChild(super_div);
+		this.buttons=buttons;
 	}
 
 	palingenesia(){
@@ -204,7 +242,7 @@ class Encode_prufer extends Algorithm{
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
 		var edges = Modern_tree.tree_reader(c);
-		this.logic.tree = Modern_tree(edges, edges.length+1);
+		this.logic.tree = new Modern_tree(edges, edges.length+1);
 	}
 
 	constructor(block, n, edges){
@@ -217,21 +255,53 @@ class Encode_prufer extends Algorithm{
 
 	BeginningExecutor(){
 		this.read_data();
-		this.palingnesia();
-		this.lees.push([0]);
+		this.palingenesia();
+		if (this.logic.tree.prufer_removed[0]!=1) this.lees.push([2, 1, 0]);
+		else this.lees.push([1, 1, 0]);
 	}
 
 	StateMaker(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0]==1){
+			this.pass_color(this.buttons.prufer[s[2]-1], 4, 1, 8);
+			this.pass_color(this.buttons.iterator[s[1]-1], 0, 1, 2);
+			this.pass_color(this.buttons.degree[s[1]-1], 0, 14, 2);
+			passer.push([1, this.buttons.degree[s[1]-1], 1, 0]);
+
+			var deg = this.buttons.degree[this.logic.tree.par[s[1]]-1].innerHTML;
+			passer.push([1, this.buttons.degree[this.logic.tree.par[s[1]]-1], deg, deg-1]);
+		}
+		if (s[0]==2){
+			this.pass_color(this.buttons.iterator[s[1]-1], 0, 15, 0);
+			this.pass_color(this.buttons.degree[s[1]-1], 0, 14, 0);
+		}
+
+		if (s[0]==3){
+			this.pass_color(this.buttons.iterator[s[3]-1], 0, 1, 2);
+			this.pass_color(this.buttons.iterator[s[1]], 0, 15, 0);
+			this.pass_color(this.buttons.prufer[s[2]-1], 4, 1, 8);
+			this.pass_color(this.buttons.degree[s[3]-1], 0, 14, 2);
+
+			passer.push([1, this.buttons.degree[s[3]-1], 1, 0]);
+			var deg = this.buttons.degree[this.logic.tree.par[s[3]]-1].innerHTML;
+			passer.push([1, this.buttons.degree[this.logic.tree.par[s[3]]-1], deg, deg-1]);
+		}
 	}
 
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
+		
+		if (s[2] >= this.logic.tree.prufer_removed.length) return [100];
+		if (s[1]+1 == this.logic.tree.prufer_removed[s[2]]) return [1, s[1]+1, s[2]+1];
+		if (s[1] < this.logic.tree.prufer_removed[s[2]]) return [2, s[1]+1, s[2]];
 
-		if (s[0]==0) return [100];
+		//3 - zejście do ojca
+		if (s[0]==1) return [3, s[1], s[2]+1, this.logic.tree.par[s[1]]]
+		else return [3, s[1], s[2]+1, this.logic.tree.par[s[3]]];
 	}
 
 	StatementComprehension(){
@@ -243,7 +313,7 @@ class Encode_prufer extends Algorithm{
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var eg1=new Isomorphic_rooted(feral, 3);
+var eg1=new Isomorphic_rooted(feral, 5);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var eg2=new Encode_prufer(feral, 8, [[1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [3, 7], [7, 8]]);
+var eg2=new Encode_prufer(feral2, 8, [[1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [3, 7], [7, 8]]);

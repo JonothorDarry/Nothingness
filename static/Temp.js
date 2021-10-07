@@ -652,6 +652,28 @@ class Modern_representation{
 		for (x in stylistic['%']) element.style[x]=`${stylistic['%'][x]}%`;
 		return element;
 	}
+
+	static fill_with_buttons_horizontal(style, place, names, color, ln=-1, creator=Modern_representation.button_creator, additional_args=null){
+		var single_name=false, single_color=false, btn_list=[], btn, cur_name, cur_color;
+		if (ArrayUtils.is_iterable(names)==false) single_name=true;
+		else ln=names.length;
+
+		if (ArrayUtils.is_iterable(color)==false) single_color=true;
+		else ln=color.length;
+
+		for (var i=0; i<ln; i++){
+			if (single_name) cur_name=names;
+			else cur_name=names[i];
+			if (single_color) cur_color=color;
+			else cur_color=color[i];
+
+			btn=creator(cur_name, style);
+			Representation_utils.Painter(btn, color);
+			place.appendChild(btn);
+			btn_list.push(btn);
+		}
+		return btn_list;
+	}
 }
 
 
@@ -1240,7 +1262,7 @@ class Modern_tree_presenter{
 			var bt=this.buttCreator(style, a);
 			this.buttons.vertexes[a]=bt;
 
-			if (a!=1){
+			if (a!=this.tree.root){
 				var dv=this.create_edge(a, style);
 				this.buttons.edges[a]=dv;
 				this.place.appendChild(dv);
@@ -1301,7 +1323,34 @@ class Modern_tree{
 				}
 			}
 		}
-		console.log(root, this.apre[root]);
+	}
+
+	//Right now assumes n is root
+	encode_prufer(){
+		this.prufer_code=[];
+		this.prufer_removed=[];
+		var removed = ArrayUtils.steady(this.n+1, 0);
+		var primary=-1, i=1, x, p;
+
+		while (this.prufer_code.length < this.n-2){
+			//console.log(i, this.kids[i].length, removed[i], primary, this.prufer_code);
+			if (primary!=-1){
+				x=primary;
+				primary=-1;
+			}
+			else x=i;
+
+			if (this.kids[x].length - removed[x] == 0){
+				this.prufer_removed.push(x);
+				p = this.par[x];
+				this.prufer_code.push(p);
+				removed[p]+=1;
+				if (this.kids[p].length - removed[p] == 0 && p<i){
+					primary=p;
+				}
+			}
+			if (x == i) i+=1;
+		}
 	}
 
 	//Adds system_depth
