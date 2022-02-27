@@ -296,11 +296,11 @@ class PostPhi extends Algorithm{
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
-        return ``;
 
 		if (s[0]==0 || s[0]==1 || s[0]==2){
 			layer=s[1], p1=s[2], p2=s[3], h=s[4];
 			var str = `What do we want? Find next &phi;(${layer-1}, w) for some w, that needs to be calculated; furthermore, we want it to be least possible (so that we don't need to sort the results). What do we do? We select some value b from the layer above (that is, layer ${layer}) and generate from it either v or v divided by current element of the sequence - namely ${this.logic.seq[layer-1]}. `
+			return str;
 			//if (p1 < cur_length 
 
 			//`Previous two pointers show two minimal values from previous layer, that have a child in this layer - namely ${this.logic.layers_phis[layer][p1].n} and ${this.logic.layers_phis[layer][p2].n}/${this.logic.seq[layer-1]}. `;
@@ -309,5 +309,130 @@ class PostPhi extends Algorithm{
 	}
 }
 
+class Segtree_Counter extends Algorithm{
+	_logical_construct_tree(){
+		var logg = Math.ceil(Math.log(this.logic.queries[this.logic.queries.length-1].interval)/Math.log(2));
+		this.logic.Cv = 1<<logg;
+
+		this.logic.seg_tree = [];
+		for (var i=0; i<this.logic.Cv*2; i++) this.logic.seg_tree.push([]);
+		this.logic.seg_tree[this.logic.Cv] = [0]; //0 and 1 handling
+		for (var i=this.logic.Cv+1; i<this.logic.Cv*2; i++) this.logic.seg_tree[i] = [1];
+		for (var i=this.logic.Cv-1; i>0; i--) this.logic.seg_tree[i][0] = this.logic.seg_tree[i*2][0] + this.logic.seg_tree[i*2+1][0];
+	}
+
+	_logical_sort_out_queries(){
+		var comparer_sort = function(a,b) {return (a.prime_nr <= b.prime_nr ? -1 : 1)};
+		this.logic.queries.sort(comparer_sort);
+	}
+
+	_logical_insert_tree(iterator){
+		this.logic.seg_tree[this.logic.Cv + iterator].push(0);
+		for (var i = (this.logic.Cv + iterator)>>1; i>0; i=(i>>1)){
+			this.logic.seg_tree[i].push(ArrayUtils.get_elem(this.logic.seg_tree[i*2], -1) + ArrayUtils.get_elem(this.logic.seg_tree[i*2+1], -1));
+		}
+	}
+
+	_logical_query_tree(interval){
+		var cur=0, _tmp, full_changes = [];
+		var l=this.logic.Cv+1, r=this.logic.Cv+interval;
+		
+		_tmp = ArrayUtils.get_elem(this.logic.seg_tree[l], -1); 
+		cur += _tmp;
+		full_changes.push(cur);
+		if (r != l){
+			_tmp = ArrayUtils.get_elem(this.logic.seg_tree[r], -1); 
+			cur += _tmp;
+			full_changes.push(cur);
+		}
+
+		for (; l>=1; l>>=1, r>>=1){
+			if (l%2 == 0 && r-l>1){
+				_tmp = ArrayUtils.get_elem(this.logic.seg_tree[l+1], -1); 
+				cur += _tmp;
+				full_changes.push(cur);
+			}
+			if (r%2 == 1 && r-l>1){
+				_tmp = ArrayUtils.get_elem(this.logic.seg_tree[r-1], -1); 
+				cur += _tmp;
+				full_changes.push(cur);
+			}
+		}
+		return full_changes;
+	}
+
+	_logical_execute_queries(prime_nr){
+		var i;
+		for (i=this.logic.current_query; i<this.logic.queries.length; i++){
+			if (this.logic.queries[i].prime_nr == prime_nr){
+				this.logic.queries[i].answer = this._logical_query_tree(this.logic.queries[i].interval);
+			}
+			else break;
+		}
+		this.logic.current_query = i;
+	}
+
+	_logical_finish_tree(){
+		this.logic.current_query = 0;
+		this.logic.lpf = ArrayUtils.steady(this.logic.Cv+1, -1);
+		var limit = this.logic.Cv;
+		var found_primes=0;
+
+		this._logical_execute_queries(found_primes);
+		for (var i=2; i<limit; i++){
+			if (this.logic.lpf[i] != -1) continue;
+			for (var j=i; j<limit; j+=i){
+				if (this.logic.lpf[j] != -1) continue;
+				this.logic.lpf[j] = i;
+				this._logical_insert_tree(j);
+			}
+			found_primes+=1;
+			this._logical_execute_queries(found_primes);
+		}
+	}
+
+	logical_box(){
+		this._logical_sort_out_queries();
+		this._logical_construct_tree();
+		this._logical_finish_tree();
+	}
+
+	presentation(){
+		
+	}
+
+	palingnesia(){
+		this.logical_box();
+		this.presentation();
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.logic.q=c.get_next();
+		this.logic.queries=[];
+		for (var i=0; i<this.logic.q; i++){
+			this.logic.queries.push({'interval':c.get_next(), 'prime_nr':c.get_next(), 'answer':-1});
+		}
+	}
+
+	BeginningExecutor(){
+		this.read_data();
+		this.palingnesia();
+
+		//this.lees.push([1, this.logic.a, 0, 0, 0]);
+	}
+
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
+
+		return '';
+	}
+}
+
 var feral1=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var sk1=new PostPhi(feral1, 121, 7);
+
+var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+var sk2=new Segtree_Counter(feral2, 121, 7);

@@ -954,7 +954,10 @@ class ArrayUtils{
 
 	//If value is sort of list - returns element under index, if not - returns value
 	static get_elem(value, ite){
-		if (ArrayUtils.is_iterable(value)) return value[ite];
+		if (ArrayUtils.is_iterable(value)){
+			if (ite<0) return value[value.length+ite];
+			return value[ite];
+		}
 		return value;
 	}
 
