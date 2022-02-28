@@ -311,7 +311,8 @@ class PostPhi extends Algorithm{
 
 class Segtree_Counter extends Algorithm{
 	_logical_construct_tree(){
-		var logg = Math.ceil(Math.log(this.logic.queries[this.logic.queries.length-1].interval)/Math.log(2));
+		var maximus = this.logic.queries.reduce((previousValue, currentValue) => Math.max(previousValue, currentValue.interval), 0);
+		var logg = Math.ceil(Math.log(maximus)/Math.log(2));
 		this.logic.Cv = 1<<logg;
 
 		this.logic.seg_tree = [];
@@ -323,6 +324,7 @@ class Segtree_Counter extends Algorithm{
 
 	_logical_sort_out_queries(){
 		var comparer_sort = function(a,b) {return (a.prime_nr <= b.prime_nr ? -1 : 1)};
+		this.logic.beg_queries = this.logic.queries.slice();
 		this.logic.queries.sort(comparer_sort);
 	}
 
@@ -395,10 +397,88 @@ class Segtree_Counter extends Algorithm{
 		this._logical_sort_out_queries();
 		this._logical_construct_tree();
 		this._logical_finish_tree();
+		console.log(this.logic.Cv);
+	}
+
+
+	_presentation_build_tree(place){
+		var seg_tree_edges = [];
+		
+		for (var i=1; i<this.logic.Cv; i++){
+			seg_tree_edges.push([i, i*2]);						
+			seg_tree_edges.push([i, i*2+1]);
+		}
+		var seg_tree = new Modern_tree(seg_tree_edges, 1);
+
+		var single_width = 40;
+		var width = this.logic.Cv*single_width;
+		var height = 500;
+		var post_div = Modern_representation.div_creator('', {'px':{'width':width, 'height':height}});
+
+		var tree_presentation = new Modern_tree_presenter(seg_tree, {'div':post_div, 'width':width, 'height':height}, {
+			'vertex':{'width':single_width, 'height':single_width, 'radius':100, 'label':'none'},
+			'edge':{'height':2},
+			'nonsense':this.stylistic
+			}, 'non-standard'
+		);
+
+		this.buttons.vertexes = tree_presentation.buttons.vertexes;
+		this.buttons.edges = tree_presentation.buttons.edges;
+
+		for (var i=1; i<2*this.logic.Cv; i+=1){
+			this.buttons.vertexes[i].data = {'iterator':0, 'values':this.logic.seg_tree[i]};
+			this.buttons.vertexes[i].innerHTML = this.buttons.vertexes[i].data.values[0];
+		}
+		place.appendChild(post_div);
+	}
+
+	_presentation_build_sieve(place){
+		var sieve = Modern_representation.div_creator('', {'general':{'display':'block'}});
+		for (var i=0; i<this.logic.Cv; i++){
+			var btn = this.buttCreator(i);
+			this.Painter(btn, 0);
+			this.buttons.low_sieve.push(btn);
+			sieve.appendChild(btn);
+		}
+		this.Painter(this.buttons.low_sieve[0], 2);
+		place.appendChild(sieve);
+	}
+
+	_presentation_build_querier(){
+		var querier=Representation_utils.proto_divsCreator(1, this.logic.queries.length+4, [], null, this.present.place, this.stylistic);
+		querier.full_div.style.display='inline-block';
+		var grid = new Grid(this.logic.queries.length+3, 3, this.stylistic, {'place':querier.zdivs, 'top_margin':1});
+
+		var style = {'px':{'width':80}};
+		grid.single_filler([1, 0], 'n', {'color':5, 'stylistic':style});
+		grid.single_filler([1, 1], 'a', {'color':5, 'stylistic':style});
+		grid.single_filler([1, 2], '&phi;(n,a)', {'color':5, 'stylistic':style});
+
+		this.buttons.q_intervals = grid.filler([[2, this.logic.queries.length+1], 0], this.logic.beg_queries.map(x => x.interval), {'color':0, 'stylistic':style});
+		this.buttons.q_prime_nrs = grid.filler([[2, this.logic.queries.length+1], 1], this.logic.beg_queries.map(x => x.prime_nr), {'color':0, 'stylistic':style});
+		this.buttons.q_answers = grid.filler([[2, this.logic.queries.length+1], 2], this.logic.queries.map(x => x.answer), {'color':4, 'stylistic':style});
+
+		for (var i=0; i<this.buttons.q_intervals.length; i++) this.buttons.q_intervals[i].data = {'iterator':0, 'values':[this.logic.beg_queries[i].interval, this.logic.queries[i].interval]};
+		for (var i=0; i<this.buttons.q_prime_nrs.length; i++) this.buttons.q_prime_nrs[i].data = {'iterator':0, 'values':[this.logic.beg_queries[i].prime_nr, this.logic.queries[i].prime_nr]};
+
+		this.place.appendChild(querier.full_div);
+
+		grid.single_filler([-1, 0], 'prime nr: ', {'color':5, 'stylistic':style});
+		this.buttons.prime_nr = grid.single_filler([-1, 1], '0', {'color':30, 'stylistic':style});
+		this.buttons.prime_nr.data = {'values':ArrayUtils.range(0, this.logic.lpf.filter((x, i) => x == i).length), 'iterator':0};
 	}
 
 	presentation(){
-		
+		var btn, i, j;
+		this.buttons={'vertexes':[], 'edges':[], 'companions':[], 'low_sieve':[], 'queries':[]};
+		var res_side = Modern_representation.div_creator('', {'general':{'display':'inline-block'}});
+		this.place.appendChild(res_side);
+		this.present={};
+
+		this.place.style.width='max-content';
+		this._presentation_build_tree(res_side);
+		this._presentation_build_sieve(res_side);
+		this._presentation_build_querier();
 	}
 
 	palingnesia(){
@@ -420,13 +500,71 @@ class Segtree_Counter extends Algorithm{
 		this.read_data();
 		this.palingnesia();
 
-		//this.lees.push([1, this.logic.a, 0, 0, 0]);
+		this.lees.push([1]);
+	}
+
+	constructor(block, q, queries){
+		super(block);
+		this.version = 4;
+		this.logic.q = q;
+		this.logic.queries = queries;
+		this.palingnesia();
+	}
+
+	StateMaker(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], btn;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		console.log(s, this.lees);
+		if (s[0]==1){
+			for (i=0; i<this.buttons.q_intervals.length; i++){
+				this.pass_color(this.buttons.q_intervals[i], 0, 1, 0);
+				this.pass_color(this.buttons.q_prime_nrs[i], 0, 1, 0);
+				staat.push([6, this.buttons.q_intervals[i]]);
+				staat.push([6, this.buttons.q_prime_nrs[i]]);
+			}
+			staat.push([0, this.buttons.low_sieve[1], 0, 5]);
+		}
+
+		if (s[0] == 20){
+			this.pass_color(this.buttons.q_prime_nrs[s[1]], 0, 1, 0);
+		}
+	}
+
+	NextState(){
+		var l=this.lees.length;
+		var s=this.lees[l-1];
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0] == 1) return [20, 0, 2];
+		if (s[0] == 20 && this.logic.queries[s[1]].prime_nr == s[2]) return [21, this.logic.Cv, this.logic.Cv+this.logic.queries[s[1]].interval, 0, s[1], s[2]];
+		if (s[0] == 20) return [30, s[1], s[2]+1];
+
+		if (s[0] == 20) return [21, this.logic.Cv, this.logic.Cv+this.logic.queries[s[1]].interval, 0, s[1], s[2]];
+		if (s[0] == 21 && s[3] <= 2) return [21, s[1], s[2], s[3]+1, s[4], s[5]];
+		if (s[0] == 21 && s[1] > 1) return [21, s[1]>>1, s[2]>>1, 0, s[4], s[5]];
+		if (s[0] == 21 && s[4]+1 == this.logic.queries.length) return [100];
+		if (s[0] == 21) return [20, s[4]+1, s[5]];
+
+		if (s[0] == 30 && s[2] == this.logic.Cv) return [40, s[1], s[2]];
+		if (s[0] == 30 && this.logic.lpf[s[2]] != s[2]) return [30, s[1], s[2]+1];
+		if (s[0] == 30) return [32, s[1], s[2]];
+
+		if (s[0] == 32) return [31, this.logic.Cv+s[2], s[1], s[2], s[2]];
+		if (s[0] == 31 && s[1] > 1) return [31, s[1]>>1, s[2], s[3]];
+		if (s[0] == 31 && s[2]+s[3] > this.logic.Cv) return [20, s[1], s[2]] 
+		if (s[0] == 31) return [32, s[1], s[2], s[2]+s[3]];
+
+		if (s[0] == 40 && s[1] == this.logic.queries.length-1) return [100];
+		if (s[0] == 40) return [40, s[1]+1, s[2]];
 	}
 
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
 
+		if (s[0] == 1) return `Queries are sorted in order of subsequent prime numbers, which are used in sieving &phi;(n,a).`;
 		return '';
 	}
 }
@@ -435,4 +573,4 @@ var feral1=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var sk1=new PostPhi(feral1, 121, 7);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var sk2=new Segtree_Counter(feral2, 121, 7);
+var sk2=new Segtree_Counter(feral2, 3, [{'interval':7, 'prime_nr':2}, {'interval':15, 'prime_nr':3}, {'interval':11, 'prime_nr':0}]);

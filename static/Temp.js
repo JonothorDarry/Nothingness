@@ -110,6 +110,7 @@ class Algorithm{
 		this.ephemeral.staat=this.pass_to_next_state.slice();
 		this.ephemeral.passer=[];
 	}
+
 	after_state_maker(){
 		if (this.isFinished()==true) 
 			this.ephemeral.staat.push([3, "finito", false, true]);
@@ -189,6 +190,10 @@ class Algorithm{
 			if (elem[0]==2) elem[1].pop();
 			if (elem[0]==3) this[elem[1]]=elem[2];
 			if (elem[0]==5) elem[2](...elem[3]);
+			if (elem[0]==6){
+				x[1].data.iterator -= 1;
+				x[1].innerHTML = x[1].data.values[x[1].data.iterator];
+			}
 		}
 		this.state_transformation.pop();
 
@@ -222,6 +227,10 @@ class Algorithm{
 			if (x[0]==2) x[1].push(x[2]);
 			if (x[0]==3) this[x[1]]=x[3];
 			if (x[0]==5) x[1](...x[3]);
+			if (x[0]==6){
+				x[1].data.iterator += 1;
+				x[1].innerHTML = x[1].data.values[x[1].data.iterator];
+			}
 		}
 	}
 	//Specific change - passing colors between states
@@ -1128,6 +1137,28 @@ class Modern_tree_presenter{
 		this.parameters={'vertexes':parameters};
 	}
 
+	//Proper binar penetrator
+	_segtree_calculate_position_vertexes(h_full, h_btn){
+		var i, j, n=this.tree.n, ln, x;
+		if (this.tree.system_depth==null)
+			this.tree.add_on_listed_depths();
+
+		var parameters=ArrayUtils.steady(n+1, 0);
+		var max_depth=Math.max(...this.tree.depth), min_depth=1;
+
+		for (i=0; i<n; i++){
+			ln=this.tree.system_depth[i].length
+			for (j=0; j<ln; j++){
+				x=this.tree.system_depth[i][j];
+				parameters[x]={
+					'y':(this.tree.depth[x]+1)/(max_depth+1)-h_btn/(2*h_full),
+					'x':(2*j+1)*(1/(1<<(i+1)))
+				};
+			}
+		}
+		this.parameters={'vertexes':parameters};
+	}
+
 	//Ponoć to Reingold-Tilford Algorithm (Chuj wie, kto to byli)
 	//lc, rc - left/right contour
 	calculate_position_vertexes(){
@@ -1250,10 +1281,12 @@ class Modern_tree_presenter{
 
 	//places the tree
 	//Currently nonsensical distinction width-height
-	place_tree(place, style){
+	place_tree(place, style, used_fun){
 		var i, a, j;
 
-		this.calculate_position_vertexes();
+		if (used_fun == 'standard') this.calculate_position_vertexes();
+		else this._segtree_calculate_position_vertexes(place.height, 40);
+
 		this.height=place.height;
 		this.width=place.width;
 		this.place=place.div
@@ -1272,16 +1305,16 @@ class Modern_tree_presenter{
 			}
 
 			//Normalized vertex positions
-			bt.style.position="absolute";
+			bt.style.position='absolute';
 			bt.style.top=`calc(${100*this.parameters.vertexes[a].y}% - ${style.vertex.height/2}px)`;
 			bt.style.left=`calc(${100*this.parameters.vertexes[a].x}% - ${style.vertex.width/2}px)`;
 			this.place.appendChild(bt);
 		}
 	}
 
-	constructor(tree, place, style){
+	constructor(tree, place, style, used_fun='standard'){
 		this.tree=tree;
-		this.place_tree(place, style);
+		this.place_tree(place, style, used_fun);
 	}
 }
 
