@@ -99,7 +99,7 @@
 		<h2>Problem 2: number of primes in a range</h2>
 		<p>A number \(n \le 10^{11}\) is given; how many there are primes in a range \(\lt 1;n \gt\)?</p>
 		<h3>Solution 0: Regular Erastothenes sieve</h3>
-		<p>This problem can be solved by finding all primes in a range: complexity is obviously unsatisfactory \(O(n\log \log n)\).
+		<p>This problem can be solved by finding all primes in a range with a regular Erastothenes sieve: complexity is obviously unsatisfactory \(O(n\log \log n)\).
 		<h3>Solution I: Legendre's formula</h3>
 		<p><strong>Legendre's formula</strong> states, that:</p>
 		{% set sqrt=" \lfloor \sqrt{n} \\rfloor " %}
@@ -111,7 +111,7 @@
 			<li>\(n - \sum_{p_i \le {{sqrt}} } \lfloor \frac{n}{p_i} \rfloor + \sum_{p_i \le p_j \le {{sqrt}} } \lfloor \frac{n}{p_i p_j} \rfloor + \dots + (-1)^{ {{sqrt}} } \lfloor \frac{n}{p_1 p_2 \dots p_k} \rfloor\) counts all numbers not divisible by any found prime - as in the first problem.</li>
 			<li>\(-1\) stands for counting number \(1\) - neither prime, nor divisible by any prime. 
 		</ol>
-		<p>It suffers from same problems as analogous method shown in problem I - its number of operations is too great.</p>
+		<p>It suffers from same problems as an analogous method shown in problem I - its number of operations is too great.</p>
 		<h3>Solution II: partial sieving</h3>
 		<p>First, the problem will be divided into two distinct problems:</p>
 
