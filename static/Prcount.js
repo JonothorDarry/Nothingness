@@ -313,16 +313,32 @@ class PostPhi extends Algorithm{
 
 	StatementComprehension(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
+		var s=this.lees[l-1], x=s[1], layer, p1, p2, h, p;
+		console.log(s);
 
 		if (s[0]==0 || s[0]==1 || s[0]==2){
 			layer=s[1], p1=s[2], p2=s[3], h=s[4];
-			var str = `What do we want? Find next &phi;(${layer-1}, w) for some w, that needs to be calculated; furthermore, we want it to be least possible (so that we don't need to sort the results). What do we do? We select some value b from the layer above (that is, layer ${layer}) and generate from it either v or v divided by current element of the sequence - namely ${this.logic.seq[layer-1]}. `
-			return str;
-			//if (p1 < cur_length 
+			var phis = this.logic.layers_phis;
+			var cur_1 = phis[layer][p1], cur_2 = phis[layer][p2];
 
-			//`Previous two pointers show two minimal values from previous layer, that have a child in this layer - namely ${this.logic.layers_phis[layer][p1].n} and ${this.logic.layers_phis[layer][p2].n}/${this.logic.seq[layer-1]}. `;
-			if (s[0]==0) return str + `As ${this.logic.layers_phis[layer][p1]} is smaller or equal, it is taken as next value in next layer - thus, &phi;(${this.logic.layers_phis[layer][p1]},${layer-1}) is the next value that needs to be calculated in one way or another.`;
+			var str = `What do we want? Find next &phi;(w, ${layer-1}) for some w; furthermore, we want w to be least possible (so that we don't need to sort the results in the next layer). What do we do? We select some value b from the layer above (that is, layer ${layer}) and generate from it either v or v divided by current element of the sequence - namely ${this.logic.seq[layer-1]}.`
+
+			if (cur_2) str += `So - we take two nodes we're pointing at with pointers in the same layer, chose the one, that is lower - either v1=${cur_1.n} or v2/${this.logic.seq[layer-1]} = ${cur_2.n}/${this.logic.seq[layer-1]} = ${Math.floor(cur_2.n/this.logic.seq[layer-1])}, and move the related pointer further.`;
+			else str += `One pointer, however, points to nothing - it has been used for all elements in this layer. Thus, we use the second pointer and move it forward.`
+			return str;
+		}
+
+		if (s[0] == 4){
+			layer=s[1], p=s[2];
+			var phis = this.logic.layers_phis;
+			var cur = phis[layer][p];
+			if (layer==0) return `By definition: &phi;(x, 0) = x; thus, &phi;(${cur.n}, 0) = ${cur.n}`;
+			return `Now, we're able to calculate &phi;(${cur.n}, ${layer}) = &phi;(${cur.n}, ${layer-1}) - &phi;(${Math.floor(cur.n/this.logic.seq[layer-1])}, ${layer-1}) = ${phis[layer-1][cur.left].value} - ${phis[layer-1][cur.right].value} = ${cur.value}`;
+		}
+
+		if (s[0] == 100){
+			var cur = this.logic.layers_phis[this.logic.layers_phis.length-1][0];
+			return `And so, a result is obtained: turns out, that &phi;(${cur.n}, ${cur.layer}) = ${cur.value}`;
 		}
 	}
 }
@@ -408,6 +424,11 @@ class Segtree_Counter extends Algorithm{
 			found_primes+=1;
 			this._logical_execute_queries(found_primes);
 		}
+
+		for (i=0; i<this.logic.queries.length; i+=1){
+			if (this.logic.queries[i].answer == -1) this.logic.queries[i].answer = [(this.logic.queries[i].interval == 0 ? 0 : 1)];
+		}
+
 		var filtered = this.logic.lpf.filter((x, i) => x == i);
 		this.logic.prime_nr = ArrayUtils.steady(this.logic.Cv, 0);
 		for (var i=0; i<filtered.length; i++){
@@ -611,6 +632,10 @@ class Segtree_Counter extends Algorithm{
 			this.pass_color(this.buttons.low_sieve[s[3]], 2, 15, 2);
 			staat.push([6, this.buttons.vertexes[s[1]]]);
 		}
+
+		if (s[0] == 40){
+			staat.push([0, this.buttons.q_answers[s[1]], 4, 8]);
+		}
 	}
 
 	NextState(){
@@ -620,6 +645,7 @@ class Segtree_Counter extends Algorithm{
 
 		if (s[0] == 1) return [20, 0, 1];
 		if (s[0] == 20 && this.logic.queries[s[1]].prime_nr == this.logic.prime_nr[s[2]]) return [21, this.logic.Cv, this.logic.Cv+this.logic.queries[s[1]].interval, -1, s[1], s[2]];
+		if (s[0] == 20 && s[2] == this.logic.Cv-1) return [40, s[1], s[2]];
 		if (s[0] == 20) return [30, s[1], s[2]+1];
 
 		if (s[0] == 20) return [21, this.logic.Cv, this.logic.Cv+this.logic.queries[s[1]].interval, 0, s[1], s[2]];
@@ -630,7 +656,7 @@ class Segtree_Counter extends Algorithm{
 
 		if (s[0] == 25) return [20, s[1], s[2]];
 
-		if (s[0] == 30 && s[2] == this.logic.Cv) return [40, s[1], s[2]];
+		if (s[0] == 30 && this.logic.lpf[s[2]] != s[2] && s[2] == this.logic.Cv-1) return [40, s[1], s[2]];
 		if (s[0] == 30 && this.logic.lpf[s[2]] != s[2]) return [30, s[1], s[2]+1];
 		if (s[0] == 30) return [32, s[1], s[2], s[2]];
 
@@ -646,6 +672,7 @@ class Segtree_Counter extends Algorithm{
 		if (s[0] == 40) return [40, s[1]+1, s[2]];
 	}
 
+	//Horror: teraz czytanie z danych buttonów
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
@@ -653,8 +680,58 @@ class Segtree_Counter extends Algorithm{
 		if (s[0] == 1) return `Queries are sorted in order of subsequent prime numbers, which are used in sieving &phi;(n,a). Besides, note, that segment tree was started: values in its nodes are equal to sum of its children, each leaf gives information, whether partiular number was marked as divisible by first prime_nr primes. Note, that 0 is marked as divisible from the very start of this algorithm.`;
 		if (s[0] == 20){
 			var nr = this.logic.prime_nr[s[2]-1];
-			return `A check occurs - as always at the start of algorithm or marking all numbers divisible by a certain prime: is the next query possible to evaluate after marking ${nr}. prime? ${(this.logic.queries[s[1]].prime_nr == nr)?`Yes, and so, querying segment tree begins!`:`No, we have to move the sieve further.`}`;
+			return `A check occurs - as always at the start of algorithm or after marking all numbers divisible by a certain prime: is the next query possible to evaluate after marking ${nr}. prime? ${(this.logic.queries[s[1]].prime_nr == nr)?`Yes, and so, querying segment tree begins!`:`No, we have to move the sieve further.`}`;
 		}
+		if (s[0] == 21){
+			var n = this.logic.queries[s[4]].interval;
+			var query = {'place':this.logic.queries[s[4]], 'cur_ans':this.buttons.q_answers[s[4]].data};
+
+			if (s[3] == -1){
+				var b1 = this.buttons.vertexes[s[1]].data;
+				var b2 = this.buttons.vertexes[s[2]].data;
+				return `Now, we have to answer query &phi;(n, a) = &phi;(${n}, ${query.place.prime_nr}). How will we do it? By querying sum of segment tree on range from 0 to n - that is, <0;${n}>. First, where do we start querying the segment tree? On leafs indexed as 0 and n - as leaf node have indexes starting from 2<sup>lg</sup>, where lg is a constant great enough to answer all queries, then our starting nodes are 0+${this.logic.Cv}=${this.logic.Cv} and ${n}+${this.logic.Cv}=${n+this.logic.Cv}. We also add values in those indexes to the result of this query: thus, current answer is  previous_answer + segment_tree_left + segment_tree_right = ${b1.values[b1.iterator]} + ${b2.values[b2.iterator]} = ${query.cur_ans.values[query.cur_ans.iterator]}.`;
+			}
+			if (s[3] == 0){
+				return `Now, as we are in this layer of segment tree, we have to find out, whether we have to cover left and right side of nodes our iterators are pointing at. Note, that to move upwards in the segment tree, one needs to divide indexes by two.`;
+			}
+			if (s[3] == 1){
+				if (s[2] - s[1] <= 1) return `Our left node is right next to right node ${s[2]} - ${s[1]} &le; 1 - no node can between them can be covered, we take no action.`;
+				if (s[1]%2 == 1) return `Our left node is a right child of its parent - because its index - ${s[1]} - is not divisible by 2 - thus, we take no action.`;
+				var btn = this.buttons.vertexes[s[1]+1].data;
+				return `Now, we augment answer with node to the right of our left node: ${query.cur_ans.values[query.cur_ans.iterator-1]} + ${btn.values[btn.iterator]} = ${query.cur_ans.values[query.cur_ans.iterator]}`;
+			}
+			if (s[3] == 2){
+				if (s[2] - s[1] <= 1){
+					var str = `Our right node is right next to left node ${s[2]} - ${s[1]} &le; 1 - no node can between them can be covered, we take no action.`;
+					if (s[1] == 1) str += `Also, our query was answered, the answer is ${query.cur_ans.values[query.cur_ans.iterator]}`;
+					return str;
+				}
+				if (s[2]%2 == 0) return `Our right node is a left child of its parent - because its index - ${s[2]} - is divisible by 2 - thus, we take no action.`;
+				var btn = this.buttons.vertexes[s[2]-1].data;
+				return `Now, we augment answer with node to the left of our right node: ${query.cur_ans.values[query.cur_ans.iterator-1]} + ${btn.values[btn.iterator]} = ${query.cur_ans.values[query.cur_ans.iterator]}`;
+			}
+		}
+
+		if (s[0] == 25){
+			var btn = this.buttons.prime_nr.data;
+			return `A prime was sieved - number of sieved primes is thus increased to ${btn.values[btn.iterator]}`;
+		}
+
+		if (s[0] == 30) return `The next number under sieve, ${s[2]}, is checked - is it prime? ${(this.logic.lpf[s[2]] == s[2]) ? `Yes - and so, the segment tree will be updated.` : `No, so we have to move further.`}`;
+
+		if (s[0] == 32){
+			if (this.logic.lpf[s[3]] == s[2]) return `A number ${s[3]} is divisible by the last prime (${s[2]}) and still unsieved - thus, it is removed from the pool of unsieved numbers, and the segment tree will be updated.`;
+			else return `A number ${s[3]} was sieved previously - no action will be taken.`;
+		}
+
+		if (s[0] == 31){
+			return `Segment tree is updated - from each node associated with currently sieved number - that is, ${s[4]} - 1 is subtracted. Moving upwards is done by dividing index of a node by two.`
+
+		}
+		
+
+		if (s[0] == 40) return `The sieve has ended, leaving all numbers - except one - marked as divisible by one of primes - and so, all remaining queries can be answered - their answer is equal to 1 or 0 (in case of &phi;(0, x))`
+		if (s[0] == 100) return `All queries were answered, so the process can end.`;
 		return '';
 	}
 }

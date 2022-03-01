@@ -30,7 +30,7 @@
                 For example, \(P_2(20, 1) = |\{3*3, 3*5\}| = |\{9, 15\}| = 2\).
 			</li>
 		</ol>
-        <p>In this article, whenever there is reference to \(\frac{a}{b}\), then it is reference to \(\lfloor \frac{a}{b} \rfloor\); in other words, all values used in this article are integers.</p>
+        <p>In this article, whenever there is reference to \(\frac{a}{b}\) in any place except for an exponent, then it is reference to \(\lfloor \frac{a}{b} \rfloor\); in other words, all values used in this article are integers.</p>
 		<h2>Problem I - Number of coprime numbers in a range</h2>
 		<p>A sequence \(S\) of \(m\) pairwisely coprime numbers (\(m \le 100, S_i \le 10^5\)) is given. How many there are numbers less or equal to \(n\) (\(n \le 10^{13})\) not divisible by any element of \(S\)?</p>
 		<h3>Solution I: almost Legendre's formula</h3>
@@ -77,7 +77,7 @@
 			<li>Let <i>\(i\)-th Layer</i> denote all \(\phi(w, i)\) for some \(i\), that appeared in formula above; also, let \(L_i\) denote set of all \(w\) appearing in the \(i\)-th layer.</li>
 			<li>Implementation-wise, it may be worth noticing, that \(L_i \subseteq L_{i-1}\) - because \(\phi_S(w,i)\) splits to \(\phi_S(w, i-1)\) and \( \phi_S(\lfloor \frac{w}{S_i} \rfloor, i-1)\).</li>
             <li>Street-wise, \(|L_i| \le 2 \sqrt{n}\) - because there are \(\sqrt{n}\) possible values of \(w=\lfloor \frac{n}{h} \rfloor\) for any \(h  \le \sqrt{n}\) (namely \(\{n, \frac{n}{2}, \dots \frac{n}{\sqrt{n}}\}\); and \(\sqrt{n}\) possible values of \(w\) for \(h \gt \sqrt{n}\) (namely \(\{0, 1, 2, \dots \lceil \sqrt{n} \rceil \}\).</li>
-			<li>This leads to a simple algorithm: for all \(w\) in \(W=\{0, 1, 2, \dots, \lceil \sqrt{n} \rceil \} \cup \{n, \frac{n}{2}, \dots \frac{n}{\sqrt{n}}\}\) calculate \(\phi_S(w, 0), \phi_S(w, 1), \dots \phi_S(w, m)\), layer by layer. Complexity will be limited from above by \(O(m \sqrt{n})\) - in case of this problem, about \(10^8\) operations.</li>
+			<li>This leads to a simple algorithm: for all \(w\) in \(W=\{0, 1, 2, \dots, \lceil \sqrt{n} \rceil \} \cup \{n, \frac{n}{2}, \dots \frac{n}{\sqrt{n}}\}\) calculate \(\phi_S(w, 0), \phi_S(w, 1), \dots \phi_S(w, m)\), layer by layer. Complexity will be limited from above by \(O(m \sqrt{n})\) - in the case of this problem, about \(10^8\) operations.</li>
 			<li>One can go a bit further - calculate values in \(L_i\) as values used in \(L_{i+1}\) and elements from \(L_i\) divided by \(S_i\) - complexity remains identical, but the amount of operations will be significantly lower - especially, if one sorts \(S\) beforehand (so that \(S_i \lt S_{i+1}\)) and uses two pointers to construct new layer in linear time.</li>
 			<li>Constructing new layer; suppose, one has sorted in ascending order elements from \(L_i\), and one wants to construct \(L_{i-1}\). Then, let \(p1, p2\) be pointers pointing to some elements in sorted \(L_i\), at the start both equal to 0. Then, depending on situation:
 				<ol>
@@ -98,6 +98,8 @@
 
 		<h2>Problem 2: number of primes in a range</h2>
 		<p>A number \(n \le 10^{11}\) is given; how many there are primes in a range \(\lt 1;n \gt\)?</p>
+		<h3>Solution 0: Regular Erastothenes sieve</h3>
+		<p>This problem can be solved by finding all primes in a range: complexity is obviously unsatisfactory \(O(n\log \log n)\).
 		<h3>Solution I: Legendre's formula</h3>
 		<p><strong>Legendre's formula</strong> states, that:</p>
 		{% set sqrt=" \lfloor \sqrt{n} \\rfloor " %}
@@ -146,7 +148,7 @@
 		<h4>Particular application of ideas above</h4>
 		<p>Say, \(L=4\) - then:</p>
 		<ol>
-			<li>Complexity of calculating \(\phi(w,i)\) can be limited by \(O(\sqrt{n}n^{1/L}) = O(n^{3/4})\) - or, if someone believes in Prime Number Theorem, even \(O(\frac{n^{3/4}}{\log(n)})\)</li>
+			<li>Complexity of calculating \(\phi(w,i)\) can be limited by \(O(\sqrt{n}n^{1/L}) = O(n^{3/4})\) - or, if someone believes in the Prime Number Theorem, even \(O(\frac{n^{3/4}}{\log(n)})\)</li>
 			<li>One has to construct a sieve of size \(O(n^{1-1/4})=O(n^{3/4})\) - complexity is equal to \(O(n^{3/4} \log \log(n))\).</li>
 			<li>To calculate 
 				$$ P_2(n, \pi(n^{1/4})) = \sum_{i=\pi(n^{1/4})+1}^{\pi(n^{1/2})} \pi(\frac{n}{P_i})$$
@@ -166,14 +168,14 @@
 	<p>Say, You're given \(q\) queries in form \(\phi(n,a)\), where \(n,q \le 3*10^7\), and You have to answer them offline. How cope?</p>
 	<p>Instead of constructing recursive solutions, one can:</p>
 	<ol>
-		<li>Construct a standard interval tree: insert in point, query in range over a sieve.</li>
+		<li>Construct a standard segment tree: insert in a point, query in a range over a sieve.</li>
 		<li>Segment tree counts amount of not-sieved integers in range.</li>
 		<li>After sieving \(k\)-th prime, answer all questions in form \(\phi(a, k)\) - that is, query a range \(\lt 1, a \gt\).</li>
 	</ol>
 	<p>Overall complexity is \(O(n\log(n) + n\log\log(n) + q\log(n)) = O(n\log(n) + q\log(n))\) - \(O(n \log(n))\) for at most \(n\) changes - marking number as composite, \(O(n \log\log(n))\) for a sieve, and \(O(q \log(n))\) for query answering.</p>
 	<p>There is one particular consequence of this method: If one wants to calculate \(\phi(n, a)\), one can use recursion-like structures to calculate \(\phi(x,\_)\) for \(x \ge n^{2/3}\), and use sieve with superimposed segment tree otherwise; If \(a=n^{1/3}\), Then number of queries passed to sieve along with number of nodes in recursion-like structure will be lower or equal to \(n^{2/3}\) (\(n^{1/3}\) values \(z\) in recursion in form \(\phi(z, \_)\) for \(z \ge n^{2/3}\) spawning at most \(a=n^{1/3}\) queries/nodes each), and so, complexity for calculating \(\phi(n, n^{1/3})\) will be equal to \(O(n^{2/3} \log(n))\).</p>
 		{{ algo.neo_algorithm(2, 'Calculating set of values \(\phi(n, a)\)', '
-			<p>Input: first, \(q\) - amount of queries, then \(q\) queries in form \(a, b\) - the algorithm\'s aim will be to calculate \(\phi(a, b)\) for each pair</p>
+			<p>Input: first, \(q\) - amount of queries, then \(q\) queries in form \(n, a\) - the algorithm\'s aim will be to calculate \(\phi(n, a)\) for each pair</p>
 		'
         , '5&#10;7 2&#10;15 3&#10;11 0&#10;14 4&#10;12 3', {'input_type':'textarea' }) }}
 	<h4>Different algorithm for calculating \(\phi(n,a)\): Idea II</h4>
@@ -181,7 +183,7 @@
 	Notice, that one can use persistent segment tree to preserve information about updates; this doesn't change anything except possibility to execute queries online and necessity to have \(O(n^{2/3} \log(n))\) memory - which can be cumbersome, given usual constraints in this type of problems.
 	</p>
     <h4>Consequences</h4>
-    <p>For \(h=\pi(n^{2/3})\):</p>
+    <p>For \(h=\pi(n^{1/3})\):</p>
             $$\pi(n) = h + \phi(n, h) - P_0(n,h) - P_2(n,h)$$
             $$\pi(n) = \pi(n^{1/3}) + \phi(n, \pi(n^{1/3})) - 1 - P_2(n,\pi(n^{1/3}))$$
         <ol>
@@ -195,10 +197,10 @@
 
 		<h2>Summary</h2>
 		<ol>
-			<li>\(\phi(n,a)=\phi(n, a-1)-\phi(\frac{n}{P_a}, a-1)\) - a number of primes not divisible by primes up to \(P_a\) is equal to number of numbers not divisible by primes up to \(P_{a-1}\) except for numbers divisible by \(P_a\) and not divisible by any lower prime.</li>
-			<li>One can calculate \(\phi(n,a)\) in \(O(a\sqrt{n})\) - because for any \(x \le a\) only \(O(\sqrt{n})\) values of \(\phi(h,x)\) for some \(h\) have to be calculated from the formula.</li>
-            <li>One can also construct segment tree superimposed over erastothenes sieve in order to find \(q\) values \(\phi(b, a)\) in \(O(n \log(n) + q \log(n))\), where \(n\) denotes maximal \(b\).</li>
-			<li>To count all primes in a range, also functions counting amount of numbers having 2 or 3 primes (not necessarily distinct) in their factorization might come in handy. In particular:
+			<li>\(\phi(n,a)=\phi(n, a-1)-\phi(\lfloor \frac{n}{P_a} \rfloor, a-1)\) - a number of primes not divisible by primes up to \(P_a\) is equal to number of numbers not divisible by primes up to \(P_{a-1}\) except for numbers divisible by \(P_a\) and not divisible by any lower prime.</li>
+			<li>One can calculate \(\phi(n,a)\) in \(O(a\sqrt{n})\) - because for any \(layer \le a\) only \(O(\sqrt{n})\) values of \(\phi(h,layer)\) for some \(h\) have to be calculated from the formula.</li>
+			<li>One can also construct segment tree superimposed over erastothenes sieve in order to find \(q\) values \(\phi(b, a)\) in \(O(n \log(n) + q \log(n))\), where \(n\) denotes maximal \(b\).</li>
+			<li>To count all primes in a range, also functions counting amount of numbers having 2 or 3 primes (not necessarily distinct) in their factorization, all greater than \(h\)-th prime,  might come in handy. In particular:
             $$\pi(n) = h + \phi(n, h) - P_0(n,h) - P_2(n,h) - \dots $$
                 To allow simple calculations of values of those functions, one can utilize sieve of erastothenes.</li>
 		</ol>
