@@ -111,6 +111,16 @@ class PostPhi extends Algorithm{
 		return btn;
 	}
 
+	lefty_button_creator(layer){
+		var btn = Modern_representation.button_creator(`P<sub>${layer}</sub> = ${this.logic.seq[layer-1]}`, {'general':{'position':'absolute'}, 'px':{'width':60, 'height':40}});
+
+		btn.style.left = `10px`;
+		btn.style.top = `calc(${this.present.positions.y[layer]*100}% - 20px)`
+
+		this.Painter(btn, 5);
+		return btn;
+	}
+
 	_presentation_calculate_pos(){
 		var i, starter=this.logic.layers_phis[0];
 		var positions={'x':{}, 'y':{}};
@@ -121,6 +131,13 @@ class PostPhi extends Algorithm{
 			positions.y[i]=(this.logic.layers_phis.length-i)/(this.logic.layers_phis.length+2);
 		}
 		return positions;
+	}
+
+	_presentation_add_helpful_lefty(){
+		for (var i=1; i<this.logic.layers_phis.length; i++){
+			var btn = this.lefty_button_creator(i);
+			this.place.appendChild(btn);
+		}
 	}
 
 	presentation(){
@@ -176,6 +193,7 @@ class PostPhi extends Algorithm{
 				}
 			}
 		}
+		this._presentation_add_helpful_lefty();
 
 		//Starter
 		this.Painter(this.buttons.vertex[this.logic.a][0], 0);
