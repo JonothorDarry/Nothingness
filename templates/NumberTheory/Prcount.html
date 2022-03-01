@@ -175,7 +175,7 @@
 		{{ algo.neo_algorithm(2, 'Calculating set of values \(\phi(n, a)\)', '
 			<p>Input: first, \(q\) - amount of queries, then \(q\) queries in form \(a, b\) - the algorithm\'s aim will be to calculate \(\phi(a, b)\) for each pair</p>
 		'
-        , '5&#10;7 2&#10;15 3&#10;11 0&#10;14 4&#10;12 3', {'input_type':'textarea', 'color_description':{'standard':'', 'change':'', 'crucial':'Value \(\phi(n,a)\) to calculate', 'iterator':'Iterator for \(\phi( \\frac{n}{P_a}, a-1)\)', 'exponent':'Iterator for \(\phi( n, a-1)\)', '_red':'Value \(\phi( \\frac{n}{P_a}, a-1)\) to subtract', '_green':'Value \(\phi(n, a-1)\) to add', 'helper2':''} }) }}
+        , '5&#10;7 2&#10;15 3&#10;11 0&#10;14 4&#10;12 3', {'input_type':'textarea' }) }}
 	<h4>Different algorithm for calculating \(\phi(n,a)\): Idea II</h4>
 	<p>
 	Notice, that one can use persistent segment tree to preserve information about updates; this doesn't change anything except possibility to execute queries online and necessity to have \(O(n^{2/3} \log(n))\) memory - which can be cumbersome, given usual constraints in this type of problems.

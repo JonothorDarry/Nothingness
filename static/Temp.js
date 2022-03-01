@@ -191,8 +191,8 @@ class Algorithm{
 			if (elem[0]==3) this[elem[1]]=elem[2];
 			if (elem[0]==5) elem[2](...elem[3]);
 			if (elem[0]==6){
-				x[1].data.iterator -= 1;
-				x[1].innerHTML = x[1].data.values[x[1].data.iterator];
+				elem[1].data.iterator -= 1;
+				elem[1].innerHTML = elem[1].data.values[elem[1].data.iterator];
 			}
 		}
 		this.state_transformation.pop();
