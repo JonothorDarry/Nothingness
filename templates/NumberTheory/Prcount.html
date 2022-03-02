@@ -11,7 +11,7 @@
 	<body>
 		{{ headers.full_upper('Counting Primes', 'NumberTheory') }}
 		<h2>Introduction</h2>
-        <p>This article is focused on showing efficient techniques regarding prime counting or, in general, counting numbers coprime to some set of numbers. <!--Currently, Prime Number Theorem is assumed without proof. -->Here, \(P\) will refer either to the set of all primes or the sequence of subsequent primes (\(i\)-th element of this sequence will be denoted as \(P_k\)). Definitions used in this article:</p>
+        <p>This article is focused on showing efficient techniques regarding prime counting or, in general, counting numbers coprime to some set of numbers. <!--Currently, Prime Number Theorem is assumed without proof. -->Here, \(P\) will refer either to the set of all primes or the sequence of subsequent primes (\(k\)-th element of this sequence will be denoted as \(P_k\)). Definitions used in this article:</p>
 		<ol>
 			<li><strong>Prime counting function \(\pi(n)\)</strong> is a function counting number of prime numbers \(p \in P\) in the interval \(\lt 1;n \gt\) inclusive.
 				$$\pi(n)=|\{x: x \le n \land x \in P\}|$$
@@ -25,12 +25,12 @@
 				$$\phi(n, a)=|\{x: x \le n \land \forall_{i \le a} P_i \nmid x\}|$$
                 For example, \(\phi(13, 2) = |\{1, 2, \dots 13\} \setminus \{2, 3, 4, 6, 8, 9, 10, 12\}| = |\{1,5,7,11,13\}| = 5\).
 			</li>
-			<li><strong>Kth partial sieve function \(P_k(n, a)\)</strong> is defined as an amount of numbers lower or equal to \(n\) not divisible by any prime number in the sequence \(P\) up to index \(a\), that have \(k\) (not necessarily distinct) prime factors.
+			<li><strong>Kth partial sieve function \(P_k(n, a)\)</strong> is defined as an amount of numbers lower or equal to \(n\) not divisible by any prime number in the sequence \(P\) up to an index \(a\), that have \(k\) (not necessarily distinct) prime factors.
 				$$P_k(n, a)=|\{x: x \le n \land \forall_{i \le a} P_i \nmid x \land x=p_1p_2 \dots p_k\}|$$
                 For example, \(P_2(20, 1) = |\{3*3, 3*5\}| = |\{9, 15\}| = 2\).
 			</li>
 		</ol>
-        <p>In this article, whenever there is reference to \(\frac{a}{b}\) in any place except for an exponent, then it is reference to \(\lfloor \frac{a}{b} \rfloor\); in other words, all values used in this article are integers.</p>
+        <p>In this article, whenever there is a reference to \(\frac{a}{b}\) in any place except for an exponent, then it is reference to \(\lfloor \frac{a}{b} \rfloor\); in other words, all values used in this article (except for exponents) are integers (this notational nuissance is a result of problematic rendering of floors with fractions in current MathJax).</p>
 		<h2>Problem I - Number of coprime numbers in a range</h2>
 		<p>A sequence \(S\) of \(m\) pairwisely coprime numbers (\(m \le 100, S_i \le 10^5\)) is given. How many there are numbers less or equal to \(n\) (\(n \le 10^{13})\) not divisible by any element of \(S\)?</p>
 		<h3>Solution I: almost Legendre's formula</h3>
@@ -48,7 +48,7 @@
 
 		<h3>Solution II: generalized partial sieve function</h3>
 		<p>
-		Let \(\phi_S(n, a)\) denote an amount of numbers in range \(\lt 1;n \gt\) coprime to all numbers in sequence \(S\) up to index \(a\):
+		Let \(\phi_S(n, a)\) denote an amount of numbers in range \(\lt 1;n \gt\) coprime to all numbers in sequence \(S\) up to an index \(a\):
 			$$ \phi_S(n, a)=|\{x: x \le n \land \forall_{i \le a} S_i \nmid x\}| $$
 			Note, that \(\phi(n, a)=\phi_P(n,a)\). How to calculate values of that function?
 		</p>
@@ -68,18 +68,18 @@
 		</p>
 		<p> And the sought value is \(\phi_S(n, |S|)\). While this formula is immediate consequence of Legendre's formula, it gives the possibility to reformulate the solution in moderately elegant way:</p>
 		<ol>
-			<li>Let \(m=|S|\) - length of sequence \(S\). First, notice, that:
+			<li>Let \(m=|S|\) - length of the sequence \(S\). First, notice, that:
 				$$ \phi_S(n, m)=\phi_S(n, m-1)-\phi_S(\lfloor \frac{n}{S_m} \rfloor, m-1) = $$
 				$$ = \phi_S(n, m-2)- \phi_S(\lfloor \frac{n}{S_{m-1}} \rfloor, m-2) - \phi_S(\lfloor \frac{n}{S_m} \rfloor, m-2) + \phi_S(\lfloor \frac{n}{S_m S_{m-1}} \rfloor, m-2) = \dots = $$
 				$$ = \phi_S(n, 0) - \sum_{i} \phi_S(\lfloor \frac{n}{S_i} \rfloor, 0) + \sum_{i,j} \phi_S(\lfloor \frac{n}{S_i S_j} \rfloor, 0) - \dots + (-1)^m \phi_S(\lfloor \frac{n}{S_1 \dots S_{m}} \rfloor, 0) = $$
-				$$ = n - \lfloor \frac{n}{S_i} \rfloor + \sum_{i,j} \lfloor \frac{n}{S_i S_j} \rfloor - \dots + (-1)^m \lfloor \frac{n}{S_1 \dots S_{m}} \rfloor$$
+				$$ = n - \sum_{i} \lfloor \frac{n}{S_i} \rfloor + \sum_{i,j} \lfloor \frac{n}{S_i S_j} \rfloor - \dots + (-1)^m \lfloor \frac{n}{S_1 \dots S_{m}} \rfloor$$
 			</li>
-			<li>Let <i>\(i\)-th Layer</i> denote all \(\phi(w, i)\) for some \(i\), that appeared in formula above; also, let \(L_i\) denote set of all \(w\) appearing in the \(i\)-th layer.</li>
+			<li>Let <i>\(i\)-th Layer</i> denote all \(\phi(w, i)\) for some \(i\), that appeared in formula above; also, let \(L_i\) denote the set of all \(w\) appearing in the \(i\)-th layer.</li>
 			<li>Implementation-wise, it may be worth noticing, that \(L_i \subseteq L_{i-1}\) - because \(\phi_S(w,i)\) splits to \(\phi_S(w, i-1)\) and \( \phi_S(\lfloor \frac{w}{S_i} \rfloor, i-1)\).</li>
             <li>Street-wise, \(|L_i| \le 2 \sqrt{n}\) - because there are \(\sqrt{n}\) possible values of \(w=\lfloor \frac{n}{h} \rfloor\) for any \(h  \le \sqrt{n}\) (namely \(\{n, \frac{n}{2}, \dots \frac{n}{\sqrt{n}}\}\); and \(\sqrt{n}\) possible values of \(w\) for \(h \gt \sqrt{n}\) (namely \(\{0, 1, 2, \dots \lceil \sqrt{n} \rceil \}\).</li>
 			<li>This leads to a simple algorithm: for all \(w\) in \(W=\{0, 1, 2, \dots, \lceil \sqrt{n} \rceil \} \cup \{n, \frac{n}{2}, \dots \frac{n}{\sqrt{n}}\}\) calculate \(\phi_S(w, 0), \phi_S(w, 1), \dots \phi_S(w, m)\), layer by layer. Complexity will be limited from above by \(O(m \sqrt{n})\) - in the case of this problem, about \(10^8\) operations.</li>
 			<li>One can go a bit further - calculate values in \(L_i\) as values used in \(L_{i+1}\) and elements from \(L_i\) divided by \(S_i\) - complexity remains identical, but the amount of operations will be significantly lower - especially, if one sorts \(S\) beforehand (so that \(S_i \lt S_{i+1}\)) and uses two pointers to construct new layer in linear time.</li>
-			<li>Constructing new layer; suppose, one has sorted in ascending order elements from \(L_i\), and one wants to construct \(L_{i-1}\). Then, let \(p1, p2\) be pointers pointing to some elements in sorted \(L_i\), at the start both equal to 0. Then, depending on situation:
+			<li>Constructing a new layer; suppose, one has sorted in ascending order elements from \(L_i\), and one wants to construct \(L_{i-1}\). Then, let \(p1, p2\) be pointers pointing to some elements in a sorted \(L_i\), at the start both equal to 0. Then, depending on situation:
 				<ol>
 					<li>\(L_i(p2)\) does not exist; then \(L_i(p1)\) shall be added at the end of representation of \(L_{i-1}\), and \(p1+=1\).</li>
 					<li>\(\frac{L_i(p2)}{S_i}\) is at the end of current representation of \(L_{i-1}\): \(p2+=1\).</li>
@@ -87,7 +87,7 @@
 					<li>\(\frac{L_i(p2)}{S_i} \gt L_i(p1)\) - then \(L_i(p1)\) shall be added at the end of representation of \(L_{i-1}\), and \(p1+=1\).</li>
 					<li>\(\frac{L_i(p2)}{S_i} = L_i(p1)\) - then \(L_i(p1)\) shall be added at the end of representation of \(L_{i-1}\), and \(p1+=1, p2+=1\).</li>
 				</ol>
-				"representation" refers to sorted sequence of elements of \(L_i\).
+				"representation" refers to a sorted sequence of elements of \(L_i\).
 			</li>
 			<li>\(\phi(w,i)\) has to be calculated if and only if \(w \in L_i\).</li>
 		</ol>
@@ -103,12 +103,12 @@
 		<h3>Solution I: Legendre's formula</h3>
 		<p><strong>Legendre's formula</strong> states, that:</p>
 		{% set sqrt=" \lfloor \sqrt{n} \\rfloor " %}
-		$$ \pi(x) = -1 + \pi( {{sqrt}} ) + n - \sum_{p_i \le {{sqrt}} } \lfloor \frac{n}{p_i} \rfloor + \sum_{p_i \le p_j \le {{sqrt}} } \lfloor \frac{n}{p_i p_j} \rfloor + \dots + (-1)^{ k } \lfloor \frac{n}{p_1 p_2 \dots p_k} \rfloor$$
+		$$ \pi(n) = -1 + \pi( {{sqrt}} ) + n - \sum_{p_i \le {{sqrt}} } \lfloor \frac{n}{p_i} \rfloor + \sum_{p_i \le p_j \le {{sqrt}} } \lfloor \frac{n}{p_i p_j} \rfloor + \dots + (-1)^{ k } \lfloor \frac{n}{p_1 p_2 \dots p_k} \rfloor$$
 
 		<p>Where:</p>
 		<ol>
-			<li>\(\pi( {{sqrt}} )\) counts number of all primes in range up to \({{ sqrt }}\)</li>
-			<li>\(n - \sum_{p_i \le {{sqrt}} } \lfloor \frac{n}{p_i} \rfloor + \sum_{p_i \le p_j \le {{sqrt}} } \lfloor \frac{n}{p_i p_j} \rfloor + \dots + (-1)^{ {{sqrt}} } \lfloor \frac{n}{p_1 p_2 \dots p_k} \rfloor\) counts all numbers not divisible by any found prime - as in the first problem.</li>
+			<li>\(\pi( {{sqrt}} )\) counts number of all primes in a range up to \({{ sqrt }}\)</li>
+			<li>\(n - \sum_{p_i \le {{sqrt}} } \lfloor \frac{n}{p_i} \rfloor + \sum_{p_i \le p_j \le {{sqrt}} } \lfloor \frac{n}{p_i p_j} \rfloor + \dots + (-1)^k \lfloor \frac{n}{p_1 p_2 \dots p_k} \rfloor\) counts all numbers not divisible by any found prime - as in the first problem.</li>
 			<li>\(-1\) stands for counting number \(1\) - neither prime, nor divisible by any prime. 
 		</ol>
 		<p>It suffers from same problems as an analogous method shown in problem I - its number of operations is too great.</p>
@@ -117,8 +117,8 @@
 
         {% set partial_sq=" n^{1/L} " %}
 		<ol>
-			<li>How many there are numbers in range \(\lt 1;n \gt\) not divisible by prime numbers \(p \le {{partial_sq}} \) for some \(L\)?</li>
-			<li>How many there are numbers in range \(\lt 1;n \gt\) divisible by either \(2\) or \(3\) or \(\dots\) or \(k\) primes, all of them greater than \( {{partial_sq}} \)?</li>
+			<li>How many there are numbers in a range \(\lt 1;n \gt\) not divisible by prime numbers \(p \le {{partial_sq}} \) for some \(L\)?</li>
+			<li>How many there are numbers in a range \(\lt 1;n \gt\) divisible by either \(2\) or \(3\) or \(\dots\) or \(k\) primes, all of them greater than \( {{partial_sq}} \)?</li>
 		</ol>
 		<p>First problem can be defined in terms of a partial sieve function:
 			$$\phi(n, \pi( {{partial_sq}} ))$$
@@ -141,7 +141,7 @@
 		</ol>
 		<p>The above allows to represent the formula for \(P_k(n,a)\) in a different way:
 		$$P_k(n, a) = \sum_{i_1=a+1}^{\pi(n^{1/k})} \sum_{i_2=i_1}^{\pi(n^{\frac{1-1/L}{k-1} }) } \dots \sum_{i_{k-1}=i_{k-2}}^{\pi(n^{1-(k-1)/L}) }  \max(\pi(\frac{n}{P_{i_1} P_{i_2} \dots P_{i_{k-1}}}) - i_{k-1} + 1, 0) $$
-		In general, presenting formula in this form does not seem to be extremely bright idea - it will be discussed as a special case of applying the above.
+		In general, presenting formula in this form does not seem to be an extraordinarily bright idea - it will be discussed as a special case of applying the above.
 		</p>
 
         <p>Another problem: many values of \(\pi(x)\) have to be calculated to use this formula; to solve this problem, one can use standard erastothenes sieve. The greatest amount of primes has to be sieved when finding \(P_2(n, a)\) - namely, \(\pi(\frac{n}{P_{a+1}})\) - thus, for certain \(L\), \(\pi(n^{1-1/L})\) has to be calculated in something like \(O(n^{1-1/L} \log\log(n))\).</p>
@@ -151,7 +151,7 @@
 			<li>Complexity of calculating \(\phi(w,i)\) can be limited by \(O(\sqrt{n}n^{1/L}) = O(n^{3/4})\) - or, if someone believes in the Prime Number Theorem, even \(O(\frac{n^{3/4}}{\log(n)})\)</li>
 			<li>One has to construct a sieve of size \(O(n^{1-1/4})=O(n^{3/4})\) - complexity is equal to \(O(n^{3/4} \log \log(n))\).</li>
 			<li>To calculate 
-				$$ P_2(n, \pi(n^{1/4})) = \sum_{i=\pi(n^{1/4})+1}^{\pi(n^{1/2})} \pi(\frac{n}{P_i})$$
+				$$ P_2(n, \pi(n^{1/4})) = \sum_{i=\pi(n^{1/4})+1}^{\pi(n^{1/2})} \pi(\frac{n}{P_i}) - i + 1$$
 			One has to do \(O(n^{1/2})\) operations.</li>
 			<li>To calculate 
 				$$ P_3(n, \pi(n^{1/4})) = \sum_{i_1=\pi(n^{1/4})+1}^{\pi(n^{1/3})} \sum_{i_2=i_1}^{\pi(n^{3/8})} \pi(\frac{n}{P_{i_1} P_{i_2} }) - i_1 + 1$$
