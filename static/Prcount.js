@@ -148,7 +148,7 @@ class PostPhi extends Algorithm{
 		this.stylistic.bs_butt_width_h=120;
 		this.stylistic.bs_butt_width='120px';
 
-		width=this.logic.layers_phis[0].length*(this.stylistic.bs_butt_width_h+30);
+		width=this.logic.layers_phis[0].length*(this.stylistic.bs_butt_width_h+30)+200;
 		this.place.style.width=`${width}px`;
 
 		height=(this.logic.a+2)*120;
@@ -321,7 +321,7 @@ class PostPhi extends Algorithm{
 			var phis = this.logic.layers_phis;
 			var cur_1 = phis[layer][p1], cur_2 = phis[layer][p2];
 
-			var str = `What do we want? Find next &phi;(w, ${layer-1}) for some w; furthermore, we want w to be least possible (so that we don't need to sort the results in the next layer). What do we do? We select some value b from the layer above (that is, layer ${layer}) and generate from it either v or v divided by current element of the sequence - namely ${this.logic.seq[layer-1]}.`
+			var str = `What do we want? Find next &phi;(w, ${layer-1}) for some w; furthermore, we want w to be least possible (so that we don't need to sort the results in the next layer). What do we do? We select some value b from the layer above (that is, layer ${layer}) and generate from it either v or v divided by current element of the sequence - namely ${this.logic.seq[layer-1]}. `
 
 			if (cur_2) str += `So - we take two nodes we're pointing at with pointers in the same layer, chose the one, that is lower - either v1=${cur_1.n} or v2/${this.logic.seq[layer-1]} = ${cur_2.n}/${this.logic.seq[layer-1]} = ${Math.floor(cur_2.n/this.logic.seq[layer-1])}, and move the related pointer further.`;
 			else str += `One pointer, however, points to nothing - it has been used for all elements in this layer. Thus, we use the second pointer and move it forward.`
@@ -566,6 +566,7 @@ class Segtree_Counter extends Algorithm{
 		var s=this.lees[l-1], btn;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
+		//1 - starter, query sort
 		if (s[0]==1){
 			for (i=0; i<this.buttons.q_intervals.length; i++){
 				this.pass_color(this.buttons.q_intervals[i], 0, 1, 0);
@@ -575,18 +576,19 @@ class Segtree_Counter extends Algorithm{
 			}
 		}
 
+		//21 - query compare
 		if (s[0] == 20){
-			this.pass_color(this.buttons.q_prime_nrs[s[1]], 0, 1, 0);
-			this.pass_color(this.buttons.q_prime_nrs[s[1]], 0, 1, 0);
-			this.pass_color(this.buttons.prime_nr, 30, 1, 30);
+			this.pass_color(this.buttons.q_prime_nrs[s[1]], 0, 14, 0);
+			this.pass_color(this.buttons.prime_nr, 30, 14, 30);
 		}
 
+		//21 - move upwards during query
 		if (s[0] == 21){
 			if (s[3] == -1){
 				this.pass_color(this.buttons.q_answers[s[4]], 4, 1, 0);
-				this.pass_color(this.buttons.q_intervals[s[4]], 0, 1, 0);
-				this.pass_color(this.buttons.vertexes[s[1]], 0, 1, 0);
-				this.pass_color(this.buttons.vertexes[s[2]], 0, 1, 0);
+				this.pass_color(this.buttons.q_intervals[s[4]], 0, 13, 0);
+				this.pass_color(this.buttons.vertexes[s[1]], 0, 13, 0);
+				this.pass_color(this.buttons.vertexes[s[2]], 0, 13, 0);
 			}
 			else{
 				this.pass_color(this.buttons.vertexes[s[1]], 0, 15, 0);
@@ -595,7 +597,7 @@ class Segtree_Counter extends Algorithm{
 
 			if (s[3]==1){
 				if (s[1]%2 == 0 && s[2]-s[1] > 1){
-					this.pass_color(this.buttons.vertexes[s[1]+1], 0, 1, 0);
+					this.pass_color(this.buttons.vertexes[s[1]+1], 0, 13, 0);
 					this.pass_color(this.buttons.q_answers[s[4]], 0, 1, 0);
 					staat.push([6, this.buttons.q_answers[s[4]]]);
 				}
@@ -603,7 +605,7 @@ class Segtree_Counter extends Algorithm{
 
 			if (s[3]==2){
 				if (s[2]%2 == 1 && s[2]-s[1] > 1){
-					this.pass_color(this.buttons.vertexes[s[2]-1], 0, 1, 0);
+					this.pass_color(this.buttons.vertexes[s[2]-1], 0, 13, 0);
 					this.pass_color(this.buttons.q_answers[s[4]], 0, 1, 0);
 					staat.push([6, this.buttons.q_answers[s[4]]]);
 				}
@@ -613,26 +615,32 @@ class Segtree_Counter extends Algorithm{
 			}
 		}
 
+		//25 - +1 for prime nr
 		if (s[0] == 25){
 			staat.push([6, this.buttons.prime_nr]);
 		}
 
+		//Moving in sieve
 		if (s[0] == 30){
 			if (this.logic.lpf[s[2]] == s[2]) this.pass_color(this.buttons.low_sieve[s[2]], 0, 15, 2);
 			else this.pass_color(this.buttons.low_sieve[s[2]], 2, 15, 2);
 		}
 
+		//Stopping sieve in a point
 		if (s[0] == 32){
 			this.pass_color(this.buttons.low_sieve[s[2]], 2, 15, 2);
-			if (s[2] != s[3]) this.pass_color(this.buttons.low_sieve[s[3]], 0, 1, 2);
+			if (s[2] != s[3]) this.pass_color(this.buttons.low_sieve[s[3]], 0, 101, 2);
 		}
 
+		//Move upwards in insertion
 		if (s[0] == 31){
 			this.pass_color(this.buttons.vertexes[s[1]], 0, 1, 0);
 			this.pass_color(this.buttons.low_sieve[s[3]], 2, 15, 2);
+			if (s[4] != s[3]) this.pass_color(this.buttons.low_sieve[s[4]], 2, 101, 2);
 			staat.push([6, this.buttons.vertexes[s[1]]]);
 		}
 
+		//40 - queries post exit - sieve ended, queries still standing
 		if (s[0] == 40){
 			staat.push([0, this.buttons.q_answers[s[1]], 4, 8]);
 		}
@@ -726,7 +734,6 @@ class Segtree_Counter extends Algorithm{
 
 		if (s[0] == 31){
 			return `Segment tree is updated - from each node associated with currently sieved number - that is, ${s[4]} - 1 is subtracted. Moving upwards is done by dividing index of a node by two.`
-
 		}
 		
 
