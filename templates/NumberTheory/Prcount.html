@@ -74,7 +74,7 @@
 				$$ = \phi_S(n, 0) - \sum_{i} \phi_S(\lfloor \frac{n}{S_i} \rfloor, 0) + \sum_{i,j} \phi_S(\lfloor \frac{n}{S_i S_j} \rfloor, 0) - \dots + (-1)^m \phi_S(\lfloor \frac{n}{S_1 \dots S_{m}} \rfloor, 0) = $$
 				$$ = n - \sum_{i} \lfloor \frac{n}{S_i} \rfloor + \sum_{i,j} \lfloor \frac{n}{S_i S_j} \rfloor - \dots + (-1)^m \lfloor \frac{n}{S_1 \dots S_{m}} \rfloor$$
 			</li>
-			<li>Let <i>\(i\)-th Layer</i> denote all \(\phi(w, i)\) for some \(i\), that appeared in formula above; also, let \(L_i\) denote the set of all \(w\) appearing in the \(i\)-th layer.</li>
+			<li>Let <i>\(i\)-th Layer</i> denote all \(\phi_S(w, i)\) for some \(i\), that appeared in formula above; also, let \(L_i\) denote the set of all \(w\) appearing in the \(i\)-th layer.</li>
 			<li>Implementation-wise, it may be worth noticing, that \(L_i \subseteq L_{i-1}\) - because \(\phi_S(w,i)\) splits to \(\phi_S(w, i-1)\) and \( \phi_S(\lfloor \frac{w}{S_i} \rfloor, i-1)\).</li>
             <li>Street-wise, \(|L_i| \le 2 \sqrt{n}\) - because there are \(\sqrt{n}\) possible values of \(w=\lfloor \frac{n}{h} \rfloor\) for any \(h  \le \sqrt{n}\) (namely \(\{n, \frac{n}{2}, \dots \frac{n}{\sqrt{n}}\}\); and \(\sqrt{n}\) possible values of \(w\) for \(h \gt \sqrt{n}\) (namely \(\{0, 1, 2, \dots \lceil \sqrt{n} \rceil \}\).</li>
 			<li>This leads to a simple algorithm: for all \(w\) in \(W=\{0, 1, 2, \dots, \lceil \sqrt{n} \rceil \} \cup \{n, \frac{n}{2}, \dots \frac{n}{\sqrt{n}}\}\) calculate \(\phi_S(w, 0), \phi_S(w, 1), \dots \phi_S(w, m)\), layer by layer. Complexity will be limited from above by \(O(m \sqrt{n})\) - in the case of this problem, about \(10^8\) operations.</li>
@@ -89,7 +89,7 @@
 				</ol>
 				"representation" refers to a sorted sequence of elements of \(L_i\).
 			</li>
-			<li>\(\phi(w,i)\) has to be calculated if and only if \(w \in L_i\).</li>
+			<li>\(\phi_S(w,i)\) has to be calculated if and only if \(w \in L_i\).</li>
 		</ol>
 		{{ algo.neo_algorithm(1, 'Calculating \(\phi(n, a)\)', '
 			<p>Input: two values \(n,a\), for which \(\phi(n,a)\) will be calculated; note, that it will be calculated for sequence of prime numbers.</p>
