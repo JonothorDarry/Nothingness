@@ -67,7 +67,7 @@
 			\(n\ m\)<br>
 			</p>
 			', '10 13', {'algo_type':'shower', 
-			'color_description':{'standard':'', 'dead':'Number not coprime to either n or m.'} }) }}
+			'color_description':{'standard':'', 'dead':'Number not coprime to either n or m.', '_violet':'No number is equivalent to given pair. Note, that this implies, that there are more than one solutions to all pairs of equations \(\pmod n, \pmod m\) - namely \(gcd(n,m)\) solutions. This implies, that \(\phi(nm) \\neq \phi(n) \phi(m)\).', 'stagnant':'Number coprime to associated value.', 'half-stagnant':'Number not coprime to associated value.'} }) }}
 			<li>Another proof, that \(\phi(ab)=\phi(a)\phi(b)\) for coprime \(a, b\), this time using inclusion-exclusion principle, perhaps simpler:
 				<ol>
 					<li>For \(x=p_1^{q_1} \dots p_n^{q_n}\): \(\phi(x)=x-\sum_{i} \frac{x}{p_i} + \sum_{i \lt j} \frac{x}{p_i p_j} - \dots + (-1)^n\frac{x}{p_1p_2 \dots p_n} = x(1-\frac{1}{p_1}) \dots (1-\frac{1}{p_2}) \dots (1-\frac{1}{p_n})\) - this comes from inclusion-exclusion principle, defining sets \(P_1, P_2, \dots, P_n\) of numbers divisible by \(p_1, \dots p_n\) lower or equal to \(x\) and finding, how many elements belong to neither of those sets.</li>
