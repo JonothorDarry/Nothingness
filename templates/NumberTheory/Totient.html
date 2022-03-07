@@ -20,7 +20,7 @@
 		</ol>
 		<h2>Problem I: Basic properties of totient</h2>
 		<p>
-			Suppose You are given following problem: For given numbers \(m, y\ (1 \le m, y \le 10^{13})\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
+			Suppose You are given the following problem: For given numbers \(m, y\ (1 \le m, y \le 10^{13})\) how many there are numbers \(x\), such that \(gcd(m,x)=y\) and \(1 \le x \le m\)? 
 		</p>
 		<h3>Special case: defining totient</h3>
 		<p>It is approprite to solve problem for \(y=1\) (where the solution is denoted by totient function) before proceeding to general case. What can be said about totient function? </p>
@@ -61,6 +61,13 @@
 			\)
 		</span>
 			</li>
+		{{ algo.neo_algorithm(3, 'Showing CRT proof for multiplicativity of totient.', '
+		<p>This visualization is intended to show, that if \(gcd(n,m) = 1\), then \(\phi(n m) = \phi(n) \phi(m)\).</p>
+		<p>Input format: values \(m, n\), for which numbers coprime to \(n\) and \(m\) will be shown.<br>
+			\(n\ m\)<br>
+			</p>
+			', '10 13', {'algo_type':'shower', 
+			'color_description':{'standard':'', 'dead':'Number not coprime to either n or m.'} }) }}
 			<li>Another proof, that \(\phi(ab)=\phi(a)\phi(b)\) for coprime \(a, b\), this time using inclusion-exclusion principle, perhaps simpler:
 				<ol>
 					<li>For \(x=p_1^{q_1} \dots p_n^{q_n}\): \(\phi(x)=x-\sum_{i} \frac{x}{p_i} + \sum_{i \lt j} \frac{x}{p_i p_j} - \dots + (-1)^n\frac{x}{p_1p_2 \dots p_n} = x(1-\frac{1}{p_1}) \dots (1-\frac{1}{p_2}) \dots (1-\frac{1}{p_n})\) - this comes from inclusion-exclusion principle, defining sets \(P_1, P_2, \dots, P_n\) of numbers divisible by \(p_1, \dots p_n\) lower or equal to \(x\) and finding, how many elements belong to neither of those sets.</li>

@@ -23,7 +23,6 @@ class Dlog extends Algorithm{
 		for (i=1; i<this.logic.s; i++) this.logic.ax.push([i, (this.logic.ax[i-1][1]*this.logic.a)%this.logic.m]);
 		this.logic.sorted_ax=[...this.logic.ax];
 		this.logic.sorted_ax.sort(comparer_sort).reverse();
-        console.log(this.logic.sorted_ax);
 		this.logic.march_of_the_binars=[];
 
 		var x;
@@ -46,7 +45,6 @@ class Dlog extends Algorithm{
 		var value=Math.max(20, Math.floor(3*(this.logic.m.toString().length*10)/4))
 		this.stylistic.bs_small_butt_width=`${value}px`
 		this.stylistic.bs_butt_width=`${Math.max(value*2, 50)}px`
-
 
 		this.place.style.width=`max-content`;
 		var lst1=this.modern_divsCreator(1, 4);
