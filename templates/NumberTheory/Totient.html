@@ -61,12 +61,12 @@
 			\)
 		</span>
 			</li>
-		{{ algo.neo_algorithm(3, 'Showing CRT proof for multiplicativity of totient.', '
-		<p>This visualization is intended to show, that if \(gcd(n,m) = 1\), then \(\phi(n m) = \phi(n) \phi(m)\).</p>
+		{{ algo.neo_algorithm(3, 'Showing Chinese Remainder Theorem related proof for multiplicativity of totient.', '
+		<p>This visualization is intended to show, why if \(gcd(n,m) = 1\), then \(\phi(n m) = \phi(n) \phi(m)\).</p>
 		<p>Input format: values \(m, n\), for which numbers coprime to \(n\) and \(m\) will be shown.<br>
 			\(n\ m\)<br>
 			</p>
-			', '10 13', {'algo_type':'shower', 
+			', '10 17', {'algo_type':'shower', 
 			'color_description':{'standard':'', 'dead':'Number not coprime to either n or m.', '_violet':'No number is equivalent to given pair. Note, that this implies, that there are more than one solutions to all pairs of equations \(\pmod n, \pmod m\) - namely \(gcd(n,m)\) solutions. This implies, that \(\phi(nm) \\neq \phi(n) \phi(m)\).', 'stagnant':'Number coprime to associated value.', 'half-stagnant':'Number not coprime to associated value.'} }) }}
 			<li>Another proof, that \(\phi(ab)=\phi(a)\phi(b)\) for coprime \(a, b\), this time using inclusion-exclusion principle, perhaps simpler:
 				<ol>
@@ -75,6 +75,14 @@
 					$$ \phi(x)\phi(y) = x(1-\frac{1}{p_1}) (1-\frac{1}{p_2}) \dots (1-\frac{1}{p_n}) y(1-\frac{1}{r_1})(1-\frac{1}{r_2}) \dots (1-\frac{1}{r_m}) = xy(1-\frac{1}{p_1}) \dots (1-\frac{1}{p_n}) (1-\frac{1}{r_1}) \dots (1-\frac{1}{r_m}) = \phi(xy)$$</li>
 				</ol>
 			</li>
+
+		{{ algo.neo_algorithm(4, 'Showing inclusion-exclusion principle related proof for multiplicativity of totient.', '
+		<p>This visualization is intended to show, why \(\phi(p_1^{q_1}p_2^{q_2} \dots p_m^{q_m}) = \phi(p_1^{q_1}) \phi(p_2^{q_2}) \dots \phi(p_m^{q_m})\).</p>
+		<p>Input format: value \(n\), for which values coprime to it will be shown.<br>
+			\(n\)<br>
+			</p>
+			', '130', {'algo_type':'shower', 
+			'color_description':{} }) }}
 		</ol>
 		<h4>Consequence of properties: factorization</h4>
 		<p>	
