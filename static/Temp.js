@@ -290,10 +290,10 @@ class Partial extends Algorithm{
 
 class Grid{
 	//Later, perhaps: create grid w/o overlay of divsCreator - no place; left margin, topmargin
-	constructor(n, m, style, params={'place':null}){
+	constructor(n, m, style, params={'place':null, 'divs':false}){
 		Object_utils.merge(params, {'top_margin':0, 'left_margin':0});
 
-		this.grid=Representation_utils.gridify_div(params.place, n+params.top_margin, m+params.left_margin, style);
+		this.grid=Representation_utils.gridify_div(params.place, n+params.top_margin, m+params.left_margin, style, params.divs);
 		this.left_margin=params.left_margin;
 		this.top_margin=params.top_margin;
 	}
@@ -379,13 +379,14 @@ class Representation_utils{
 		return Representation_utils.proto_divsCreator(1, number_of_rows, [], null, to_add, style);
 	}
 
-	static gridify_div(place, n, m, style){
+	static gridify_div(place, n, m, style, divs = false){
 		var i, j, btn;
 		var grid=ArrayUtils.create_2d(n, m);
 
 		for (i=0; i<n; i++){
 			for (j=0; j<m; j++){
-				btn=Representation_utils.button_creator(style);
+				if (!divs) btn=Representation_utils.button_creator(style);
+				else btn=Modern_representation.div_creator('', {});
 				place[i].buttons.appendChild(btn);
 				grid[i][j]=btn;
 			}

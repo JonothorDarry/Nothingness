@@ -77,7 +77,8 @@ class Totient_IEP extends Partial{
 			while (x % i == 0) x = Math.floor(x/i);
 		}
 		if (x>1) this.logic.prime_factors.push(x);
-		for (i=0; i<this.logic.prime_factors.length; i++) this.logic.inverse_factors[this.logic.prime_factors[i]] = i;
+		this.logic.inverse_factors['&empty;'] = 0;
+		for (i=0; i<this.logic.prime_factors.length; i++) this.logic.inverse_factors[this.logic.prime_factors[i]] = i+1;
 
 		this.logic.prime_divs = ArrayUtils.steady(this.logic.n+1, 0).map(e => []);
 		for (i=1; i<=this.logic.n; i++){
@@ -98,6 +99,7 @@ class Totient_IEP extends Partial{
 				this.logic.power_sets.push({'set':x.set.slice().concat(p), 'amount':Math.floor(x.amount/p), 'parity':-x.parity});
 			}
 		}
+		this.logic.summa = this.logic.power_sets.reduce((acc, value) => acc+value.amount*value.parity, 0);
 	}
 
 	logical_box(){
@@ -109,7 +111,7 @@ class Totient_IEP extends Partial{
 	}
 
 	_presentation_fill_div_with_prime_factors(div, factors){
-		var colors = [30, 32, 33, 101, 15];
+		var colors = [5, 30, 32, 33, 101, 15];
 		var buttons = [];
 
 		for (var i=0; i<factors.length; i++){
@@ -162,25 +164,44 @@ class Totient_IEP extends Partial{
 		}
 	}
 
+	_presentation_summarizer_colorful(grid){
+		var div, seta;
+		for (var i=0; i<this.logic.power_sets.length; i++){
+			div = grid.get(i, 0);
+			Modern_representation.button_modifier(div, {'stylistic':{'px':{'width':80, 'height':40, 'lineHeight':40, 'paddingTop':10}}});
+
+			if (i == 0) seta = ['&empty;'];
+			else seta = this.logic.power_sets[i].set;
+			var buttons = this._presentation_fill_div_with_prime_factors(div, ArrayUtils.revert(seta));
+
+			if (i == 0) Modern_representation.button_modifier(buttons[0], {'stylistic':{'general':{'font-weight': 'bold'}}});
+			for (var x of buttons){
+				Modern_representation.button_modifier(x, {'stylistic':{'general':{'verticalAlign':'bottom', 'left':'', 'float':'right'}, 'px':{'right':0}}});
+			}
+		}
+	}
+
 	_presentation_summarizer(){
 		var div_summary = Modern_representation.div_creator('', {'%':{'width':35}});
 		this.place.appendChild(div_summary);
 
+		var simple_ln = this.logic.power_sets.length;
 		var ln = this.logic.power_sets.length+4;
 		var table = Representation_utils.proto_divsCreator(1, ln, [], null, div_summary, this.stylistic);
 		var grid = new Grid(ln-1, 4, this.stylistic, {'place':table.zdivs, 'top_margin':1, 'left_margin':1, 'divs':true});
-		'&#8709;'
 
-		var div;
-		for (var i=0; i<this.logic.power_sets.length; i++){
-			div = grid.get(i, 0);
-			Modern_representation.button_modifier(div, {'stylistic':{'general':{'border':'1px solid grey'}, 'px':{'width':80}}});
-			var buttons = this._presentation_fill_div_with_prime_factors(div, ArrayUtils.revert(this.logic.power_sets[i].set));
+		this._presentation_summarizer_colorful(grid);
 
-			for (var x of buttons){
-				Modern_representation.button_modifier(x, {'stylistic':{'general':{'verticalAlign':'baseline', 'left':'', 'float':'right'}, 'px':{'right':0}}});
-			}
+		var buttons_iep_values = grid.filler([[0, simple_ln-1], 1], this.logic.power_sets.map(e => e.amount), {'color':30});
+		for (var i=0; i<buttons_iep_values.length; i++){
+			var x = buttons_iep_values[i];
+			Modern_representation.button_modifier(x, {'stylistic':{'general':{'textAlign':'center', 'verticalAlign':'baseline'}, 'px':{'width':60, 'height':40, 'lineHeight':40}}});
+			if (this.logic.power_sets[i].parity == 1) Modern_representation.button_modifier(x, {'stylistic':{'general':{'backgroundColor':Modern_representation.colors[31]}}});
 		}
+
+		grid.single_filler([simple_ln, 0], '', {'color':4, 'stylistic':{'px':{'width':80, 'height':40, 'lineHeight':40}}});
+		var btn_endet = grid.single_filler([simple_ln, 1], this.logic.summa, {'color':8, 'stylistic':{'general':{'textAlign':'center'}, 'px':{'width':60, 'height':40, 'lineHeight':40}}});
+
 	}
 
 	presentation(){
