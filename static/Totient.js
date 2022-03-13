@@ -69,7 +69,6 @@ class Totient_CRT extends Partial{
 }
 
 class Totient_IEP extends Partial{
-
 	_logical_mark_numbers(){
 		var i=0, j, x=this.logic.n;
 		for (i=2; i*i<=x; i++){
@@ -125,6 +124,7 @@ class Totient_IEP extends Partial{
 		return buttons;
 	}
 
+	//double div: above number, below place for divs
 	_presentation_make_dubs(number){
 		var radius = Math.max(20, 10*Math.max(...this.logic.prime_factors).toString().length);
 		var width = Math.max(80, radius*this.logic.prime_factors.length), height_small=radius, height_huge=radius;
@@ -164,11 +164,12 @@ class Totient_IEP extends Partial{
 		}
 	}
 
+	//for div-buttons
 	_presentation_summarizer_colorful(grid){
 		var div, seta;
 		for (var i=0; i<this.logic.power_sets.length; i++){
 			div = grid.get(i, 0);
-			Modern_representation.button_modifier(div, {'stylistic':{'px':{'width':80, 'height':40, 'lineHeight':40, 'paddingTop':10}}});
+			Modern_representation.button_modifier(div, {'stylistic':{'px':{'width':80, 'height':30, 'lineHeight':40, 'paddingTop':10}}});
 
 			if (i == 0) seta = ['&empty;'];
 			else seta = this.logic.power_sets[i].set;
@@ -181,8 +182,24 @@ class Totient_IEP extends Partial{
 		}
 	}
 
+	_presentation_expression(power_set){
+		var str = `${this.logic.n}`;
+		if (power_set.set.length%2 == 1) str = `-` + str;
+
+		for (var i=0; i<power_set.set.length; i++)
+			str += ` <sup>${1}</sup> &frasl; <sub>${power_set.set[i]}</sub>`;
+		return str;
+	}
+
+	_presentation_full_expression(){
+		var str = `${this.logic.n}`;
+		for (var i=0; i<this.logic.prime_factors.length; i++)
+			str += ` (1 - <sup>${1}</sup> &frasl; <sub>${this.logic.prime_factors[i]}</sub>)`;
+		return str;
+	}
+
 	_presentation_summarizer(){
-		var div_summary = Modern_representation.div_creator('', {'%':{'width':35}});
+		var div_summary = Modern_representation.div_creator('', {'%':{'width':40}});
 		this.place.appendChild(div_summary);
 
 		var simple_ln = this.logic.power_sets.length;
@@ -192,16 +209,32 @@ class Totient_IEP extends Partial{
 
 		this._presentation_summarizer_colorful(grid);
 
+
+		var expr_width = 40 + this.logic.prime_factors.length*90;
+		var amount_width = 60;
+		grid.single_filler([-1, 0], '', {'color':4, 'stylistic':{'px':{'width':80, 'height':40, 'lineHeight':40}}});
+		grid.single_filler([-1, 1], 'Amount', {'color':5, 'stylistic':{'general':{'borderBottom':`1px solid white`, 'textAlign':'center'}, 'px':{'fontSize':12, 'width':amount_width, 'height':39, 'lineHeight':40}}});
+		grid.single_filler([-1, 2], `Expression part`, {'color':5, 'stylistic':{'general':{'borderBottom':`1px solid white`, 'borderLeft':'1px solid white', 'textAlign':'center'}, 'px':{'width':expr_width, 'height':39, 'lineHeight':40}}});
+
 		var buttons_iep_values = grid.filler([[0, simple_ln-1], 1], this.logic.power_sets.map(e => e.amount), {'color':30});
+		var general_button_style = {'stylistic':{'general':{'textAlign':'center', 'verticalAlign':'top'}, 'px':{'width':amount_width, 'height':40, 'lineHeight':40}}};
 		for (var i=0; i<buttons_iep_values.length; i++){
 			var x = buttons_iep_values[i];
-			Modern_representation.button_modifier(x, {'stylistic':{'general':{'textAlign':'center', 'verticalAlign':'baseline'}, 'px':{'width':60, 'height':40, 'lineHeight':40}}});
+			Modern_representation.button_modifier(x, general_button_style);
 			if (this.logic.power_sets[i].parity == 1) Modern_representation.button_modifier(x, {'stylistic':{'general':{'backgroundColor':Modern_representation.colors[31]}}});
 		}
 
-		grid.single_filler([simple_ln, 0], '', {'color':4, 'stylistic':{'px':{'width':80, 'height':40, 'lineHeight':40}}});
-		var btn_endet = grid.single_filler([simple_ln, 1], this.logic.summa, {'color':8, 'stylistic':{'general':{'textAlign':'center'}, 'px':{'width':60, 'height':40, 'lineHeight':40}}});
+		var exprs = this.logic.power_sets.map(e => this._presentation_expression(e));
+		var buttons_expressions = grid.filler([[0, simple_ln-1], 2], exprs, {'color':30});
+		for (var i=0; i<buttons_expressions.length; i++){
+			var x = buttons_expressions[i];
+			Modern_representation.button_modifier(x, general_button_style);
+			Modern_representation.button_modifier(x, {'stylistic':{'general':{'borderLeft':'1px solid white', 'backgroundColor':Modern_representation.colors[5]}, 'px':{'width':expr_width}}});
+		}
 
+		grid.single_filler([simple_ln, 0], '', {'color':4, 'stylistic':{'px':{'width':80, 'height':40, 'lineHeight':40}}});
+		var btn_endet = grid.single_filler([simple_ln, 1], this.logic.summa, {'color':8, 'stylistic':{'general':{'textAlign':'center'}, 'px':{'width':amount_width, 'height':40, 'lineHeight':40}}});
+		var btn_expr_full = grid.single_filler([simple_ln, 2], this._presentation_full_expression(), {'color':8, 'stylistic':{'general':{'borderLeft':'1px solid white', 'textAlign':'center'}, 'px':{'width':expr_width, 'height':40, 'lineHeight':40}}});
 	}
 
 	presentation(){
