@@ -402,7 +402,7 @@ class ExtendedEuclidGcd extends Algorithm{
 		var a=this.logic.a, b=this.logic.b, z=this.logic.z, p=this.logic.p, q=this.logic.q;
 		var strr=SuperEuclid.StatementComprehension(last[0], this.logic.a, this.logic.b, index);
 
-		if (last[0]==1 || last[0]==0) strr+=`. Result of dividing a by b is z=a/b=${a[index-1]}/${b[index-1]}=${z[index]} - it will be used to calculate next p and q`;
+		if (last[0]==1 || last[0]==0) strr+=`. Result of dividing a by b is z=a/b=${a[index-1]}/${b[index-1]}=${z[index-1]} - it will be used to calculate next p and q`;
 		if (last[0]==3) strr+=`. I also change p<sub>i</sub>=p<sub>i-2</sub>-z*p<sub>i-1</sub>, q=q<sub>i-2</sub>-z*q<sub>i-1</sub>, so that p<sub>i</sub>*u+q<sub>i</sub>*v are equal to current b=${b[index]} in the algorithm`;
 		if (last[0]==100) strr+=`. Numbers x, y such that u*x+v*y=gcd(u,v) are x=p<sub>i-1</sub>=${p[p.length-2]}, y=q<sub>i-1</sub>=${q[q.length-2]}: u*x+v*y=${this.logic.w}*${p[p.length-2]}+${this.logic.v}*${q[q.length-2]}=${this.logic.w*p[p.length-2]+this.logic.v*q[q.length-2]}`;
 		return strr;

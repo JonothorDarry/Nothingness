@@ -314,7 +314,6 @@ class PostPhi extends Algorithm{
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1], layer, p1, p2, h, p;
-		console.log(s);
 
 		if (s[0]==0 || s[0]==1 || s[0]==2){
 			layer=s[1], p1=s[2], p2=s[3], h=s[4];
@@ -442,6 +441,30 @@ class Segtree_Counter extends Algorithm{
 		this._logical_finish_tree();
 	}
 
+	_statial_binding(name, values, btn_list){
+		if (!ArrayUtils.is_iterable(btn_list)){
+			this.state[name] = {
+				'iterator':0,
+				'button':btn_list,
+				'values':values,
+				'current':function(){return this.values[this.iterator];},
+				'previous':function(){return this.values[this.iterator-1];}
+			};
+			return;
+		}
+
+		this.state[name] = [];
+		for (var i=0; i<values.length; i++){
+			this.state[name].push({
+				'button':btn_list[i],
+				'values':values[i],
+				'iterator':0,
+				'current':function(){return this.values[this.iterator];},
+				'previous':function(){return this.values[this.iterator-1];}
+			});
+			if (values[i].length > 0) btn_list[i].innerHTML = values[i][0];
+		}
+	}
 
 	_presentation_build_tree(place){
 		var seg_tree_edges = [];
@@ -474,10 +497,8 @@ class Segtree_Counter extends Algorithm{
 		}
 		this.buttons.edges = tree_presentation.buttons.edges;
 
-		for (var i=1; i<2*this.logic.Cv; i+=1){
-			this.buttons.vertexes[i].data = {'iterator':0, 'values':this.logic.seg_tree[i]};
-			this.buttons.vertexes[i].innerHTML = this.buttons.vertexes[i].data.values[0];
-		}
+		this._statial_binding('vertexes', this.logic.seg_tree, this.buttons.vertexes);
+
 		place.appendChild(post_div);
 	}
 
@@ -507,15 +528,17 @@ class Segtree_Counter extends Algorithm{
 		this.buttons.q_prime_nrs = grid.filler([[2, this.logic.queries.length+1], 1], this.logic.beg_queries.map(x => x.prime_nr), {'color':0, 'stylistic':style});
 		this.buttons.q_answers = grid.filler([[2, this.logic.queries.length+1], 2], this.logic.queries.map(x => x.answer[0]), {'color':4, 'stylistic':style});
 
-		for (var i=0; i<this.buttons.q_intervals.length; i++) this.buttons.q_intervals[i].data = {'iterator':0, 'values':[this.logic.beg_queries[i].interval, this.logic.queries[i].interval]};
-		for (var i=0; i<this.buttons.q_prime_nrs.length; i++) this.buttons.q_prime_nrs[i].data = {'iterator':0, 'values':[this.logic.beg_queries[i].prime_nr, this.logic.queries[i].prime_nr]};
-		for (var i=0; i<this.buttons.q_prime_nrs.length; i++) this.buttons.q_answers[i].data = {'iterator':0, 'values':this.logic.queries[i].answer};
+
+
+		this._statial_binding('q_intervals', ArrayUtils.zip(this.logic.beg_queries.map(e => e.interval), this.logic.queries.map(e => e.interval)), this.buttons.q_intervals);
+		this._statial_binding('q_prime_nrs', ArrayUtils.zip(this.logic.beg_queries.map(e => e.prime_nr), this.logic.queries.map(e => e.prime_nr)), this.buttons.q_prime_nrs);
+		this._statial_binding('q_answers', this.logic.queries.map(e => e.answer), this.buttons.q_answers);
 
 		this.place.appendChild(querier.full_div);
-
 		grid.single_filler([-1, 0], 'prime nr: ', {'color':5, 'stylistic':style});
 		this.buttons.prime_nr = grid.single_filler([-1, 1], '0', {'color':30, 'stylistic':style});
-		this.buttons.prime_nr.data = {'values':ArrayUtils.range(0, this.logic.lpf.filter((x, i) => x == i).length), 'iterator':0};
+
+		this._statial_binding('prime_nr', ArrayUtils.range(0, this.logic.lpf.filter((x, i) => x == i).length), this.buttons.prime_nr);
 	}
 
 	presentation(){
@@ -532,6 +555,7 @@ class Segtree_Counter extends Algorithm{
 	}
 
 	palingnesia(){
+		this.state = {};
 		this.logical_box();
 		this.presentation();
 	}
@@ -571,8 +595,8 @@ class Segtree_Counter extends Algorithm{
 			for (i=0; i<this.buttons.q_intervals.length; i++){
 				this.pass_color(this.buttons.q_intervals[i], 0, 1, 0);
 				this.pass_color(this.buttons.q_prime_nrs[i], 0, 1, 0);
-				staat.push([6, this.buttons.q_intervals[i]]);
-				staat.push([6, this.buttons.q_prime_nrs[i]]);
+				staat.push([6, this.state.q_intervals[i]]);
+				staat.push([6, this.state.q_prime_nrs[i]]);
 			}
 		}
 
@@ -599,7 +623,7 @@ class Segtree_Counter extends Algorithm{
 				if (s[1]%2 == 0 && s[2]-s[1] > 1){
 					this.pass_color(this.buttons.vertexes[s[1]+1], 0, 13, 0);
 					this.pass_color(this.buttons.q_answers[s[4]], 0, 1, 0);
-					staat.push([6, this.buttons.q_answers[s[4]]]);
+					staat.push([6, this.state.q_answers[s[4]]]);
 				}
 			}
 
@@ -607,7 +631,7 @@ class Segtree_Counter extends Algorithm{
 				if (s[2]%2 == 1 && s[2]-s[1] > 1){
 					this.pass_color(this.buttons.vertexes[s[2]-1], 0, 13, 0);
 					this.pass_color(this.buttons.q_answers[s[4]], 0, 1, 0);
-					staat.push([6, this.buttons.q_answers[s[4]]]);
+					staat.push([6, this.state.q_answers[s[4]]]);
 				}
 			}
 			if (s[1] == 1 && s[3] == 2){
@@ -617,7 +641,7 @@ class Segtree_Counter extends Algorithm{
 
 		//25 - +1 for prime nr
 		if (s[0] == 25){
-			staat.push([6, this.buttons.prime_nr]);
+			staat.push([6, this.state.prime_nr]);
 		}
 
 		//Moving in sieve
@@ -637,7 +661,7 @@ class Segtree_Counter extends Algorithm{
 			this.pass_color(this.buttons.vertexes[s[1]], 0, 1, 0);
 			this.pass_color(this.buttons.low_sieve[s[3]], 2, 15, 2);
 			if (s[4] != s[3]) this.pass_color(this.buttons.low_sieve[s[4]], 2, 101, 2);
-			staat.push([6, this.buttons.vertexes[s[1]]]);
+			staat.push([6, this.state.vertexes[s[1]]]);
 		}
 
 		//40 - queries post exit - sieve ended, queries still standing
@@ -684,6 +708,7 @@ class Segtree_Counter extends Algorithm{
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
+		console.log(this.state.q_intervals[1].current());
 
 		if (s[0] == 1) return `Queries are sorted in order of subsequent prime numbers, which are used in sieving &phi;(n,a). Besides, note, that segment tree was started: values in its nodes are equal to sum of its children, each leaf gives information, whether partiular number was marked as divisible by first prime_nr primes. Note, that 0 is marked as divisible from the very start of this algorithm.`;
 		if (s[0] == 20){
@@ -692,12 +717,12 @@ class Segtree_Counter extends Algorithm{
 		}
 		if (s[0] == 21){
 			var n = this.logic.queries[s[4]].interval;
-			var query = {'place':this.logic.queries[s[4]], 'cur_ans':this.buttons.q_answers[s[4]].data};
+			var query = {'place':this.logic.queries[s[4]], 'cur_ans':this.state.q_answers[s[4]]};
 
 			if (s[3] == -1){
-				var b1 = this.buttons.vertexes[s[1]].data;
-				var b2 = this.buttons.vertexes[s[2]].data;
-				return `Now, we have to answer query &phi;(n, a) = &phi;(${n}, ${query.place.prime_nr}). How will we do it? By querying sum of segment tree on range from 0 to n - that is, <0;${n}>. First, where do we start querying the segment tree? On leafs indexed as 0 and n - as leaf node have indexes starting from 2<sup>lg</sup>, where lg is a constant great enough to answer all queries, then our starting nodes are 0+${this.logic.Cv}=${this.logic.Cv} and ${n}+${this.logic.Cv}=${n+this.logic.Cv}. We also add values in those indexes to the result of this query: thus, current answer is  previous_answer + segment_tree_left + segment_tree_right = ${b1.values[b1.iterator]} + ${b2.values[b2.iterator]} = ${query.cur_ans.values[query.cur_ans.iterator]}.`;
+				var b1 = this.state.vertexes[s[1]];
+				var b2 = this.state.vertexes[s[2]];
+				return `Now, we have to answer query &phi;(n, a) = &phi;(${n}, ${query.place.prime_nr}). How will we do it? By querying sum of segment tree on range from 0 to n - that is, <0;${n}>. First, where do we start querying the segment tree? On leafs indexed as 0 and n - as leaf node have indexes starting from 2<sup>lg</sup>, where lg is a constant great enough to answer all queries, then our starting nodes are 0+${this.logic.Cv}=${this.logic.Cv} and ${n}+${this.logic.Cv}=${n+this.logic.Cv}. We also add values in those indexes to the result of this query: thus, current answer is  previous_answer + segment_tree_left + segment_tree_right = ${b1.current()} + ${b2.current()} = ${query.cur_ans.current()}.`;
 			}
 			if (s[3] == 0){
 				return `Now, as we are in this layer of segment tree, we have to find out, whether we have to cover left and right side of nodes our iterators are pointing at. Note, that to move upwards in the segment tree, one needs to divide indexes by two.`;
@@ -705,8 +730,8 @@ class Segtree_Counter extends Algorithm{
 			if (s[3] == 1){
 				if (s[2] - s[1] <= 1) return `Our left node is right next to right node ${s[2]} - ${s[1]} &le; 1 - no node can between them can be covered, we take no action.`;
 				if (s[1]%2 == 1) return `Our left node is a right child of its parent - because its index - ${s[1]} - is not divisible by 2 - thus, we take no action.`;
-				var btn = this.buttons.vertexes[s[1]+1].data;
-				return `Now, we augment answer with node to the right of our left node: ${query.cur_ans.values[query.cur_ans.iterator-1]} + ${btn.values[btn.iterator]} = ${query.cur_ans.values[query.cur_ans.iterator]}`;
+				var btn = this.state.vertexes[s[1]+1];
+				return `Now, we augment answer with node to the right of our left node: ${query.cur_ans.values[query.cur_ans.iterator-1]} + ${btn.current()} = ${query.cur_ans.current()}`;
 			}
 			if (s[3] == 2){
 				if (s[2] - s[1] <= 1){
@@ -715,14 +740,14 @@ class Segtree_Counter extends Algorithm{
 					return str;
 				}
 				if (s[2]%2 == 0) return `Our right node is a left child of its parent - because its index - ${s[2]} - is divisible by 2 - thus, we take no action.`;
-				var btn = this.buttons.vertexes[s[2]-1].data;
-				return `Now, we augment answer with node to the left of our right node: ${query.cur_ans.values[query.cur_ans.iterator-1]} + ${btn.values[btn.iterator]} = ${query.cur_ans.values[query.cur_ans.iterator]}`;
+				var btn = this.state.vertexes[s[2]-1];
+				return `Now, we augment answer with node to the left of our right node: ${query.cur_ans.previous} + ${btn.current()} = ${query.cur_ans.current()}`;
 			}
 		}
 
 		if (s[0] == 25){
-			var btn = this.buttons.prime_nr.data;
-			return `A prime was sieved - number of sieved primes is thus increased to ${btn.values[btn.iterator]}`;
+			var btn = this.state.prime_nr;
+			return `A prime was sieved - number of sieved primes is thus increased to ${btn.current()}`;
 		}
 
 		if (s[0] == 30) return `The next number under sieve, ${s[2]}, is checked - is it prime? ${(this.logic.lpf[s[2]] == s[2]) ? `Yes - and so, the segment tree will be updated.` : `No, so we have to move further.`}`;

@@ -191,8 +191,8 @@ class Algorithm{
 			if (elem[0]==3) this[elem[1]]=elem[2];
 			if (elem[0]==5) elem[2](...elem[3]);
 			if (elem[0]==6){
-				elem[1].data.iterator -= 1;
-				elem[1].innerHTML = elem[1].data.values[elem[1].data.iterator];
+				elem[1].iterator -= 1;
+				elem[1].button.innerHTML = elem[1].values[elem[1].iterator];
 			}
 		}
 		this.state_transformation.pop();
@@ -228,8 +228,8 @@ class Algorithm{
 			if (x[0]==3) this[x[1]]=x[3];
 			if (x[0]==5) x[1](...x[3]);
 			if (x[0]==6){
-				x[1].data.iterator += 1;
-				x[1].innerHTML = x[1].data.values[x[1].data.iterator];
+				x[1].iterator += 1;
+				x[1].button.innerHTML = x[1].values[x[1].iterator];
 			}
 		}
 	}
@@ -1008,6 +1008,10 @@ class ArrayUtils{
 				res.push(array[i][d1]);
 		}
 		return res;
+	}
+
+	static zip(arr1, arr2){
+		return Array.prototype.map.call(arr1, function(e,i){return [e, arr2[i]];})
 	}
 }
 
