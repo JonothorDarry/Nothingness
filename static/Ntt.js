@@ -585,11 +585,12 @@ class SumNtt extends Algorithm{
 					double_butt[0].style.width="45px";
 
 					double_butt[2].style.height="45px";
+					double_butt[2].style.lineHeight=`${45+10}px`;
 					double_butt[2].style.width="45px";
-					double_butt[2].style.paddingTop="10px";
 					double_butt[2].style.verticalAlign="bottom";
 
 					double_butt[1].style.width="20px";
+					double_butt[1].style.right="0";
 					double_butt[1].style.right="0";
 					double_butt[1].style.zIndex="2";
 

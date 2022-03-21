@@ -489,7 +489,7 @@ class Segtree_Counter extends Algorithm{
 
 		this.buttons.vertexes = tree_presentation.buttons.vertexes;
 		for (var i=1; i<2*this.logic.Cv; i++){
-			var platz = tree_presentation.get_place_for_companion_button(i, -1, 1);
+			var platz = tree_presentation.get_place_for_companion_button(i, 1, 1);
 			var btn = Modern_representation.button_creator(i, {'general':{'position':'absolute', 'color':'#FFFFFF', 'backgroundColor':'#000000'}, 'px':{'width':20, 'height':20}});
 			btn.style.left = platz.left;
 			btn.style.top = platz.top;
@@ -653,7 +653,10 @@ class Segtree_Counter extends Algorithm{
 		//Stopping sieve in a point
 		if (s[0] == 32){
 			this.pass_color(this.buttons.low_sieve[s[2]], 2, 15, 2);
-			if (s[2] != s[3]) this.pass_color(this.buttons.low_sieve[s[3]], 0, 101, 2);
+			if (s[2] != s[3]){
+				if (this.logic.lpf[s[3]] == s[2]) this.pass_color(this.buttons.low_sieve[s[3]], 0, 101, 2);
+				else this.pass_color(this.buttons.low_sieve[s[3]], 2, 101, 2);
+			}
 		}
 
 		//Move upwards in insertion

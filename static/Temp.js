@@ -55,6 +55,7 @@ class Algorithm{
 		this.lees=[];
 		this.logic={};
 		this.buttons={};
+		this.state={};
 
 		this.place=block.primePlace;
 		this.wisdom=block.output;
@@ -121,6 +122,7 @@ class Algorithm{
 	}
 
 	new_next_state(){
+		//If !this.finito? check validity
 		var next_state=this.NextState();
 		if (!this.finito && next_state!=null){ //Konieczne 2? Sprawdzić
 			this.lees.push(next_state);
@@ -164,6 +166,7 @@ class Algorithm{
 
 		this.lees=[];
 		this.state_transformation=[];
+		this.state={};
 		this.place.innerHTML='';
 		this.finito=false;
 		this.ephemeral={'staat':null, 'passer':null};
@@ -192,7 +195,7 @@ class Algorithm{
 			if (elem[0]==5) elem[2](...elem[3]);
 			if (elem[0]==6){
 				elem[1].iterator -= 1;
-				elem[1].button.innerHTML = elem[1].values[elem[1].iterator];
+				if (elem[1].button) elem[1].button.innerHTML = elem[1].values[elem[1].iterator];
 			}
 		}
 		this.state_transformation.pop();
@@ -229,7 +232,7 @@ class Algorithm{
 			if (x[0]==5) x[1](...x[3]);
 			if (x[0]==6){
 				x[1].iterator += 1;
-				x[1].button.innerHTML = x[1].values[x[1].iterator];
+				if (x[1].button) x[1].button.innerHTML = x[1].values[x[1].iterator];
 			}
 		}
 	}
@@ -263,6 +266,31 @@ class Algorithm{
 			'finitButton':v.getElementsByClassName('finish')[0]
 		}
 		return dick;
+	}
+
+	_statial_binding(name, values, btn_list){
+		if (!ArrayUtils.is_iterable(btn_list)){
+			this.state[name] = {
+				'iterator':0,
+				'button':btn_list,
+				'values':values,
+				'current':function(){return this.values[this.iterator];},
+				'previous':function(){return this.values[this.iterator-1];}
+			};
+			return;
+		}
+
+		this.state[name] = [];
+		for (var i=0; i<values.length; i++){
+			this.state[name].push({
+				'button':btn_list[i],
+				'values':values[i],
+				'iterator':0,
+				'current':function(){return this.values[this.iterator];},
+				'previous':function(){return this.values[this.iterator-1];}
+			});
+			if (values[i].length > 0 && btn_list[i]!=null) btn_list[i].innerHTML = values[i][0];
+		}
 	}
 }
 
@@ -427,24 +455,20 @@ class Representation_utils{
 	//Creates buttons
 	static button_creator(style, numb=null, col='#440000'){
 		var butt=document.createElement("BUTTON");
-		butt.style.width=style.bs_butt_width;
-		butt.style.height=style.bs_butt_height;
-		butt.style.backgroundColor=col;
-		butt.style.border=style.bs_border;
-		butt.style.padding='0';
-		butt.style.margin='0';
-		butt.style.verticalAlign='middle';
-		
-		butt.style.color="#FFFFFF";
-		if (numb!=null) {
-			butt.innerHTML=numb;
-			butt.style.fontSize=style.bs_font_size;
-		}
-		else {
-			butt.innerHTML=0;
-			butt.style.backgroundColor="#FFFFFF";
-		}
-		return butt;
+
+		return Modern_representation.button_creator(((numb!=null)?numb:''), {
+			'general':{
+				'backgroundColor':((numb!=null)?col:'#FFFFFF'),
+				'border':style.bs_border,
+				'verticalAlign':'middle',
+				'color':'#FFFFFF',
+				'fontSize':((numb!=null)?style.bs_font_size:''),
+			},
+			'px':{
+				'width':style.bs_butt_width_h,
+				'height':style.bs_butt_height_h,
+			}
+		});
 	}
 	
 	//Creates buttons with exponent to the right
@@ -456,6 +480,7 @@ class Representation_utils{
 
 		expo.style.width=`${size}px`;
 		expo.style.height=`${size}px`;
+		expo.style.lineHeight=`${size}px`;
 
 		expo.style.top=`${-(40-size)/2}px`;
 		expo.style.position="relative";
@@ -506,6 +531,7 @@ class Representation_utils{
 		for (var i=0;i<2;i++){
 			lst[i].style.width=style.bs_butt_width;
 			lst[i].style.height="20px";
+			lst[i].style.lineHeight="20px";
 			lst[i].style.textAlign="center";
 			lst[i].style.margin="0";
 			lst[i].style.position="absolute";
@@ -603,16 +629,21 @@ class Modern_representation{
 			'general':{'backgroundColor':'#FFFFFF', 
 				'color':'#FFFFFF',
 				'verticalAlign':'middle',
+				'textAlign':'center',
+				'font-family':'system-ui',
+				'display':'inline-block',
 			},
 			'px':{
 				'width':40,
 				'height':40,
+				'line-height':('px' in stylistic && 'height' in stylistic.px) ? stylistic.px.height : 40,
+				'font-size':14,
 				'padding':0,
 				'margin':0,
 				'border':0,
 			}
 		}
-		return Modern_representation.element_creator('BUTTON', inner_html, stylistic, base);
+		return Modern_representation.element_creator('DIV', inner_html, stylistic, base);
 	}
 
 	static div_creator(inner_html, stylistic={}){
@@ -1272,7 +1303,7 @@ class Modern_tree_presenter{
 		var half_radius=Math.floor(full_radius/2);
 
 		if (x_axis>0) place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${full_radius/Math.sqrt(2)+button_properties.width*(x_axis-1)-half_radius}px)`;
-		else place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${-half_radius+full_radius/Math.sqrt(2)-button_properties.width*(-x_axis-1)}px)`;
+		else place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${-full_radius-half_radius+full_radius/Math.sqrt(2)-button_properties.width*(-x_axis-1)}px)`;
 
 		if (y_axis>0) place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${-half_radius/Math.sqrt(2)-button_properties.height*(y_axis-1)-half_radius}px)`;
 		else place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${half_radius/Math.sqrt(2)+button_properties.height*(-y_axis-1)}px)`;
@@ -1421,6 +1452,12 @@ class Modern_tree{
 		for (var i=1; i<n; i++) edges.push([str.get_next(), str.get_next()]);
 
 		return edges;
+	}
+
+	get_height(){ return Math.max(...this.depth); }
+	get_width(){ 
+		this.add_on_listed_depths();
+		return Math.max(...this.system_depth.map(x => x.length));
 	}
 }
 /*

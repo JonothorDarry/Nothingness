@@ -34,7 +34,7 @@ class Totient_CRT extends Partial{
 		table.divs[this.logic.n+3].style.display = "none";
 		grid.single_filler([this.logic.n, -1], `&phi;(${this.logic.n}) = ${phi_n}`, {'color':8, 'stylistic':{'general':{'writing-mode':'vertical-rl'}, 'px':{'height':_size}}});
 		grid.single_filler([-1, this.logic.m], `&phi;(${this.logic.m}) = ${phi_m}`, {'color':8, 'stylistic':{'px':{'width':_size}}});
-		grid.single_filler([this.logic.n, this.logic.m], `&phi;(${this.logic.n * this.logic.m}) = ${phi_nm}`, {'color':8, 'stylistic':{'px':{'height':_size, 'width':_size}}});
+		grid.single_filler([this.logic.n, this.logic.m], `&phi;(${this.logic.n * this.logic.m}) = ${phi_nm}`, {'color':8, 'stylistic':{'px':{'height':_size, 'lineHeight':_size, 'width':_size}}});
 	}
 
 	read_data(){
