@@ -2,8 +2,10 @@ class CrtSolver extends Algorithm{
 	constructor(block, n=-1, c, s){
 		super(block);
 
-		this.stylistic.bs_butt_width="min(200px, 49%)";
+		this.stylistic.bs_butt_width="200px";
+		this.stylistic.bs_butt_width_h=200;
 		this.stylistic.bs_butt_height="30px";
+		this.stylistic.bs_butt_height_h=30;
 		this.stylistic.bs_font_size="14px";
 
 		if (n!=-1){
@@ -51,8 +53,8 @@ class CrtSolver extends Algorithm{
 			else this.Painter(this.btn2, 0);
 		}
 
-		this.btn1=this.divs[0].getElementsByTagName("button")[a];
-		this.btn2=this.divs[0].getElementsByTagName("button")[b];
+		this.btn1=this.divs[0].getElementsByTagName("div")[a];
+		this.btn2=this.divs[0].getElementsByTagName("div")[b];
 
 		if (this.btn1) this.Painter(this.btn1, 1);
 		if (this.btn2) this.Painter(this.btn2, 1);
@@ -104,7 +106,7 @@ class CrtSolver extends Algorithm{
 			if (this.ite>1) this.buttChanger(this.ite*2-1, this.ite*2, 1);
 			else this.buttChanger(2, 0, 1);
 			this.solstack.pop();
-			var btt=this.divs[0].getElementsByTagName("button")[this.ite*2+1];
+			var btt=this.divs[0].getElementsByTagName("div")[this.ite*2+1];
 			btt.style.display="None";
 			var vah=this.divs[1].getElementsByTagName("span");
 			this.divs[1].removeChild(vah[vah.length-1]);
@@ -137,7 +139,7 @@ class CrtSolver extends Algorithm{
 			var x=s[2]%s[1], lcm=s[1], btt;
 			if (x<0) x+=s[1];
 			this.addSpan(this.divs[1], `x &equiv; ${x} (mod ${s[1]})`);
-			btt=this.divs[0].getElementsByTagName("button")[this.ite*2+1];
+			btt=this.divs[0].getElementsByTagName("div")[this.ite*2+1];
 			btt.innerHTML=`x &equiv; ${x} (mod ${s[1]})`
 			btt.style.display="inline-block";
 			this.solstack.push([x, s[1]]);
