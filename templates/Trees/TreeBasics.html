@@ -12,20 +12,20 @@
 	<body>
 		{{ headers.full_upper('Tree Walk', 'Trees') }}
 		<h2>Introduction</h2>
-		<p>In this article two techniques of solving tree related problems will be shown - penetrating the tree from bottom to top in order to get information from the subtree, and penetrating tree twice from bottom to top and then from top to bottom in order to get some information about whole tree in every vertex of a tree. To avoid misconceptions, some definitions have to be stated:</p>
+		<p>In this article two techniques of solving tree related problems will be shown - penetrating the tree from bottom to top in order to get information from the subtree, and penetrating the tree twice from bottom to top and then from top to bottom in order to get some information about the whole tree in every vertex of a tree. To avoid misconceptions, some definitions have to be stated:</p>
 		<ol>
 			<li><b>Simple path</b> is a path in a graph that passes through any edge at most once.</li>
-			<li><b>Tree</b> is an undirected graph, such that between each two vertices there is exactly one simple path. This implies that the graph is acyclic (because cycle allows to move from one vertex to another in more than one way) and connected (because there is a way to move from any vertex to another). It is crucial to show, that such graph have \(n-1\) edges, where \(n\) is number of vertexes. One can consider tree a generalization of a sequence.</li>
-			<li><b>Root</b> is a vertex in the tree, relative to which it's vertexes are described - usually it doesn't matter, which vertex is treated as root, while describing vertices relatively to some other vertex (called root) allows performing certain operations on a tree (like finding lowest common ancestor of 2 vertices).</li>
-			<li><b>Depth</b> is distance in the tree from root to a given vertex</li>
-			<li><b>Parent</b> of vertex \(x\) is a vertex \(y\) with lower depth such that there exists edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son- otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertices have \(n-1\) edges.</li>
+			<li><b>Tree</b> is an undirected graph, such that between each two vertices there is exactly one simple path. This implies that the graph is acyclic (because cycle allows to move from one vertex to another in more than one way) and connected (because there is a way to move from any vertex to another). It is crucial to show, that such graph have \(n-1\) edges, where \(n\) is number of vertexes. One can consider a tree to be a generalization of a sequence.</li>
+			<li><b>Root</b> is a vertex in the tree, relative to which its vertexes are described - usually it doesn't matter, which vertex is treated as root, while describing vertices relatively to some other vertex (called root) allows performing certain operations on a tree (like finding lowest common ancestor of 2 vertices).</li>
+			<li><b>Depth</b> is the distance in the tree from the root to a given vertex.</li>
+			<li><b>Parent</b> of vertex \(x\) is a vertex \(y\) with lower depth such that there exists edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son - otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertices have \(n-1\) edges.</li>
 			<li><b>Descendant</b> of vertex \(x\) is any vertex \(y\) with higher depth, such that \(x\) lies on simple path \(y-root\)</li>
 			<li><b>Subtree</b> of vertex \(x\) is a set of all verices that are descendants of vertex \(x\) including \(x\)</li>
-			<li><b>Overtree</b> of vertex \(x\) is a set of all verices in a tree that does not belong to its subtree (name is used in this article only for convenience). </li>
+			<li><b>Overtree</b> of vertex \(x\) is a set of all verices in a tree that do not belong to its subtree (name is used in this article only for convenience). </li>
 		</ol>
 
 		<h2>First Problem statement and definitions</h2>
-		<p>Suppose You want to solve following problem: a tree of \(n\) vertices is given, \(n \le 10^6\), and You have to find length of the longest simple path in this tree (also called diameter).</p>
+		<p>Suppose you want to solve the following problem: a tree of \(n\) vertices is given, \(n \le 10^6\), and You have to find the length of the longest simple path in this tree (also called diameter).</p>
 
 		<h3>Solution idea</h3>
 		<p>One could solve this problem with absolute brute force, by counting longest distance from any point in tree, for example with standard Breadth First Search - solution works in \(O(n^2)\). However, one can see, that each path in the tree moves through some vertex with lowest depth - if a path would lead through distinct vertexes \(x, y\) with same depth then path must move through parent of \(x\) (because it must lie on a path \(x-y\)). What follows, if one can aggregate longest paths starting from all sons of a vertex \(x\) and going down their subtree, then one can find longest path whose point with lowest depth is \(x\). Or, in other words: if \(d_0(x), d_1(x)\) are currently 1st and 2nd longest paths starting at \(x\) whose endpoint lies in subtree of \(x\), then after processing son of \(x\), that is, \(y\), \(d_1(x)\) needs to be changed to \(d_0(y)+1\) - longest path starting at \(y\), with addition of additional edge \(x-y\) - if \(d_0(y)+1 \gt d_1(x)\), and swap \(d_0(x), d_1(x)\) if \(d_1(x) \gt d_0(x)\): then, in vertex \(x\) there will always be two longest paths starting at \(x\). And so, the longest path moving through \(x\) as its vertex with lowest depth is \(d_0(x)+d_1(x)\). Then, \(diameter=max\{x \in V: d_0(x)+d_1(x)\}\). Initially, \(d_0(x)=d_1(x)=0\) for each vertex \(x\).
@@ -54,9 +54,10 @@
 		, '8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;', {'input_type':'textarea',
 		'color_description':{'standard':'', 'change':'Also last vertex on stack.', 'dead':'Already processed vertex.', 'iterator':'Pointer to vertex on stack.'} }) }}
 
+		<!--
 		<h2>Second problem</h2>
 		<p>
-		Suppose, however, that another problem is given. You are given a tree of \(n\) vertices with \(m\) vertices marked (\(1 \le m \le n \le 10^6\)), and Your objective is to find for each vertex maximal distance from it to any marked vertex.
+		Suppose, however, that another problem is given. You are given a tree of \(n\) vertices with \(m\) vertices marked (\(1 \le m \le n \le 10^6\)), and your objective is to find for each vertex maximal distance from it to any marked vertex.
 		</p>
 		<h3>Solution - double tree walk</h3>
 		<p>
@@ -93,6 +94,20 @@
 
 		<div id="problems"></div>
 		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+		-->
+		<h2>Summary</h2>
+		<ol>
+			<li>In order to learn something about certain property of the whole tree, it might be enough to do a single dfs-like traversal through the whole tree, while aggregating information from subtress.</li>
+			<li>In order to learn about a property of all vertices in a tree, where property can depend both on subtree and overtree, one can do two traversals of the tree: from bottom to top, and then from top to bottom.</li>
+			<li>Doing dfs on the whole tree to get a property of a tree is usually an unnecessary chore - one can do a single dfs to define parenthood, list the vertices in the order of an inverse preorder, and then get an information about a vertex from traversing this list in some direction.</li>
+		</ol>
+		<h3>Problems</h3>
+		<p>Ideas shown here are usually useful for never-changing trees without queries. Examples include:</p>
+		<ol>
+			<li><a href="https://codeforces.com/problemset/problem/337/D">Book of Evil</a></li>
+			<li><a href="https://codeforces.com/problemset/problem/1000/E">We Need More Bosses</a></li>
+			<li><a href="https://codeforces.com/problemset/problem/618/D">Hamiltonian Spanning Tree</a></li>
+		</ol>
 
 		<script src="{{url_for('static', filename='TreeBasics.js')}}"></script>
 		<form id="page" style="display:none"></form>

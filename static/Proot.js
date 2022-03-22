@@ -576,6 +576,7 @@ class Proot extends Algorithm{
 		var butt=super.buttCreator(numb);
 		butt.style.width=`${size}px`;
 		butt.style.height=`${size}px`;
+		butt.style.lineHeight=`${size}px`;
 		return butt;
 	}
 }

@@ -277,7 +277,23 @@ class DiamFinder extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1];
 
-		if (s[0]==0) return `Whatever`;
+		var op = this.logic.operations[s[1]];
+		if (s[0] == 0) return `As the algorithm starts, we shall start a tree penetration from an arbitrary vertex - that is, vertex number 1.`;
+		if (s[0] == 1) return `As we stumble upon the next unvisited vertex, we are moving towards it, putting it on stack: thus, we add ${op[1]} to the stack, and move further pointer of its parent: ${this.logic.tree.par[op[1]]} (either explicitly - iteratively or implicitly - recursively), as in any normal depth first search.`
+		if (s[0] == 3) return `Now, our pointer for last element on stack points towards its father, previous element on stack - thus, we increment pointer.`
+		if (s[0] == 2){
+			var a = op[1];
+			if (a == 1) return `Now, we don't have any continuation in a root - and so, the story ends here, all that has to be done is to find two numbers whose sum is highest among all pairs of paths.`
+			var par = this.logic.tree.par[op[1]];
+			var str = `Now, all descendants of this vertex - ${a} - were processed, and so, it has to be removed from the stack. Now - should we update its parent's diameter?`;
+			var str_endet=``;
+
+			if (op[0][1] == '2') str_endet = `No - the length of longest path from ${a} with 1 added (path to parent) is smaller than the current second longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()}, while the length of the second lonngest path coming down from ${par} is equal to ${this.state.diameter_2[par].current()}.`;
+			if (op[0][1] == '1') str_endet = `Yes - the length of longest path from ${a} with 1 added (path to parent) is greater than the current second longest path coming down from its parent (${par}) and lower than the longest path coming down from its parent - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()+1}, while the length of the second longest path coming down from ${par} is equal to ${this.state.diameter_2[par].current()}. Thus, we update length of a second longest path coming down from ${par} to ${this.state.diameter_1[a].current()}+1 = ${this.state.diameter_1[a].current()+1}.`;
+			if (op[0][1] == '0') str_endet = `Yes - the length of longest path from ${a} with 1 added (path to parent) is greater than the current longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()+1}, while the length of the longest path coming down from ${par} is equal to ${this.state.diameter_1[par].current()}. Thus, we swap first and second longest paths coming down from ${par}, and then we update length of the longest path coming down from ${par} to ${this.state.diameter_1[a].current()}+1 = ${this.state.diameter_1[a].current()+1}.`;
+			return str + ' ' + str_endet;
+		}
+		if (s[0] == 100) return `And so, the longest path in a tree - its diameter - was found - its length is equal to ${this.logic.solution_value}, and its highest vertex is ${this.logic.solution_vertex}.`;
 	}
 }
 

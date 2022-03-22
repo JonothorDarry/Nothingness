@@ -174,7 +174,7 @@
 	</ol>
 	<p>Overall complexity is \(O(n\log(n) + n\log\log(n) + q\log(n)) = O(n\log(n) + q\log(n))\) - \(O(n \log(n))\) for at most \(n\) changes - marking number as composite, \(O(n \log\log(n))\) for a sieve, and \(O(q \log(n))\) for query answering.</p>
 	<p>There is one particular consequence of this method: If one wants to calculate \(\phi(n, a)\), one can use recursion-like structures to calculate \(\phi(x,\_)\) for \(x \ge n^{2/3}\), and use sieve with superimposed segment tree otherwise; If \(a=n^{1/3}\), Then number of queries passed to sieve along with number of nodes in recursion-like structure will be lower or equal to \(n^{2/3}\) (\(n^{1/3}\) values \(z\) in recursion in form \(\phi(z, \_)\) for \(z \ge n^{2/3}\) spawning at most \(a=n^{1/3}\) queries/nodes each), and so, complexity for calculating \(\phi(n, n^{1/3})\) will be equal to \(O(n^{2/3} \log(n))\).</p>
-		{{ algo.neo_algorithm(2, 'Calculating set of values \(\phi(n, a)\)', '
+		{{ algo.neo_algorithm(2, 'Calculating set of values of \(\phi(n, a)\)', '
 			<p>Input: first, \(q\) - amount of queries, then \(q\) queries in form \(n, a\) - the algorithm\'s aim will be to calculate \(\phi(n, a)\) for each pair</p>
 		'
         , '5&#10;7 2&#10;15 3&#10;11 0&#10;14 4&#10;12 3', {'input_type':'textarea', 'color_description':{'standard':'', 'change':'', 'crucial':'Value \(\phi(n,a)\) to calculate', 'iterator':'Iterator for prime search in a sieve', 'exponent':'Iterator for removing divisible numbers in a sieve', '_red':'Number of already sieved primes', 'helper1':'Comparing query prime nr and current prime nr', 'helper2':'Index and element used in query'} }) }}
