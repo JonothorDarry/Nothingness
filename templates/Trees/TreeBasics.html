@@ -6,6 +6,7 @@
 <html lang="en">
 	<head>
 		<title>Tree walk</title>
+		<meta name="description">Tree walk - Bottom-up and top-down traversal of the tree, diameter finding</meta>
 		{{ headers.meta() }}
 	</head>
 
@@ -18,8 +19,9 @@
 			<li><b>Tree</b> is an undirected graph, such that between each two vertices there is exactly one simple path. This implies that the graph is acyclic (because cycle allows to move from one vertex to another in more than one way) and connected (because there is a way to move from any vertex to another). It is crucial to show, that such graph have \(n-1\) edges, where \(n\) is number of vertexes. One can consider a tree to be a generalization of a sequence.</li>
 			<li><b>Root</b> is a vertex in the tree, relative to which its vertexes are described - usually it doesn't matter, which vertex is treated as root, while describing vertices relatively to some other vertex (called root) allows performing certain operations on a tree (like finding lowest common ancestor of 2 vertices).</li>
 			<li><b>Depth</b> is the distance in the tree from the root to a given vertex.</li>
-			<li><b>Parent</b> of a vertex \(x\) is a vertex \(y\) with lower depth such that there exists edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son - otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertices have \(n-1\) edges.</li>
+			<li><b>Parent</b> of a vertex \(x\) is a vertex \(y\) with lower depth such that there exists edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son - otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertices has \(n-1\) edges.</li>
 			<li><b>Descendant</b> of a vertex \(x\) is any vertex \(y\) with higher depth, such that \(x\) lies on simple path \(y-root\).</li>
+			<li><b>Child</b> of a vertex \(x\) is any such descendant \(y\) of \(x\), that there is an edge \(x-y\).</li>
 			<li><b>Subtree</b> of a vertex \(x\) is a set of all verices that are descendants of vertex \(x\) including \(x\).</li>
 			<li><b>Overtree</b> of a vertex \(x\) is a set of all verices in a tree that do not belong to its subtree (name is used in this article only for convenience). </li>
 		</ol>
@@ -27,16 +29,28 @@
 		<h2>First Problem statement and definitions</h2>
 		<p>Suppose you want to solve the following problem: a tree of \(n\) vertices is given, \(n \le 10^6\), and You have to find the length of the longest simple path in this tree (also called diameter).</p>
 
-		<h3>Solution idea</h3>
-		<p>One could solve this problem with absolute brute force, by counting longest distance from any point in tree, for example with standard Breadth First Search - solution works in \(O(n^2)\). However, one can see, that each path in the tree moves through some vertex with lowest depth - if a path would lead through distinct vertexes \(x, y\) with same depth then path must move through parent of \(x\) (because it must lie on a path \(x-y\)). What follows, if one can aggregate longest paths starting from all sons of a vertex \(x\) and going down their subtree, then one can find longest path whose point with lowest depth is \(x\). Or, in other words: if \(d_0(x), d_1(x)\) are currently 1st and 2nd longest paths starting at \(x\) whose endpoint lies in subtree of \(x\), then after processing son of \(x\), that is, \(y\), \(d_1(x)\) needs to be changed to \(d_0(y)+1\) - longest path starting at \(y\), with addition of additional edge \(x-y\) - if \(d_0(y)+1 \gt d_1(x)\), and swap \(d_0(x), d_1(x)\) if \(d_1(x) \gt d_0(x)\): then, in vertex \(x\) there will always be two longest paths starting at \(x\). And so, the longest path moving through \(x\) as its vertex with lowest depth is \(d_0(x)+d_1(x)\). Then, \(diameter=max\{x \in V: d_0(x)+d_1(x)\}\). Initially, \(d_0(x)=d_1(x)=0\) for each vertex \(x\).
+		<h3>Solution 0: Basic tree properties in \(O(n^2)\)</h3>
+		<p>One could solve this problem with absolute brute force, by counting longest distance from any vertex in tree, for example with standard breadth first search - solution works in \(O(n^2)\).</p>
+		<h3>Solution 1: Using dp in \(O(n)\)</h3>
+		<p>However, one can see, that each path in the tree moves through some vertex with lowest depth - if a path would lead through distinct vertexes \(x, y\) with same depth then a path must move through parent of \(x\) (because it must lie on a path \(x-y\)). So, one can just keep two lengths of longest paths starting in \(x\) ending in its subtree to know the longest path, whose vertex with lowest depth is \(x\). Thus:</p>
+		<ol>
+			<li>Later, set of children of \(x\) will be denoted as \(S_x\)</li>
+			<li>Let \(d_0(x), d_1(x)\) denote lengths of two longest paths starting at \(x\), ending in its subtree, passing through its different children - at the start of the algorithm, \(d_0(x) = d_1(x) = 0\) for all \(x \in V\)</li>
+			<li>\(d_0(x) = \max\{y \in S_x: d_0(y)+1\}\) - because a longest path from \(x\) to its subtree crosses one of its children, and uses additional edge between child and \(x\).</li>
+			<li>Analogously, \(d_1(x) = \max_2\{y \in S_x: d_0(y)+1\}\), where \(\max_2\) denotes second maximal value.</li>
+			<li>For leaf, \(d_0(x) = d_1(x) = 0\), also if a vertex has one child, then \(d_1(x) = 0\)</li>
+			<li>Finally, \(diameter = max \{x \in X: d_0(x) + d_1(x)\}\).</li>
+		</ol>
+		<p>
+		This allows to construct an algorithm by updating \(d_0, d_1\) of subsequent vertices after processing all its children. How to process the tree though?
 		</p>
-		<h3>Depth first search</h3>
+		<h4>Depth first search</h4>
 		<p>To penetrate the tree one can:
 		</p>
 		<ol>
 			<li>Start moving through a tree from root.</li>
-			<li>If a vertex \(x\) has any unchecked descendant \(y\), go to it, check it, and mark \(parent[y]=x\).</li>
-			<li>Otherwise, change aggregated data of parent and go back to it.</li>
+			<li>If a vertex \(x\) has any unchecked descendant \(y\), go to it, check it, and mark \(parent_y=x\).</li>
+			<li>Otherwise, change aggregated data of the parent and go back to it.</li>
 		</ol>
 		<p>
 		One can use some queue, to which one will append element if it's an unchecked descendant of the last element and pop element when there are no descendants unpenetrated. This allows aggregating data from the subtree of a vertex, such as longest paths starting in a vertex and going down the tree. Such queue is usually called 'stack', and algorithm - 'depth first search'. This allows constructing algorithm solving problem above in \(O(n)\).
@@ -60,24 +74,24 @@
 		</p>
 		<h3>Solution - double tree walk</h3>
 		<p>
-		One can see, that if a vertex with maximal distance from a given vertex \(v\) either:
+		If a vertex with maximal distance from a given vertex \(v\):
 		</p>
 		<ol>
-			<li>Lies in subtree of \(v\) - then one can obtain the distance just like diameter in task before, by searching whole subtree and aggregating information from it.</li>
-			<li>Lies in overtree of \(v\) - then one can obtain distance as longest distance to a marked vertex from it's parent plus 1 (for additional edge) - \(m_0(par(v))+1\). However, it's possible that maximal distance from \(par(v)\) is a distance to vertex lying in subtree of \(v\). Therefore, one needs to keep information: where lies the vertex with maximal distance from \(v\) - and if so, take the maximal distance from \(par(v)\) to another subtree or its overtree.</li>
+			<li>Lies in the subtree of \(v\) - then one can obtain the distance just like diameter in task before, by searching whole subtree and aggregating information from it.</li>
+			<li>Lies in the overtree of \(v\) - then one can obtain the distance from its parent after first search. Note, that longest path to a marked vertex from \(parent_x\) may pass through \(x\) - one can keep two longest paths to marked vertices along with a vertex they came from in order to circumvent this problem.</li>
 		</ol>
 		<p>These observations imply algorithm in which a vertex \(v\) will:</p>
 		<ol>
-			<li>Get information from parent about longest path to marked vertex - and so, parent must have an answer before son. What follows, root is the first vertex, that will contain an answer, then its sons, sons of the sons, etc.</li>
 			<li>Get information from its subtree, so that any vertex will have information from subtree, and so root will have full information about maximal distance from it to any marked vertex - for every vertex lies in its subtree.</li>
+			<li>Get an information from \(parent_v\) about longest path to marked vertex - and so, parent must have an answer before son. What follows, root is the first vertex, that will contain an answer, then its children, children of children, etc.</li>
 		</ol>
-		<p>And so, one can apply identical algorithm as to diameter finding, but after finding answer for root go down through the tree and find answer for subsequent sons as maximal distance from them to marked vertex in subtree and distance from its parent to any marked vertex in subtree not containing \(v\) or overtree. Such algorithm will consist of two walks on a tree - one, in which the distance is aggregated from sons to parents, and second, when answer is populated from parents to sons.</p>
+		<p>And so, one can apply identical algorithm as to the problem of a diameter finding, but after finding an answer for a root go down through the tree and find answer for subsequent sons as a maximal distance from them to any marked vertex in subtree and distance from its parent to any marked vertex in subtree not containing \(v\) or overtree. Such algorithm will consist of two walks on a tree - one, in which the distance is aggregated from sons to parents, and second, when answer is populated from parents to sons.</p>
 		<h3>Solution nuance - inverse preorder</h3>
-		<p>One can see, that second dfs is redundant - one can store a sequence of subsequent visited vertexes, starting from root and then update longest distance to marked vertex, updating subsequent elements rom this array - it works, because in dfs parent is always visited before child.
+		<p>One can see, that a second dfs (depth first search) is redundant - one can store a sequence of subsequent visited vertexes, starting from root and then update longest distance to marked vertex, updating subsequent elements from this array - it works, because in dfs parent is always visited before child.
 		</p>
 
 		
-		{{ algo.neo_algorithm(2, 'Finding maximal distance to marked point', '
+		{{ algo.neo_algorithm(2, 'Finding maximal distance to a marked vertex', '
 			<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree. \(m\) is the amount of marked vertices, \(c_i\) are marked vertices<br>
 			\(n\)<br>
 			\(a_1, b_1\)<br>
