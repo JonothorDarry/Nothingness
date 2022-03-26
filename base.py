@@ -31,7 +31,8 @@ systems=[
         ['isomorphism', 'Isomorphisms', 'Trees/Tree_isomorphism.html', 'Tree Isomorphism', 'Tree Isomorphism'],
 
         ['treewalk', 'TreeBasic', 'Trees/TreeBasics.html', 'Tree Walk', 'Tree_Walk'],
-        ['lca', 'Lca', 'Trees/Lca.html', 'Lowest Common Ancestor', 'Lowest_Common_Ancestor']
+        ['lca', 'Lca', 'Trees/Lca.html', 'Lowest Common Ancestor', 'Lowest_Common_Ancestor'],
+        ['shows', 'Shows', 'Temp/Shows.html', 'Shows', 'Shows']
 ]
 systems=[Article(*x) for x in systems]
 
@@ -256,6 +257,10 @@ def AdvPrimes():
 @app.route('/prcount', methods=['GET', 'POST'])
 def PrimesCount():
     return Router('NumberTheory/Prcount.html')
+
+@app.route('/shows', methods=['GET', 'POST'])
+def Shows():
+    return Router('Temp/Shows.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def Wisdom():

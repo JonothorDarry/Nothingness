@@ -364,6 +364,18 @@ class Grid{
 	}
 }
 
+/*
+class Style{
+	constructor(background_color, color='#FFFFFF', additional_info={}){
+		base = {
+			'general':{
+				'backgroundColor':background_color,
+				'color':color
+			}
+		}
+
+	}
+}*/
 
 class Representation_utils{
 	//mode: 1 - buttons, 2 - midian button, 4 - text (logical or), midian - width of middle
@@ -448,7 +460,7 @@ class Representation_utils{
 			btn.style.border="1px solid";
 			btn.style.borderColor="#888888";
 		}
-		else btn.style.border="0px none";
+		//else btn.style.border="0px none";
 		if (only_bg==1) btn.style.color=olden;
 	}
 	
@@ -1078,7 +1090,9 @@ class Graph_utils{
 		dv.style.top=`${v1_pos.y*100}%`;
 		dv.style.left=`${v1_pos.x*100}%`;
 
-		dv.style.backgroundColor="#000000";
+		if (!('backgroundColor' in stylistic)) dv.style.backgroundColor="#000000";
+		else dv.style.backgroundColor=stylistic.backgroundColor;
+
 		dv.style.height=`${stylistic.height}px`;
 		if ('color' in stylistic) dv.style.backgroundColor=`${stylistic.color}`;
 
@@ -1203,8 +1217,8 @@ class Modern_tree_presenter{
 		var position=ArrayUtils.steady(n+1, 0);
 		var parameters=ArrayUtils.steady(n+1, 0);
 		var mod=ArrayUtils.steady(n+1, 0);
-		var lc=ArrayUtils.create_2d(n+1, 0);
-		var rc=ArrayUtils.create_2d(n+1, 0);
+		var lc=ArrayUtils.create_2d(n+1, 0); //Left contour
+		var rc=ArrayUtils.create_2d(n+1, 0); //Right contour
 
 		var max_depth=Math.max(...this.tree.depth), min_depth=1;
 		var max_diff=0;
@@ -1212,14 +1226,20 @@ class Modern_tree_presenter{
 		for (i=n; i>0; i--){
 			a=this.tree.apre[i];
 			position[a]=0;
+
+			var tmp_rc = [];
 			for (j=0; j<this.tree.kids[a].length; j++){
 				b=this.tree.kids[a][j];
 				if (j>0){
 					prev=this.tree.kids[a][j-1];
-					for (ij=0; ij<Math.min(rc[prev].length, lc[b].length); ij++){
-						mod[b]=Math.max(mod[b], rc[prev][ij]+mod[prev]-lc[b][ij]+1); //1 - dystans między parą punktów
+
+					for (ij=0; ij<Math.min(tmp_rc.length, lc[b].length); ij++){
+						mod[b]=Math.max(mod[b], tmp_rc[ij]-lc[b][ij]+1); //1 - dystans między parą punktów
 					}
 				}
+
+				for (ij=0; ij<Math.min(tmp_rc.length, rc[b].length); ij++) tmp_rc[ij] = rc[b][ij]+mod[prev];
+				for (ij=tmp_rc.length; ij<rc[b].length; ij++) tmp_rc.push(rc[b][ij]+mod[b]);
 			}
 
 			for (j=1; j<this.tree.kids[a].length; j++){
