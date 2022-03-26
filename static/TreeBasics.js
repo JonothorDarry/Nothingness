@@ -287,7 +287,7 @@ class DiamFinder extends Algorithm{
 			var str = `Now, all descendants of this vertex - ${a} - were processed, and so, it has to be removed from the stack. Now - should we update its parent's diameter?`;
 			var str_endet=``;
 
-			if (op[0][1] == '2') str_endet = `No - the length of longest path from ${a} with 1 added (path to parent) is smaller than the current second longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()}, while the length of the second lonngest path coming down from ${par} is equal to ${this.state.diameter_2[par].current()}.`;
+			if (op[0][1] == '2') str_endet = `No - the length of longest path from ${a} with 1 added (path to parent) is smaller than the current second longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()}, while the length of the second longest path coming down from ${par} is equal to ${this.state.diameter_2[par].current()}.`;
 			if (op[0][1] == '1') str_endet = `Yes - the length of longest path from ${a} with 1 added (path to parent) is greater than the current second longest path coming down from its parent (${par}) and lower than the longest path coming down from its parent - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()+1}, while the length of the second longest path coming down from ${par} is equal to ${this.state.diameter_2[par].current()}. Thus, we update length of a second longest path coming down from ${par} to ${this.state.diameter_1[a].current()}+1 = ${this.state.diameter_1[a].current()+1}.`;
 			if (op[0][1] == '0') str_endet = `Yes - the length of longest path from ${a} with 1 added (path to parent) is greater than the current longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()+1}, while the length of the longest path coming down from ${par} is equal to ${this.state.diameter_1[par].current()}. Thus, we swap first and second longest paths coming down from ${par}, and then we update length of the longest path coming down from ${par} to ${this.state.diameter_1[a].current()}+1 = ${this.state.diameter_1[a].current()+1}.`;
 			return str + ' ' + str_endet;
@@ -710,25 +710,51 @@ class DoubleWalk extends Algorithm{ //Non-working example
 		var s=this.lees[l-1], x=s[1];
 
 		var op = this.logic.operations[s[1]];
-		return ``;
-		/*
 		if (s[0] == 0) return `As the algorithm starts, we shall start a tree penetration from an arbitrary vertex - that is, vertex number 1.`;
-		if (s[0] == 1) return `As we stumble upon the next unvisited vertex, we are moving towards it, putting it on stack: thus, we add ${op[1]} to the stack, and move further pointer of its parent: ${this.logic.tree.par[op[1]]} (either explicitly - iteratively or implicitly - recursively), as in any normal depth first search.`
+		if (s[0] == 1) return `As in any standard depth first search, we move downwards, adding the next vertex (${op[1]}) to the stack, and move further the pointer of its parent: ${this.logic.tree.par[op[1]]}.`
 		if (s[0] == 3) return `Now, our pointer for last element on stack points towards its father, previous element on stack - thus, we increment pointer.`
 		if (s[0] == 2){
 			var a = op[1];
-			if (a == 1) return `Now, we don't have any continuation in a root - and so, the story ends here, all that has to be done is to find two numbers whose sum is highest among all pairs of paths.`
+			if (a == 1) return `The first part of the algortihm is done - now, what remains is top-down penetration.`
 			var par = this.logic.tree.par[op[1]];
-			var str = `Now, all descendants of this vertex - ${a} - were processed, and so, it has to be removed from the stack. Now - should we update its parent's diameter?`;
+			var str = `Now, all descendants of this vertex - ${a} - were processed, and so, it has to be removed from the stack. Now - should we update its parent's longest distances to marked vertices?`;
 			var str_endet=``;
+			if (op[0][1] == '<') str_endet = `No - the vertex ${a} does not have any marked vertex in its subtree.`
 
-			if (op[0][1] == '2') str_endet = `No - the length of longest path from ${a} with 1 added (path to parent) is smaller than the current second longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()}, while the length of the second lonngest path coming down from ${par} is equal to ${this.state.diameter_2[par].current()}.`;
-			if (op[0][1] == '1') str_endet = `Yes - the length of longest path from ${a} with 1 added (path to parent) is greater than the current second longest path coming down from its parent (${par}) and lower than the longest path coming down from its parent - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()+1}, while the length of the second longest path coming down from ${par} is equal to ${this.state.diameter_2[par].current()}. Thus, we update length of a second longest path coming down from ${par} to ${this.state.diameter_1[a].current()}+1 = ${this.state.diameter_1[a].current()+1}.`;
-			if (op[0][1] == '0') str_endet = `Yes - the length of longest path from ${a} with 1 added (path to parent) is greater than the current longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.diameter_1[a].current()+1}, while the length of the longest path coming down from ${par} is equal to ${this.state.diameter_1[par].current()}. Thus, we swap first and second longest paths coming down from ${par}, and then we update length of the longest path coming down from ${par} to ${this.state.diameter_1[a].current()}+1 = ${this.state.diameter_1[a].current()+1}.`;
+			else if (op[0][1] == '2') str_endet = `No - the length of longest path from ${a} to a marked vertex with 1 added (path to parent) to a marked vertex is smaller than the current second longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.longest_distance_1[a].current()}, while the length of the second longest path coming down from ${par} is equal to ${this.state.longest_distance_2[par].current()}.`;
+			else if (op[0][1] == '1') str_endet = `Yes - the length of longest path from ${a} to a marked vertex with 1 added (path to parent) is greater than the current second longest path coming down from its parent (${par}) and lower than the longest path coming down from its parent - length of a path coming down through ${a} is equal to ${this.state.longest_distance_1[a].current()+1}, while the length of the second longest path coming down from ${par} is equal to ${this.state.longest_distance_2[par].current()}. Thus, we update length of a second longest path coming down from ${par} to ${this.state.longest_distance_1[a].current()}+1 = ${this.state.longest_distance_1[a].current()+1}.`;
+			else if (op[0][1] == '0') str_endet = `Yes - the length of longest path from ${a} with 1 added (path to parent) to a marked vertex is greater than the current longest path coming down from its parent (${par}) - length of a path coming down through ${a} is equal to ${this.state.longest_distance_1[a].current()+1}, while the length of the longest path coming down from ${par} is equal to ${this.state.longest_distance_1[par].current()}. Thus, we swap first and second longest paths coming down from ${par}, and then we update length of the longest path coming down from ${par} to ${this.state.longest_distance_1[a].current()}+1 = ${this.state.longest_distance_1[a].current()+1}. Also, we change the indice of a vertex on a longest path from ${par} to ${a}.`;
 			return str + ' ' + str_endet;
 		}
-		if (s[0] == 100) return `And so, the longest path in a tree - its diameter - was found - its length is equal to ${this.logic.solution_value}, and its highest vertex is ${this.logic.solution_vertex}.`;
-		*/
+
+		if (s[0] == 4){
+			var a = op[1];
+			var par = this.logic.tree.par[op[1]];
+			var str_1 = `As for now, we want to find longest path to a marked vertex from ${a} going upwards. Now, there are three questions: first, which vertex shall be used? one can either do a second dfs-run, or one can use the same order of visiting as in first dfs, choice is up to you.`;
+
+			var str_2 = str_1 + ` The second question: to find out, whether we can use vertex leading to greatest distance from parent or not.`;
+			var value=-1;
+			if (op[0][1] == '>') {
+				return str_2 + ' No marked vertex exists in this tree, however - everything we do is devoid of meaning. Time to solve some other problem, perhaps?';
+			}
+			else if (op[0][2] == '0'){
+				str_2 = str_2 + ` The answer is yes - ${a} is different than ${this.state.furthest_vertex_1[par].current()}, so we can use a distance equal to ${this.state.longest_distance_1[par].current()}.`
+				value = this.state.longest_distance_1[par].current();
+			}
+			else{
+				str_2 = str_2 + ` The answer is no - ${a} is equal to than ${this.state.furthest_vertex_1[par].current()}, so we have to use a distance equal to ${this.state.longest_distance_2[par].current()}.`
+				value = this.state.longest_distance_2[par].current();
+
+			}
+
+			var str_3 = str_2 + ` The last question: should we update anythin'?`
+			if (op[0][1] == '2') str_3 = str_3 + ` No: ${value+1} < ${this.state.longest_distance_2[a].current()}.`;
+			if (op[0][1] == '1') str_3 = str_3 + ` Yes: ${value+1} &ge; ${this.state.longest_distance_2[a].previous()}, so we can update the second longest distance.`;
+			if (op[0][1] == '0') str_3 = str_3 + ` Yes: ${value+1} &ge; ${this.state.longest_distance_1[a].previous()}, so we can update the longest distance, and, along with it, path to furthest vertex, swapping longest and second longest distances beforehand.`;
+
+			return str_3;
+		}
+		if (s[0] == 100) return `And so, all the longest paths to marked vertices in the tree were found, the algorithm ends.`;
 	}
 }
 
