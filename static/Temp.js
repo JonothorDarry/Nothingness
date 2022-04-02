@@ -209,7 +209,7 @@ class Algorithm{
 	}
 
 	//Creates buttons
-	buttCreator(numb=null, col='#440000'){
+	buttCreator(numb=null, col=0){
 		return Representation_utils.button_creator(this.stylistic, numb, col);
 	}
 
@@ -219,8 +219,17 @@ class Algorithm{
 		return Representation_utils.double_button_creator(this.stylistic, v, fun);
 	}
 
+	fill_in_the_blank_states(staat){
+		var x;
+		for (var i=0; i<staat.length; i++){
+			x = staat[i];
+			if (x[0] == 0 && x.length == 3) staat[i] = [x[0], x[1], x[1]._color, x[2]];
+		}
+	}
+
 	//Execute changes in the last state
 	transformator(staat){
+		this.fill_in_the_blank_states(staat);
 		this.state_transformation.push(staat);
 		var x, i;
 		for (i=0;i<staat.length;i++){
@@ -436,6 +445,8 @@ class Representation_utils{
 	
 
 	static Painter(btn, col=1, only_bg=0){
+		btn._color = col;
+
 		if ('upper' in btn){
 			Representation_utils.Painter(btn.upper, col, only_bg);
 			Representation_utils.Painter(btn.lower, col, only_bg);
@@ -465,12 +476,9 @@ class Representation_utils{
 	}
 	
 	//Creates buttons
-	static button_creator(style, numb=null, col='#440000'){
-		var butt=document.createElement("BUTTON");
-
-		return Modern_representation.button_creator(((numb!=null)?numb:''), {
+	static button_creator(style, numb=null, col=0){
+		var btn = Modern_representation.button_creator(((numb!=null)?numb:''), {
 			'general':{
-				'backgroundColor':((numb!=null)?col:'#FFFFFF'),
 				'border':style.bs_border,
 				'verticalAlign':'middle',
 				'color':'#FFFFFF',
@@ -481,6 +489,8 @@ class Representation_utils{
 				'height':style.bs_butt_height_h,
 			}
 		});
+		Representation_utils.Painter(btn, (numb != null)?col:4);
+		return btn;
 	}
 	
 	//Creates buttons with exponent to the right
@@ -1106,7 +1116,7 @@ class Graph_utils{
 		return dv;
 	}
 
-	static button_creator(stylistic, numb=null, col='#440000'){
+	static button_creator(stylistic, numb=null, col=4){
 		var butt=Representation_utils.button_creator(stylistic.nonsense, numb, col);
 
 		if (stylistic.vertex.label=='none'){
@@ -1115,8 +1125,9 @@ class Graph_utils{
 
 		butt.style.width=`${stylistic.vertex.width}px`
 		butt.style.height=`${stylistic.vertex.height}px`
-		butt.style.borderRadius=`${stylistic.vertex.radius}px`;
-		if ('color' in stylistic.vertex) butt.style.backgroundColor=`${stylistic.vertex.color}px`;
+		butt.style.borderRadius=`${stylistic.vertex.radius}%`;
+		if ('color' in stylistic.vertex) butt.style.backgroundColor=`${stylistic.vertex.color}`;
+
 		butt.style.zIndex=1;
 		return butt;
 	}
@@ -1331,7 +1342,7 @@ class Modern_tree_presenter{
 	}
 
 	//Creates buttons
-	buttCreator(stylistic, numb=null, col='#440000'){
+	buttCreator(stylistic, numb=null, col=0){
 		return Graph_utils.button_creator(stylistic, numb, col);
 	}
 

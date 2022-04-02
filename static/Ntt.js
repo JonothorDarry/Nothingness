@@ -591,7 +591,6 @@ class SumNtt extends Algorithm{
 
 					double_butt[1].style.width="20px";
 					double_butt[1].style.right="0";
-					double_butt[1].style.right="0";
 					double_butt[1].style.zIndex="2";
 
 					double_butt[2].innerHTML=poly[ij][i][j];

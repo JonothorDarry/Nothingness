@@ -188,18 +188,18 @@ class DiamFinder extends Algorithm{
 
 		if (s[0] == 100){
 			a = this.logic.solution_vertex;
-			staat.push([0, this.buttons.diameter[a][0], 0, 8]);
-			staat.push([0, this.buttons.diameter[a][1], 0, 8]);
+			staat.push([0, this.buttons.diameter[a][0], 8]);
+			staat.push([0, this.buttons.diameter[a][1], 8]);
 
 			var b = this.logic.diameter_vertex[a][0];
 			while (b != 0){
-				staat.push([0, this.buttons.edges[b], 0, 8]);
+				staat.push([0, this.buttons.edges[b], 8]);
 				b = this.logic.diameter_vertex[b][0];
 			}
 
 			var b = this.logic.diameter_vertex[a][1];
 			while (b != 0){
-				staat.push([0, this.buttons.edges[b], 0, 8]);
+				staat.push([0, this.buttons.edges[b], 8]);
 				b = this.logic.diameter_vertex[b][0];
 			}
 			return;
@@ -211,28 +211,28 @@ class DiamFinder extends Algorithm{
 
 
 		if (s[0]==0){
-			staat.push([0, this.buttons.vertexes[1], 0, 15]);
-			staat.push([0, this.buttons.iterator_edge_list[1][0], 0, 15]);
+			staat.push([0, this.buttons.vertexes[1], 15]);
+			staat.push([0, this.buttons.iterator_edge_list[1][0], 15]);
 		}
 
 		if (s[0]==1){
-			staat.push([0, this.buttons.vertexes[a], 0, 15]);
-			staat.push([0, this.buttons.vertexes[para], 15, 5]);
+			staat.push([0, this.buttons.vertexes[a], 15]);
+			staat.push([0, this.buttons.vertexes[para], 5]);
 
 			var ite = this.state.tree_iterators[para].iterator;
-			if (ite+1 < this.state.tree_iterators[para].values.length) staat.push([0, this.buttons.iterator_edge_list[para][ite+1], 0, 15]);
-			staat.push([0, this.buttons.iterator_edge_list[para][ite], 15, 4]);
-			staat.push([0, this.buttons.iterator_edge_list[a][0], 0, 15]);
-			staat.push([0, this.buttons.edge_list[para][ite], 0, 2]); //Possibly unnecessary
+			if (ite+1 < this.state.tree_iterators[para].values.length) staat.push([0, this.buttons.iterator_edge_list[para][ite+1], 15]);
+			staat.push([0, this.buttons.iterator_edge_list[para][ite], 4]);
+			staat.push([0, this.buttons.iterator_edge_list[a][0], 15]);
+			staat.push([0, this.buttons.edge_list[para][ite], 2]); //Possibly unnecessary
 
 			staat.push([6, this.state.tree_iterators[para]]);
 		}
 
 		if (s[0]==2){
-			staat.push([0, this.buttons.vertexes[a], 15, 7]);
+			staat.push([0, this.buttons.vertexes[a], 7]);
 			if (a==1) return;
 
-			staat.push([0, this.buttons.vertexes[this.logic.tree.par[a]], 5, 15]);
+			staat.push([0, this.buttons.vertexes[this.logic.tree.par[a]], 15]);
 			var type = this.logic.operations[op];
 			if (type[0][1] == '0') this.pass_color(this.buttons.diameter[para][0], 0, [13, 14], 0);
 			if (type[0][1] == '1') this.pass_color(this.buttons.diameter[para][1], 0, [13, 14], 0);
@@ -254,9 +254,9 @@ class DiamFinder extends Algorithm{
 
 		if (s[0]==3){
 			var ite = this.state.tree_iterators[a].iterator;
-			if (ite+1 < this.state.tree_iterators[a].values.length) staat.push([0, this.buttons.iterator_edge_list[a][ite+1], 0, 15]);
-			staat.push([0, this.buttons.iterator_edge_list[a][ite], 15, 4]);
-			staat.push([0, this.buttons.edge_list[a][ite], 0, 2]); //Possibly unnecessary
+			if (ite+1 < this.state.tree_iterators[a].values.length) staat.push([0, this.buttons.iterator_edge_list[a][ite+1], 15]);
+			staat.push([0, this.buttons.iterator_edge_list[a][ite], 4]);
+			staat.push([0, this.buttons.edge_list[a][ite], 2]); //Possibly unnecessary
 
 			staat.push([6, this.state.tree_iterators[a]]);
 		}
@@ -553,7 +553,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 
 		if (s[0] == 100){
 			for (var x=1; x<=this.logic.tree.n; x++){
-				staat.push([0, this.buttons.longest_distances[x][0], 0, 8]);
+				staat.push([0, this.buttons.longest_distances[x][0], 8]);
 			}
 			return;
 		}
@@ -562,19 +562,19 @@ class DoubleWalk extends Algorithm{ //Non-working example
 		var para = this.logic.tree.par[a], b;
 
 		if (s[0]==0){
-			staat.push([0, this.buttons.vertexes[1], 0, 15]);
-			staat.push([0, this.buttons.iterator_edge_list[1][0], 0, 15]);
+			staat.push([0, this.buttons.vertexes[1], 15]);
+			staat.push([0, this.buttons.iterator_edge_list[1][0], 15]);
 		}
 
 		if (s[0]==1){
-			staat.push([0, this.buttons.vertexes[a], 0, 15]);
-			staat.push([0, this.buttons.vertexes[para], 15, 5]);
+			staat.push([0, this.buttons.vertexes[a], 15]);
+			staat.push([0, this.buttons.vertexes[para], 5]);
 
 			var ite = this.state.tree_iterators[para].iterator;
-			if (ite+1 < this.state.tree_iterators[para].values.length) staat.push([0, this.buttons.iterator_edge_list[para][ite+1], 0, 15]);
-			staat.push([0, this.buttons.iterator_edge_list[para][ite], 15, 4]);
-			staat.push([0, this.buttons.iterator_edge_list[a][0], 0, 15]);
-			staat.push([0, this.buttons.edge_list[para][ite], 0, 2]); //Possibly unnecessary
+			if (ite+1 < this.state.tree_iterators[para].values.length) staat.push([0, this.buttons.iterator_edge_list[para][ite+1], 15]);
+			staat.push([0, this.buttons.iterator_edge_list[para][ite], 4]);
+			staat.push([0, this.buttons.iterator_edge_list[a][0], 15]);
+			staat.push([0, this.buttons.edge_list[para][ite], 2]); //Possibly unnecessary
 
 			staat.push([6, this.state.tree_iterators[para]]);
 		}
@@ -582,12 +582,12 @@ class DoubleWalk extends Algorithm{ //Non-working example
 		if (s[0]==2){
 			var type = this.logic.operations[op];
 			if (a==1){
-				staat.push([0, this.buttons.vertexes[a], 15, ((this.logic.is_marked[1]) ? 2 : 7)]);
+				staat.push([0, this.buttons.vertexes[a], ((this.logic.is_marked[1]) ? 2 : 7)]);
 				return;
 			}
 
-			staat.push([0, this.buttons.vertexes[this.logic.tree.par[a]], 5, 15]);
-			if (type[0][1] != '0') staat.push([0, this.buttons.vertexes[a], 15, 6]);
+			staat.push([0, this.buttons.vertexes[this.logic.tree.par[a]], 15]);
+			if (type[0][1] != '0') staat.push([0, this.buttons.vertexes[a], 6]);
 			if (type[0][1] == '0'){
 				this.pass_color(this.buttons.longest_distances[para][0], 0, [13, 14], 0);
 				this.pass_color(this.buttons.furthest_vertex[para], 0, 12, 0);
@@ -618,9 +618,9 @@ class DoubleWalk extends Algorithm{ //Non-working example
 
 		if (s[0]==3){
 			var ite = this.state.tree_iterators[a].iterator;
-			if (ite+1 < this.state.tree_iterators[a].values.length) staat.push([0, this.buttons.iterator_edge_list[a][ite+1], 0, 15]);
-			staat.push([0, this.buttons.iterator_edge_list[a][ite], 15, 4]);
-			staat.push([0, this.buttons.edge_list[a][ite], 0, 2]); //Possibly unnecessary
+			if (ite+1 < this.state.tree_iterators[a].values.length) staat.push([0, this.buttons.iterator_edge_list[a][ite+1], 15]);
+			staat.push([0, this.buttons.iterator_edge_list[a][ite], 4]);
+			staat.push([0, this.buttons.edge_list[a][ite], 2]); //Possibly unnecessary
 
 			staat.push([6, this.state.tree_iterators[a]]);
 		}

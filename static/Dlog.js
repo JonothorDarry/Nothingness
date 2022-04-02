@@ -39,21 +39,25 @@ class Dlog extends Algorithm{
 		}
 	}
 
-	palingnesia(){
-		this.logical_box();
-		var buttons={'a':null, 'n':null, 'm':null, 's':null, 'large_table':[], 'small_table':[], 'pursued':null};
-		var value=Math.max(20, Math.floor(3*(this.logic.m.toString().length*10)/4))
-		this.stylistic.bs_small_butt_width=`${value}px`
-		this.stylistic.bs_butt_width=`${Math.max(value*2, 50)}px`
-
-		this.place.style.width=`max-content`;
+	create_constant_table(){
+		var buttons=this.buttons;
 		var lst1=this.modern_divsCreator(1, 4);
 		var construction_site_basic=lst1.zdivs;
 		lst1.full_div.style.display="inline-block";
 		lst1.full_div.style.marginRight="100px";
 
+		var system1=[['a', 0, 0], ['m', 2, 0], ['b', 1, 0], ['s', 3, 4]];
+		var post_stylistic = {'bs_butt_height_h':45, 'bs_butt_height':'45px'};
+		Object_utils.merge(post_stylistic, this.stylistic);
+		for (var x of system1){
+			var _ = Representation_utils.fill_with_buttons_horizontal(post_stylistic, construction_site_basic[x[1]].buttons, x[0], 5, 1)[0];
+			buttons[x[0]] = Representation_utils.fill_with_buttons_horizontal(post_stylistic, construction_site_basic[x[1]].buttons, this.logic[x[0]], x[2], 1)[0];
+		}
+	}
+
+	create_process_table(){
+		var buttons=this.buttons;
 		var lst2=this.modern_divsCreator(5, 3, ['large table', 'small table', 'pursued element']);
-		lst2.full_div.style.display="inline-block";
 		lst2.full_div.style.display="inline-block";
 		lst2.full_div.style.top="0";
 		var construction_site_post=lst2.zdivs;
@@ -62,20 +66,37 @@ class Dlog extends Algorithm{
 			x.title.style.verticalAlign="top";
 		}
 
-		var system1=[['a', 0, 0], ['m', 2, 0], ['b', 1, 0], ['s', 3, 4]];
-
-		for (var x of system1){
-			var _=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_basic[x[1]].buttons, x[0], 5, 1)[0];
-			buttons[x[0]]=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_basic[x[1]].buttons, this.logic[x[0]], x[2], 1)[0];
-		}
-
 		var post_logic=function(x){return {'base':x[1], 'expo':x[0]}};
 		var huge_numbs = this.logic.anx.map(post_logic);
 		var small_numbs = this.logic.ax.map(post_logic);
+
 		buttons['large_table']=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_post[0].buttons, huge_numbs, 4, -1, Representation_utils.expo_inner_style_button_creator);
 		buttons['small_table']=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_post[1].buttons, small_numbs.concat({'base':'', 'expo':''}), 4, -1, Representation_utils.expo_inner_style_button_creator);
 		buttons['pursued']=Representation_utils.fill_with_buttons_horizontal(this.stylistic, construction_site_post[2].buttons, 0, 4, 1)[0];
-		this.buttons=buttons;
+
+		for (var name of ['small_table', 'large_table']){
+			for (var x of buttons[name]){
+				Modern_representation.button_modifier(x._base, {'stylistic':{'px':{'lineHeight':45+10, 'padding':0}}});
+			}
+		}
+	}
+
+	presentation(){
+		this.buttons={'a':null, 'n':null, 'm':null, 's':null, 'large_table':[], 'small_table':[], 'pursued':null};
+		var value=Math.max(20, Math.floor(3*(this.logic.m.toString().length*10)/4))
+		this.stylistic.bs_small_butt_width=`${value}px`
+		this.stylistic.bs_butt_width=`${Math.max(value*2, 50)}px`
+		this.stylistic.bs_butt_width_h=Math.max(value*2, 50);
+
+		this.place.style.width=`max-content`;
+
+		this.create_constant_table();
+		this.create_process_table();
+	}
+
+	palingnesia(){
+		this.logical_box();
+		this.presentation();
 	}
 
 	read_data(){
