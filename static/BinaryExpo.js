@@ -1,122 +1,210 @@
 class BinaryExpo extends Algorithm{
+	logical_box(){
+		var i, a_pow=this.logic.a, bits=[], b=this.logic.b, res=1, multipla;
+
+		this.logic.a_powers=[1];
+		this.logic.b_bits=[];
+		this.logic.b_values=[];
+		this.logic.results=[1];
+		this.logic.multiplas=[];
+		this.logic.powers_2=[0, 1];
+
+		while(b>0){
+			multipla = (((b%2)==0)?1:a_pow);
+			res = (res*multipla)%this.logic.m;
+
+			this.logic.a_powers.push(a_pow);
+			this.logic.b_bits.push(b%2);
+			this.logic.b_values.push(b);
+			this.logic.results.push(res);
+			this.logic.multiplas.push(multipla);
+			this.logic.powers_2.push(ArrayUtils.get_elem(this.logic.powers_2, -1)*2);
+
+			a_pow = (a_pow*a_pow)%this.logic.m;
+			b=Math.floor(b/2);
+		}
+		this.logic.powers_2.pop();
+	}
+
+	presentation_make_paint_append(inner_html, stylistic, place, color=null){
+		var btn = Modern_representation.button_creator(inner_html, stylistic);
+		if (color != null) this.Painter(btn, color);
+		place.appendChild(btn);
+
+		return btn;
+	}
+
+	presentation_create_a_powers(){
+		var gridlike_proto = Representation_utils.proto_divsCreator(1, 2, [], null, null, this.stylistic);
+		Modern_representation.button_modifier(gridlike_proto.full_div, {'stylistic':{'general':{'display':'inline-block', 'borderRight':'3px dashed #888888'}}});
+		var gridy = new Grid(2, this.logic.powers_2.length+2, this.stylistic, {'place':gridlike_proto.zdivs, 'left_margin':1});
+
+		var a=this.logic.a;
+		gridy.filler([0, [0, this.logic.powers_2.length-1]], ArrayUtils.revert(this.logic.powers_2).map(x => (`${a}<sup>${x}</sup>`)), {'color':5});
+		this.buttons.a_powers = gridy.filler([1, [0, this.logic.powers_2.length-1]], ArrayUtils.revert(this.logic.a_powers), {'color':4});
+		gridy.single_filler([0, this.logic.powers_2.length], `(mod ${this.logic.m})`, {'color':5, 'stylistic':{'px':{'width':150}}});
+		gridy.single_filler([0, this.logic.powers_2.length+1], ``, {'color':4, 'stylistic':{'px':{'width':100}}});
+
+		return gridlike_proto.full_div;
+	}
+
+	presentation_create_results(){
+		var full_div = Modern_representation.div_creator('');
+		var margin_button = this.presentation_make_paint_append(``, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'height':40, 'width':60}}, full_div, 4);
+
+		
+		var regular_power = Representation_utils.expo_style_button_creator(this.stylistic, {'base':this.logic.a, 'expo':this.logic.b});
+		full_div.appendChild(regular_power.base);
+		full_div.appendChild(regular_power.expo);
+		this.Painter(regular_power.base, 4);
+		this.Painter(regular_power.expo, 4);
+		this.buttons.final_equal = this.presentation_make_paint_append(`&equiv;`, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'height':20, 'width':20}}, full_div, 4);
+		this.buttons.regular_power_base = regular_power.base;
+		this.buttons.regular_power_expo = regular_power.expo;
+		
+		var binary_power = Representation_utils.expo_style_button_creator(this.stylistic, {'base':this.logic.a, 'expo':''});
+		full_div.appendChild(binary_power.base);
+		full_div.appendChild(binary_power.expo);
+		var width_left_bracket=10, width_right_bracket=15;
+
+		Modern_representation.button_modifier(binary_power.expo, {'stylistic':{'px':{'width':20*this.logic.b_bits.length+width_left_bracket+width_right_bracket}}});
+		var reversed_bits = ArrayUtils.revert(this.logic.b_bits);
+
+
+		this.buttons.b_bits = [];
+		var btn = this.presentation_make_paint_append(`(`, {'general':{'position':'relative', 'verticalAlign':'top'}, 'px':{'height':20, 'width':width_left_bracket, 'top':0}}, binary_power.expo, 0);
+		for (var i=0; i<this.logic.b_bits.length; i++){
+			this.buttons.b_bits.push(this.presentation_make_paint_append(reversed_bits[i], {'general':{'position':'relative', 'verticalAlign':'top'}, 'px':{'height':20, 'width':20, 'top':0}}, binary_power.expo, 2));
+		}
+		var btn = this.presentation_make_paint_append(`)<sub>2</sub>`, {'general':{'position':'relative', 'verticalAlign':'top'}, 'px':{'height':20, 'width':width_right_bracket, 'top':0}}, binary_power.expo, 0);
+
+		var btn = this.presentation_make_paint_append(`&equiv;`, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'height':20, 'width':20, 'top':0}}, full_div, 102);
+		this.buttons.res = this.presentation_make_paint_append(1, {'general':{'position':'relative', 'verticalAlign':'middle'}}, full_div, 0);
+		this.buttons.multiply_sign = this.presentation_make_paint_append(`*`, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'height':20, 'width':20}}, full_div, 4);
+		this.buttons.multipla = this.presentation_make_paint_append('', {'general':{'position':'relative', 'verticalAlign':'middle'}}, full_div, 4);
+		this.buttons.mod = this.presentation_make_paint_append(`(mod ${this.logic.m})`, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'width':100}}, full_div, 102);
+
+		return full_div;
+	}
+
+	statial(){
+		this._statial_binding('res', this.logic.results, this.buttons.res);
+		this._statial_binding('multipla', ['', ...this.logic.multiplas], this.buttons.multipla);
+	}
+
+	presentation(){
+		this.buttons={};
+		var div_left = this.presentation_create_a_powers();
+		var div_right = this.presentation_create_results();
+
+		this.place.appendChild(div_left);
+		this.place.appendChild(div_right);
+	}
+
+	palingenesia(){
+		this.logical_box();
+		var buttons={};
+		this.presentation();
+		this.statial();
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.logic.a=c.get_next();
+		this.logic.b=c.get_next();
+		this.logic.m=c.get_next();
+	}
 
 	constructor(block, a=17, b=43, m=107){
 		super(block);
-		this.btlist=[];
-		this.utilbts=[];
+		this.logic.a = a;
+		this.logic.b = b;
+		this.logic.m = m;
 
-		this.place.innerHTML='';
-		for (var i=0;i<3;i++) this.btlist.push([]);
-		this.Create_reality(a, b);
+		this.version=5;
+		this.palingenesia();
 	}
 
 	BeginningExecutor(){
-		this.btlist=[];
-		this.utilbts=[];
-		var fas=this.input.value;
-		var a=0, b=0, x, i=0, c, m;
-		
-		
-		for (i=0;i<3;i++) this.btlist.push([]);
-		c=this.dissolve_input(fas);
-		a=c.get_next();
-		b=c.get_next();
-		m=c.get_next();
-		var mx_all=Math.max(Math.max(a.toString().length, b.toString().length), m.toString().length)*10;
-		this.stylistic.bs_butt_width=`${Math.max(40, mx_all)}px`;
-		this.stylistic.bs_butt_width_h=Math.max(40, mx_all);
-
-		this.lees.push([0, a, b, 1, m]);
-		this.Create_reality(a, b);
-	}
-
-	Create_reality(a, b){
-		var i=0, j=0, z=Math.floor(Math.log2(b))+1, btn, crb=b, mylst=[];
-		for (i=0;i<z;i++) mylst.push(crb%2), crb=Math.floor(crb/2);
-
-		this.divsCreator(7, 3, ["Current result:", "Current a:", "Current b:"],`${this.stylistic.bs_butt_width}+100px`);
-		for (j=0;j<3;j++){
-			for (i=0;i<z;i++) {
-				if (j==1 && i==z-1) btn=this.buttCreator(a, '#004400');
-				else if (j==2) btn=this.buttCreator(mylst[z-i-1], i==(z-1)?'#004400':'#440000');
-				else btn=this.buttCreator();
-				this.btlist[j].push(btn);	
-				this.zdivs[j].buttons.appendChild(btn);
-			}
-			if (j==1) btn=this.buttCreator(a);
-			if (j==2) btn=this.buttCreator(b);
-			if (j==0) btn=this.buttCreator(1);
-			
-			this.utilbts.push(btn);
-			this.zdivs[j].midian.appendChild(btn);
-		}
-		this.reality=z-1;
-		//Controversial - there must be a better way than hardcoding width
-		this.place.style.width=`max-content`;
+		this.read_data();
+		this.palingenesia();
+		this.lees.push([0]);
 	}
 
 	StateMaker(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], col, vl, lst;
+		var s=this.lees[l-1], staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
-		var a=s[1], b=s[2], res=s[3], m=s[4], i=0;
 
-		if (s[0]==0){
-			staat.push([0, this.btlist[0][this.reality], 4, 1]);
-
-			//this.Painter(this.btlist[0][this.reality], 1);
-			vl=(res*(b%2==0?1:a))%m;
-			this.btlist[0][this.reality].innerHTML=vl;
-			staat.push([1, this.utilbts[0], res, vl]);
-			this.utilbts[0].innerHTML=vl;	
+		if (s[0] == 0){
+			this.modern_pass_color(this.buttons.a_powers[this.logic.a_powers.length-1], 1, 0);
+			this.modern_pass_color(this.buttons.a_powers[this.logic.a_powers.length-2], 1, 0);
 		}
 
-		else if (s[0]==1){
-			staat.push([0, this.btlist[0][this.reality], 1, 2]);
-			staat.push([0, this.btlist[1][this.reality], 1, 2]);
-			staat.push([0, this.btlist[2][this.reality], 1, 2]);
-
-			staat.push([0, this.btlist[1][this.reality-1], 4, 1]);
-			staat.push([0, this.btlist[2][this.reality-1], 0, 1]);
-
-			this.btlist[1][this.reality-1].innerHTML=(a*a)%m;
-			staat.push([1, this.utilbts[1], a, (a*a)%m]);
-			staat.push([1, this.utilbts[2], b, Math.floor(b/2)]);
-			staat.push([3, 'reality', this.reality, this.reality-1]);
+		if (s[0] == 1){
+			this.modern_pass_color(this.buttons.a_powers[this.logic.a_powers.length-s[1]-2], 1, 0);
+			this.modern_pass_color(this.buttons.a_powers[this.logic.a_powers.length-s[1]-1], 14, 0);
 		}
 
-		else if (s[0]>=100){
-			lst=this.lees[l-2];
-			staat.push([0, this.btlist[1][this.reality], 1, 0]);
-			staat.push([0, this.btlist[2][this.reality], 1, 0]);
+		if (s[0] == 2){
+			var last_bit = this.logic.b_bits[s[1]];
+			this.modern_pass_color(this.buttons.b_bits[this.logic.b_bits.length-s[1]-1], 1, 0);
 
-			staat.push[1, this.utilbts[1], lst[1], (lst[1]*lst[1])%lst[4]];
-			staat.push[1, this.utilbts[2], lst[2], 0];
+			this.modern_pass_color(this.buttons.multiply_sign, 102, 4);
+			if (last_bit==1){
+				this.modern_pass_color(this.buttons.a_powers[this.logic.a_powers.length-s[1]-2], 14, 0);
+			}
+			this.modern_pass_color(this.buttons.multipla, 14, 4);
+			staat.push([6, this.state.multipla]);
 		}
-	}
 
+		if (s[0] == 3){
+			this.modern_pass_color(this.buttons.res, 1, 0);
+			staat.push([6, this.state.res]);
+		}
 
-	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1];
-		var a=s[1], b=s[2], res=s[3], m=s[4];
-
-		var strr=``;
-		if (s[0]==0) strr=`New result is calculated as res*a<sup>b mod 2</sup> mod m=res*a<sup>${b%2}</sup> mod ${m}=${res}*${(b%2==0)?1:a} mod ${m}=${(res*((b%2==0)?1:a))%m}`;
-		if (s[0]==1) strr=`Value of b is divided by 2: b/2=${b}/2=${Math.floor(b/2)}, a is multiplied by itself: a=(a*a)%m=${a}*${a} mod ${m}=${(a*a)%m}`;
-		if (s[0]==100) strr=`Now, b=0: algorithm ends, result is ${a}`;
-		return strr;
+		if (s[0] == 100){
+			staat.push([0, this.buttons.regular_power_base, 8]);
+			staat.push([0, this.buttons.regular_power_expo, 8]);
+			staat.push([0, this.buttons.res, 8]);
+			staat.push([0, this.buttons.final_equal, 102]);
+		}
 	}
 
 	NextState(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], col;
-		var a=s[1], b=s[2], res=s[3], m=s[4], i=0;
+		var s=this.lees[l-1];
 
-		if (s[0]>=100) return;
-		if (s[0]==0 && b==1) this.lees.push([100, (res*(b%2==0?1:a))%m]);
-		else if (s[0]==0) this.lees.push([1, a, b, (res*(b%2==0?1:a))%m, m]);
-		else if (s[0]==1) this.lees.push([0, (a*a)%m, Math.floor(b/2), res, m]); 
+		if (s[0]==0) return [2, 0];
+		if (s[0]==1) return [2, s[1]];
+		if (s[0]==2) return [3, s[1]];
+
+		if (s[0]==3 && s[1]+2 < this.logic.a_powers.length) return [1, s[1]+1];
+		return [100];
+	}
+
+	StatementComprehension(){
+		var l=this.lees.length;
+		var s=this.lees[l-1], x=s[1];
+
+		if (s[0] == 0) return `An algorithm is initiated by initiating result to ${this.logic.a}<sup>0</sup>, and initiating a<sup>1</sup> = ${this.logic.a}.`;
+		if (s[0] == 1){
+			var index = s[1];
+			var x = this.logic.powers_2[index];
+			var value=this.logic.a_powers[index];
+
+			return `Next a<sup>2x</sup> &equiv; a<sup>x</sup> a<sup>x</sup> (mod ${this.logic.m}): for x=${x}, a<sup>2*${x}</sup> &equiv; a<sup>${x}</sup> * a<sup>${x}</sup> &equiv; ${value}*${value} &equiv; ${this.logic.a_powers[index+1]} (mod ${this.logic.m}).`;
+		}
+
+
+		if (s[0] == 2){
+			var last_bit = this.logic.b_bits[s[1]];
+
+			return `As the last bit of current exponent is equal to ${last_bit}, the result will be multiplied by ${this.state.multipla.current()}.`;
+		}
+		if (s[0] == 3) return `Current result - is updated to given product - res=${this.state.res.previous()}*${this.state.multipla.current()} &equiv; ${this.state.res.current()} (mod ${this.logic.m}).`
+		if (s[0] == 100) return `Now, the process ends ${this.logic.a}<sup>${this.logic.b}</sup> &equiv; ${this.state.res.current()} (mod ${this.logic.m}).`;
 	}
 }
 
