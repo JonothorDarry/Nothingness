@@ -56,9 +56,10 @@ class BinaryExpo extends Algorithm{
 		var regular_power = Representation_utils.expo_style_button_creator(this.stylistic, {'base':this.logic.a, 'expo':this.logic.b});
 		full_div.appendChild(regular_power.base);
 		full_div.appendChild(regular_power.expo);
+		Modern_representation.button_modifier(regular_power.expo, {'stylistic':{'px':{'width':Math.floor(this.stylistic.bs_butt_width_h/2+10)}}});
 		this.Painter(regular_power.base, 4);
 		this.Painter(regular_power.expo, 4);
-		this.buttons.final_equal = this.presentation_make_paint_append(`&equiv;`, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'height':20, 'width':20}}, full_div, 4);
+		this.buttons.final_equal = this.presentation_make_paint_append(`&equiv;`, {'general':{'color':'#000000'}, 'px':{'height':20, 'width':20}}, full_div, 4);
 		this.buttons.regular_power_base = regular_power.base;
 		this.buttons.regular_power_expo = regular_power.expo;
 		
@@ -72,17 +73,17 @@ class BinaryExpo extends Algorithm{
 
 
 		this.buttons.b_bits = [];
-		var btn = this.presentation_make_paint_append(`(`, {'general':{'position':'relative', 'verticalAlign':'top'}, 'px':{'height':20, 'width':width_left_bracket, 'top':0}}, binary_power.expo, 0);
+		var btn = this.presentation_make_paint_append(`(`, {'general':{'verticalAlign':'top'}, 'px':{'height':20, 'width':width_left_bracket, 'top':0}}, binary_power.expo, 0);
 		for (var i=0; i<this.logic.b_bits.length; i++){
-			this.buttons.b_bits.push(this.presentation_make_paint_append(reversed_bits[i], {'general':{'position':'relative', 'verticalAlign':'top'}, 'px':{'height':20, 'width':20, 'top':0}}, binary_power.expo, 2));
+			this.buttons.b_bits.push(this.presentation_make_paint_append(reversed_bits[i], {'general':{'verticalAlign':'top'}, 'px':{'height':20, 'width':20, 'top':0}}, binary_power.expo, 2));
 		}
-		var btn = this.presentation_make_paint_append(`)<sub>2</sub>`, {'general':{'position':'relative', 'verticalAlign':'top'}, 'px':{'height':20, 'width':width_right_bracket, 'top':0}}, binary_power.expo, 0);
+		var btn = this.presentation_make_paint_append(`)<sub>2</sub>`, {'general':{'verticalAlign':'top'}, 'px':{'height':20, 'width':width_right_bracket, 'top':0}}, binary_power.expo, 0);
 
-		var btn = this.presentation_make_paint_append(`&equiv;`, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'height':20, 'width':20, 'top':0}}, full_div, 102);
-		this.buttons.res = this.presentation_make_paint_append(1, {'general':{'position':'relative', 'verticalAlign':'middle'}}, full_div, 0);
-		this.buttons.multiply_sign = this.presentation_make_paint_append(`*`, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'height':20, 'width':20}}, full_div, 4);
-		this.buttons.multipla = this.presentation_make_paint_append('', {'general':{'position':'relative', 'verticalAlign':'middle'}}, full_div, 4);
-		this.buttons.mod = this.presentation_make_paint_append(`(mod ${this.logic.m})`, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'width':100}}, full_div, 102);
+		var btn = this.presentation_make_paint_append(`&equiv;`, {'general':{'color':'#000000'}, 'px':{'height':20, 'width':20, 'top':0}}, full_div, 102);
+		this.buttons.res = this.presentation_make_paint_append('1', {'px':{'width':this.stylistic.bs_butt_width_h}}, full_div, 0);
+		this.buttons.multiply_sign = this.presentation_make_paint_append(`*`, {'general':{'color':'#000000'}, 'px':{'height':20, 'width':20}}, full_div, 4);
+		this.buttons.multipla = this.presentation_make_paint_append('', {}, full_div, 4);
+		this.buttons.mod = this.presentation_make_paint_append(`(mod ${this.logic.m})`, {'general':{'color':'#000000'}, 'px':{'width':100}}, full_div, 102);
 
 		return full_div;
 	}
@@ -94,6 +95,10 @@ class BinaryExpo extends Algorithm{
 
 	presentation(){
 		this.buttons={};
+		Representation_utils.change_button_width(this.stylistic, this.logic.m, 40);
+		Representation_utils.change_button_width(this.stylistic, this.logic.b*this.logic.a, this.bs_butt_width_h);
+		this.place.style.width = 'max-content';
+
 		var div_left = this.presentation_create_a_powers();
 		var div_right = this.presentation_create_results();
 

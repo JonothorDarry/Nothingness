@@ -127,8 +127,9 @@ class SuperEuclid{
 
 	static _presentation_construct_div_and_grid(obj, ln, cols){
 		var div = obj.modern_divsCreator(1, ln+2, []);
-		for (var i=0; i<ln+2; i++) div.divs[i].style.height='30px';
-		for (var i=0; i<ln+2; i++) div.zdivs[i].buttons.style.height='30px';
+		for (var i=0; i<ln+2; i++) Modern_representation.button_modifier(div.divs[i], {'stylistic':{'px':{'height':30, 'lineHeight':30}}});
+		for (var i=0; i<ln+2; i++) Modern_representation.button_modifier(div.zdivs[i].buttons, {'stylistic':{'px':{'height':30, 'lineHeight':30}}});
+
 		var grid = new Grid(ln+2, cols, obj.stylistic, {'place':div.zdivs});
 		div.full_div.style.display='inline-block';
 		if (obj.shower) div.full_div.style.marginLeft='40%';
@@ -213,7 +214,7 @@ class EuclidGcd extends Algorithm{
 		var div=elems.div;
 
 		var mx_width = Representation_utils.get_width(Math.max(this.logic.v, this.logic.w), 30);
-		var partial_stylistic = {'general':{'border':'1px solid white'}, 'px':{'width':mx_width, 'height':30}};
+		var partial_stylistic = {'general':{'border':'1px solid white'}, 'px':{'width':mx_width, 'height':30, 'lineHeight':30}};
 		var standard_stylistic = {'color':4, 'stylistic':partial_stylistic};
 
 		grid.filler([0, [0, 2]], ['i', 'a<sub>i</sub>', 'b<sub>i</sub>'], {'color':5, 'stylistic':partial_stylistic});
@@ -294,7 +295,7 @@ class ExtendedEuclidGcd extends Algorithm{
 		var div=elems.div;
 
 		var mx_width = Representation_utils.get_width(Math.max(this.logic.v, this.logic.w), 30);
-		var partial_stylistic = {'general':{'border':'1px solid white'}, 'px':{'width':mx_width, 'height':30}};
+		var partial_stylistic = {'general':{'border':'1px solid white'}, 'px':{'width':mx_width, 'height':30, 'lineHeight':30}};
 		var standard_stylistic = {'color':4, 'stylistic':partial_stylistic};
 
 		grid.filler([0, [0, 5]], ['i', 'a<sub>i</sub>', 'b<sub>i</sub>', 'z<sub>i</sub>', 'p<sub>i</sub>', 'q<sub>i</sub>'], {'color':5, 'stylistic':partial_stylistic});
