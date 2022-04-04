@@ -495,6 +495,7 @@ class Representation_utils{
 				'height':style.bs_butt_height_h,
 			}
 		});
+
 		Representation_utils.Painter(btn, (numb != null)?col:4);
 		return btn;
 	}

@@ -11,14 +11,93 @@
 
 	<body>
 		{{ headers.full_upper('Lowest Common Ancestor', 'Trees') }}
-		<h2>Introduction</h2>
-		<p>In this article the idea of lowest common ancestor will be shown, along with quick ways of finding it.</p>
+		<main>
+			<section>
+				<h2>Introduction</h2>
+				<p>In this article the idea of the lowest common ancestor will be shown, along with quick ways of finding it. Definitions used in this article include:</p>
+				<ol>
+					<li><strong>Lowest Common Ancestor</strong> of two vertices \(a,b\) (later denoted as \(lca(a,b)\) is a vertex with maximal depth, whose descencdants are both \(a\) and \(b\).</li>
+					<li>If a rooted tree is given/created, for each vertex four parameters will be used throughout this (and next) article:
+						<ol>
+							<li><b>Parent</b> of a vertex \(x\) is a vertex \(y\) with lower depth such that there exists an edge between \(x\) and \(y\). It will be denoted as \(par(x)\).</li>
+							<li><b>Size of a subtree</b> of a vertex \(x\) is amount  of such vertexes \(y\), that \(x\) lies on a path from \(y\) to \(root\). It will be denoted as \(sons(x)\). Notice, that \(sons(x) = 1+\sum_{y \in C(x)} sons(y)\), where \(C(x)\) denotes all vertexes, whose parent is \(x\).</li>
+							<li><b>Preorder number</b> of a vertex \(x\) is a number assigned to a vertex during depth first search. It will be denoted as \(pre(a)\). Preorder number of a vertex can be assigned when first entering a vertex in depth first search as the least unassigned natural number.</li>
+							<li><b>Depth</b> of a vertex \(x\) is the distance in a tree from the root to the \(x\). Depth of a vertex \(x\) will be later denoted as \(dep(x)\).</li>
+						</ol>
+				</ol>
 
-		<div id="problems"></div>
-		<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+			</section>
 
-		<!--<script src="{{url_for('static', filename='Lca.js')}}"></script>-->
-		<form id="page" style="display:none"></form>
+			<section>
+				<h2>Problem: Finding lowest common ancestor (and possibly k-th ancestor)</h2>
+				<p>The problem is dead simple: you are given a tree with \(n\) vertices \((n \le 2*10^5)\), among them one distinguished vertex - root - and \(q\) queries in form \(s,a,b\) \((q \le 2*10^5)\). The problems:</p>
+				<ol>
+					<li>If \(s=\)'l', find \(lca(a,b)\).</li>
+					<li>(Optional) If \(s=\)'k', find \(b-th\) ancestor of \(a\) - that is, such an ancestor \(x\) of \(a\), that \(dep(a)-dep(x) = b\).</li>
+				</ol>
+				<p>Notice, that solving those problems can give valuable informations about any tree without distinguished root - for example, distance between two vertices \((a,b)\) in a tree is equal to \(dep(a)+dep(b) - 2*dep(lca(a,b))\).</p>
+				<h3>Solution I: Binary lifting - \(O(n\log(n) + q\log(n))\) for finding lca and k-th ancestor</h3>
+				<h4>Preprocessing phase</h4>
+				<p>What if one would keep information about 1st, 2nd, 4th, 8th, ...\(2^k\)-th ancestor of each vertex? Let \(par_k(x)\) denote \(k\)-th ancestor of \(x\). Then:
+					$$ par_{2k}(x) = par_k(par_k(x)) $$
+				This allows to get information on each \(2^k\)-th ancestor of any vertex in \(O(n\log(n))\). 
+				So, the preprocessing will go as follows:
+				<ol>
+					<li>For each vertex \(x\) find out \(par_1(x)\) - using dfs.</li>
+					<li>For each subsequent \(k\) for each vertex \(x\) find out \(par_{2^{k+1}}(x) = par_{2^k}(par_{2^k}(x))\) for all such \(k \le m\), that \(2^m \le n\) - so, \(m = \lceil \log_2(n) \rceil\).</li>
+				</ol>
+				<h4>Querying phase</h4>
+				<p>There are two problems to solve:
+				<ol>
+					<li>\(k\)-th ancestor - note, that \(par_k(x) = par_{k-2^l}(par_{2^l}(x))\) - this allows a solution based on whether a bit of \(k\) is set or not.</li>
+					<li>\(lca(a,b)\) - effectively, it will boil down to binary search - like approach for \(k'\)-th ancestor, where \(k' = lca(a,b)\). How to check, whether \(k'\) is an ancestor of both \(a\) and \(b\)? If candidates will be chosen among ancestors of \(a\), then the only question is: whether a vertex is an ancestor of \(b\). Note, that if \(x\) is a descendant of \(y\), then:
+						<ul>
+							<li>\(pre(y) \le pre(x)\) - because dfs entered \(y\) before \(x\).</li>
+							<li>\(pre(y) + son(y) \ge pre(x)\) - because all descendants of \(y\) have preorder numbers in \(\{pre(y), pre(y)+1 \dots pre(y)+son(y)-1\}\).</li>
+						</ul>
+						This allows constructing the following algorithm: search for ancestors of \(a\), from \(par_{2^m}(a)\) to \(par_1(a)\); if \(par_x(a)\) is not an ancestor of \(b\), set \(a\) to \(par_x(a)\) and continue from \(x\). At the end of the process, return \(par_1(a)\). The only corner case in need of attention: if \(a\) is an ancestor of \(b\) or \(b\) is an ancestor of \(a\), then, at the beginning of the algorithm, \(a\) or \(b\) should be returned.
+					</li>
+				</ol>
+
+				</p>
+
+				<article>
+				{{ algo.neo_algorithm(2, 'Finding lowest common ancestor and k-th ancestor of a vertex', '
+				<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree. \(q\) is the amount of queries. The queries follow in format: \(c_i, x_i, y_i\): if \(c_i=\)=\'k\', then query will return \(y_i\)-th ancestor of \(x_i\). If \(c_i=\)\'l\', then query will return \(lca(x_i, y_i)\).<br>
+					\(n\)<br>
+					\(a_1, b_1\)<br>
+					\(\dots\)<br>
+					\(a_{n-1}, b_{n-1}\)<br>
+					\(q\)<br>
+					\(c_1, x_1, y_1\)
+					\(\dots\)<br>
+					\(c_q, x_q, y_q\)
+					</p>
+				'
+				, '7&#10;1 2&#10;2 3&#10;3 4&#10;4 5&#10;2 6&#10;6 7&#10;3&#10;', {'input_type':'textarea', 
+				'color_description':{'standard':'', 'change':'', 'dead':'Already processed vertex.', 'iterator':'Pointer to vertex on stack.', 'half-dead':'Vertex processed only once -> bottom-up.', 'crucial':'Diameter and its length', 'helper1':'', 'helper2':'', 'merge-standard':'A vertex to update'}
+				}) }}
+				</article>
+			</section>
+
+			<article>
+				<h2>Summary</h2>
+			
+
+				<h3>Problems</h3>
+				<p>Ideas shown here are usually useful for problems involving queries on never-changing trees. Examples include:</p>
+				<ol>
+					<li><a href="https://codeforces.com/problemset/problem/825/G">Tree Queries</a></li>
+					<li><a href="https://codeforces.com/problemset/problem/176/E">Archaeology</a></li>
+					<li><a href="https://codeforces.com/problemset/problem/575/B">Bribes</a></li>
+				</ol>
+			</article>
+			<div id="problems"></div>
+			<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+
+			<script src="{{url_for('static', filename='Lca.js')}}"></script>
+			<form id="page" style="display:none"></form>
+		</main>
 		{{ footers.full_lower() }}
 	</body>
 
