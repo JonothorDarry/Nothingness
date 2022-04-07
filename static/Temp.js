@@ -1366,7 +1366,7 @@ class Modern_tree_presenter{
 
 		this.height=place.height;
 		this.width=place.width;
-		this.place=place.div
+		this.place=place.div;
 		this.buttons={'vertexes':ArrayUtils.steady(this.tree.n, 0), 'edges':ArrayUtils.steady(this.tree.n, 0)};
 
 		var vertex_pos=this.parameters.vertexes;
