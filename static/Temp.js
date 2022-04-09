@@ -123,8 +123,9 @@ class Algorithm{
 
 	new_next_state(){
 		//If !this.finito? check validity
+		if (this.finito) return;
 		var next_state=this.NextState();
-		if (!this.finito && next_state!=null){ //Konieczne 2? Sprawdzić
+		if (next_state!=null){ //Konieczne 2? Sprawdzić
 			this.lees.push(next_state);
 		}
 	};
@@ -335,7 +336,14 @@ class Grid{
 	constructor(n, m, style, params={'place':null, 'divs':false}){
 		Object_utils.merge(params, {'top_margin':0, 'left_margin':0});
 
-		this.grid=Representation_utils.gridify_div(params.place, n+params.top_margin, m+params.left_margin, style, params.divs);
+		if (params.place) this.grid=Representation_utils.gridify_div(params.place, n+params.top_margin, m+params.left_margin, style, params.divs);
+		else{
+			var div_for_grid = Modern_representation.gridmaker(n);
+			this.place = {'full_div':div_for_grid.full_div, 'rows':div_for_grid.rows};
+
+			this.grid = Representation_utils.modern_gridify_div(this.place.rows, n+params.top_margin, m+params.left_margin, style, params.divs);
+		}
+
 		this.left_margin=params.left_margin;
 		this.top_margin=params.top_margin;
 	}
@@ -441,7 +449,23 @@ class Representation_utils{
 			for (j=0; j<m; j++){
 				if (!divs) btn=Representation_utils.button_creator(style);
 				else btn=Modern_representation.div_creator('', {});
+
 				place[i].buttons.appendChild(btn);
+				grid[i][j]=btn;
+			}
+		}
+		return grid;
+	}
+
+	static modern_gridify_div(place, n, m, style){ //style: {general, px, ...}
+		var i, j, btn;
+		var grid=ArrayUtils.create_2d(n, m);
+
+		for (i=0; i<n; i++){
+			for (j=0; j<m; j++){
+				btn=Modern_representation.button_creator('', style);
+
+				place[i].appendChild(btn);
 				grid[i][j]=btn;
 			}
 		}
@@ -476,6 +500,9 @@ class Representation_utils{
 		if (col==7){
 			btn.style.border="1px solid";
 			btn.style.borderColor="#888888";
+		}
+		if (col == 42){
+			btn.style.color = `rgba(255, 255, 255, 0.0)`
 		}
 		//else btn.style.border="0px none";
 		if (only_bg==1) btn.style.color=olden;
@@ -651,6 +678,9 @@ class Modern_representation{
 		32:'#800080',
 		33:'#FF0080',
 
+		//Emptiness
+		42:'rgba(255, 255, 255, 0.0)',
+
 		//Exponent brown, black-on-white
 		101:'#804000',
 		102:'#FFFFFF',
@@ -746,6 +776,19 @@ class Modern_representation{
 			btn_list.push(btn);
 		}
 		return btn_list;
+	}
+
+	static gridmaker(n){
+		var full_div = Modern_representation.div_creator('');
+		var rows = [];
+
+		for (var i=0; i<n; i++){
+			var next_div = Modern_representation.div_creator('', {'general':{'position':'static', 'display':'block'}, 'px':{'height':40}});
+			full_div.appendChild(next_div);
+			rows.push(next_div);
+		}
+
+		return {'full_div':full_div , 'rows':rows};
 	}
 }
 

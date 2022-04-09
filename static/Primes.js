@@ -436,6 +436,7 @@ class Simple_factorizer extends Algorithm{
 	}
 
 	NextState(){
+		console.log('Factor');
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 

@@ -711,7 +711,6 @@ class Segtree_Counter extends Algorithm{
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
-		console.log(this.state.q_intervals[1].current());
 
 		if (s[0] == 1) return `Queries are sorted in order of subsequent prime numbers, which are used in sieving &phi;(n,a). Besides, note, that segment tree was started: values in its nodes are equal to sum of its children, each leaf gives information, whether partiular number was marked as divisible by first prime_nr primes. Note, that 0 is marked as divisible from the very start of this algorithm.`;
 		if (s[0] == 20){
