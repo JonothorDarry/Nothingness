@@ -22,7 +22,6 @@
 {% macro algorithm(id, header_text, input_format, start_value, input_type='input', algo_type='algo', add_on=none, added_elements=none, vehement=false) %}
 		<div id="Algo{{id}}" class="pureAlgo">
 			<h4 class={{algo_type}}>{{header_text}}</h4>
-
 			{% autoescape off %}
 				{{input_format}}
 			{% endautoescape %}
@@ -83,6 +82,7 @@
 			<h4 class={{argos.algo_type}}>{{header_text}}</h4>
 
 			{% if argos.color_description != false %}
+				<!-- <button style="margin-left:30px; background-color:#8888FF; width:500px; height:30px; text-align:center">Show color description</button> -->
 				<table class="beauty_table" style="margin-left:5%">
 					<caption>Colors and their meaning</caption>
 					<thead>
@@ -126,6 +126,7 @@
 					<button id="Prever{{id}}" class="previous">Previous Move</button>
 					<button id="Nexter{{id}}" class="next">Next Move</button>
 					<button id="Finisher{{id}}" class="finish">Finish</button>
+					<label>Visualization progress: <input type="range" class="progress" id="Progress{{id}}"></label>
 			{% else %}
 			<div id="Buttons{{id}}" style="display:inline-block;">
 				<button id="Show{{id}}" class="show">Show</button>

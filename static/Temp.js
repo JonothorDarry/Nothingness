@@ -13,41 +13,59 @@ class Algorithm{
 		Algorithm.alldict[this.nextbut.id]=this;
 		Algorithm.alldict[this.prevbut.id]=this;
 		Algorithm.alldict[this.finitbut.id]=this;
+		Algorithm.alldict[this.progress_bar.id]=this;
 
 		//Beginning button & sequence
 		this.inbut.addEventListener('click', function(){
-		       var zis=Algorithm.alldict[this.id];
-		       zis.post_beginning_executor();
-		       zis.post_state_maker();
-		       zis.ChangeStatement();
+			var zis=Algorithm.alldict[this.id];
+			zis.post_beginning_executor();
+			zis.post_state_maker();
+			zis.ChangeStatement();
 		});
 
 		//Next value
 		this.nextbut.addEventListener('click', function(){
-		       var zis=Algorithm.alldict[this.id];
-		       if (zis.version>=4){
+			var zis=Algorithm.alldict[this.id];
+			if (zis.version>=4){
 			       zis.new_next_state();
-		       }
-		       else{
+			}
+			else{
 			       zis.NextState();
-		       }
-		       zis.post_state_maker();
-		       zis.ChangeStatement();
+			}
+			zis.post_state_maker();
+			zis.ChangeStatement();
 		});
 
 		//Previous value
 		this.prevbut.addEventListener('click', function(){
-		       var zis=Algorithm.alldict[this.id];
-		       if (zis.lees.length>1){
+			var zis=Algorithm.alldict[this.id];
+			if (zis.lees.length>1){
 			       zis.StateUnmaker();
 			       zis.ChangeStatement();
-		       }
+			}
 		});
 
 		//Finish Algorithm instantly    
 		this.finitbut.addEventListener('click', function(){
-		       var zis=Algorithm.alldict[this.id];
-		       zis.FinishingSequence();
+			var zis=Algorithm.alldict[this.id];
+			zis.FinishingSequence();
+		});
+
+		//Change point in algorithm
+		this.progress_bar.addEventListener('change', function(){
+			var zis=Algorithm.alldict[this.id];
+			var proto = this.value;
+			while (proto > zis.state_nr){
+				if (zis.version>=4) zis.new_next_state();
+				else zis.NextState();
+				zis.post_state_maker();
+				zis.ChangeStatement();
+			}
+
+			while (proto < zis.state_nr){
+				zis.StateUnmaker();
+				zis.ChangeStatement();
+			}
 		});
 	}
 
@@ -119,15 +137,15 @@ class Algorithm{
 	}
 
 	new_next_state(){
-	       //If !this.finito? check validity
+		//If !this.finito? check validity
 		if (this.finito) return;
 		var next_state=this.NextState();
 		this.state_nr += 1;
+		this.update_progress();
 		if (next_state!=null){ //Konieczne 2? Sprawdzić
 			this.lees.push(next_state);
 		}
 	};
-
 
 	//Printing statement on the output
 	ChangeStatement(){
@@ -178,9 +196,13 @@ class Algorithm{
 		this.FinishingSequence();
 		this.all_states_nr = this.state_nr;
 		this.reset_state_machine();
-		console.log(this.all_States_nr);
 		this.progress_bar.setAttribute('min', 0);
 		this.progress_bar.setAttribute('max', this.all_states_nr);
+		this.update_progress();
+	}
+
+	update_progress(){
+		this.progress_bar.value = this.state_nr;
 	}
 
 	reset_state_machine(){
@@ -210,6 +232,7 @@ class Algorithm{
 		}
 		this.state_transformation.pop();
 		this.state_nr--;
+		this.update_progress();
 
 		if (l>1) this.lees.pop();
 	}
@@ -241,83 +264,83 @@ class Algorithm{
 
 	//Execute changes in the last state
 	transformator(staat){
-	       this.fill_in_the_blank_states(staat);
-	       this.state_transformation.push(staat);
-	       var x, i;
-	       for (i=0;i<staat.length;i++){
-		       x=staat[i];
-		       if (x[0]==0) this.Painter(x[1], x[3]);
-		       if (x[0]==1) x[1].innerHTML=x[3];
-		       if (x[0]==2) x[1].push(x[2]);
-		       if (x[0]==3) this[x[1]]=x[3];
-		       if (x[0]==5) x[1](...x[3]);
-		       if (x[0]==6){
-			       x[1].iterator += 1;
-			       if (x[1].button) x[1].button.innerHTML = x[1].values[x[1].iterator];
-		       }
-	       }
+		this.fill_in_the_blank_states(staat);
+		this.state_transformation.push(staat);
+		var x, i;
+		for (i=0;i<staat.length;i++){
+			x=staat[i];
+			if (x[0]==0) this.Painter(x[1], x[3]);
+			if (x[0]==1) x[1].innerHTML=x[3];
+			if (x[0]==2) x[1].push(x[2]);
+			if (x[0]==3) this[x[1]]=x[3];
+			if (x[0]==5) x[1](...x[3]);
+			if (x[0]==6){
+				x[1].iterator += 1;
+				if (x[1].button) x[1].button.innerHTML = x[1].values[x[1].iterator];
+			}
+		}
 	}
 	//Specific change - passing colors between states
 	pass_color(btn, col_before=4, col_mid=1, col_after=0){
-	       this.ephemeral.staat.push([0, btn, col_before, col_mid]);
-	       this.ephemeral.passer.push([0, btn, col_mid, col_after]);
+		this.ephemeral.staat.push([0, btn, col_before, col_mid]);
+		this.ephemeral.passer.push([0, btn, col_mid, col_after]);
 	}
 
 	modern_pass_color(btn, col_mid=1, col_after=0){
-	       this.ephemeral.staat.push([0, btn, btn._color, col_mid]);
-	       this.ephemeral.passer.push([0, btn, col_mid, col_after]);
+		this.ephemeral.staat.push([0, btn, btn._color, col_mid]);
+		this.ephemeral.passer.push([0, btn, col_mid, col_after]);
 	}
 
 
 	divsCreator(mode, number_of_rows, title_list, midian, elements=['divs', 'zdivs']){
-	       var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, this.place, this.stylistic);
-	       this[elements[0]]=lst.divs;
-	       this[elements[1]]=lst.zdivs;
+		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, this.place, this.stylistic);
+		this[elements[0]]=lst.divs;
+		this[elements[1]]=lst.zdivs;
 	}
 
 	modern_divsCreator(mode, number_of_rows, title_list, midian=null, place=this.place){
-	       var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, place, this.stylistic);
-	       return lst;
+		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, place, this.stylistic);
+		return lst;
 	}
 
 
 	static ObjectParser(v){
-	       var dick={
-		       'primePlace':v.getElementsByClassName('primez')[0],
-		       'sendButton':v.getElementsByClassName('sender')[0],
-		       'prevButton':v.getElementsByClassName('previous')[0],
-		       'nextButton':v.getElementsByClassName('next')[0],
-		       'input':v.getElementsByClassName('inputter')[0],
-		       'output':v.getElementsByClassName('comprehend')[0],
-		       'finitButton':v.getElementsByClassName('finish')[0],
-		       'progressBar':v.getElementsByClassName('progress')[0]
-	       }
-	       return dick;
+		var dick={
+			'primePlace':v.getElementsByClassName('primez')[0],
+			'sendButton':v.getElementsByClassName('sender')[0],
+			'prevButton':v.getElementsByClassName('previous')[0],
+			'nextButton':v.getElementsByClassName('next')[0],
+			'input':v.getElementsByClassName('inputter')[0],
+			'output':v.getElementsByClassName('comprehend')[0],
+			'finitButton':v.getElementsByClassName('finish')[0],
+			'progressBar':v.getElementsByClassName('progress')[0]
+		}
+		return dick;
 	}
 
 	_statial_binding(name, values, btn_list){
-	       if (!ArrayUtils.is_iterable(btn_list)){
-		       this.state[name] = {
-			       'iterator':0,
-			       'button':btn_list,
-			       'values':values,
-			       'current':function(){return this.values[this.iterator];},
-			       'previous':function(){return this.values[this.iterator-1];}
-		       };
-		       return;
-	       }
+		if (!ArrayUtils.is_iterable(btn_list)){
+			this.state[name] = {
+				'iterator':0,
+				'button':btn_list,
+				'values':values,
+				'current':function(){return this.values[this.iterator];},
+				'previous':function(){return this.values[this.iterator-1];}
+			};
+			return;
+		}
 
-	       this.state[name] = [];
-	       for (var i=0; i<values.length; i++){
-		       this.state[name].push({
-			       'button':btn_list[i],
-			       'values':values[i],
-			       'iterator':0,
-			       'current':function(){return this.values[this.iterator];},
-			       'previous':function(){return this.values[this.iterator-1];}
-		       });
-		       if (values[i].length > 0 && btn_list[i]!=null) btn_list[i].innerHTML = values[i][0];
-	       }
+		this.state[name] = [];
+		for (var i=0; i<values.length; i++){
+			this.state[name].push({
+				'button':btn_list[i],
+				'values':values[i],
+				'iterator':0,
+				'current':function(){return this.values[this.iterator];},
+				'previous':function(){return this.values[this.iterator-1];}
+			});
+			if (values[i].length > 0 && btn_list[i]!=null) btn_list[i].innerHTML = values[i][0];
+		}
 	}
 }
 
