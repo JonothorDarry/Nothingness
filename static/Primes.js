@@ -17,6 +17,7 @@ class Sieve extends Algorithm{
 		var dv = Modern_representation.div_creator('', {'general':{'width':null}});
 		for (i=0; i<=this.logic.n; i++){
 			btn = Modern_representation.button_creator(i, {'general':{'backgroundColor':'#440000'}});
+			this.Painter(btn, 0);
 			buttons.sieve.push(btn);
 			dv.appendChild(btn);
 		}
@@ -54,16 +55,16 @@ class Sieve extends Algorithm{
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
-			this.pass_color(this.buttons.sieve[0], 0, 1, this.present.colors.composite);
-			this.pass_color(this.buttons.sieve[1], 0, 1, this.present.colors.composite);
+			this.modern_pass_color(this.buttons.sieve[0], 1, this.present.colors.composite);
+			this.modern_pass_color(this.buttons.sieve[1], 1, this.present.colors.composite);
 		}
 		if (s[0]==1){
-			this.pass_color(this.buttons.sieve[s[2]], 0, 1, this.present.colors.composite);
-			this.pass_color(this.buttons.sieve[s[1]], 0, 15, 0);
+			this.modern_pass_color(this.buttons.sieve[s[2]], 1, this.present.colors.composite);
+			this.modern_pass_color(this.buttons.sieve[s[1]], 15, 0);
 		}
 		if (s[0]==2){
 			var prime_color = (this.logic.lpf[s[1]]==s[1])?0:this.present.colors.composite;
-			this.pass_color(this.buttons.sieve[s[1]], prime_color, this.present.colors.iterated, prime_color);
+			this.modern_pass_color(this.buttons.sieve[s[1]], this.present.colors.iterated, prime_color);
 		}
 	}
 
@@ -117,6 +118,7 @@ class ExtendedSieve extends Sieve{
 
 	_presentation_button_creator(v){
 		var btn = this.doubleButtCreator(v, Representation_utils.button_creator);
+		this.Painter(btn[0], 0);
 		btn[1].innerHTML = 'lpf(' + btn[1].innerHTML + ')';
 		for (var x of btn){
 			x.style.width='80px';
@@ -171,17 +173,17 @@ class ExtendedSieve extends Sieve{
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
-			this.pass_color(this.buttons.sieve[0], 0, 1, this.present.colors.composite);
-			this.pass_color(this.buttons.sieve[1], 0, 1, this.present.colors.composite);
+			this.modern_pass_color(this.buttons.sieve[0], 1, this.present.colors.composite);
+			this.modern_pass_color(this.buttons.sieve[1], 1, this.present.colors.composite);
 		}
 		if (s[0]==1){
-			this.pass_color(this.buttons.sieve[s[2]], 0, 1, this.present.colors.composite);
-			this.pass_color(this.buttons.sieve[s[1]], 0, 15, 0);
+			this.modern_pass_color(this.buttons.sieve[s[2]], 1, this.present.colors.composite);
+			this.modern_pass_color(this.buttons.sieve[s[1]], 15, 0);
 			if (s[1]==this.logic.lpf[s[2]]) staat.push([1, this.buttons.sieve[s[2]].lower, this.buttons.sieve[s[2]].lower.innerHTML, this.logic.lpf[s[2]]]);
 		}
 		if (s[0]==2){
 			var prime_color = (this.logic.lpf[s[1]]==s[1])?0:this.present.colors.composite;
-			this.pass_color(this.buttons.sieve[s[1]], prime_color, this.present.colors.iterated, prime_color);
+			this.modern_pass_color(this.buttons.sieve[s[1]], this.present.colors.iterated, prime_color);
 		}
 	}
 
@@ -305,18 +307,18 @@ class Factorizer extends Algorithm{
 			if (s[1]!=1){
 				var elem = this.buttons.factors[this.logic.map_factor_to_index[s[2]]];
 				if (s[3]==1){
-					this.pass_color(elem.expo, 4, 1, 0);
-					this.pass_color(elem.base, 4, 1, 0);
+					this.modern_pass_color(elem.expo, 1, 0);
+					this.modern_pass_color(elem.base, 1, 0);
 				}
 				else if (s[3]>1){
-					this.pass_color(elem.expo, 0, 1, 0);
+					this.modern_pass_color(elem.expo, 1, 0);
 				}
 				if (s[3]>=1){
 					staat.push([1, elem.expo, elem.expo.innerHTML, s[3]])
 				}
 			}
 			var color = ((this.logic.lpf[s[1]]==s[1])?0:2);
-			this.pass_color(this.sieve.buttons.sieve[s[1]], color, 1, color);
+			this.modern_pass_color(this.sieve.buttons.sieve[s[1]], 1, color);
 		}
 
 		if (s[0]==100){
@@ -412,14 +414,14 @@ class Simple_factorizer extends Algorithm{
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
-			this.pass_color(this.buttons.factors[s[1]].expo);
-			this.pass_color(this.buttons.factors[s[1]].base);
+			this.modern_pass_color(this.buttons.factors[s[1]].expo);
+			this.modern_pass_color(this.buttons.factors[s[1]].base);
 			staat.push([1, this.buttons.factors[s[1]].expo, 0, 1]);
 			staat.push([1, this.buttons.change_basis, this.logic.xp[s[2]], this.logic.xp[s[2]+1]]);
 		}
 
 		if (s[0]==1){
-			this.pass_color(this.buttons.factors[s[1]].expo, 0, 1);
+			this.modern_pass_color(this.buttons.factors[s[1]].expo, 1);
 			staat.push([1, this.buttons.factors[s[1]].expo, s[3], s[3]+1]);
 			staat.push([1, this.buttons.change_basis, this.logic.xp[s[2]], this.logic.xp[s[2]+1]]);
 		}

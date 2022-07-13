@@ -26,12 +26,8 @@ class Algorithm{
 		//Next value
 		this.nextbut.addEventListener('click', function(){
 			var zis=Algorithm.alldict[this.id];
-			if (zis.version>=4){
-			       zis.new_next_state();
-			}
-			else{
-			       zis.NextState();
-			}
+			if (zis.version>=4) zis.new_next_state();
+			else zis.NextState();
 			zis.post_state_maker();
 			zis.ChangeStatement();
 		});
@@ -52,7 +48,7 @@ class Algorithm{
 		});
 
 		//Change point in algorithm
-		this.progress_bar.addEventListener('change', function(){
+		this.progress_bar.addEventListener('input', function(){
 			var zis=Algorithm.alldict[this.id];
 			var proto = this.value;
 			while (proto > zis.state_nr){
