@@ -5,6 +5,12 @@
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='index.css')}}">
+		<script>
+			window.MathJax = {
+			  loader: {load: ['[tex]/colortbl']},
+			  tex: {packages: {'[+]': ['colortbl']}}
+			};
+		</script>
 		<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 	</head>
 
@@ -37,10 +43,17 @@
 			<div class="btnContainer">
 				<a class="wisdom" href="/erasto" style="font-size:12px">\(
 					\begin{array}{|c|c|c|c|}
+					{% set primez = [2, 3, 5, 7, 11, 13, 17] %}
 					{% for i in [0,1,2,3] %}
 						\hline
 						{% for j in [0,1,2,3] %}
-							{{i*4+j+2}}
+							{% set _tmp = i*4+j+2 %}
+							{% if _tmp in primez %}
+								\cellcolor{white} \color[rgb]{0.258,0.258,0.933} { {{_tmp}} }
+							{% else %}
+								{{_tmp}}
+							{% endif %}
+
 							{% if (j!=3) %}
 								&
 							{% else %}
