@@ -220,34 +220,72 @@ class Lca_binary extends Algorithm{
 }
 
 class Lca_binary_querier extends Algorithm{
-	logical_box(){
+	logical_prepare_kth(){
 		this.logic.operations = [['S', this.logic.x, this.logic.y]];
 		this.logic.subsequent_pairs = [[this.logic.x, this.logic.y]];
 
-		if (this.logic.type == 'k'){
-			var _y = this.logic.y;
-			var _x = this.logic.x;
-			var bit_nr=0, opera_type;
+		var _y = this.logic.y;
+		var _x = this.logic.x;
+		var bit_nr=0, opera_type, sum_opera_type=0;
 
-			while (_y>0){
-				opera_type = 0;
-				if ((_y%2) == 1) opera_type=1;
-				this.logic.operations.push(['O', _x, _y, bit_nr, opera_type]);
+		while (_y>0){
+			opera_type = 0;
+			if ((_y%2) == 1) opera_type=1;
+			sum_opera_type += opera_type;
+			this.logic.operations.push(['O', _x, _y, bit_nr, opera_type, sum_opera_type]);
 
-				if ((_y%2) == 1) {
-					_x = this.parent_algorithm.logic.lca_parents[_x][bit_nr];
-					this.logic.subsequent_pairs.push([_x, (_y>>1)*(1<<(bit_nr+1))]);
-				}
-
-				bit_nr += 1;
-				_y>>=1;
+			if ((_y%2) == 1) {
+				_x = this.parent_algorithm.logic.lca_parents[_x][bit_nr];
+				this.logic.subsequent_pairs.push([_x, (_y>>1)*(1<<(bit_nr+1))]);
 			}
-			this.logic.operations.push(['F', _x]); //Finito
-			this.logic.res = _x;
 
-			var prev_y = this.logic.y;
-			this.logic.bit_representation = ArrayUtils.range(0, this.parent_algorithm.logic.depth_lca).map(x => (prev_y & (1<<x)));
+			bit_nr += 1;
+			_y>>=1;
 		}
+		this.logic.operations.push(['F', _x]); //Finito
+		this.logic.res = _x;
+
+		var prev_y = this.logic.y;
+		this.logic.bit_representation = ArrayUtils.range(0, this.parent_algorithm.logic.depth_lca).map(x => (prev_y & (1<<x)));
+	}
+
+	logical_anc(tree, a, b){
+		if (tree.pre[a] <= tree.pre[b] && tree.pre[a]+tree.sons[a] > tree.pre[b]) return true;
+		return false;
+	}
+
+	logical_prepare_lca(){
+		this.logic.operations = [['S']];
+		var first_anc = this.logical_anc(this.parent_algorithm.logic.tree, this.logic.x, this.logic.y);
+
+		this.logic.operations.push(['A', this.logic.x, first_anc]);
+		if (first_anc == 1){
+			this.logic.operations.push(['F', this.logic.x]);
+			this.logic.res = this.logic.x;
+			return;
+		}
+
+		var _x = this.logic.x;
+		var _k = this.parent_algorithm.logic.depth_lca;
+
+		while (_k>=0){
+			var anc = this.logical_anc(this.parent_algorithm.logic.tree, this.parent_algorithm.logic.lca_parents[_x][_k], this.logic.y);
+			if (anc){
+				this.logic.operations.push(['L', _x, _k, this.parent_algorithm.logic.lca_parents[_x][_k], anc]); //left
+				_k-=1;
+			}
+			else{
+				this.logic.operations.push(['U', _x, _k, this.parent_algorithm.logic.lca_parents[_x][_k], anc]); //down
+				_x = this.parent_algorithm.logic.lca_parents[_x][_k];
+			}
+		}
+		this.logic.operations.push(['F', this.parent_algorithm.logic.lca_parents[_x][0]]); //down
+		this.logic.lca_ans = this.parent_algorithm.logic.lca_parents[_x][0];
+	}
+
+	logical_box(){
+		if (this.logic.type == 'k') this.logical_prepare_kth();
+		else this.logical_prepare_lca();
 	}
 
 	presentation_change_color_edge(arc, color_start, color_end){
@@ -258,7 +296,7 @@ class Lca_binary_querier extends Algorithm{
 		Lca_binary.presentation_color_edge(arc, color_start);
 	}
 
-	presentation_create_belt(){
+	presentation_create_belt_kth_ancestor(){
 		var amount_buttons = this.logic.subsequent_pairs.length;
 		var grid = new Grid(amount_buttons+2, 1, {'px':{'width':200}});
 		this.place.appendChild(grid.place.full_div);
@@ -279,7 +317,41 @@ class Lca_binary_querier extends Algorithm{
 		Representation_utils.Painter(this.buttons.closer_vertices[amount_buttons], 4);
 	}
 
-	presentation_make_up_lca(){
+	presentation_create_belt_lca(){
+		var amount_buttons = 12;
+		var grid = new Grid(amount_buttons+2, 3, {'px':{'width':200}});
+		this.place.appendChild(grid.place.full_div);
+		this.buttons.closer_vertices = [];
+
+		function System(column_name, column_index, array, width, button_name){
+			this.column_name = column_name;
+			this.column_index = column_index;
+			this.array = array;
+			this.width = width;
+			this.button_name = button_name;
+			return this;
+		}
+
+		var list_operas = this.logic.operations.filter(e => (e[0]=='L' || e[0]=='U'));
+		var systems = [[`Movement`, 0, list_operas.map(e => e[0]=='L'?'&larr;':'&uarr;'), 100, 'movement'],
+			[`Expression`, 1, list_operas.map(e => `anc(par<sub>${1<<e[2]}</sub>(${e[1]}), ${this.logic.y}) = anc(${e[3]}, ${this.logic.y}) = `), 200, 'expression'], 
+			[`Logical value`, 2, list_operas.map(e => e[4]==1?'True':'False'), 100, 'logical']
+		];
+		var proper_systems = systems.map(e => new System(...e));
+
+		for (var x of proper_systems){
+			var name = grid.get(0, x.column_index);
+			name.innerHTML = x.column_name;
+			Representation_utils.Painter(name, 5);
+			Modern_representation.button_modifier(name, {'stylistic':{'px':{'width':x.width}}});
+			this.buttons[x.button_name] = grid.filler([[1, x.array.length], x.column_index], x.array, {'color':0, 'stylistic':{'px':{'width':x.width}}});
+		}
+
+		for (var x of this.buttons.expression) x.style.textAlign = 'right';
+		for (var x of this.buttons.logical) x.style.textAlign = 'left';
+	}
+
+	presentation_make_up_kth_ancestor(){
 		var i=0, prev_x=-1;
 
 		for (var x of this.logic.subsequent_pairs){
@@ -295,8 +367,11 @@ class Lca_binary_querier extends Algorithm{
 		this.buttons = {};
 		this.place.style.width = 'max-content';
 		if (this.logic.type == 'k'){
-			this.presentation_create_belt();
-			this.presentation_make_up_lca();
+			this.presentation_create_belt_kth_ancestor();
+			this.presentation_make_up_kth_ancestor();
+		}
+		else{
+			this.presentation_create_belt_lca();
 		}
 	}
 
@@ -367,15 +442,19 @@ class Lca_binary_querier extends Algorithm{
 			var a = opera[1], bit=opera[3];
 			var par = this.parent_algorithm.logic.lca_parents[a][opera[3]];
 
+			if (a==par){
+				staat.push([1, this.parent_algorithm.buttons.kth_queries[par][bit], 1, 0]);
+			}
+
 			passer.push([0, this.parent_algorithm.buttons.vertexes[a], 0]);
 			this.modern_pass_color(this.parent_algorithm.buttons.vertexes[par], 101, 15);
 
 			for (var i=0; i<bit; i++){
 				staat.push([0, this.parent_algorithm.buttons.kth_queries[par][i], 2]);
-				passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 42]);
+				if (a!=par) passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 42]);
 			}
 
-			this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[a][bit], 14, 42);
+			if (a!=par) this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[a][bit], 14, 42);
 			this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[par][bit], 1, 2);
 
 			var empty = `rgba(255, 255, 255, 0.0)`;
@@ -385,15 +464,35 @@ class Lca_binary_querier extends Algorithm{
 
 			for (var i=bit+1; i<=this.parent_algorithm.logic.depth_lca; i++){
 				staat.push([0, this.parent_algorithm.buttons.kth_queries[par][i], 0]);
-				passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 42]);
+				if (a!=par) passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 42]);
 			}
+
+			staat.push([0, this.buttons.closer_vertices[opera[5]-1], 2]);
+			this.modern_pass_color(this.buttons.closer_vertices[opera[5]], 1, 0);
 		}
 
-		if (s[0] == 100){
+		if (s[0] == 20){ //Lca start
+			var a=opera[1];
+			this.modern_pass_color(this.parent_algorithm.buttons.vertexes[this.logic.x], 101, 0);
+			this.modern_pass_color(this.parent_algorithm.buttons.vertexes[this.logic.y], 101, 0);
+		}
+
+		if (s[0] == 21){ //Checkin' anc(a, b)
+			this.modern_pass_color(this.parent_algorithm.buttons.preorder[this.logic.x], 14, 0);
+			this.modern_pass_color(this.parent_algorithm.buttons.sons[this.logic.y], 14, 0);
+		}
+
+		if (s[0] == 100){ //Query finished
 			for (var i=0; i<=this.parent_algorithm.logic.depth_lca; i++){
 				staat.push([0, this.parent_algorithm.buttons.kth_queries[this.logic.res][i], 42]);
 			}
+
 			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.res], 8]);
+			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.x], 101]);
+
+			staat.push([0, this.buttons.closer_vertices[this.logic.subsequent_pairs.length-1], 2]);
+			staat.push([0, this.buttons.closer_vertices[0], 8]);
+			staat.push([0, ArrayUtils.get_elem(this.buttons.closer_vertices, -1), 8]);
 		}
 	}
 
@@ -402,9 +501,15 @@ class Lca_binary_querier extends Algorithm{
 		var s=this.lees[l-1], op=s[1];
 
 		var next_bit = this.logic.operations[s[1]+1][4];
-		if (s[1]+2 == this.logic.operations.length) return [100];
-		if (next_bit == 0) return [11, s[1]+1];
-		if (next_bit == 1) return [12, s[1]+1];
+		if (this.logic.type == 'k'){
+			if (s[1]+2 == this.logic.operations.length) return [100];
+			if (next_bit == 0) return [11, s[1]+1];
+			if (next_bit == 1) return [12, s[1]+1];
+		}
+
+		if (this.logic.type == 'l'){
+
+		}
 	}
 
 	StatementComprehension(){
@@ -416,7 +521,9 @@ class Lca_binary_querier extends Algorithm{
 }
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var eg2=new Lca_binary(feral2, [[1, 2], [2, 3], [3, 4], [4, 5], [2, 6], [6, 7]]);
+var eg2=new Lca_binary(feral2, [[1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [3, 7], [7, 8]]);
+//var eg2=new Lca_binary(feral2, [[1, 2], [2, 3], [3, 4], [4, 5], [2, 6], [6, 7]]);
+//var eg2=new Lca_binary(feral2, [[1, 2], [1, 3], [2, 4], [4, 6], [6, 7], [6, 8], [8, 9], [3, 11], [3, 12], [12, 13], [2, 5], [5, 10]]);
 
 var feral3=Algorithm.ObjectParser(document.getElementById('Algo3'));
 var eg3=new Lca_binary_querier(feral3, eg2, 'l', 7, 4);
