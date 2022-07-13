@@ -13,13 +13,13 @@
 	<body>
 		{{ headers.full_upper('Tree Walk', 'Trees') }}
 		<h2>Introduction</h2>
-		<p>In this article two techniques of solving tree related problems will be shown - penetrating the tree from bottom to top in order to get information from the subtree, and penetrating the tree twice from bottom to top and then from top to bottom in order to get some information about the whole tree in every vertex of a tree. To avoid misconceptions, some definitions have to be stated:</p>
+		<p>In this article two techniques of solving tree related problems will be shown - penetrating the tree from bottom to top in order to get information from the subtree, and penetrating the tree twice from bottom to top and then from top to bottom in order to get some information about the whole tree in every vertex of the tree. To avoid misconceptions, some definitions have to be stated:</p>
 		<ol>
-			<li><b>Simple path</b> is a path in a graph that passes through any edge at most once.</li>
-			<li><b>Tree</b> is an undirected graph, such that between each two vertices there is exactly one simple path. This implies that the graph is acyclic (because cycle allows to move from one vertex to another in more than one way) and connected (because there is a way to move from any vertex to another). It is crucial to show, that such graph have \(n-1\) edges, where \(n\) is number of vertexes. One can consider a tree to be a generalization of a sequence.</li>
-			<li><b>Root</b> is a vertex in the tree, relative to which its vertexes are described - usually it doesn't matter, which vertex is treated as root, while describing vertices relatively to some other vertex (called root) allows performing certain operations on a tree (like finding lowest common ancestor of 2 vertices).</li>
+			<li><b>Simple path</b> is a path in a graph that passes through any edge of the graph at most once.</li>
+			<li><b>Tree</b> is an undirected graph, such that between each two vertices there is exactly one simple path. This implies that the graph is acyclic (because cycle allows to move from one vertex to another in more than one way) and connected (because there is a way to move from any vertex to another). It is crucial to show, that such graph has \(n-1\) edges, where \(n\) is its number of vertexes. One can consider a tree to be a generalization of a sequence.</li>
+			<li><b>Root</b> is a vertex in the tree, relative to which its vertexes are described - usually it doesn't matter, which vertex is treated as a root, while describing vertices relatively to some other vertex (called root) allows performing certain operations on a tree (like finding lowest common ancestor of 2 vertices).</li>
 			<li><b>Depth</b> is the distance in the tree from the root to a given vertex.</li>
-			<li><b>Parent</b> of a vertex \(x\) is a vertex \(y\) with lower depth such that there exists an edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than root there is such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son - otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertices has \(n-1\) edges.</li>
+			<li><b>Parent</b> of a vertex \(x\) in a rooted tree is a vertex \(y\) with lower depth such that there exists an edge between \(x\) and \(y\) (later denoted as \(x-y\)). There cannot be two such vertices - if they were, then there would be two simple paths \(x-root\). Also, for each vertex different than the root there exists such vertex - otherwise, there would be no path \(x-root\). Number of edges leading from vertex to it's parent is therefore \(n-1\), and each vertex has only one path to the root - therefore, each edge leads between parent and its son - otherwise, an edge would allow existence of two paths between root and some vertex. What follows, tree with \(n\) vertices has \(n-1\) edges.</li>
 			<li><b>Descendant</b> of a vertex \(x\) is any vertex \(y\) with higher depth, such that \(x\) lies on simple path \(y-root\).</li>
 			<li><b>Child</b> of a vertex \(x\) is any such descendant \(y\) of \(x\), that there is an edge \(x-y\).</li>
 			<li><b>Subtree</b> of a vertex \(x\) is a set of all verices that are descendants of vertex \(x\) including \(x\). Later size of a subtree of \(x\) will be denoted as \(son(x)\).</li>
@@ -28,7 +28,7 @@
 		</ol>
 
 		<h2>First Problem statement and definitions</h2>
-		<p>Suppose you want to solve the following problem: a tree of \(n\) vertices is given, \(n \le 10^6\), and You have to find the length of the longest simple path in this tree (also called diameter).</p>
+		<p>Suppose you want to solve the following problem: a tree of \(n\) vertices is given, \(n \le 10^6\), and You have to find the length of the longest simple path in this tree (also called <strong>diameter</strong>).</p>
 
 		<h3>Solution 0: Basic tree properties in \(O(n^2)\)</h3>
 		<p>One could solve this problem with absolute brute force, by counting longest distance from any vertex in tree, for example with standard breadth first search - solution works in \(O(n^2)\).</p>
