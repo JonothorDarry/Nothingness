@@ -475,9 +475,8 @@ class PollardRho extends Algorithm{
 		this.lees.push([0, 1]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
@@ -523,8 +522,7 @@ class PollardRho extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr], x=s[1];
 
 		var poly_str=this.logic.poly_str;
 

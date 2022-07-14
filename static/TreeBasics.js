@@ -181,9 +181,8 @@ class DiamFinder extends Algorithm{
 		this.lees.push([0, 0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0] == 100){
@@ -273,8 +272,7 @@ class DiamFinder extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr], x=s[1];
 
 		var op = this.logic.operations[s[1]];
 		if (s[0] == 0) return `As the algorithm starts, we shall start a tree penetration from an arbitrary vertex - that is, vertex number 1.`;
@@ -546,9 +544,8 @@ class DoubleWalk extends Algorithm{ //Non-working example
 		this.lees.push([0, 0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0] == 100){
@@ -706,8 +703,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr], x=s[1];
 
 		var op = this.logic.operations[s[1]];
 		if (s[0] == 0) return `As the algorithm starts, we shall start a tree penetration from an arbitrary vertex - that is, vertex number 1.`;

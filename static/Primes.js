@@ -49,9 +49,8 @@ class Sieve extends Algorithm{
 		this.lees.push([0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
@@ -88,10 +87,9 @@ class Sieve extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		if (l==1) return `This is just before the beginning of the sieve - I mark 0 and 1 as non-prime, by definition`;
+		if (this.state_nr == 0) return `This is just before the beginning of the sieve - I mark 0 and 1 as non-prime, by definition`;
 
-		var prev=this.lees[l-2], last=this.lees[l-1];
+		var prev=this.lees[this.state_nr-1], last=this.lees[this.state_nr];
 		var strr=``;
 		if (prev[0]==1 && last[0]==2) strr=`I've already marked all integers lower or equal to limit divisible by ${prev[1]}, so I search for next primes, starting from last prime I've found +1 - ${prev[1]+1}. `;
 		if (prev[0]==2 && last[0]==2) strr=`Last number I checked (${prev[1]}) was not a prime, so I search further. `;
@@ -167,9 +165,8 @@ class ExtendedSieve extends Sieve{
 		this.lees.push([0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
@@ -207,10 +204,9 @@ class ExtendedSieve extends Sieve{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		if (l==1) return `This is just before the beginning of the sieve - I mark 0 and 1 as non-primes with factorizations: undefined (for 0) and consisting of 1 (for 1), by definition. Furthermore, I set (just for convenience) lowest prime factor of each number to itself.`;
+		if (this.state_nr == 0) return `This is just before the beginning of the sieve - I mark 0 and 1 as non-primes with factorizations: undefined (for 0) and consisting of 1 (for 1), by definition. Furthermore, I set (just for convenience) lowest prime factor of each number to itself.`;
 
-		var prev=this.lees[l-2], last=this.lees[l-1];
+		var prev=this.lees[this.state_nr-1], last=this.lees[this.state_nr];
 		var strr=``;
 		if (prev[0]==1 && last[0]==2) strr=`I've already marked all integers lower or equal to limit divisible by ${prev[1]}, so I search for next primes, starting from last prime I've found +1 - ${prev[1]+1}. `;
 		if (prev[0]==2 && last[0]==2) strr=`Last number I checked (${prev[1]}) was not a prime, so I search further. `;
@@ -286,9 +282,10 @@ class Factorizer extends Algorithm{
 	BeginningExecutor(){
 		this.read_data();
 		this.reset_state_machine();
-		if (this.sieve.finito==false){
+		if (this.sieve.is_runtime_finished() == false){
 			this.lees.push([101]);
 		}
+
 		else if (this.logic.a > this.sieve.logic.n) {
 			this.lees.push([102]);
 		}
@@ -298,9 +295,8 @@ class Factorizer extends Algorithm{
 		}
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
@@ -342,7 +338,7 @@ class Factorizer extends Algorithm{
 
 	StatementComprehension(){
 		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr], x=s[1];
 
 		if (s[0]==0 && s[1]!=1) return `As lowest factor of ${s[1]} is equal to ${this.logic.lpf[s[1]]}, then ${this.logic.lpf[s[1]]} is added to factorization of ${this.logic.a}, and remaining factors of ${this.logic.a} are factors of ${s[1]}/${this.logic.lpf[s[1]]} = ${Math.floor(s[1]/this.logic.lpf[s[1]])}`;
 		if (s[0]==0) return `And so, 1 was reached, so full factorization of ${this.logic.a} was obtained.`;
@@ -408,9 +404,8 @@ class Simple_factorizer extends Algorithm{
 		this.lees.push([0, 0, 0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
@@ -449,8 +444,9 @@ class Simple_factorizer extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr];
+		var x=s[1];
+
 		var str=`Our aim is to find next prime divisor of ${this.logic.x} - in order to do this, we'll try to find divisor of still unfactorized part of ${this.logic.x} equal to ${this.logic.xp[s[2]]}. We search for next divisor from ${(s[1]>0)?this.logic.factors[s[1]-1].base+1:2} to ${this.logic.limit}. `
 
 		if (s[0]==0 && this.logic.factors[s[1]].base<this.logic.limit) return str+`Next divisor is ${this.logic.factors[s[1]].base}, thus, we divide our unfactorized part of ${this.logic.x} by ${this.logic.factors[s[1]].base}, obtaining ${this.logic.xp[s[2]]}/${this.logic.factors[s[1]].base}=${this.logic.xp[s[2]+1]}.`;

@@ -18,27 +18,22 @@ class Algorithm{
 		//Beginning button & sequence
 		this.inbut.addEventListener('click', function(){
 			var zis=Algorithm.alldict[this.id];
-			zis.post_beginning_executor();
-			zis.post_state_maker();
+			zis.post_beginning_executor(); //Here all system is generated
 			zis.ChangeStatement();
 		});
 
 		//Next value
 		this.nextbut.addEventListener('click', function(){
 			var zis=Algorithm.alldict[this.id];
-			if (zis.version>=4) zis.new_next_state();
-			else zis.NextState();
-			zis.post_state_maker();
+			zis.full_state_mover();
 			zis.ChangeStatement();
 		});
 
 		//Previous value
 		this.prevbut.addEventListener('click', function(){
 			var zis=Algorithm.alldict[this.id];
-			if (zis.lees.length>1){
-			       zis.StateUnmaker();
-			       zis.ChangeStatement();
-			}
+			zis.full_state_remover();
+			zis.ChangeStatement();
 		});
 
 		//Finish Algorithm instantly    
@@ -51,17 +46,9 @@ class Algorithm{
 		this.progress_bar.addEventListener('input', function(){
 			var zis=Algorithm.alldict[this.id];
 			var proto = this.value;
-			while (proto > zis.state_nr){
-				if (zis.version>=4) zis.new_next_state();
-				else zis.NextState();
-				zis.post_state_maker();
-				zis.ChangeStatement();
-			}
-
-			while (proto < zis.state_nr){
-				zis.StateUnmaker();
-				zis.ChangeStatement();
-			}
+			while (proto > zis.state_nr) zis.full_state_mover();
+			while (proto < zis.state_nr) zis.full_state_remover();
+			zis.ChangeStatement();
 		});
 	}
 
@@ -91,17 +78,46 @@ class Algorithm{
 	}
 
 	isFinished(){
-		if (this.lees[this.lees.length-1][0]>=100) return true;
+		if (this.lees[this.lees.length-1][0] >= 100) return true;
 		return false;
 	}
 
+	is_runtime_finished(){
+		return this.state_nr == this.all_states_nr;
+	}
+
 	//Default action after finish
-	FinishingSequence(){
+	finishing_sequence_basic(){
 		while (!this.isFinished()){
-			if (this.version>=4) this.new_next_state();
+			if (this.version >= 4) this.new_next_state();
 			else this.NextState();
-			this.post_state_maker();
-			this.ChangeStatement();
+		}
+
+		for (var state of this.lees) this.post_state_maker(state);
+	}
+
+	FinishingSequence(){
+		while (this.state_nr < this.all_states_nr){
+			this.state_nr+=1;
+			this.transformator(this.state_transformation[this.state_nr]);
+		}
+		this.ChangeStatement();
+		this.update_progress();
+	}
+
+	full_state_mover(){
+		if (this.state_nr < this.all_states_nr){
+			this.state_nr += 1;
+			this.transformator(this.state_transformation[this.state_nr]);
+			this.update_progress();
+		}
+	}
+
+	full_state_remover(){
+		if (this.state_nr > 0){
+			this.StateUnmaker();
+			this.state_nr -= 1;
+			this.update_progress();
 		}
 	}
 
@@ -111,10 +127,9 @@ class Algorithm{
 		this.progress_starter();
 	}
 
-	post_state_maker(){
-		if (this.finito==true) return;
+	post_state_maker(state){
 		this.before_state_maker();
-		this.StateMaker();
+		this.StateMaker(state);
 		this.after_state_maker();
 	}
 
@@ -124,20 +139,17 @@ class Algorithm{
 	}
 
 	after_state_maker(){
-		if (this.isFinished()==true) 
-			this.ephemeral.staat.push([3, "finito", false, true]);
-
 		this.ephemeral.staat.push([3, "pass_to_next_state", this.pass_to_next_state, this.ephemeral.passer]);
+		this.fill_in_the_blank_states(this.ephemeral.staat);
 		this.transformator(this.ephemeral.staat);
+		
+		this.state_transformation.push(this.ephemeral.staat);
+
 		this.ephemeral={'staat':null, 'passer':null};
 	}
 
-	new_next_state(){
-		//If !this.finito? check validity
-		if (this.finito) return;
+	new_next_state(){ //Used only at the beginning
 		var next_state=this.NextState();
-		this.state_nr += 1;
-		this.update_progress();
 		if (next_state!=null){ //Konieczne 2? Sprawdzić
 			this.lees.push(next_state);
 		}
@@ -181,7 +193,6 @@ class Algorithm{
 		this.state_transformation=[];
 		this.state={};
 		this.place.innerHTML='';
-		this.finito=false;
 		this.ephemeral={'staat':null, 'passer':null};
 		this.pass_to_next_state=[];
 		this.logic={};
@@ -189,8 +200,10 @@ class Algorithm{
 	}
 
 	progress_starter(){
-		this.FinishingSequence();
+		this.finishing_sequence_basic();
+		this.state_nr = this.lees.length - 1;
 		this.all_states_nr = this.state_nr;
+
 		this.reset_state_machine();
 		this.progress_bar.setAttribute('min', 0);
 		this.progress_bar.setAttribute('max', this.all_states_nr);
@@ -202,18 +215,17 @@ class Algorithm{
 	}
 
 	reset_state_machine(){
-		while(this.lees.length>1) this.StateUnmaker();
-		if (this.lees.length==1) this.StateUnmaker();
+		while (this.state_nr > 0) this.full_state_remover();
 	}
 
 	//Reversing operation
 	StateUnmaker(){
-		var l=this.lees.length, i, elem;
+		var i, elem;
 
-		if (this.state_transformation.length==0) return;
+		if (this.state_nr == 0) return;
 		//Back to times of Splendor: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field, 5 - fun
-		var x=this.state_transformation[this.state_transformation.length-1];
-		for (i=x.length-1;i>=0;i--){
+		var x=this.state_transformation[this.state_nr];
+		for (i=x.length-1; i>=0; i--){
 			elem=x[i];
 			if (elem[0]==0) this.Painter(elem[1], elem[2]);
 			if (elem[0]==1) elem[1].innerHTML=elem[2];
@@ -226,11 +238,6 @@ class Algorithm{
 				if (elem[1].button) elem[1].button.innerHTML = elem[1].values[elem[1].iterator];
 			}
 		}
-		this.state_transformation.pop();
-		this.state_nr--;
-		this.update_progress();
-
-		if (l>1) this.lees.pop();
 	}
 
 	StatementComprehension(){}
@@ -260,8 +267,6 @@ class Algorithm{
 
 	//Execute changes in the last state
 	transformator(staat){
-		this.fill_in_the_blank_states(staat);
-		this.state_transformation.push(staat);
 		var x, i;
 		for (i=0;i<staat.length;i++){
 			x=staat[i];
@@ -276,6 +281,7 @@ class Algorithm{
 			}
 		}
 	}
+
 	//Specific change - passing colors between states
 	pass_color(btn, col_before=4, col_mid=1, col_after=0){
 		this.ephemeral.staat.push([0, btn, col_before, col_mid]);
@@ -286,7 +292,6 @@ class Algorithm{
 		this.ephemeral.staat.push([0, btn, btn._color, col_mid]);
 		this.ephemeral.passer.push([0, btn, col_mid, col_after]);
 	}
-
 
 	divsCreator(mode, number_of_rows, title_list, midian, elements=['divs', 'zdivs']){
 		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, this.place, this.stylistic);
@@ -310,7 +315,7 @@ class Algorithm{
 			'output':v.getElementsByClassName('comprehend')[0],
 			'finitButton':v.getElementsByClassName('finish')[0],
 			'progressBar':v.getElementsByClassName('progress')[0]
-		}
+		};
 		return dick;
 	}
 
@@ -1520,7 +1525,6 @@ class Modern_tree{
 		var primary=-1, i=1, x, p;
 
 		while (this.prufer_code.length < this.n-2){
-			//console.log(i, this.kids[i].length, removed[i], primary, this.prufer_code);
 			if (primary!=-1){
 				x=primary;
 				primary=-1;

@@ -345,9 +345,8 @@ class TotientSieve extends Algorithm{
 		this.lees.push([0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
@@ -386,8 +385,7 @@ class TotientSieve extends Algorithm{
 
 	//Statement printed on the output
 	StatementComprehension(){
-		var l=this.lees.length;
-		var prev=this.lees[l-2], last=this.lees[l-1];
+		var last=this.lees[this.state_nr], prev=this.lees[this.state_nr-1];
 		var strr=``;
 
 		if (last[0]==0) return `This is just before the beginning of the sieve - For each number, I mark it's totient as itself. Also, I evaluate totient of 0 and 1 from definition.`;
@@ -449,9 +447,8 @@ class PowerTower extends Algorithm{
 		}
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], tot;
+	StateMaker(s){
+		var tot;
 		if (s[0]==1){
 			if (s[1]!=0) this.Painter(this.btnlist[2][s[1]-1], 0);
 			this.Painter(this.btnlist[2][s[1]], 1);
@@ -537,8 +534,7 @@ class PowerTower extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var last=this.lees[l-1], prev=this.lees[l-2], tot;
+		var last=this.lees[this.state_nr], prev=this.lees[this.state_nr-1], tot;
 		
 		if (last[0]==100) return `And so, the end has come: the result is ${prev[2]}`;
 		if (last[0]==1) return `Now, I'm finding totients of last modulus, so that I'll be able to calculate exponent easily. ${((last[1]==0)?(`This is just the beginning of algorithm, so I assign most outer modulus to given m=${this.toth[last[1]]}`):(`&#x03D5;(${this.toth[last[1]-1]})=${this.toth[last[1]]}`))}`;

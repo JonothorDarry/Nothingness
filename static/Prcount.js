@@ -226,9 +226,8 @@ class PostPhi extends Algorithm{
 		this.lees.push([1, this.logic.a, 0, 0, 0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], i, p1, p2, layer=s[1], v, h, btn;
+	StateMaker(s){
+		var i, p1, p2, layer=s[1], v, h, btn;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		//Temporary(?): Noe colored pointers
@@ -312,8 +311,7 @@ class PostPhi extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1], layer, p1, p2, h, p;
+		var s=this.lees[this.state_nr], x=s[1], layer, p1, p2, h, p;
 
 		if (s[0]==0 || s[0]==1 || s[0]==2){
 			layer=s[1], p1=s[2], p2=s[3], h=s[4];
@@ -585,9 +583,8 @@ class Segtree_Counter extends Algorithm{
 		this.palingnesia();
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], btn;
+	StateMaker(s){
+		var btn;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		//1 - starter, query sort
@@ -709,8 +706,7 @@ class Segtree_Counter extends Algorithm{
 
 	//Horror: teraz czytanie z danych buttonów
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1], layer, p1, p2, h;
+		var s=this.lees[this.state_nr], x=s[1], layer, p1, p2, h;
 
 		if (s[0] == 1) return `Queries are sorted in order of subsequent prime numbers, which are used in sieving &phi;(n,a). Besides, note, that segment tree was started: values in its nodes are equal to sum of its children, each leaf gives information, whether partiular number was marked as divisible by first prime_nr primes. Note, that 0 is marked as divisible from the very start of this algorithm.`;
 		if (s[0] == 20){

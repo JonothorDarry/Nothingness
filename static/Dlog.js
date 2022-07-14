@@ -123,9 +123,8 @@ class Dlog extends Algorithm{
 		this.lees.push([0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
@@ -228,8 +227,7 @@ class Dlog extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr], x=s[1];
 
 		if (s[0]==0) return `Our aim is to find discrete logarithm - number x solving equation <strong>a<sup>x</sup> &equiv; b (mod m)</strong> - in this case, x solving ${this.logic.a}<sup>x</sup> &equiv; ${this.logic.b} (mod ${this.logic.m}). First, notice, that if there exist any solution, then there exist solution x &in; &lt;0 ; m-1 &gt; - because values of a<sup>x</sup> have to enter a cycle for subsequent values of x, because any value (mod m) is equivalent to one of m numbers in range &lt;0 ; m-1 &gt;. Then: a<sup>x</sup> &equiv; a<sup>s*p+q</sup> &equiv; b (mod m)</sup> for some constant s and q &lt; s. What can be done with this forbidden knowledge? Notice, that a<sup>q</sup> &equiv; b*a<sup>-s*p</sup>. If s is approximately square root of m, then one can, for each a<sup>s*p</sup> find its inverse, multiply by b, then check, if there exists such q in range &lt; 0; s-1 &gt;, that a<sup>q</sup> &equiv; b*a<sup>-s*p</sup> (mod m) and have quite better algorithm than standard br&uuml;te f&ouml;rce. So, what is s in our case? Ceiling (could be floor, round, it doesn't matter as long, as number is close to square root) of square root of ${this.logic.m} is equal to ${this.logic.s} - this value will be used further.`
 		if (s[0]==1 && s[1]==0) return `By large table we mean table with values a<sup>s*p</sup>. For p=0, value of a<sup>s*0</sup> is certainly equal to 1: thus, ${this.logic.a}<sup>${this.logic.s}*0</sup> &equiv; 1 (mod ${this.logic.m}).`;

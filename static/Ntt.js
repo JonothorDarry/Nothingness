@@ -283,9 +283,8 @@ class Ntt extends Algorithm{
 		}
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], j, btn, value, i=0, n=this.logic.n;
+	StateMaker(s){
+		var j, btn, value, i=0, n=this.logic.n;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
@@ -427,8 +426,8 @@ class Ntt extends Algorithm{
 
 	StatementComprehension(){
 		var wfun=function(x){return `w<sub>n</sub><sup>${x}</sup>`;}
-		var l=this.lees.length, w1=wfun(1), wn=wfun('n'), w0=wfun(0), wi=wfun('i'), wi_1=wfun('i-1');
-		var s=this.lees[l-1], equiv=this.logic.is_ntt?`&equiv;`:`=`;
+		var w1=wfun(1), wn=wfun('n'), w0=wfun(0), wi=wfun('i'), wi_1=wfun('i-1');
+		var s=this.lees[this.state_nr], equiv=this.logic.is_ntt?`&equiv;`:`=`;
 		var strr=``;
 		if (s[0]==0) strr=`At the start of the algorithm, the polynominals A(x), B(x) are padded with 0's, so that it will be possible to find their values in not less than o+m+1=${this.logic.o+this.logic.m+1} &le; ${this.logic.n} places`
 		if (s[0]==1 && (this.logic.proot || this.logic.is_fft)) strr=`${this.logic.is_ntt?`Primitive root modulo q=${this.logic.q} is found`:`${this.logic.n}-th root of unity is found`}, it is equal to ${this.logic.proot} ${this.logic.is_ntt?`(to attain this root deterministic algorithm was used).`:``}`;
@@ -538,11 +537,12 @@ class SumNtt extends Algorithm{
 		this.poly=[];
 		var poly=this.poly;
 
-		this.stylistic.bs_butt_width="45px";
-		this.stylistic.bs_butt_height="45px";
+		var square_size = 45;
+		this.stylistic.bs_butt_width=`${square_size}px`;
+		this.stylistic.bs_butt_height=`${square_size}px`;
 
 		this.layers=Math.ceil(Math.log2(this.logic.n))+1;
-		var i, j, ij, double_butt, add_butt;
+		var i, j, ij;
 
 		//Creating subsequent polynominals
 		for (i=0; i<this.layers; i++){
@@ -572,7 +572,7 @@ class SumNtt extends Algorithm{
 			for (i=0; i<this.poly[ij].length; i++){
 				this.reducts[ij].push([]);
 				for (j=0; j<this.poly[ij][i].length; j++){
-					double_butt=super.doubleButtCreator(null, super.buttCreator.bind(this));
+					var double_butt=super.doubleButtCreator(null, super.buttCreator.bind(this));
 					if (ij==0){
 						super.Painter(double_butt[1], 101);
 						super.Painter(double_butt[2], 0);
@@ -581,17 +581,11 @@ class SumNtt extends Algorithm{
 						super.Painter(double_butt[1], 4);
 						super.Painter(double_butt[2], 4);
 					}
-					double_butt[0].style.height="45px";
-					double_butt[0].style.width="45px";
+					double_butt[0].style.height=`${square_size}px`;
+					double_butt[0].style.width=`${square_size}px`;
 
-					double_butt[2].style.height="45px";
-					double_butt[2].style.lineHeight=`${45+10}px`;
-					double_butt[2].style.width="45px";
-					double_butt[2].style.verticalAlign="bottom";
-
-					double_butt[1].style.width="20px";
-					double_butt[1].style.right="0";
-					double_butt[1].style.zIndex="2";
+					Modern_representation.button_modifier(double_butt[2], {'stylistic': {'px':{'height':square_size, 'width':square_size, 'lineHeight':square_size+10}, 'general':{'verticalAlign':'bottom'}}});
+					Modern_representation.button_modifier(double_butt[1], {'stylistic':{'px':{'width':20, 'right':0}, 'general':{'zIndex':2}}});
 
 					double_butt[2].innerHTML=poly[ij][i][j];
 					double_butt[1].innerHTML=j;
@@ -601,7 +595,7 @@ class SumNtt extends Algorithm{
 				}
 
 				for (j=0; j<(1<<(ij+1))-1; j++){
-					add_butt=super.buttCreator();
+					var add_butt = Modern_representation.button_creator('', {'px':{'width':square_size, 'height':square_size}});//super.buttCreator();
 					this.zdivs[ij].buttons.appendChild(add_butt);
 				}
 			}
@@ -628,9 +622,8 @@ class SumNtt extends Algorithm{
 		this.lees.push([0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], i=0, n=this.logic.n, v1=s[1], v2=s[2], passer=[];
+	StateMaker(s){
+		var i=0, n=this.logic.n, v1=s[1], v2=s[2], passer=[];
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==1){
@@ -681,8 +674,7 @@ class SumNtt extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], M=998244353;
+		var s=this.lees[this.state_nr], M=998244353;
 
 		var polynominalize=function(coeffs){
 			var poly=``;
@@ -705,7 +697,7 @@ class SumNtt extends Algorithm{
 				var p2=`${polynominalize(this.poly[s[1]-1][2*s[2]+1])}`;
 				var pres=`${polynominalize(this.poly[s[1]][s[2]])}`;
 
-				return `Now, polynominals representing two solutions to smaller subproblems (namely polynominals ${show_poly(s[1]-1, s[2]*2)} and ${show_poly(s[1]-1, s[2]*2+1)}) have to be multiplied in order to solve larger subproblem (represented by polynominal ${show_poly(s[1], s[2])}) of finding set sums: <b>(${p1})(${p2}) &#8801; ${pres} (mod ${M})</b>. Note that complexity of shown algorithm depends on choice of algorithm for polynominal multiplication: for classical dp approach, it will be O(nm), while for multiplication using NTT it will be O(nlog(n)log(m)).`;
+				return `Now, polynominals representing two solutions to smaller subproblems (namely polynominals ${show_poly(s[1]-1, s[2]*2)} and ${show_poly(s[1]-1, s[2]*2+1)}) have to be multiplied in order to solve larger subproblem (represented by polynominal ${show_poly(s[1], s[2])}) of finding set sums: <b>(${p1})(${p2}) &#8801; ${pres} (mod ${M})</b>. Note that complexity of shown algorithm depends on choice of algorithm for polynominal multiplication: for classical dp approach, it will be O(nm), while for multiplication using NTT it will be O((n+m)log(n)log(m)).`;
 			}
 		}
 

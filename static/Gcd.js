@@ -148,9 +148,8 @@ class SuperEuclid{
 		return strr;
 	}
 
-	static StateMaker(obj){
-		var l=obj.lees.length;
-		var s=obj.lees[l-1], staat=[], i;
+	static StateMaker(obj, s){
+		var staat=[], i;
 		var staat=obj.ephemeral.staat, passer=obj.ephemeral.passer;
 		var index=s[1];
 
@@ -255,8 +254,8 @@ class EuclidGcd extends Algorithm{
 		this.lees.push([0, 2]);
 	}
 
-	StateMaker(){
-		SuperEuclid.StateMaker(this);
+	StateMaker(s){
+		SuperEuclid.StateMaker(this, s);
 	}
 
 	NextState(){
@@ -274,8 +273,7 @@ class EuclidGcd extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], index=s[1];
+		var s=this.lees[this.state_nr], index=s[1];
 
 		return SuperEuclid.StatementComprehension(s[0], this.logic.a, this.logic.b, index);
 	}
@@ -347,11 +345,10 @@ class ExtendedEuclidGcd extends Algorithm{
 		this.lees.push([0, 2]);
 	}
 
-	StateMaker(){
-		SuperEuclid.StateMaker(this);
+	StateMaker(s){
+		SuperEuclid.StateMaker(this, s);
 
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 		var index=s[1];
 
@@ -397,8 +394,7 @@ class ExtendedEuclidGcd extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var prev=this.lees[l-2], last=this.lees[l-1];
+		var prev=this.lees[this.state_nr-1], last=this.lees[this.state_nr];
 		var ln=last[1], index=last[1];
 		var a=this.logic.a, b=this.logic.b, z=this.logic.z, p=this.logic.p, q=this.logic.q;
 		var strr=SuperEuclid.StatementComprehension(last[0], this.logic.a, this.logic.b, index);

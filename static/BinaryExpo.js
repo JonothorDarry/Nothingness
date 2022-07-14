@@ -137,9 +137,8 @@ class BinaryExpo extends Algorithm{
 		this.lees.push([0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0] == 0){
@@ -190,8 +189,7 @@ class BinaryExpo extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr], x=s[1];
 
 		if (s[0] == 0) return `An algorithm is initiated by initiating result to ${this.logic.a}<sup>0</sup>, and initiating a<sup>1</sup> = ${this.logic.a}.`;
 		if (s[0] == 1){
