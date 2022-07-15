@@ -1,236 +1,179 @@
-class CrtSolver extends Algorithm{
-	constructor(block, n=-1, c, s){
+class Crt extends Algorithm{
+	logical_box(){
+		function Result(validity, c1, s1, c2, s2, gcd, ps1_base, ps2_base, multipla_const, ps1_final, ps2_final, final_congruent, final_mod){
+			this.validity = validity;
+			this.c1 = c1;
+			this.s1 = s1;
+			this.c2 = c2;
+			this.s2 = s2;
+			this.gcd = gcd;
+			this.ps1_base = ps1_base;
+			this.ps2_base = ps2_base;
+			this.multipla_const = multipla_const;
+
+			this.ps1_final = ps1_final;
+			this.ps2_final = ps2_final;
+			this.final_congruent = final_congruent;
+			this.final_mod = final_mod;
+		}
+		this.logic.results = [];
+
+		var current_pair = this.logic.systems[0];
+		for (var cs of this.logic.systems.slice(1)){
+			var c1 = current_pair[0];
+			var s1 = current_pair[1];
+
+			var c2 = cs[0];
+			var s2 = cs[1];
+
+			var ext_gcd_res = NTMath.ext_gcd(s1, s2);
+			var gcd = ext_gcd_res[0];
+			var ps1_base = ext_gcd_res[1];
+			var ps2_base = ext_gcd_res[2];
+
+			if (((c2-c1)%gcd) != 0){
+				results.push(new Result(false, c1, s1, c2, s2, gcd, ps1_base, ps2_base));
+				this.logic.proto_results = [Result().push(...this.logic.results)];
+				break;
+			}
+			var multipla_const = Math.floor((c2-c1)/gcd);
+			var ps1_final = ps1_base*multipla_const;
+			var ps2_final = ps2_base*multipla_const;
+
+			var final_mod = Math.floor(s1*s2 / gcd);
+			var final_congruent = (ps1_final*s1 + c1) % final_mod;
+			if (final_congruent < 0) final_congruent += final_mod;
+
+			current_pair = [final_congruent, final_mod];
+			this.logic.results.push(new Result(true, c1, s1, c2, s2, gcd, ps1_base, ps2_base, multipla_const, ps1_final, ps2_final, final_congruent, final_mod));
+		}
+		this.logic.proto_results = [new Result(), ...this.logic.results];
+	}
+
+	presentation(){
+		this.buttons = {};
+		var all_systems = Modern_representation.div_creator('', {});
+		this.place.appendChild(all_systems);
+
+		var formula = `<sup>(c<sub>2</sub> - c<sub>1</sub>)</sup> / <sub>gcd(s<sub>1</sub>, s<sub>2</sub>)</sub>`;
+		var list_operations = [`ks<sub>1</sub> + c<sub>1</sub> = ls<sub>2</sub> + c<sub>2</sub>`, 
+			`ks<sub>1</sub> - ls<sub>2</sub> = c<sub>2</sub> - c<sub>1</sub>`,
+			`ps<sub>1</sub> + qs<sub>2</sub> = gcd(s<sub>1</sub>, s<sub>2</sub>)`,
+			`c<sub>2</sub> - c<sub>1</sub> &equiv; 0 (mod gcd(s<sub>1</sub>, s<sub>2</sub>))?`,
+			`${formula}ps<sub>1</sub> + ${formula}qs<sub>2</sub> = c<sub>2</sub> - c<sub>1</sub>`,
+			`k = p(c<sub>2</sub> - c<sub>1</sub>) / gcd(s<sub>1</sub>, s<sub>2</sub>)`,
+			`ks<sub>1</sub> + c<sub>1</sub> &equiv; c<sub>12</sub> (mod ${formula})`
+		];
+
+		var all_cols = 5;
+		var all_rows = 1+Math.max(list_operations.length, this.logic.systems.length);
+
+		var table = Representation_utils.proto_divsCreator(1, all_rows, [], null, all_systems, this.stylistic);
+
+		var grid = new Grid(all_rows, all_cols, this.stylistic, {'place':table.zdivs});
+		var position_systems_input = 0;
+		var position_systems_partial_results = 1;
+		var position_calculation_constants = 3;
+		var position_calculation_variables = 4;
+		var standard_width = 250;
+
+		grid.single_filler([0, position_systems_input], 'System of equations', {'color':5, 'stylistic':{'px':{'width':standard_width}}});
+		this.buttons.systems_input = grid.filler([[1, this.logic.systems.length], position_systems_input], 
+			this.logic.systems.map(e => `x &equiv; ${e[0]} (mod ${e[1]})`), 
+			{'color':0, 'stylistic':{'px':{'width':standard_width}}}
+		);
+		grid.filler([[this.logic.systems.length+1, all_rows-1], position_systems_input], [], {'stylistic':{'px':{'width':standard_width}}});
+
+		grid.single_filler([0, position_systems_partial_results], 'Partial results', {'color':5, 'stylistic':{'px':{'width':standard_width}}});
+		grid.single_filler([1, position_systems_partial_results], '', {'stylistic':{'px':{'width':standard_width}}});
+		this.buttons.systems_partial_results = grid.filler([[2, this.logic.results.length+1], position_systems_partial_results], 
+			this.logic.results.map(e => `x &equiv; ${e.final_congruent} (mod ${e.final_mod})`), 
+			{'color':0, 'stylistic':{'px':{'width':standard_width}}}
+		);
+		grid.filler([[this.logic.results.length+2, all_rows-1], position_systems_partial_results], [], {'stylistic':{'px':{'width':standard_width}}});
+
+
+		grid.single_filler([0, position_calculation_constants], 'Expression', {'color':5, 'stylistic':{'px':{'width':2*standard_width}}});
+		this.buttons.const_operations = grid.filler([[1, list_operations.length], position_calculation_constants], 
+			list_operations, 
+			{'color':5, 'stylistic':{'px':{'width':2*standard_width}}}
+		);
+		grid.single_filler([0, position_calculation_variables], 'Value', {'color':5, 'stylistic':{'px':{'width':2*standard_width}}});
+
+		var list_of_values = ['equation', 'transposition', 'gcd_result', 'validity', 'full_expression', 'keq', 'finale']; //repeating pattern - thrice
+		var value_buttons = grid.filler([[1, list_operations.length], position_calculation_variables], [],
+			{'color':0, 'stylistic':{'px':{'width':2*standard_width}}}
+		);
+
+
+		for (var i=0; i<list_of_values.length; i++) this.buttons[list_of_values[i]] = value_buttons[i];
+	}
+
+	statial(){
+		console.log(this.logic.proto_results);
+		this._statial_binding('equation', this.logic.proto_results.map(e => `${e.s1}k + ${e.c1} = ${e.s2}l + ${e.c2}`), this.buttons.equation);
+		this._statial_binding('transposition', this.logic.proto_results.map(e => `${e.s1}k - ${e.s2}l = ${e.c2} - ${e.c1}`), this.buttons.transposition);
+		this._statial_binding('gcd_result', this.logic.proto_results.map(e => `${e.ps1_base}k - ${e.ps2_base}l = ${e.gcd}`), this.buttons.gcd_result);
+		this._statial_binding('validity', this.logic.proto_results.map(e => ((e.validity==true)?`Yes, ${e.c2}-${e.c1} &equiv; 0 (mod ${e.gcd})`:`No, ${e.c2}-${e.c1} &equiv; ${(e.c2-e.c1) % e.gcd} (mod ${e.gcd})`)), this.buttons.validity);
+		this._statial_binding('full_expression', this.logic.proto_results.map(e => `${e.multipla_const} * ${e.ps1_base} * ${e.s_1} + ${e.multipla_const} * ${e.ps2_base} * ${e.s2} = ${e.c2} - ${e.c1}`), this.buttons.full_expression);
+		this._statial_binding('keq', this.logic.proto_results.map(e => `k = ${e.multipla_const} * ${e.ps1_base} = ${e.ps1_final}`), this.buttons.keq);
+		this._statial_binding('finale', this.logic.proto_results.map(e => `${e.ps1_final}*${e.s1} + ${e.c1} &equiv; ${e.final_congruent} (mod ${e.final_mod})`), this.buttons.finale);
+	}
+
+	palingenesia(){
+		this.logical_box();
+		this.presentation();
+		this.statial();
+	}
+
+	read_data(){
+		var fas=this.input.value;
+		var c=this.dissolve_input(fas);
+		this.logic.n=c.get_next();
+		this.logic.systems = [];
+		for (i=0;i<this.logic.n;i++) this.logic.systems.push([c.get_next(), c.get_next()]);
+	}
+
+	constructor(block, n, systems){
 		super(block);
+		this.logic.n=n;
+		this.logic.systems = systems;
 
-		this.stylistic.bs_butt_width="200px";
-		this.stylistic.bs_butt_width_h=200;
-		this.stylistic.bs_butt_height="30px";
-		this.stylistic.bs_butt_height_h=30;
-		this.stylistic.bs_font_size="14px";
-
-		if (n!=-1){
-			var i, af=[];
-			this.divs=this.divsCreator();
-
-			for (i=0;i<s.length;i++) af.push([c[i], s[i]]);
-			this.buttMaker(af);
-		}
+		this.version=5;
+		this.palingenesia();
 	}
-	
+
 	BeginningExecutor(){
-		this.solstack=[];
-		var fas=this.input.value, resp;
-		this.btn1=this.btn2=null;
-		this.dt=[];
-		var n, c, d, i=0, dis, vd, lst;
-
-		c=this.dissolve_input(fas);
-		n=c.get_next();
-		for (i=0;i<n;i++) this.dt.push([c.get_next(), c.get_next()]);
-
-		this.solstack.push(this.dt[0]);
-		this.lees.push([0, this.dt[1], this.extended_euclid(this.dt[0][1], this.dt[1][1])]);
-		this.divs=this.divsCreator();
-		this.buttMaker(this.dt);
-
-		this.buttChanger(0, 2);
-		this.ite=1;
-
-		//String values: c1, c2, s1, s2
-		this.stc1=`c<sub>1</sub>`
-		this.stc2=`c<sub>2</sub>`
-		this.sts1=`s<sub>1</sub>`
-		this.sts2=`s<sub>2</sub>`
+		this.read_data();
+		this.palingenesia();
+		this.lees.push([0]);
 	}
 
-	buttChanger(a, b, rev=0){
-		if (this.btn1){
-			if (rev==0) this.Painter(this.btn1, 2);
-			else this.Painter(this.btn1, 0);
-		}
-		if (this.btn2){
-			if (rev==0) this.Painter(this.btn2, 2);
-			else this.Painter(this.btn2, 0);
-		}
+	StateMaker(s){
+		var staat=[], i;
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
-		this.btn1=this.divs[0].getElementsByTagName("div")[a];
-		this.btn2=this.divs[0].getElementsByTagName("div")[b];
-
-		if (this.btn1) this.Painter(this.btn1, 1);
-		if (this.btn2) this.Painter(this.btn2, 1);
-	}
-	
-	extended_euclid(a, b){
-		var p=[1, 0], q=[0, 1], z, c, i=2;
-		for (i=2;b>0;i++){
-			z=Math.floor(a/b);
-			p[i]=p[i-2]-z*p[i-1];
-			q[i]=q[i-2]-z*q[i-1];
-			c=a%b, a=b, b=c;
-		}
-		return [a, p[i-2], q[i-2]];
-	}
-
-	StateUnmaker(){
-		var ln=this.lees.length;
-		var s=this.lees[ln-1], vv=this.solstack[this.solstack.length-1];
-		if (s[0]==0 && this.ite!=1){
-			var s1=this.sts1, s2=this.sts2, c1=this.stc1, c2=this.stc2, resp;
-			var sp1=this.lees[ln-2], sp2=this.lees[ln-4];
-			this.divs[1].innerHTML="";
-			vv=this.solstack[this.solstack.length-2];
-
-			this.addSpan(this.divs[1], `${c1}=${vv[0]}, ${s1}=${vv[1]}`);
-			this.addSpan(this.divs[1], `${c2}=${sp2[1][0]}, ${s2}=${sp2[1][1]}`);
-			resp=sp2[2];
-			this.addSpan(this.divs[1], `${resp[1]}*${s1}+${resp[2]}*${s2}=${resp[0]}`);
-
-
-			s2=sp2[1][1], c2=sp2[1][0], s1=vv[1], c1=vv[0];
-			this.addSpan(this.divs[1], `x=${s1}*${resp[1]}*(${c2}-${c1})/gcd(${s1}, ${s2})+${c1}=${s1*resp[1]*Math.floor(((c2-c1)/resp[0]))+c1}`);
-			this.addSpan(this.divs[1], `lcm(${s1}, ${s2})=${Math.floor((s1*s2)/s[2][0])}`);
-
-			var x=sp1[2]%sp1[1], lcm=sp1[1];
-			if (x<0) x+=sp1[1];
-			this.addSpan(this.divs[1], `x &equiv; ${x} (mod ${sp1[1]})`);
-		}
-
-		if (s[0]==1){
-			var vah=this.divs[1].getElementsByTagName("span");
-			this.divs[1].removeChild(vah[vah.length-1]);
-			this.divs[1].removeChild(vah[vah.length-1]);
-		}
-
-		if (s[0]==2){
-			this.ite-=1;
-			if (this.ite>1) this.buttChanger(this.ite*2-1, this.ite*2, 1);
-			else this.buttChanger(2, 0, 1);
-			this.solstack.pop();
-			var btt=this.divs[0].getElementsByTagName("div")[this.ite*2+1];
-			btt.style.display="None";
-			var vah=this.divs[1].getElementsByTagName("span");
-			this.divs[1].removeChild(vah[vah.length-1]);
-		}
-		super.StateUnmaker();
-	}
-
-
-	StateMaker(){
-		var s=this.lees[this.lees.length-1], vv=this.solstack[this.solstack.length-1];
 		if (s[0]==0){
-			var s1="s<sub>1</sub>", s2="s<sub>2</sub>", c1="c<sub>1</sub>", c2="c<sub>2</sub>", resp;
-			this.divs[1].innerHTML="";
-			this.addSpan(this.divs[1], `${c1}=${vv[0]}, ${s1}=${vv[1]}`);
-			this.addSpan(this.divs[1], `${c2}=${s[1][0]}, ${s2}=${s[1][1]}`);
-			resp=s[2];
-			this.addSpan(this.divs[1], `${resp[1]}*${s1}+${resp[2]}*${s2}=${resp[0]}`);
-		}
-		if (s[0]==1){
-			var s2=s[1][1], c2=s[1][0], s1=vv[1], c1=vv[0];
-			if ((c2-c1)%s[2][0]!=0){
-				this.addSpan(this.divs[1], `(${c2}-${c1})%${s[2][0]} != 0 - and so, there is no solution`);
+			for (i=0; i<=this.logic.L; i++){
+				this.pass_color(this.buttons.counts[i], 0, 1);
 			}
-			else{
-				this.addSpan(this.divs[1], `x=${s1}*${s[2][1]}*(${c2}-${c1})/gcd(${s1}, ${s2})+${c1}=${s1*s[2][1]*Math.floor(((c2-c1)/s[2][0]))+c1}`);
-				this.addSpan(this.divs[1], `lcm(${s1}, ${s2})=${Math.floor((s1*s2)/s[2][0])}`);
-			}
-		}
-		if (s[0]==2){
-			var x=s[2]%s[1], lcm=s[1], btt;
-			if (x<0) x+=s[1];
-			this.addSpan(this.divs[1], `x &equiv; ${x} (mod ${s[1]})`);
-			btt=this.divs[0].getElementsByTagName("div")[this.ite*2+1];
-			btt.innerHTML=`x &equiv; ${x} (mod ${s[1]})`
-			btt.style.display="inline-block";
-			this.solstack.push([x, s[1]]);
-
-			this.buttChanger(this.ite*2+1, this.ite*2+2);
-			this.ite+=1;
 		}
 	}
 
 	NextState(){
-		var s=this.lees[this.lees.length-1], vv=this.solstack[this.solstack.length-1];
-		if (s[0]==0){
-			this.lees.push([1, s[1], s[2]]);
-		}
-		if (s[0]==1){
-			var s2=s[1][1], c2=s[1][0], s1=vv[1], c1=vv[0];
-			if ((c2-c1)%s[2][0]!=0) this.lees.push([101]);
-			else this.lees.push([2, Math.floor((s1*s2)/s[2][0]), s1*s[2][1]*Math.floor(((c2-c1)/s[2][0]))+c1]);
-		}
-		if (s[0]==2){
-			if (this.ite>=this.dt.length) this.lees.push([100]);
-			else this.lees.push([0, this.dt[this.ite], this.extended_euclid(this.solstack[this.solstack.length-1][1], this.dt[this.ite][1])]);
-		}
-	}
+		var l=this.lees.length;
+		var s=this.lees[l-1];
 
-	
-	addSpan(place, text){
-		var span=document.createElement("SPAN");
-		span.classList.add("central");
-		span.innerHTML=text;
-		place.appendChild(span);
-	}
-
-	buttMaker(lst){
-		var i, bt;
-		for (i=0;i<lst.length;i++){
-			bt=this.buttCreator(`x &equiv; ${lst[i][0]} (mod ${lst[i][1]})`, "#440000");
-			this.divs[0].appendChild(bt);
-			bt=this.buttCreator(``, "#440000");
-			bt.style.display="None";
-			this.divs[0].appendChild(bt);
-			this.divs[0].appendChild(document.createElement("BR"))
-		}
-	}
-
-	divsCreator(){
-		var d1=document.createElement("DIV");
-		var d2=document.createElement("DIV");
-		var d3=document.createElement("DIV");
-		var lees=[d1,d2, d3];
-		for (var i=0;i<3;i++){
-			lees[i].style.position="relative";
-			lees[i].style.display="inline-block";
-			lees[i].style.verticalAlign="top";
-		}
-		lees[0].style.width="30%";
-		lees[1].style.width="52%";
-		lees[2].style.width="14%";
-		lees[0].style.marginRight="10px";
-
-		this.place.appendChild(d1);
-		this.place.appendChild(d2);
-		this.place.appendChild(d3);
-		return lees;
+		if (s[0]==0) return [100];
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length, vv=this.solstack[this.solstack.length-1];
-		var s1=this.sts1, s2=this.sts2, c1=this.stc1, c2=this.stc2;
-		var vc1, vc2, vs1, vs2, lc, x, exa, exb;
+		var l=this.lees.length;
+		var s=this.lees[l-1], x=s[1];
 
-		var prev=this.lees[l-2], last=this.lees[l-1];
-		vc1=vv[0], vs1=vv[1];
-
-
-		if (last[0]==2) lc=last[1][0], x=last[1][1], vs1=prev[1][1], vs2=prev[1][2];
-		//else if (last[0]==1)
-		else if (last[0]<99) vs2=last[1][1], vc2=last[1][0];
-		else vs2=prev[1][1], vc2=prev[1][0];
-
-
-		var strr=``;
-		if (last[0]==0) strr=`Now, two equation marked in green are being solved: to find their gcd and coefficients is to solve bezout identity (a${s1}+b${s2}=gcd(${s1}, ${s2}) : solution is ${last[2][1]}*${s1}+${last[2][2]}*${s2}=${last[2][0]}) extended euclidean algorithm is used`;
-		if (last[0]==1) strr=`First solution to given equation is computed if (${c1}-${c2}/gcd(${s1}, ${s2}) : (${vc2}-${vc1})/gcd(${vs1}, ${vs2}): if it's not divisible, there is no solution; also lcm(${s1}, ${s2}) is computed`;
-		if (last[0]==2) strr=`After finding out the solution and lcm(${s1}, ${s2}), the base solution is changed to interval <0;lcm(${s1}, ${s2})-1> : <0;${last[1]-1}>`;
-		if (last[0]==100) strr=`All equations were solved, the final solution is x &equiv; ${(prev[2]%prev[1])+((prev[2]%prev[1])<0?prev[1]:0)} (mod ${prev[1]})`;
-		if (last[0]==101) strr=`Solution is impossible to attain, for gcd(${s1}, ${s2}) &nmid; ${c2}-${c1}`;
-		return strr;
+		if (s[0]==0) return `Whatever`;
 	}
 }
 
-
-var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var eg1=new CrtSolver(feral, 3, [2, 5, 8], [3, 7, 33]);
+var feral1 = Algorithm.ObjectParser(document.getElementById('Algo1'));
+var eg1=new Crt(feral1, 3, [[2, 3], [5, 7], [8, 33]]);
