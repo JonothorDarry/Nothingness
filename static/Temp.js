@@ -328,6 +328,7 @@ class Algorithm{
 				'current':function(){return this.values[this.iterator];},
 				'previous':function(){return this.values[this.iterator-1];}
 			};
+			if (values.length > 0 && btn_list!=null) btn_list.innerHTML = values[0];
 			return;
 		}
 
@@ -393,6 +394,9 @@ class Grid{
 		if (ArrayUtils.is_iterable(positions[0])){
 			is_row=true;
 		}
+		if (is_row && positions[0][0] > positions[0][1]) return [];
+		else if (!is_row && positions[1][0] > positions[1][1]) return [];
+
 		if (is_row) to_update=ArrayUtils.range(positions[0][0], positions[0][1]).map(e => [e, positions[1]]);
 		else to_update=ArrayUtils.range(positions[1][0], positions[1][1]).map(e => [positions[0], e]);
 
@@ -861,6 +865,7 @@ class NTMath{
 		}
 		return res;
 	}
+
 	static mul(a, b, m=1000000007){
 		var res=0;
 		for (;b>0;b=Math.floor(b/2)){

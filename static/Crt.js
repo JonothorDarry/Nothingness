@@ -32,8 +32,8 @@ class Crt extends Algorithm{
 			var ps2_base = ext_gcd_res[2];
 
 			if (((c2-c1)%gcd) != 0){
-				results.push(new Result(false, c1, s1, c2, s2, gcd, ps1_base, ps2_base));
-				this.logic.proto_results = [Result().push(...this.logic.results)];
+				this.logic.results.push(new Result(false, c1, s1, c2, s2, gcd, ps1_base, ps2_base));
+				this.logic.proto_results = [new Result(), ...this.logic.results];
 				break;
 			}
 			var multipla_const = Math.floor((c2-c1)/gcd);
@@ -88,10 +88,9 @@ class Crt extends Algorithm{
 		grid.single_filler([1, position_systems_partial_results], '', {'stylistic':{'px':{'width':standard_width}}});
 		this.buttons.systems_partial_results = grid.filler([[2, this.logic.results.length+1], position_systems_partial_results], 
 			this.logic.results.map(e => `x &equiv; ${e.final_congruent} (mod ${e.final_mod})`), 
-			{'color':0, 'stylistic':{'px':{'width':standard_width}}}
+			{'stylistic':{'px':{'width':standard_width}}}
 		);
 		grid.filler([[this.logic.results.length+2, all_rows-1], position_systems_partial_results], [], {'stylistic':{'px':{'width':standard_width}}});
-
 
 		grid.single_filler([0, position_calculation_constants], 'Expression', {'color':5, 'stylistic':{'px':{'width':2*standard_width}}});
 		this.buttons.const_operations = grid.filler([[1, list_operations.length], position_calculation_constants], 
@@ -102,20 +101,18 @@ class Crt extends Algorithm{
 
 		var list_of_values = ['equation', 'transposition', 'gcd_result', 'validity', 'full_expression', 'keq', 'finale']; //repeating pattern - thrice
 		var value_buttons = grid.filler([[1, list_operations.length], position_calculation_variables], [],
-			{'color':0, 'stylistic':{'px':{'width':2*standard_width}}}
+			{'stylistic':{'px':{'width':2*standard_width}}}
 		);
-
 
 		for (var i=0; i<list_of_values.length; i++) this.buttons[list_of_values[i]] = value_buttons[i];
 	}
 
 	statial(){
-		console.log(this.logic.proto_results);
 		this._statial_binding('equation', this.logic.proto_results.map(e => `${e.s1}k + ${e.c1} = ${e.s2}l + ${e.c2}`), this.buttons.equation);
 		this._statial_binding('transposition', this.logic.proto_results.map(e => `${e.s1}k - ${e.s2}l = ${e.c2} - ${e.c1}`), this.buttons.transposition);
 		this._statial_binding('gcd_result', this.logic.proto_results.map(e => `${e.ps1_base}k - ${e.ps2_base}l = ${e.gcd}`), this.buttons.gcd_result);
 		this._statial_binding('validity', this.logic.proto_results.map(e => ((e.validity==true)?`Yes, ${e.c2}-${e.c1} &equiv; 0 (mod ${e.gcd})`:`No, ${e.c2}-${e.c1} &equiv; ${(e.c2-e.c1) % e.gcd} (mod ${e.gcd})`)), this.buttons.validity);
-		this._statial_binding('full_expression', this.logic.proto_results.map(e => `${e.multipla_const} * ${e.ps1_base} * ${e.s_1} + ${e.multipla_const} * ${e.ps2_base} * ${e.s2} = ${e.c2} - ${e.c1}`), this.buttons.full_expression);
+		this._statial_binding('full_expression', this.logic.proto_results.map(e => `${e.multipla_const} * ${e.ps1_base} * ${e.s1} + ${e.multipla_const} * ${e.ps2_base} * ${e.s2} = ${e.c2} - ${e.c1}`), this.buttons.full_expression);
 		this._statial_binding('keq', this.logic.proto_results.map(e => `k = ${e.multipla_const} * ${e.ps1_base} = ${e.ps1_final}`), this.buttons.keq);
 		this._statial_binding('finale', this.logic.proto_results.map(e => `${e.ps1_final}*${e.s1} + ${e.c1} &equiv; ${e.final_congruent} (mod ${e.final_mod})`), this.buttons.finale);
 	}
@@ -146,25 +143,91 @@ class Crt extends Algorithm{
 	BeginningExecutor(){
 		this.read_data();
 		this.palingenesia();
-		this.lees.push([0]);
+		this.lees.push([0, 1]);
 	}
 
 	StateMaker(s){
 		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
-		if (s[0]==0){
-			for (i=0; i<=this.logic.L; i++){
-				this.pass_color(this.buttons.counts[i], 0, 1);
+		//Next pair of equations: either start(0) or continuation(10)
+		if (s[0] == 0){
+			if (s[1] != 1){
+				staat.push([0, this.buttons.systems_input[s[1]-1], 0]);
+				if (s[1] == 2) staat.push([0, this.buttons.systems_input[s[1]-2], 0]);
+				else staat.push([0, this.buttons.systems_partial_results[s[1]-3], 2]);
 			}
+
+			staat.push([0, this.buttons.systems_input[s[1]], 14]);
+			if (s[1] == 1) staat.push([0, this.buttons.systems_input[s[1]-1], 14]);
+			else staat.push([0, this.buttons.systems_partial_results[s[1]-2], 14]);
+			staat.push([6, this.state.equation]);
+			this.modern_pass_color(this.buttons.equation, 1);
+
+			staat.push([0, this.buttons.transposition, 4]);
+			staat.push([0, this.buttons.gcd_result, 4]);
+			staat.push([0, this.buttons.validity, 4]);
+			staat.push([0, this.buttons.full_expression, 4]);
+			staat.push([0, this.buttons.keq, 4]);
+			staat.push([0, this.buttons.finale, 4]);
 		}
+
+		//Transposing the variables
+		if (s[0] == 1){
+			staat.push([6, this.state.transposition]);
+			this.modern_pass_color(this.buttons.transposition, 1);
+		}
+
+		//Extended euclid
+		if (s[0] == 2){
+			staat.push([6, this.state.gcd_result]);
+			this.modern_pass_color(this.buttons.gcd_result, 1);
+		}
+
+		//Validity, provided valid, and then expression blossoming in its glory
+		if (s[0] == 3){
+			staat.push([6, this.state.validity]);
+			this.modern_pass_color(this.buttons.validity, 1);
+			staat.push([6, this.state.full_expression]);
+			this.modern_pass_color(this.buttons.full_expression, 1);
+		}
+
+		//Finito - find k and formulate grande finale, then show partial result
+		if (s[0] == 4){
+			staat.push([6, this.state.keq]);
+			this.modern_pass_color(this.buttons.keq, 1);
+			staat.push([6, this.state.finale]);
+			this.modern_pass_color(this.buttons.finale, 1);
+			this.modern_pass_color(this.buttons.systems_partial_results[s[1]-1], 1);
+		}
+		
+		//Final with answer
+		if (s[0] == 100){
+			staat.push([0, this.buttons.systems_input[this.buttons.systems_input.length-1], 0]);
+			if (this.logic.results.length > 1) staat.push([0, this.buttons.systems_partial_results[this.logic.results.length-2], 2]);
+			else staat.push([0, this.buttons.systems_input[this.buttons.systems_input.length-2], 0]);
+			staat.push([0, this.buttons.systems_partial_results[this.logic.results.length-1], 8]);
+		}
+
+		if (s[0] == 101){
+			staat.push([6, this.state.validity]);
+			this.modern_pass_color(this.buttons.validity, 30); //or 20
+		}
+
 	}
 
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 
-		if (s[0]==0) return [100];
+		if (s[0] == 0) return [1, s[1]];
+		if (s[0] == 1) return [2, s[1]];
+		if (s[0] == 2 && this.logic.results[s[1]-1].validity) return [3, s[1]];
+		if (s[0] == 2) return [101];
+		if (s[0] == 3) return [4, s[1]];
+
+		if (s[0] == 4 && s[1] < this.logic.results.length) return [0, s[1]+1];
+		if (s[0] == 4) return [100];
 	}
 
 	StatementComprehension(){
