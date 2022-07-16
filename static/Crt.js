@@ -110,7 +110,7 @@ class Crt extends Algorithm{
 	statial(){
 		this._statial_binding('equation', this.logic.proto_results.map(e => `${e.s1}k + ${e.c1} = ${e.s2}l + ${e.c2}`), this.buttons.equation);
 		this._statial_binding('transposition', this.logic.proto_results.map(e => `${e.s1}k - ${e.s2}l = ${e.c2} - ${e.c1}`), this.buttons.transposition);
-		this._statial_binding('gcd_result', this.logic.proto_results.map(e => `${e.ps1_base}k - ${e.ps2_base}l = ${e.gcd}`), this.buttons.gcd_result);
+		this._statial_binding('gcd_result', this.logic.proto_results.map(e => `${e.ps1_base} * ${e.s1} + ${e.ps2_base} * ${e.s2} = ${e.gcd}`), this.buttons.gcd_result);
 		this._statial_binding('validity', this.logic.proto_results.map(e => ((e.validity==true)?`Yes, ${e.c2}-${e.c1} &equiv; 0 (mod ${e.gcd})`:`No, ${e.c2}-${e.c1} &equiv; ${(e.c2-e.c1) % e.gcd} (mod ${e.gcd})`)), this.buttons.validity);
 		this._statial_binding('full_expression', this.logic.proto_results.map(e => `${e.multipla_const} * ${e.ps1_base} * ${e.s1} + ${e.multipla_const} * ${e.ps2_base} * ${e.s2} = ${e.c2} - ${e.c1}`), this.buttons.full_expression);
 		this._statial_binding('keq', this.logic.proto_results.map(e => `k = ${e.multipla_const} * ${e.ps1_base} = ${e.ps1_final}`), this.buttons.keq);
@@ -231,10 +231,38 @@ class Crt extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr], x=s[1];
 
-		if (s[0]==0) return `Whatever`;
+		var last_res = this.logic.results[s[1]-1];
+		if (s[0] == 0){
+			return `And so, a solution to two equations needs to be found: <br>
+			x &equiv; ${last_res.c1} (mod ${last_res.s1})<br>
+			x &equiv; ${last_res.c2} (mod ${last_res.s2})<br>
+			To start, one can find k, l satisfying: <strong>${last_res.s1}k + ${last_res.c1} = ${last_res.s2}l + ${last_res.c2}</strong>; then, x = ${last_res.s1}k + ${last_res.c1} will solve this system, and the new mod will be found along the way.
+		`;
+		}
+		if (s[0] == 1){
+			return `For a start, It might be good to swap the elements of this equation so that constants lie on one side and variables on another: <strong>${last_res.s1}k - ${last_res.s2}l = ${last_res.c2 - last_res.c1}</strong>`;
+		}
+		if (s[0] == 2){
+			return `Notice, that the expression bears eerie similarity to standard extended euclid problem: finding p, q, for which ap+bq = gcd(a, b) for some a, b. So, why not to apply extended euclid mechanism for finding such p, q, that ${last_res.s1}p + ${last_res.s2}q = ${last_res.gcd}?`;
+		}
+		if (s[0] == 3){
+			return `Notice, that if ${last_res.gcd} does not divide ${last_res.c2} - ${last_res.c1}, then all our efforts are in vain. They aren't, and we can continue transforming expression with new-found knowledge to find k.`;
+		}
+		if (s[0] == 4){
+			return `After transformations turns out, that k=${last_res.ps1_final}. This, along with the preceeding argument on periodical character of solutions to those equations allows to reduce both of our initial equations to a single:<br>
+			x &equiv; ${last_res.final_congruent} (mod ${last_res.final_mod}).`;
+		}
+
+		last_res = this.logic.results[this.logic.results.length-1];
+		if (s[0] == 100){
+			return `And so, everything got solved, the final solution is: <br>
+			<strong>x &equiv; ${last_res.final_congruent} (mod ${last_res.final_mod})</strong>.`;
+		}
+		if (s[0] == 101){
+			return `Notice, that if ${last_res.gcd} does not divide ${last_res.c2} - ${last_res.c1}, then all our efforts are in vain. And guess what - they are, there is nothing, that can be done about it, for there is no solution.`;
+		}
 	}
 }
 
