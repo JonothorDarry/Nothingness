@@ -20,6 +20,7 @@ class Muller extends Partial{
 			if (x%2!=0) break;
 		}
 	}
+
 	_logical_find_all_power(){
 		var i, j;
 
@@ -356,9 +357,9 @@ class PollardRho extends Algorithm{
 		for (k=0; true; k+=1){
 			cur_k=this._logic_calculate_poly(cur_k);
 
-			cur_2k=this._logic_calculate_poly(cur_2k);
+			cur_2k = this._logic_calculate_poly(cur_2k);
 			this.logic.w.push(cur_2k);
-			cur_2k=this._logic_calculate_poly(cur_2k);
+			cur_2k = this._logic_calculate_poly(cur_2k);
 			this.logic.w.push(cur_2k);
 
 			diff=Math.abs(cur_2k-cur_k);
@@ -372,6 +373,36 @@ class PollardRho extends Algorithm{
 		this.logic.last_k=k+1;
 	}
 
+	//lenth_braid, length_circle, subsequent values
+	_logical_cometize(full_list, factor){
+		var values = ArrayUtils.steady(0, this.logic.m);
+
+		var i=1, x=this.logic.starter;
+		var array = [x];
+		while(true){
+			x = (this._logic_calculate_poly(x))%factor;
+			array.push(x);
+			if (values[x]>0) break;
+			values[x] = i;
+			i++;
+		}
+		return {'array':array, 'cycle_length':i-values[x], 'braid_length':values[x]}; //braid+1 - real bride (includin' overlappin' vertex)
+	}
+
+
+	_logical_prepare_single(){
+		var factor = ArrayUtils.get_elem(this.logic.gcds, -1);
+		this.logic.mono_comet = this._logical_cometize(this.logic.w, factor);
+	}
+
+	_logical_prepare_fully(){
+		var factors = NTMath.pollard_rho_factorize(this.logic.m);
+		this.logic.factor_comets = {};
+		for (var x of factors){
+			this.logic.factor_comets[x] = this._logical_cometize(this.logic.w, x);
+		}
+	}
+
 	logical_box(){
 		if (this.logic.poly_deg == null){
 			this.logic.poly_deg = 2;
@@ -381,15 +412,83 @@ class PollardRho extends Algorithm{
 			this.logic.starter = 3;
 
 		this.fill_floyd();
-		this.logic.poly_str=this.prepare_poly();
+
+		if (this.logic.mono_prime) this._logical_prepare_single();
+		if (this.logic.multi_prime) this._logical_prepare_fully();
+		this.logic.poly_str = this.prepare_poly();
 	}
 
-	presentation(){
+	_presentation_get_positions(comet){
+		var left_margin = 100, right_margin = 60, top_margin = 60, low_margin = 60;
+		var edge_length = 80;
+		var braid_length = comet.braid_length * edge_length;
+
+		var radius = (comet.cycle_length*edge_length)/(2*Math.PI);
+		var div_width = radius + Math.max(radius, braid_length) + left_margin + right_margin;
+		var div_height = 2*radius + top_margin + low_margin;
+
+		var center = {
+			'x': left_margin + Math.max(radius, braid_length),
+			'y': top_margin + radius
+		}
+
+		var degree_change = (2*Math.PI) / comet.cycle_length;
+
+		var positions_cycle = ArrayUtils.range(0, comet.cycle_length-1).map(
+			e => {
+				return {
+					'x': center.x + radius * Math.cos(- Math.PI/2 - 2*Math.PI * e/comet.cycle_length),
+					'y': center.y + radius * Math.sin(- Math.PI/2 - 2*Math.PI * e/comet.cycle_length)
+				}
+			}
+		);
+
+		var purifier = 40;
+		var positions_braid = ArrayUtils.revert(ArrayUtils.range(1, comet.braid_length).map(
+			e => {
+				return {
+					'x': center.x - purifier - edge_length * e,
+					'y': center.y - radius
+				}
+			}
+		));
+		console.log(positions_cycle, positions_braid);
+		return {'width':div_width, 'height':div_height, 'positions_cycle':positions_cycle, 'positions_braid':positions_braid};
+	}
+
+	_presentation_create_div(positions, comet){
+		var div = Modern_representation.div_creator();
+		this.buttons.braid = [];
+		this.buttons.cycle = [];
+
+		Modern_representation.button_modifier(div, {'stylistic':{'px':{'width':positions.width, 'height':positions.height}}});
+		for (var i=0; i<comet.braid_length; i++){
+			this.buttons.braid[i] = Modern_representation.button_creator('aaa', {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_braid[i].x, 'top':positions.positions_braid[i].y}, '%': {'borderRadius':100}});
+			div.appendChild(this.buttons.braid[i]);
+		}
+
+		for (var i=0; i<comet.cycle_length; i++){
+			this.buttons.cycle[i] = Modern_representation.button_creator('aaa', {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_cycle[i].x, 'top':positions.positions_cycle[i].y}, '%': {'borderRadius':100}});
+			div.appendChild(this.buttons.cycle[i]);
+		}
+
+		for (var x of this.buttons.braid) Representation_utils.Painter(x, 0);
+		for (var x of this.buttons.cycle) Representation_utils.Painter(x, 0);
+
+		return div;
+	}
+
+	_presentation_comet(comet){
+		var positions = this._presentation_get_positions(comet);
+		var div = this._presentation_create_div(positions, comet);
+		
+		this.place.appendChild(div);
+	}
+
+	_presentation_stack(){
 		this.bs_butt_width_h=100;
 		this.bs_butt_width=`${this.bs_butt_width_h}px`;
 		Representation_utils.change_button_width(this.stylistic, this.logic.m, this.bs_butt_width_h);
-
-		this.buttons={};
 		var ln=this.logic.w.length;
 
 		//buttons name, span - data, title place, title, array, color
@@ -429,6 +528,15 @@ class PollardRho extends Algorithm{
 		this.buttons.m_title=grid[0][1];
 		this.Painter(this.buttons.m_title, 8);
 		this.buttons.m_title.innerHTML='m';
+
+	}
+
+	presentation(){
+		this.buttons={};
+		this._presentation_stack();
+		if (this.logic.mono_prime){
+			this._presentation_comet(this.logic.mono_comet);
+		}
 	}
 
 	palingnesia(){
@@ -456,6 +564,9 @@ class PollardRho extends Algorithm{
 	read_data(){
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
+		
+		this.logic.mono_prime = this.radio_factor.checked;
+		this.logic.multi_prime = this.radio_all.checked;
 
 		this.logic.m=c.get_next();
 		this.read_part(c);
@@ -464,6 +575,10 @@ class PollardRho extends Algorithm{
 
 	constructor(block, m){
 		super(block);
+		this.radio_simple = block.radio_simple;
+		this.radio_factor = block.radio_factor;
+		this.radio_all = block.radio_all;
+
 		this.logic.m=m;
 		this.version=4;
 		this.palingnesia();
@@ -538,4 +653,7 @@ feral1.check=document.getElementById('summary_exec1');
 var sk1=new Muller(feral1, 15);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+feral2.radio_simple=document.getElementById('Basic');
+feral2.radio_factor=document.getElementById('Single factor');
+feral2.radio_all=document.getElementById('All factors');
 var sk2=new PollardRho(feral2, 18209);
