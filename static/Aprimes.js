@@ -386,7 +386,7 @@ class PollardRho extends Algorithm{
 			values[x] = i;
 			i++;
 		}
-		return {'array':array, 'cycle_length':i-values[x], 'braid_length':values[x]}; //braid+1 - real bride (includin' overlappin' vertex)
+		return {'array':array, 'cycle_length':i-values[x], 'braid_length':values[x], 'factor':factor}; //braid+1 - real bride (includin' overlappin' vertex)
 	}
 
 
@@ -398,9 +398,15 @@ class PollardRho extends Algorithm{
 	_logical_prepare_fully(){
 		var factors = NTMath.pollard_rho_factorize(this.logic.m);
 		this.logic.factor_comets = {};
+		var _current_pow = {};
+
 		for (var x of factors){
-			this.logic.factor_comets[x] = this._logical_cometize(this.logic.w, x);
+			if (!_current_pow[x]) _current_pow[x] = x;
+			else _current_pow[x] *= x;
+
+			this.logic.factor_comets[_current_pow[x]] = this._logical_cometize(this.logic.w, _current_pow[x]);
 		}
+		console.log(this.logic.factor_comets);
 	}
 
 	logical_box(){
@@ -424,7 +430,14 @@ class PollardRho extends Algorithm{
 		var braid_length = comet.braid_length * edge_length;
 
 		var radius = (comet.cycle_length*edge_length)/(2*Math.PI);
+
 		var div_width = radius + Math.max(radius, braid_length) + left_margin + right_margin;
+
+		if (div_width < 500){ //remove magic
+			right_margin = right_margin + 500 - div_width;
+			div_width = 500;
+		}
+
 		var div_height = 2*radius + top_margin + low_margin;
 
 		var center = {
@@ -437,7 +450,7 @@ class PollardRho extends Algorithm{
 		var positions_cycle = ArrayUtils.range(0, comet.cycle_length-1).map(
 			e => {
 				return {
-					'x': center.x + radius * Math.cos(- Math.PI/2 - 2*Math.PI * e/comet.cycle_length),
+					'x': center.x + radius * Math.cos(- Math.PI/2 + 2*Math.PI * e/comet.cycle_length),
 					'y': center.y + radius * Math.sin(- Math.PI/2 - 2*Math.PI * e/comet.cycle_length)
 				}
 			}
@@ -452,35 +465,106 @@ class PollardRho extends Algorithm{
 				}
 			}
 		));
-		console.log(positions_cycle, positions_braid);
 		return {'width':div_width, 'height':div_height, 'positions_cycle':positions_cycle, 'positions_braid':positions_braid};
 	}
 
-	_presentation_create_div(positions, comet){
-		var div = Modern_representation.div_creator();
+	//full div size - overlaying trash, dict with width and height
+	_presentation_create_arrow(div, sgn, full_div_size){
+		function get_to_pixels(x, normalizer){return parseFloat(x.slice(0, x.length-1)) * normalizer / 100;};
+		function get_to_percentages(x, normalizer){return `${100 * x / normalizer}%`;};
+		function get_wo_px(x){return x.slice(0, x.length-2);};
+
+		var arrow = Modern_representation.button_creator('', {});
+		for (var x of div.style) arrow.style[x] = div.style[x];
+		var rotation = parseFloat(div.style.transform.slice(7, div.style.transform.length-5));
+		if (!rotation) rotation = 0;
+
+		var lefty = get_to_pixels(div.style.left, full_div_size.width);
+		var toppy = get_to_pixels(div.style.top, full_div_size.height);
+
+		var c = get_wo_px(div.style.width);
+		arrow.style.left = get_to_percentages(lefty + Math.cos(rotation)*c, full_div_size.width);
+		arrow.style.top = get_to_percentages(toppy + Math.sin(rotation)*c, full_div_size.height);
+
+		arrow.style.transform = `rotate(${(sgn==1) ? rotation+3*Math.PI/4 : rotation-3*Math.PI/4}rad)`;
+		arrow.style.width = `6px`;
+		return arrow
+	}
+
+	_presentation_generate_parallel(place, edge, full_div_size){
+		var arrow_1 = this._presentation_create_arrow(edge, 1, full_div_size);
+		var arrow_2 = this._presentation_create_arrow(edge, -1, full_div_size);
+
+		place.appendChild(arrow_1);
+		place.appendChild(arrow_2);
+	}
+
+	_presentation_create_rho(div, positions, comet){
 		this.buttons.braid = [];
 		this.buttons.cycle = [];
+		this.buttons.edges = [];
+
+		//hardcoded button-radius stuff - beware! 
+		function normalize_coordinates(coordinates){
+			return {
+				'x' : (coordinates.x + 20) / positions.width,
+				'y' : (coordinates.y + 20) / positions.height
+			}
+		}
 
 		Modern_representation.button_modifier(div, {'stylistic':{'px':{'width':positions.width, 'height':positions.height}}});
+
+		var edge_style = {'height':3}
 		for (var i=0; i<comet.braid_length; i++){
-			this.buttons.braid[i] = Modern_representation.button_creator('aaa', {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_braid[i].x, 'top':positions.positions_braid[i].y}, '%': {'borderRadius':100}});
+			this.buttons.braid[i] = Modern_representation.button_creator(comet.array[i], {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_braid[i].x, 'top':positions.positions_braid[i].y}, '%': {'borderRadius':100}});
+
+			if (i < comet.braid_length - 1) this.buttons.edges[i] = Graph_utils.create_edge(normalize_coordinates(positions.positions_braid[i]), normalize_coordinates(positions.positions_braid[i+1]), edge_style, {'width':positions.width, 'height':positions.height});
+			else this.buttons.edges[i] = Graph_utils.create_edge(normalize_coordinates(positions.positions_braid[i]), normalize_coordinates(positions.positions_cycle[0]), edge_style, {'width':positions.width, 'height':positions.height});
+
 			div.appendChild(this.buttons.braid[i]);
+			div.appendChild(this.buttons.edges[i]);
 		}
 
 		for (var i=0; i<comet.cycle_length; i++){
-			this.buttons.cycle[i] = Modern_representation.button_creator('aaa', {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_cycle[i].x, 'top':positions.positions_cycle[i].y}, '%': {'borderRadius':100}});
+			this.buttons.cycle[i] = Modern_representation.button_creator(comet.array[i+comet.braid_length], {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_cycle[i].x, 'top':positions.positions_cycle[i].y}, '%': {'borderRadius':100}});
+			this.buttons.edges[i+comet.braid_length] = Graph_utils.create_edge(normalize_coordinates(positions.positions_cycle[i]), normalize_coordinates(positions.positions_cycle[(i+1)%comet.cycle_length]), edge_style, {'width':positions.width, 'height':positions.height});
 			div.appendChild(this.buttons.cycle[i]);
+			div.appendChild(this.buttons.edges[i+comet.braid_length]);
 		}
 
 		for (var x of this.buttons.braid) Representation_utils.Painter(x, 0);
 		for (var x of this.buttons.cycle) Representation_utils.Painter(x, 0);
+		for (var x of this.buttons.edges){
+			Modern_representation.button_modifier(x, {'stylistic':{'general':{'zIndex':-1}}});
+			x.style.width = `${Number(x.style.width.slice(0, x.style.width.length-2))-20}px`; //to allow arrow
+			this._presentation_generate_parallel(div, x, positions);
 
-		return div;
+			Representation_utils.Painter(x, 5);
+		}
+	}
+
+	_presentation_add_data(div, comet){
+		var mod_length = 100, braid_length = 200, cycle_length = 200;
+		var summa_length = mod_length + braid_length + cycle_length;
+
+		this.buttons.comets_data[comet.factor] = {};
+		this.buttons.comets_data[comet.factor].mod = Modern_representation.button_creator(`(mod ${comet.factor})`, {'px':{'width':mod_length}});
+		this.buttons.comets_data[comet.factor].braid_size = Modern_representation.button_creator(`Braid length: ${comet.braid_length}`, {'px':{'width':braid_length}});
+		this.buttons.comets_data[comet.factor].comet_size = Modern_representation.button_creator(`Cycle length: ${comet.cycle_length}`, {'px':{'width':cycle_length}});
+
+		for (var x in this.buttons.comets_data[comet.factor]){
+			Representation_utils.Painter(this.buttons.comets_data[comet.factor][x], 5);
+			div.appendChild(this.buttons.comets_data[comet.factor][x]);
+		}
+
+		Modern_representation.button_modifier(div, {'stylistic':{'px':{'width':summa_length}}});
 	}
 
 	_presentation_comet(comet){
 		var positions = this._presentation_get_positions(comet);
-		var div = this._presentation_create_div(positions, comet);
+		var div = Modern_representation.div_creator('', {'general':{'border':'5px dotted gray', 'position':'relative', 'display':'inline-block'}});
+		this._presentation_add_data(div, comet);
+		this._presentation_create_rho(div, positions, comet);
 		
 		this.place.appendChild(div);
 	}
@@ -494,6 +578,7 @@ class PollardRho extends Algorithm{
 		//buttons name, span - data, title place, title, array, color
 		var margin_top=2, margin_left=1;
 		var dvs=this.modern_divsCreator(1, margin_top+ln+1, []);
+		Modern_representation.button_modifier(dvs.full_div, {'stylistic':{'general':{'display':'inline-block', 'position':'relative'}}});
 
 		var grid=Representation_utils.gridify_div(dvs.zdivs, margin_top+ln+1, margin_left+4, this.stylistic);
 		var order_of_destiny=[
@@ -528,14 +613,20 @@ class PollardRho extends Algorithm{
 		this.buttons.m_title=grid[0][1];
 		this.Painter(this.buttons.m_title, 8);
 		this.buttons.m_title.innerHTML='m';
-
 	}
 
 	presentation(){
-		this.buttons={};
+		this.buttons={'comets_data': {}};
+		this.place.style.width = 'max-content';
+
 		this._presentation_stack();
 		if (this.logic.mono_prime){
 			this._presentation_comet(this.logic.mono_comet);
+		}
+		if (this.logic.multi_prime){
+			for (var x in this.logic.factor_comets){
+				this._presentation_comet(this.logic.factor_comets[x]);
+			}
 		}
 	}
 
