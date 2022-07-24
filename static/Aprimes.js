@@ -131,7 +131,7 @@ class Muller extends Partial{
 
 	_presentation_basis(){
 		var divs=this.modern_divsCreator(1, this.logic.m, []);
-		//divs.full_div.style.display='inline-block';
+		// divs.full_div.style.display='inline-block';
 		divs.full_div.style.verticalAlign='top';
 		var i=0, j, btn;
 		
@@ -347,6 +347,26 @@ class PollardRho extends Algorithm{
 		return value;
 	}
 
+	presentation_get_polynomial(){
+		var res = ``;
+		for (var i=this.logic.poly.length-1; i >= 0; i--){
+			if (this.logic.poly[i] == 0) continue;
+
+			if (this.logic.poly[i] > 0 && i<this.logic.poly.length-1) res += '+'
+			var number='', expo='';
+			if (this.logic.poly[i] == 1 && i>0) number = ''
+			else if (this.logic.poly[i] == -1) number = '-';
+			else number = `${this.logic.poly[i]}`;
+
+			if (i == 0) expo = '';
+			else if (i == 1) expo = 'x';
+			else expo = `x<sup>${i}</sup>`;
+			res += number + expo;
+		}
+
+		return res;
+	}
+
 	fill_floyd(){
 		var cur_k, cur_2k, gcd, k, diff;
 		this.logic.w=[this.logic.starter];
@@ -377,8 +397,10 @@ class PollardRho extends Algorithm{
 	_logical_cometize(full_list, factor){
 		var values = ArrayUtils.steady(0, this.logic.m);
 
-		var i=1, x=this.logic.starter;
+		var i=2, x=this.logic.starter;
 		var array = [x];
+		values[x] = 1;
+
 		while(true){
 			x = (this._logic_calculate_poly(x))%factor;
 			array.push(x);
@@ -386,13 +408,14 @@ class PollardRho extends Algorithm{
 			values[x] = i;
 			i++;
 		}
-		return {'array':array, 'cycle_length':i-values[x], 'braid_length':values[x], 'factor':factor}; //braid+1 - real bride (includin' overlappin' vertex)
+		return {'array':array, 'cycle_length':i-values[x], 'braid_length':values[x]-1, 'factor':factor}; //braid+1 - real bride (includin' overlappin' vertex)
 	}
 
 
 	_logical_prepare_single(){
 		var factor = ArrayUtils.get_elem(this.logic.gcds, -1);
-		this.logic.mono_comet = this._logical_cometize(this.logic.w, factor);
+		this.logic.factor_comets = {};
+		this.logic.factor_comets[factor] = this._logical_cometize(this.logic.w, factor);
 	}
 
 	_logical_prepare_fully(){
@@ -406,7 +429,6 @@ class PollardRho extends Algorithm{
 
 			this.logic.factor_comets[_current_pow[x]] = this._logical_cometize(this.logic.w, _current_pow[x]);
 		}
-		console.log(this.logic.factor_comets);
 	}
 
 	logical_box(){
@@ -499,10 +521,28 @@ class PollardRho extends Algorithm{
 		place.appendChild(arrow_2);
 	}
 
+	_presentation_create_pair_of_pointers_comet(positions_xy, large_radius=20){
+		var small_radius = 10;
+		var position_center = {'x':positions_xy.x+large_radius, 'y':positions_xy.y+large_radius};
+		var button_properties = {'width':small_radius, 'height':small_radius};
+
+		function make_button(x, color){
+			var place = Representation_utils.get_place_for_companion_button(position_center, x, 1, 40, button_properties);
+			var btn_style = {'general':{'position':'absolute'}, 'px':{'width':small_radius, 'height':small_radius, 'font-size':9, 'left':place.left, 'top':place.top}};
+			var btn = Modern_representation.button_creator('', btn_style);
+			Modern_representation.button_modifier(btn, {'stylistic':{'%':{'border-radius':100}}});
+			Representation_utils.Painter(btn, color);
+			return btn;
+		}
+
+		return {'p0':make_button(-1, 104), 'p1':make_button(1, 104)};
+	}
+
 	_presentation_create_rho(div, positions, comet){
-		this.buttons.braid = [];
-		this.buttons.cycle = [];
-		this.buttons.edges = [];
+		var local_buttons = {};
+		local_buttons.braid = [];
+		local_buttons.cycle = [];
+		local_buttons.edges = [];
 
 		//hardcoded button-radius stuff - beware! 
 		function normalize_coordinates(coordinates){
@@ -511,36 +551,52 @@ class PollardRho extends Algorithm{
 				'y' : (coordinates.y + 20) / positions.height
 			}
 		}
-
 		Modern_representation.button_modifier(div, {'stylistic':{'px':{'width':positions.width, 'height':positions.height}}});
+		local_buttons.braid_iterators = ArrayUtils.steady(comet.braid_length);
 
-		var edge_style = {'height':3}
+		var edge_style = {'height':3};
 		for (var i=0; i<comet.braid_length; i++){
-			this.buttons.braid[i] = Modern_representation.button_creator(comet.array[i], {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_braid[i].x, 'top':positions.positions_braid[i].y}, '%': {'borderRadius':100}});
+			local_buttons.braid[i] = Modern_representation.button_creator(comet.array[i], {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_braid[i].x, 'top':positions.positions_braid[i].y}, '%': {'borderRadius':100}});
 
-			if (i < comet.braid_length - 1) this.buttons.edges[i] = Graph_utils.create_edge(normalize_coordinates(positions.positions_braid[i]), normalize_coordinates(positions.positions_braid[i+1]), edge_style, {'width':positions.width, 'height':positions.height});
-			else this.buttons.edges[i] = Graph_utils.create_edge(normalize_coordinates(positions.positions_braid[i]), normalize_coordinates(positions.positions_cycle[0]), edge_style, {'width':positions.width, 'height':positions.height});
+			var buttons = this._presentation_create_pair_of_pointers_comet(positions.positions_braid[i], 20);
+			local_buttons.braid_iterators[i] = [buttons.p0, buttons.p1];
 
-			div.appendChild(this.buttons.braid[i]);
-			div.appendChild(this.buttons.edges[i]);
+			if (i < comet.braid_length - 1) local_buttons.edges[i] = Graph_utils.create_edge(normalize_coordinates(positions.positions_braid[i]), normalize_coordinates(positions.positions_braid[i+1]), edge_style, {'width':positions.width, 'height':positions.height});
+			else local_buttons.edges[i] = Graph_utils.create_edge(normalize_coordinates(positions.positions_braid[i]), normalize_coordinates(positions.positions_cycle[0]), edge_style, {'width':positions.width, 'height':positions.height});
+
+			div.appendChild(local_buttons.braid[i]);
+			div.appendChild(local_buttons.braid_iterators[i][0]);
+			div.appendChild(local_buttons.braid_iterators[i][1]);
+
+			div.appendChild(local_buttons.edges[i]);
 		}
 
+		local_buttons.cycle_iterators = ArrayUtils.steady(comet.cycle_length);
 		for (var i=0; i<comet.cycle_length; i++){
-			this.buttons.cycle[i] = Modern_representation.button_creator(comet.array[i+comet.braid_length], {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_cycle[i].x, 'top':positions.positions_cycle[i].y}, '%': {'borderRadius':100}});
-			this.buttons.edges[i+comet.braid_length] = Graph_utils.create_edge(normalize_coordinates(positions.positions_cycle[i]), normalize_coordinates(positions.positions_cycle[(i+1)%comet.cycle_length]), edge_style, {'width':positions.width, 'height':positions.height});
-			div.appendChild(this.buttons.cycle[i]);
-			div.appendChild(this.buttons.edges[i+comet.braid_length]);
+			local_buttons.cycle[i] = Modern_representation.button_creator(comet.array[i+comet.braid_length], {'general':{'position':'absolute'}, 'px':{'width':40, 'height':40, 'left':positions.positions_cycle[i].x, 'top':positions.positions_cycle[i].y}, '%': {'borderRadius':100}});
+			local_buttons.edges[i+comet.braid_length] = Graph_utils.create_edge(normalize_coordinates(positions.positions_cycle[i]), normalize_coordinates(positions.positions_cycle[(i+1)%comet.cycle_length]), edge_style, {'width':positions.width, 'height':positions.height});
+
+			var buttons = this._presentation_create_pair_of_pointers_comet(positions.positions_cycle[i], 20);
+			local_buttons.cycle_iterators[i] = [buttons.p0, buttons.p1];
+
+			div.appendChild(local_buttons.cycle_iterators[i][0]);
+			div.appendChild(local_buttons.cycle_iterators[i][1]);
+
+			div.appendChild(local_buttons.cycle[i]);
+			div.appendChild(local_buttons.edges[i+comet.braid_length]);
 		}
 
-		for (var x of this.buttons.braid) Representation_utils.Painter(x, 0);
-		for (var x of this.buttons.cycle) Representation_utils.Painter(x, 0);
-		for (var x of this.buttons.edges){
+		for (var x of local_buttons.braid) Representation_utils.Painter(x, 0);
+		for (var x of local_buttons.cycle) Representation_utils.Painter(x, 0);
+		for (var x of local_buttons.edges){
 			Modern_representation.button_modifier(x, {'stylistic':{'general':{'zIndex':-1}}});
 			x.style.width = `${Number(x.style.width.slice(0, x.style.width.length-2))-20}px`; //to allow arrow
 			this._presentation_generate_parallel(div, x, positions);
 
 			Representation_utils.Painter(x, 5);
 		}
+
+		return local_buttons;
 	}
 
 	_presentation_add_data(div, comet){
@@ -562,11 +618,12 @@ class PollardRho extends Algorithm{
 
 	_presentation_comet(comet){
 		var positions = this._presentation_get_positions(comet);
-		var div = Modern_representation.div_creator('', {'general':{'border':'5px dotted gray', 'position':'relative', 'display':'inline-block'}});
+		var div = Modern_representation.div_creator('', {'general':{'border':'5px dotted gray', 'position':'relative', 'display':'block'}});
 		this._presentation_add_data(div, comet);
-		this._presentation_create_rho(div, positions, comet);
+		var buttons = this._presentation_create_rho(div, positions, comet);
+		this.buttons.comet[comet.factor] = buttons;
 		
-		this.place.appendChild(div);
+		return div;
 	}
 
 	_presentation_stack(){
@@ -577,15 +634,16 @@ class PollardRho extends Algorithm{
 
 		//buttons name, span - data, title place, title, array, color
 		var margin_top=2, margin_left=1;
-		var dvs=this.modern_divsCreator(1, margin_top+ln+1, []);
+		var amount_rows = margin_top+ln+2;
+		var dvs=this.modern_divsCreator(1, amount_rows, []);
 		Modern_representation.button_modifier(dvs.full_div, {'stylistic':{'general':{'display':'inline-block', 'position':'relative'}}});
 
-		var grid=Representation_utils.gridify_div(dvs.zdivs, margin_top+ln+1, margin_left+4, this.stylistic);
+		var grid=Representation_utils.gridify_div(dvs.zdivs, amount_rows, margin_left+4, this.stylistic);
 		var order_of_destiny=[
-			['k', [[1, ln+1], 0], [0, 0], 'k', ArrayUtils.range(0, ln), 4],
-			['w_k', [[1, ln+1], 1], [0, 1], 'w<sub>k</sub>', this.logic.w, 4],
-			['diff', [[1, ((ln+1)>>1)+1], 2], [0, 2], '|w<sub>2k</sub>-w<sub>k</sub>|', this.logic.diff, 4],
-			['gcd', [[1, ((ln+1)>>1)+1], 3], [0, 3], 'gcd(w<sub>2k</sub>-w<sub>k</sub>, m)', this.logic.gcds, 4],
+			['k', [[2, ln+2], 0], [1, 0], 'k', ArrayUtils.range(0, ln), 4],
+			['w_k', [[2, ln+2], 1], [1, 1], 'w<sub>k</sub>', this.logic.w, 4],
+			['diff', [[2, ((ln+1)>>1)+2], 2], [1, 2], '|w<sub>2k</sub>-w<sub>k</sub>|', this.logic.diff, 4],
+			['gcd', [[2, ((ln+1)>>1)+2], 3], [1, 3], 'gcd(w<sub>2k</sub>-w<sub>k</sub>, m)', this.logic.gcds, 4],
 		];
 
 		var x, y, titular;
@@ -598,21 +656,42 @@ class PollardRho extends Algorithm{
 				e.innerHTML=x[4][i];
 			});
 			titular=grid[margin_top+x[2][0]][margin_left+x[2][1]];
-			this.Painter(titular, 5);
+			Representation_utils.Painter(titular, 5);
 			titular.innerHTML=x[3];
 		}
-		this.Painter(this.buttons.k[0], 5);
-		this.Painter(this.buttons.w_k[0], 0);
+		Representation_utils.Painter(this.buttons.k[0], 5);
+		Representation_utils.Painter(this.buttons.w_k[0], 0);
 
-		//m
-		this.buttons.m=grid[0][2];
-		this.Painter(this.buttons.m, 0);
-		this.buttons.m.innerHTML=this.logic.m;
+		var small_radius = 10;
+		var style_mini_pointer = {'general':{'position':'relative', 'display':'inline-block'}, 'px':{'width':small_radius, 'height':small_radius}, '%':{'border-radius':100}};
+		this.buttons.pointer_stack = ArrayUtils.range(0, ln);
+		for (var i=0; i<ln; i++){
+			var div_buttons = Modern_representation.div_creator('', {'general':{'position':'absolute'}, 'px':{'right':0, 'top':0}});
+			var btn_1 = Modern_representation.button_creator('', style_mini_pointer);
+			var btn_2 = Modern_representation.button_creator('', style_mini_pointer);
+			this.buttons.pointer_stack[i] = [btn_1, btn_2];
 
-		//Title of m
-		this.buttons.m_title=grid[0][1];
-		this.Painter(this.buttons.m_title, 8);
-		this.buttons.m_title.innerHTML='m';
+			Representation_utils.Painter(btn_1, 104);
+			Representation_utils.Painter(btn_2, 104);
+
+			div_buttons.appendChild(btn_1);
+			div_buttons.appendChild(btn_2);
+			Modern_representation.button_modifier(this.buttons.w_k[i], {'stylistic':{'general':{'position':'relative'}}});
+			this.buttons.w_k[i].appendChild(div_buttons);
+		}
+
+		var new_world_order = [
+			['m', 1, 1, 0, this.logic.m],
+			['m_title', 0, 1, 5, 'm'],
+			['polynomial', 1, 2, 0, this.presentation_get_polynomial()],
+			['polynomial_title', 0, 2, 5, 'polynomial']
+		];
+
+		for (var x of new_world_order){
+			this.buttons[x[0]] = grid[x[1]][x[2]];
+			Representation_utils.Painter(this.buttons[x[0]], x[3]);
+			this.buttons[x[0]].innerHTML = x[4];
+		}
 	}
 
 	presentation(){
@@ -620,13 +699,18 @@ class PollardRho extends Algorithm{
 		this.place.style.width = 'max-content';
 
 		this._presentation_stack();
-		if (this.logic.mono_prime){
-			this._presentation_comet(this.logic.mono_comet);
-		}
-		if (this.logic.multi_prime){
-			for (var x in this.logic.factor_comets){
-				this._presentation_comet(this.logic.factor_comets[x]);
+		if (this.logic.mono_prime || this.logic.multi_prime){
+			var godfather_div = Modern_representation.div_creator('', {});
+			Modern_representation.button_modifier(godfather_div, {'stylistic':{'px':{'margin-left':50}}});
+
+			this.buttons.comet = {};
+			if (this.logic.multi_prime || this.logic.mono_prime){
+				for (var x in this.logic.factor_comets){
+					var div = this._presentation_comet(this.logic.factor_comets[x]);
+					godfather_div.appendChild(div);
+				}
 			}
+			this.place.appendChild(godfather_div);
 		}
 	}
 
@@ -686,23 +770,50 @@ class PollardRho extends Algorithm{
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
-			if (s[1]!=1)
-				this.pass_color(this.buttons.w_k[s[1]], 0, 1, 0);
-			this.pass_color(this.buttons.w_k[2*s[1]-1]);
-			this.pass_color(this.buttons.w_k[2*s[1]]);
+			this.modern_pass_color(this.buttons.w_k[s[1]], 1, 0);
+			this.modern_pass_color(this.buttons.w_k[2*s[1]], 1, 4);
+
+			staat.push([0, this.buttons.pointer_stack[2*s[1]-2][0], 104]);
+			staat.push([0, this.buttons.pointer_stack[s[1]-1][1], 104]);
+			staat.push([0, this.buttons.pointer_stack[2*s[1]][0], 15]);
+			staat.push([0, this.buttons.pointer_stack[s[1]][1], 101]);
+
+			var buttons_comet = this.buttons.comet;
+			var button_getter = function get_btn_point(comet, pointer, iterator_nr){
+				console.log(comet.factor, buttons_comet, buttons_comet[comet.factor]);
+				if (pointer < comet.braid_length) return buttons_comet[comet.factor].braid_iterators[pointer][iterator_nr];
+				return buttons_comet[comet.factor].cycle_iterators[(pointer-comet.braid_length)%comet.cycle_length][iterator_nr];
+			}
+
+			if (this.logic.mono_prime || this.logic.multi_prime){
+				for (var x in this.logic.factor_comets){
+					var y = this.logic.factor_comets[x];
+					staat.push([0, button_getter(y, s[1], 0), 101]);
+					staat.push([0, button_getter(y, s[1]-1, 0), 104]);
+
+					staat.push([0, button_getter(y, 2*s[1], 1), 15]);
+					staat.push([0, button_getter(y, 2*s[1]-2, 1), 104]);
+				}
+			}
+
+			staat.push([0, this.buttons.pointer_stack[2*s[1]-2][0], 104]);
+			staat.push([0, this.buttons.pointer_stack[s[1]-1][1], 104]);
+			staat.push([0, this.buttons.pointer_stack[2*s[1]][0], 15]);
+			staat.push([0, this.buttons.pointer_stack[s[1]][1], 101]);
 
 			staat.push([0, this.buttons.k[2*s[1]-1], 4, 5]);
 			staat.push([0, this.buttons.k[2*s[1]], 4, 5]);
 		}
+
 		if (s[0]==1){
-			this.pass_color(this.buttons.diff[s[1]]);
-			this.pass_color(this.buttons.w_k[2*s[1]], 0, 13);
-			this.pass_color(this.buttons.w_k[s[1]], 0, 13);
+			this.modern_pass_color(this.buttons.diff[s[1]]);
+			this.modern_pass_color(this.buttons.w_k[2*s[1]], 13);
+			this.modern_pass_color(this.buttons.w_k[s[1]], 13);
 		}
 		if (s[0]==2){
-			this.pass_color(this.buttons.gcd[s[1]]);
-			this.pass_color(this.buttons.m, 0, 13);
-			this.pass_color(this.buttons.diff[s[1]], 0, 13);
+			this.modern_pass_color(this.buttons.gcd[s[1]]);
+			this.modern_pass_color(this.buttons.m, 13);
+			this.modern_pass_color(this.buttons.diff[s[1]], 13);
 		}
 		if (s[0]==100){
 			staat.push([0, this.buttons.gcd[this.logic.last_k], 0, 8]);
