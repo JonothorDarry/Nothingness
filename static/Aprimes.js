@@ -124,7 +124,7 @@ class Muller extends Partial{
 		var btn;
 		if (name==null) btn=this.buttCreator();
 		else btn=this.buttCreator(name);
-		if (color!=-1) this.Painter(btn, color);
+		if (color!=-1) Representation_utils.Painter(btn, color);
 		
 		place.appendChild(btn);
 	}
@@ -204,10 +204,10 @@ class Muller extends Partial{
 					btn.innerHTML=0;
 				else
 					btn.innerHTML=this.logic.summary.mr_witnesses[x][y];
-				if (y!=this.logic.m-1 && y!=1) this.Painter(btn, this.present.colors.mr_witness);
+				if (y!=this.logic.m-1 && y!=1) Representation_utils.Painter(btn, this.present.colors.mr_witness);
 				else if (y==1 && x!=used_expos[used_expos.length-1])
 					btn.style.background=this.present.background_intertwined;
-				else this.Painter(btn, this.present.colors.non_witness);
+				else Representation_utils.Painter(btn, this.present.colors.non_witness);
 
 				j+=1;
 			}
@@ -313,7 +313,6 @@ class Muller extends Partial{
 	_presentation_construct_coffin(){
 		var x=document.createElement("DIV");
 		this.present.summarized_funeral=x;
-		//this.present.summarized_funeral.style.display='inline-block';
 		this.present.summarized_funeral.style.verticalAlign='top';
 		this.place.appendChild(x);
 	}
@@ -652,7 +651,7 @@ class PollardRho extends Algorithm{
 			this.buttons[x[0]]=btns;
 
 			btns.forEach((e,i) => {
-				this.Painter(e, x[5]);
+				Representation_utils.Painter(e, x[5]);
 				e.innerHTML=x[4][i];
 			});
 			titular=grid[margin_top+x[2][0]][margin_left+x[2][1]];
@@ -663,19 +662,15 @@ class PollardRho extends Algorithm{
 		Representation_utils.Painter(this.buttons.w_k[0], 0);
 
 		var small_radius = 10;
-		var style_mini_pointer = {'general':{'position':'relative', 'display':'inline-block'}, 'px':{'width':small_radius, 'height':small_radius}, '%':{'border-radius':100}};
+		var style_mini_pointer = {'general':{'position':'relative', 'display':'block'}, 'px':{'width':small_radius, 'height':small_radius, 'top':20-small_radius/2}, '%':{'border-radius':100}};
 		this.buttons.pointer_stack = ArrayUtils.range(0, ln);
 		for (var i=0; i<ln; i++){
 			var div_buttons = Modern_representation.div_creator('', {'general':{'position':'absolute'}, 'px':{'right':0, 'top':0}});
 			var btn_1 = Modern_representation.button_creator('', style_mini_pointer);
-			var btn_2 = Modern_representation.button_creator('', style_mini_pointer);
-			this.buttons.pointer_stack[i] = [btn_1, btn_2];
-
+			this.buttons.pointer_stack[i] = btn_1;
 			Representation_utils.Painter(btn_1, 104);
-			Representation_utils.Painter(btn_2, 104);
-
 			div_buttons.appendChild(btn_1);
-			div_buttons.appendChild(btn_2);
+
 			Modern_representation.button_modifier(this.buttons.w_k[i], {'stylistic':{'general':{'position':'relative'}}});
 			this.buttons.w_k[i].appendChild(div_buttons);
 		}
@@ -773,14 +768,13 @@ class PollardRho extends Algorithm{
 			this.modern_pass_color(this.buttons.w_k[s[1]], 1, 0);
 			this.modern_pass_color(this.buttons.w_k[2*s[1]], 1, 4);
 
-			staat.push([0, this.buttons.pointer_stack[2*s[1]-2][0], 104]);
-			staat.push([0, this.buttons.pointer_stack[s[1]-1][1], 104]);
-			staat.push([0, this.buttons.pointer_stack[2*s[1]][0], 15]);
-			staat.push([0, this.buttons.pointer_stack[s[1]][1], 101]);
+			staat.push([0, this.buttons.pointer_stack[2*s[1]-2], 104]);
+			staat.push([0, this.buttons.pointer_stack[s[1]-1], 104]);
+			staat.push([0, this.buttons.pointer_stack[2*s[1]], 15]);
+			staat.push([0, this.buttons.pointer_stack[s[1]], 101]);
 
 			var buttons_comet = this.buttons.comet;
 			var button_getter = function get_btn_point(comet, pointer, iterator_nr){
-				console.log(comet.factor, buttons_comet, buttons_comet[comet.factor]);
 				if (pointer < comet.braid_length) return buttons_comet[comet.factor].braid_iterators[pointer][iterator_nr];
 				return buttons_comet[comet.factor].cycle_iterators[(pointer-comet.braid_length)%comet.cycle_length][iterator_nr];
 			}
@@ -788,18 +782,13 @@ class PollardRho extends Algorithm{
 			if (this.logic.mono_prime || this.logic.multi_prime){
 				for (var x in this.logic.factor_comets){
 					var y = this.logic.factor_comets[x];
-					staat.push([0, button_getter(y, s[1], 0), 101]);
 					staat.push([0, button_getter(y, s[1]-1, 0), 104]);
+					staat.push([0, button_getter(y, s[1], 0), 101]);
 
-					staat.push([0, button_getter(y, 2*s[1], 1), 15]);
 					staat.push([0, button_getter(y, 2*s[1]-2, 1), 104]);
+					staat.push([0, button_getter(y, 2*s[1], 1), 15]);
 				}
 			}
-
-			staat.push([0, this.buttons.pointer_stack[2*s[1]-2][0], 104]);
-			staat.push([0, this.buttons.pointer_stack[s[1]-1][1], 104]);
-			staat.push([0, this.buttons.pointer_stack[2*s[1]][0], 15]);
-			staat.push([0, this.buttons.pointer_stack[s[1]][1], 101]);
 
 			staat.push([0, this.buttons.k[2*s[1]-1], 4, 5]);
 			staat.push([0, this.buttons.k[2*s[1]], 4, 5]);

@@ -61,7 +61,7 @@ class Crt extends Algorithm{
 			`ps<sub>1</sub> + qs<sub>2</sub> = gcd(s<sub>1</sub>, s<sub>2</sub>)`,
 			`c<sub>2</sub> - c<sub>1</sub> &equiv; 0 (mod gcd(s<sub>1</sub>, s<sub>2</sub>))?`,
 			`${formula}ps<sub>1</sub> + ${formula}qs<sub>2</sub> = c<sub>2</sub> - c<sub>1</sub>`,
-			`k = p(c<sub>2</sub> - c<sub>1</sub>) / gcd(s<sub>1</sub>, s<sub>2</sub>)`,
+			`k = p${formula}`,
 			`ks<sub>1</sub> + c<sub>1</sub> &equiv; c<sub>12</sub> (mod ${formula})`
 		];
 
@@ -248,7 +248,7 @@ class Crt extends Algorithm{
 			return `Notice, that the expression bears eerie similarity to standard extended euclid problem: finding p, q, for which ap+bq = gcd(a, b) for some a, b. So, why not to apply extended euclid mechanism for finding such p, q, that ${last_res.s1}p + ${last_res.s2}q = ${last_res.gcd}?`;
 		}
 		if (s[0] == 3){
-			return `Notice, that if ${last_res.gcd} does not divide ${last_res.c2} - ${last_res.c1}, then all our efforts are in vain. They aren't, and we can continue transforming expression with new-found knowledge to find k.`;
+			return `Notice, that if ${last_res.gcd} does not divide ${last_res.c2} - ${last_res.c1}, then all our efforts are in vain. They aren't, and we can continue transforming expression with new-found knowledge to find k - by multiplying both sides by <sup>(c<sub>2</sub>-c<sub>1</sub>)</sup>/<sub>gcd(s<sub>1</sub>, s<sub>2</sub>)</sub>, one can see the possibility to extract sought k.`;
 		}
 		if (s[0] == 4){
 			return `After transformations turns out, that k=${last_res.ps1_final}. This, along with the preceeding argument on periodical character of solutions to those equations allows to reduce both of our initial equations to a single:<br>

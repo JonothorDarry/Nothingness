@@ -140,7 +140,7 @@ class Totient_IEP extends Partial{
 		var button_upper = Modern_representation.button_creator(number, {'general':{'backgroundColor':Modern_representation.colors[0], 'color':'#FFFFFF', 'top':0, 'position':'relative', 'verticalAlign':'top'}, 'px':{'height':height_huge, 'width':width}});
 
 		if (this.logic.prime_divs[number].length == 0) Modern_representation.button_modifier(div_lower, {'stylistic':{'general':{'backgroundColor':Modern_representation.colors[0]}}});
-		else this.Painter(button_upper, 2);
+		else Representation_utils.Painter(button_upper, 2);
 
 		this._presentation_fill_div_with_prime_factors(div_lower, this.logic.prime_divs[number]);
 
@@ -450,29 +450,29 @@ class PowerTower extends Algorithm{
 	StateMaker(s){
 		var tot;
 		if (s[0]==1){
-			if (s[1]!=0) this.Painter(this.btnlist[2][s[1]-1], 0);
-			this.Painter(this.btnlist[2][s[1]], 1);
+			if (s[1]!=0) Representation_utils.Painter(this.btnlist[2][s[1]-1], 0);
+			Representation_utils.Painter(this.btnlist[2][s[1]], 1);
 			tot=this.toth[s[1]];
 			this.btnlist[2][s[1]].innerHTML=tot;
 		}
 
 		if (s[0]==2){
-			if (s[3]==this.n-1) this.Painter(this.btnlist[2][s[3]], 0);
+			if (s[3]==this.n-1) Representation_utils.Painter(this.btnlist[2][s[3]], 0);
 			else{
-				this.Painter(this.btnlist[3][s[3]+1], 0);
-				this.Painter(this.btnlist[4][s[3]+1], 0);
+				Representation_utils.Painter(this.btnlist[3][s[3]+1], 0);
+				Representation_utils.Painter(this.btnlist[4][s[3]+1], 0);
 			}
 
-			this.Painter(this.btnlist[4][s[3]], 1);
+			Representation_utils.Painter(this.btnlist[4][s[3]], 1);
 			this.btnlist[4][s[3]].innerHTML=s[1];
 		}
 
 		if (s[0]==3){
-			this.Painter(this.btnlist[3][s[3]], 1);
+			Representation_utils.Painter(this.btnlist[3][s[3]], 1);
 			this.btnlist[3][s[3]].innerHTML=s[2];
 		}
 		if (s[0]==100){
-			this.Painter(this.btnlist[4][0], 0);
+			Representation_utils.Painter(this.btnlist[4][0], 0);
 		}
 	}
 
@@ -480,25 +480,25 @@ class PowerTower extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1], tot;
 		if (s[0]==1){
-			if (s[1]!=0) this.Painter(this.btnlist[2][s[1]-1], 1);
-			this.Painter(this.btnlist[2][s[1]], 4);
+			if (s[1]!=0) Representation_utils.Painter(this.btnlist[2][s[1]-1], 1);
+			Representation_utils.Painter(this.btnlist[2][s[1]], 4);
 		}
 
 		if (s[0]==2){
-			if (s[3]==this.n-1) this.Painter(this.btnlist[2][s[3]], 1);
+			if (s[3]==this.n-1) Representation_utils.Painter(this.btnlist[2][s[3]], 1);
 			else{
-				this.Painter(this.btnlist[3][s[3]+1], 1);
-				this.Painter(this.btnlist[4][s[3]+1], 1);
+				Representation_utils.Painter(this.btnlist[3][s[3]+1], 1);
+				Representation_utils.Painter(this.btnlist[4][s[3]+1], 1);
 			}
 
-			this.Painter(this.btnlist[4][s[3]], 4);
+			Representation_utils.Painter(this.btnlist[4][s[3]], 4);
 		}
 
 		if (s[0]==3){
-			this.Painter(this.btnlist[3][s[3]], 4);
+			Representation_utils.Painter(this.btnlist[3][s[3]], 4);
 		}
 		if (s[0]==100){
-			this.Painter(this.btnlist[4][0], 1);
+			Representation_utils.Painter(this.btnlist[4][0], 1);
 		}
 		super.StateUnmaker();
 	}

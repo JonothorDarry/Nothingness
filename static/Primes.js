@@ -17,7 +17,7 @@ class Sieve extends Algorithm{
 		var dv = Modern_representation.div_creator('', {'general':{'width':null}});
 		for (i=0; i<=this.logic.n; i++){
 			btn = Modern_representation.button_creator(i, {'general':{'backgroundColor':'#440000'}});
-			this.Painter(btn, 0);
+			Representation_utils.Painter(btn, 0);
 			buttons.sieve.push(btn);
 			dv.appendChild(btn);
 		}
@@ -116,7 +116,7 @@ class ExtendedSieve extends Sieve{
 
 	_presentation_button_creator(v){
 		var btn = this.doubleButtCreator(v, Representation_utils.button_creator);
-		this.Painter(btn[0], 0);
+		Representation_utils.Painter(btn[0], 0);
 		btn[1].innerHTML = 'lpf(' + btn[1].innerHTML + ')';
 		for (var x of btn){
 			x.style.width='80px';
@@ -281,7 +281,6 @@ class Factorizer extends Algorithm{
 
 	BeginningExecutor(){
 		this.read_data();
-		this.reset_state_machine();
 		if (this.sieve.is_runtime_finished() == false){
 			this.lees.push([101]);
 		}
@@ -433,7 +432,6 @@ class Simple_factorizer extends Algorithm{
 	}
 
 	NextState(){
-		console.log('Factor');
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 

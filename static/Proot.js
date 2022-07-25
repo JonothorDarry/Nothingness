@@ -88,11 +88,11 @@ class Order extends Partial{
 			}
 			btn[i].style.display="inline-block";
 
-			if (lst[i]=='x') this.Painter(btn[i], 3);
+			if (lst[i]=='x') Representation_utils.Painter(btn[i], 3);
 			dv.append(btn[i]);
 		}
 		//Tocjent
-		if (lst[3]==toth) this.Painter(btn[1], 8);
+		if (lst[3]==toth) Representation_utils.Painter(btn[1], 8);
 		this.present.content.appendChild(dv);
 	}
 
@@ -111,8 +111,8 @@ class Order extends Partial{
 			btn.push(this.buttCreator(lst[i]));
 			btn[i].style.position="relative";
 			btn[i].style.display="inline-block";
-			if (lst[i]=='x') this.Painter(btn[i], 3);
-			else this.Painter(btn[i], 5);
+			if (lst[i]=='x') Representation_utils.Painter(btn[i], 3);
+			else Representation_utils.Painter(btn[i], 5);
 			dv.append(btn[i]);
 		}
 		btn[2].style.width="80px";
@@ -131,8 +131,8 @@ class Order extends Partial{
 		for (i=0;i<=toth;i++){
 			if (this.known[i]>0){
 				btn=this.buttCreator(i);
-				if (i==toth) this.Painter(btn, 8);
-				else this.Painter(btn, 5);
+				if (i==toth) Representation_utils.Painter(btn, 8);
+				else Representation_utils.Painter(btn, 5);
 				dv_upper_r.append(btn);
 			}
 		}
@@ -219,7 +219,7 @@ class Proot extends Algorithm{
 					allez=this.doubleButtCreator(0, this.buttCreator.bind(this));
 					btn=allez[1];
 					btn2=allez[2];
-					this.Painter(allez[0], 4);
+					Representation_utils.Painter(allez[0], 4);
 					var butt_container=allez[0];
 				}
 
@@ -234,9 +234,8 @@ class Proot extends Algorithm{
 		}
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x, expo, base, old_base, old_expo;
+	StateMaker(s){
+		var x, expo, base, old_base, old_expo;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 		var point=this.amount_of_primes_m*2;
 		//var last_expo=(this.exponents.length>0?this.exponents[this.exponents.length-1]:-1);
@@ -519,8 +518,7 @@ class Proot extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var last=this.lees[l-1], prev=this.lees[l-2], fa_m=this.bastard_m, ga_m=this.bastard_toth;
+		var last=this.lees[this.state_nr], prev=this.lees[this.state_nr-1], fa_m=this.bastard_m, ga_m=this.bastard_toth;
 		var p=this.toth+1;
 		
 		if (last[0]==0 && fa_m!=1) return `I search for next prime dividing fa_m=${fa_m*last[2]} - m divided by all its prime divisors already found, starting from ${last[1]} ... all the way to ${last[2]}, which divides fa_m - I change fa_m=${fa_m*last[2]}/${last[2]}=${fa_m} and search for further primes dividing fa_m`;

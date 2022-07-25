@@ -212,7 +212,7 @@ class Ntt extends Algorithm{
 				this.zdivs[i].buttons.appendChild(btn);
 
 				this.btnlist[i][j].innerHTML=(i==0?j:(i==1?this.logic.a[j]:this.logic.b[j]));
-				this.Painter(this.btnlist[i][j], 0);
+				Representation_utils.Painter(this.btnlist[i][j], 0);
 			}
 		}
 	}
@@ -295,7 +295,7 @@ class Ntt extends Algorithm{
 						this.btnlist[i][j].innerHTML=value;
 					else 
 						this.btnlist[i][j].innerHTML=Math.round(value);
-					this.Painter(this.btnlist[i][j], 0);
+					Representation_utils.Painter(this.btnlist[i][j], 0);
 				}
 			}
 		}

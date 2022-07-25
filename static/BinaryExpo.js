@@ -28,7 +28,7 @@ class BinaryExpo extends Algorithm{
 
 	presentation_make_paint_append(inner_html, stylistic, place, color=null){
 		var btn = Modern_representation.button_creator(inner_html, stylistic);
-		if (color != null) this.Painter(btn, color);
+		if (color != null) Representation_utils.Painter(btn, color);
 		place.appendChild(btn);
 
 		return btn;
@@ -57,8 +57,8 @@ class BinaryExpo extends Algorithm{
 		full_div.appendChild(regular_power.base);
 		full_div.appendChild(regular_power.expo);
 		Modern_representation.button_modifier(regular_power.expo, {'stylistic':{'px':{'width':Math.floor(this.stylistic.bs_butt_width_h/2+10)}}});
-		this.Painter(regular_power.base, 4);
-		this.Painter(regular_power.expo, 4);
+		Representation_utils.Painter(regular_power.base, 4);
+		Representation_utils.Painter(regular_power.expo, 4);
 		this.buttons.final_equal = this.presentation_make_paint_append(`&equiv;`, {'general':{'color':'#000000'}, 'px':{'height':20, 'width':20}}, full_div, 4);
 		this.buttons.regular_power_base = regular_power.base;
 		this.buttons.regular_power_expo = regular_power.expo;

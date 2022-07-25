@@ -96,7 +96,7 @@ class DiamFinder extends Algorithm{
 
 			for (j=0; j<this.logic.tree.tr[i].length; j++){
 				ite_btn = Modern_representation.button_creator('', {'%':{'borderRadius':100}, 'px':{'height':12, 'width':12}, 'general':{'position':'absolute'}});
-				this.Painter(ite_btn, 0); //TODO: Painter removal
+				Representation_utils.Painter(ite_btn, 0); //TODO: Painter removal
 
 				this.buttons.iterator_edge_list[i].push(ite_btn);
 				this.buttons.edge_list[i][j].appendChild(ite_btn);
@@ -433,7 +433,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 
 			for (j=0; j<this.logic.tree.tr[i].length; j++){
 				ite_btn = Modern_representation.button_creator('', {'%':{'borderRadius':100}, 'px':{'height':12, 'width':12}, 'general':{'position':'absolute'}});
-				this.Painter(ite_btn, 0); //TODO: Painter removal
+				Representation_utils.Painter(ite_btn, 0); //TODO: Painter removal
 
 				this.buttons.iterator_edge_list[i].push(ite_btn);
 				this.buttons.edge_list[i][j].appendChild(ite_btn);

@@ -164,20 +164,25 @@ class Algorithm{
 
 	//reading input
 	dissolve_input(str){
-		var lst=[], j=0, i=0, x, a=0, is_string=false;
+		var lst=[], j=0, i=0, x, a=0, is_string=false, negative=false;
 		lst.iter=-1;
 		lst.get_next=function(){this.iter+=1; return this[this.iter];}
+
 		while (j<str.length){
-			is_string=false;
+			negative = false;
+			is_string = false;
+
 			for (;i<str.length;i++){
 				x=str.charCodeAt(i);
-				if (x<58 && x>=48 && is_string==false) a=a*10+x-48;
+				if (x==45 && is_string==false) negative = true;
+				else if (x<58 && x>=48 && is_string==false) a=a*10+x-48;
 				else if ( (x>=65 && x<=90) || (x>=97 && x<=122) ){
 					if (a==0) a="";
 					a+=str[i];
 				}
 				else break;
 			}
+			if (negative && !is_string) a = -a;
 			if (j!=i) lst.push(a);
 			else i++;
 			j=i, a=0;
@@ -187,7 +192,7 @@ class Algorithm{
 
 	//Operations starting BeginningExecutor
 	starter(){
-		if (this.querier==true) this.reset_state_machine();
+		if (this.querier==true) this.reset_state_machine(true);
 
 		this.lees=[];
 		this.state_transformation=[];
@@ -204,7 +209,7 @@ class Algorithm{
 		this.state_nr = this.lees.length - 1;
 		this.all_states_nr = this.state_nr;
 
-		this.reset_state_machine();
+		this.reset_state_machine(false);
 		this.progress_bar.setAttribute('min', 0);
 		this.progress_bar.setAttribute('max', this.all_states_nr);
 		this.update_progress();
@@ -214,20 +219,21 @@ class Algorithm{
 		this.progress_bar.value = this.state_nr;
 	}
 
-	reset_state_machine(){
+	reset_state_machine(everything){
 		while (this.state_nr > 0) this.full_state_remover();
+		if (everything) this.StateUnmaker(); //Move before state 0 - only for unmaker's eyes
 	}
 
 	//Reversing operation
 	StateUnmaker(){
 		var i, elem;
 
-		if (this.state_nr == 0) return;
+		if (this.state_nr < 0 || this.state_nr == undefined) return;
 		//Back to times of Splendor: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field, 5 - fun
 		var x=this.state_transformation[this.state_nr];
 		for (i=x.length-1; i>=0; i--){
 			elem=x[i];
-			if (elem[0]==0) this.Painter(elem[1], elem[2]);
+			if (elem[0]==0) Representation_utils.Painter(elem[1], elem[2]);
 			if (elem[0]==1) elem[1].innerHTML=elem[2];
 			if (elem[0]==2) elem[1].pop();
 			if (elem[0]==3) this[elem[1]]=elem[2];
@@ -241,10 +247,6 @@ class Algorithm{
 	}
 
 	StatementComprehension(){}
-
-	Painter(btn, col=1, only_bg=0){
-		Representation_utils.Painter(btn, col, only_bg);
-	}
 
 	//Creates buttons
 	buttCreator(numb=null, col=0){
@@ -270,7 +272,7 @@ class Algorithm{
 		var x, i;
 		for (i=0;i<staat.length;i++){
 			x=staat[i];
-			if (x[0]==0) this.Painter(x[1], x[3]);
+			if (x[0]==0) Representation_utils.Painter(x[1], x[3]);
 			if (x[0]==1) x[1].innerHTML=x[3];
 			if (x[0]==2) x[1].push(x[2]);
 			if (x[0]==3) this[x[1]]=x[3];
@@ -426,19 +428,6 @@ class Grid{
 	}
 }
 
-/*
-class Style{
-	constructor(background_color, color='#FFFFFF', additional_info={}){
-		base = {
-			'general':{
-				'backgroundColor':background_color,
-				'color':color
-			}
-		}
-
-	}
-}*/
-
 class Representation_utils{
 	//mode: 1 - buttons, 2 - midian button, 4 - text (logical or), midian - width of middle
 	static title_id='title';
@@ -465,7 +454,7 @@ class Representation_utils{
 			}
 			if (mode_title==1) {
 				zdivs[i][Representation_utils.title_id].innerHTML=title_list[i];
-				zdivs[i][Representation_utils.title_id].style.width="200px";
+				zdivs[i][Representation_utils.title_id].style.width = '200px';
 			}
 			if (mode_single==1) zdivs[i][Representation_utils.single_id].style.width=midian;
 			if (mode_butts==1) zdivs[i][Representation_utils.buttons_id].style.position="relative";
@@ -479,6 +468,22 @@ class Representation_utils{
 
 	static gridlike_divs_creator(number_of_rows, to_add, style){
 		return Representation_utils.proto_divsCreator(1, number_of_rows, [], null, to_add, style);
+	}
+
+	//place_coordinates: pair {x:x, y:y}
+	static get_place_for_companion_button(place_coordinates, x_axis, y_axis, diameter = 40, button_properties={'width':20, 'height':20}){
+		var place={};
+		var radius=Math.floor(diameter/2);
+		var small_radius = Math.floor(button_properties.width/2);
+		var sqrt2 = Math.sqrt(2);
+
+		//if (x_axis>0) place.left = place_coordinates.x + diameter/Math.sqrt(2) + button_properties.width*(x_axis-1) - radius;
+		if (x_axis>0) place.left = place_coordinates.x + button_properties.width*(x_axis-1) + radius/sqrt2;
+		else place.left = place_coordinates.x - radius/sqrt2 - button_properties.width*(-x_axis);
+
+		if (y_axis>0) place.top = place_coordinates.y - button_properties.height*(y_axis-1) - (radius+small_radius)/sqrt2 - small_radius;
+		else place.top = place_coordinates.y + radius/sqrt + button_properties.height*(-y_axis-1);
+		return place;
 	}
 
 	static gridify_div(place, n, m, style, divs = false){
@@ -523,7 +528,7 @@ class Representation_utils{
 		}
 		var olden;
 		if (only_bg==1) olden=btn.style.color;
-		if (col==0 || col==1 || col==4 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14 || col==15) btn.style.color="#FFFFFF";
+		if (col==0 || col==1 || col==4 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14 || col==15 || col == 101) btn.style.color="#FFFFFF";
 		else if (col==102) btn.style.color = "#000000";
 		else btn.style.backgroundColor="#FFFFFF";
 
@@ -724,6 +729,9 @@ class Modern_representation{
 		//Exponent brown, black-on-white
 		101:'#804000',
 		102:'#FFFFFF',
+
+		//transparent
+		104:'rgba(255, 255, 255, 0.0)'
 	}
 
 	static button_creator(inner_html, stylistic){
@@ -772,13 +780,11 @@ class Modern_representation{
 
 		packet.stylistic.general = Object_utils.construct_if_null(packet.stylistic.general);
 		packet.stylistic.px = Object_utils.construct_if_null(packet.stylistic.px);
+		packet.stylistic['%'] = Object_utils.construct_if_null(packet.stylistic['%']);
 
-		for (var x in packet.stylistic.general){
-			button.style[x]=packet.stylistic.general[x];
-		}
-		for (var x in packet.stylistic.px){
-			button.style[x]=`${packet.stylistic.px[x]}px`;
-		}
+		for (var x in packet.stylistic.general) button.style[x]=packet.stylistic.general[x];
+		for (var x in packet.stylistic.px) button.style[x]=`${packet.stylistic.px[x]}px`;
+		for (var x in packet.stylistic['%']) button.style[x]=`${packet.stylistic['%'][x]}%`;
 	}
 
 	static element_creator(element_name, inner_html, stylistic, base){
@@ -860,7 +866,7 @@ class NTMath{
 	static pow(ap, bp, mp=1000000007){
 		var res=1n, a=BigInt(ap), b=BigInt(bp), m=BigInt(mp);
 		for (;b>0;b=b/2n){
-			if (b%2n==1n) res=(res*a)%m;
+			if (b%2n == 1n) res=(res*a)%m;
 			a=(a*a)%m;
 		}
 		return res;
@@ -977,6 +983,57 @@ class NTMath{
 			}
 		}
 		return p3;
+	}
+
+	//Muller-Robinho
+	static check_prime(x, tests=20){
+		if (x==1) return false;
+
+		for (var i=0; i<tests; i++){
+			var expo = x-1;
+			var base = Math.floor((Math.random()*(x-1))+1)%x;
+
+			var res = NTMath.pow(base, expo, x);
+			if (res != 1) return false;
+			expo = Math.floor(expo/2);
+
+			while (expo > 0 && expo%2 == 0){
+				var res = NTMath.pow(base, expo, x);
+				if (res != x-1 && res != 1) return false;
+				if (res == x-1) break;
+
+				expo = Math.floor(expo/2);
+			}
+		}
+		return true;
+	}
+
+	static pollard_rho_factorize(x){
+		var prime = NTMath.check_prime(x);
+		if (x == 1) return [];
+		if (prime) return [x];
+
+
+		while(true){
+			var g = 1;
+			var seed = Math.floor(Math.random() * x);
+			var free = Math.floor(Math.random() * x);
+			var apply_poly = function(x){return x*x + 7*x + free}
+
+			var slow = seed;
+			var fast = seed;
+
+			while (g == 1){
+				var slow = apply_poly(slow);
+				var fast = apply_poly(apply_poly(fast));
+				g = NTMath.gcd(Math.abs(fast-slow), x);
+			}
+			if (g != x) break;
+		}
+
+		var res = [...this.pollard_rho_factorize(g), ...this.pollard_rho_factorize(Math.floor(x/g))];
+		res.sort((a,b) => {return (a < b) ? -1 : ((a==b)?0:1)});
+		return res;
 	}
 }
 
@@ -1177,7 +1234,7 @@ class Object_utils{
 
 
 class Graph_utils{
-	//Positions+w/h of v1, v2; v1 below; general_params: h/w of a button
+	//Positions+w/h of v1, v2; v1 below; general_params: h/w of an overarching div
 	static create_edge(v1_pos, v2_pos, stylistic, general_params){
 		var cval, angle; 
 		var dv=document.createElement("DIV");
@@ -1196,15 +1253,17 @@ class Graph_utils{
 
 		if (!('backgroundColor' in stylistic)) dv.style.backgroundColor="#000000";
 		else dv.style.backgroundColor=stylistic.backgroundColor;
-
 		dv.style.height=`${stylistic.height}px`;
 		if ('color' in stylistic) dv.style.backgroundColor=`${stylistic.color}`;
 
-		if (ln_x==0) angle=-Infinity;
+		if (ln_x == 0) angle=-Infinity;
 		else angle=ln_y/cval;
 
-		dv.style.transformOrigin="top left";
-		if (ln_x==0) dv.style.transform=`rotate(${-Math.PI/2}rad)`;
+		dv.style.transformOrigin="left";
+		if (ln_x == 0){
+			if (v1_pos.y < v2_pos.y) dv.style.transform=`rotate(${Math.PI/2}rad)`;
+			else dv.style.transform=`rotate(${-Math.PI/2}rad)`;
+		}
 		else if (ln_x<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
 		else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
 		return dv;
@@ -1213,7 +1272,7 @@ class Graph_utils{
 	static button_creator(stylistic, numb=null, col=4){
 		var butt=Representation_utils.button_creator(stylistic.nonsense, numb, col);
 
-		if (stylistic.vertex.label=='none'){
+		if (stylistic.vertex.label == 'none'){
 			butt.innerHTML='';
 		}
 

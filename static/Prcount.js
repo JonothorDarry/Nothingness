@@ -117,7 +117,7 @@ class PostPhi extends Algorithm{
 		btn.style.left = `10px`;
 		btn.style.top = `calc(${this.present.positions.y[layer]*100}% - 20px)`
 
-		this.Painter(btn, 5);
+		Representation_utils.Painter(btn, 5);
 		return btn;
 	}
 
@@ -168,7 +168,7 @@ class PostPhi extends Algorithm{
 			for (j=0; j<this.logic.layers_phis[i].length; j+=1){
 				current=this.logic.layers_phis[i][j];
 				btn=this.button_creator(current.n, i);
-				this.Painter(btn.div, 4);
+				Representation_utils.Painter(btn.div, 4);
 				this.buttons.vertex[i].push(btn);
 				this.buttons.edge[i].push({});
 				this.buttons.companion[i].push({});
@@ -196,7 +196,7 @@ class PostPhi extends Algorithm{
 		this._presentation_add_helpful_lefty();
 
 		//Starter
-		this.Painter(this.buttons.vertex[this.logic.a][0], 0);
+		Representation_utils.Painter(this.buttons.vertex[this.logic.a][0], 0);
 	}
 
 	palingnesia(){
@@ -504,11 +504,11 @@ class Segtree_Counter extends Algorithm{
 		var sieve = Modern_representation.div_creator('', {'general':{'display':'block'}});
 		for (var i=0; i<this.logic.Cv; i++){
 			var btn = this.buttCreator(i);
-			this.Painter(btn, 0);
+			Representation_utils.Painter(btn, 0);
 			this.buttons.low_sieve.push(btn);
 			sieve.appendChild(btn);
 		}
-		this.Painter(this.buttons.low_sieve[0], 2);
+		Representation_utils.Painter(this.buttons.low_sieve[0], 2);
 		place.appendChild(sieve);
 	}
 
