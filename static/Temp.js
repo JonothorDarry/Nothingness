@@ -233,7 +233,7 @@ class Algorithm{
 		var x=this.state_transformation[this.state_nr];
 		for (i=x.length-1; i>=0; i--){
 			elem=x[i];
-			if (elem[0]==0) Representation_utils.Painter(elem[1], elem[2]);
+			if (elem[0]==0) this.Painter(elem[1], elem[2]);
 			if (elem[0]==1) elem[1].innerHTML=elem[2];
 			if (elem[0]==2) elem[1].pop();
 			if (elem[0]==3) this[elem[1]]=elem[2];
@@ -272,7 +272,7 @@ class Algorithm{
 		var x, i;
 		for (i=0;i<staat.length;i++){
 			x=staat[i];
-			if (x[0]==0) Representation_utils.Painter(x[1], x[3]);
+			if (x[0]==0) this.Painter(x[1], x[3]);
 			if (x[0]==1) x[1].innerHTML=x[3];
 			if (x[0]==2) x[1].push(x[2]);
 			if (x[0]==3) this[x[1]]=x[3];
@@ -346,6 +346,8 @@ class Algorithm{
 			if (values[i].length > 0 && btn_list[i]!=null) btn_list[i].innerHTML = values[i][0];
 		}
 	}
+
+	Painter(btn, col=1, only_bg=0) {return Representation_utils.Painter(btn, col, only_bg);}
 }
 
 class Partial extends Algorithm{

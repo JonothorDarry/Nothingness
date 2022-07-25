@@ -221,9 +221,9 @@ class EuclidGcd extends Algorithm{
 		this.buttons.a = [null].concat(grid.filler([[1, ln], 1], this.logic.a.slice(1), standard_stylistic));
 		this.buttons.b = [null].concat(grid.filler([[1, ln], 2], this.logic.b.slice(1), standard_stylistic));
 
-		Representation_utils.Painter(this.buttons.a[1], 0);
-		Representation_utils.Painter(this.buttons.b[1], 0);
-		Representation_utils.Painter(this.buttons.index[1], 0);
+		this.Painter(this.buttons.a[1], 0);
+		this.Painter(this.buttons.b[1], 0);
+		this.Painter(this.buttons.index[1], 0);
 	}
 
 	palingnesia(){
@@ -311,8 +311,8 @@ class ExtendedEuclidGcd extends Algorithm{
 		var i=0;
 		for (var x of elements){
 			this.buttons[x[0]] = grid.filler([[1, ln+1], i], x[1], standard_stylistic);
-			Representation_utils.Painter(this.buttons[x[0]][0], 0);
-			if (x[0]!='z') Representation_utils.Painter(this.buttons[x[0]][1], 0);
+			this.Painter(this.buttons[x[0]][0], 0);
+			if (x[0]!='z') this.Painter(this.buttons[x[0]][1], 0);
 			i+=1;
 		}
 	}
