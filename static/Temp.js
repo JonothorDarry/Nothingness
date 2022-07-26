@@ -899,8 +899,9 @@ class NTMath{
 		return a;
 	}
 
-	static lcm(a, b){
-		return Math.floor((a*b)/NTMath.gcd(a, b));
+	static lcm(ap, bp){
+		var a=BigInt(ap), b=BigInt(bp);
+		return (a*b)/NTMath.gcd(a, b);
 	}
 
 	static extended_gcd(a, b){
@@ -931,9 +932,9 @@ class NTMath{
 	}
 
 	static inverse(a, m){
-		var s=NTMath.ext_gcd(a, m);
-		if (s[0]==0) return null;
-		if (s[1]<0) return s[1]+m;
+		var s=NTMath.extended_gcd(a, m);
+		if (s[0] == 0) return null;
+		if (s[1] < 0) return s[1]+m;
 		return s[1];
 	}
 
@@ -993,7 +994,7 @@ class NTMath{
 		return p3;
 	}
 
-	//Muller-Robinho - BIfriendly
+	//Muller-Robinho
 	static check_prime(x, tests=20){
 		if (x == 1) return false;
 
@@ -1016,7 +1017,7 @@ class NTMath{
 		return true;
 	}
 
-	//Pollard-rho - BIfriendly
+	//Pollard-rho
 	static pollard_rho_factorize(xp){
 		var x = BigInt(xp)
 		var prime = NTMath.check_prime(x);

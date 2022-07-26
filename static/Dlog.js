@@ -2,25 +2,25 @@ class Dlog extends Algorithm{
 	logical_box(){
 		this.logic.success=false;
 
-		this.logic.s=Math.ceil(Math.sqrt(this.logic.m));
-		var single_an=Number(NTMath.pow(this.logic.a, this.logic.s, this.logic.m));
-		var inverse_an=NTMath.inverse(single_an, this.logic.m);
-		var comparer_sort= function(a,b){return (a[1]<=b[1] ? 1 : -1)};
-		var comparer_binaria= function(a,b) {return a[1]<b[1]};
-		var iters=Math.floor(this.logic.m/this.logic.s);
+		this.logic.s = BigInt(Math.ceil(Math.sqrt(Number(this.logic.m))));
+		var single_an = NTMath.pow(this.logic.a, this.logic.s, this.logic.m);
+		var inverse_an = NTMath.inverse(single_an, this.logic.m);
+		var comparer_sort = function(a,b){return (a[1]<=b[1] ? 1 : -1)};
+		var comparer_binaria = function(a,b) {return a[1]<b[1]};
+		var iters = this.logic.m/this.logic.s;
 
 		var i;
-		this.logic.anx=[[0, 1]];
-		this.logic.inverse_anx=[[0, 1]];
-		for (i=1; i<=iters; i++) this.logic.anx.push([this.logic.s*i, (this.logic.anx[i-1][1]*single_an)%this.logic.m]);
-		for (i=1; i<=iters; i++) this.logic.inverse_anx.push([this.logic.s*i, (this.logic.inverse_anx[i-1][1]*inverse_an)%this.logic.m]);
+		this.logic.anx=[[0n, 1n]];
+		this.logic.inverse_anx=[[0n, 1n]];
+		for (i=1n; i<=iters; i++) this.logic.anx.push([this.logic.s*i, (this.logic.anx[i-1n][1]*single_an)%this.logic.m]);
+		for (i=1n; i<=iters; i++) this.logic.inverse_anx.push([this.logic.s*i, (this.logic.inverse_anx[i-1n][1]*inverse_an)%this.logic.m]);
 
 		var _b=this.logic.b;
 		var _m=this.logic.m;
 		this.logic.b_anx=this.logic.inverse_anx.map(function(e){return [e[0], (_b*e[1])%_m];});
 
-		this.logic.ax=[[0, 1]];
-		for (i=1; i<this.logic.s; i++) this.logic.ax.push([i, (this.logic.ax[i-1][1]*this.logic.a)%this.logic.m]);
+		this.logic.ax=[[0n, 1n]];
+		for (i=1n; i<this.logic.s; i++) this.logic.ax.push([i, (this.logic.ax[i-1n][1]*this.logic.a)%this.logic.m]);
 		this.logic.sorted_ax=[...this.logic.ax];
 		this.logic.sorted_ax.sort(comparer_sort).reverse();
 		this.logic.march_of_the_binars=[];
@@ -32,7 +32,7 @@ class Dlog extends Algorithm{
 			if (x<this.logic.sorted_ax.length && this.logic.sorted_ax[x][1]==this.logic.b_anx[i][1]){
 				this.logic.success=true;
 				this.logic.dlog=this.logic.anx[i][0]+this.logic.sorted_ax[x][0];
-				this.logic.solution_part_anx=i;
+				this.logic.solution_part_anx=BigInt(i);
 				this.logic.solution_part_ax=x;
 				break;
 			}
@@ -101,10 +101,10 @@ class Dlog extends Algorithm{
 
 	read_data(){
 		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
-		this.logic.a=c.get_next();
-		this.logic.b=c.get_next();
-		this.logic.m=c.get_next();
+		var c=this.dissolve_input(fas, true);
+		this.logic.a = c.get_next();
+		this.logic.b = c.get_next();
+		this.logic.m = c.get_next();
 	}
 
 	constructor(block, a, b, m){
@@ -257,4 +257,4 @@ class Dlog extends Algorithm{
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var eg=new Dlog(feral, 6, 17, 23);
+var eg=new Dlog(feral, 6n, 17n, 23n);

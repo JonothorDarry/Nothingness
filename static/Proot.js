@@ -55,9 +55,10 @@ class Order extends Partial{
 			pw=1,  k=0;
 			while (x%i==0) x=Math.floor(x/i), pw=pw*i, k+=1;
 			if (i==2 && k>=3) lambda=NTMath.lcm(lambda, Math.floor(pw/4));
-			else lambda=NTMath.lcm(lambda, pw-Math.floor(pw/i));
+			else lambda = Number(NTMath.lcm(lambda, pw-Math.floor(pw/i)));
 		}
-		if (x>1) lambda=NTMath.lcm(lambda, (x-1));
+
+		if (x>1) lambda = Number(NTMath.lcm(lambda, (x-1)));
 		return lambda;
 	}
 

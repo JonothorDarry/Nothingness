@@ -1,11 +1,11 @@
 class Ntt extends Algorithm{
 	_pusher(arr, x, ntt){
 		if (ntt==true) arr.push(BigInt(x));
-		else arr.push(new Complex(x));
+		else arr.push(new Complex(Number(x)));
 	}
 
 	_logical_inversion(){
-		if (this.logic.is_ntt) this.logic.inv_n=BigInt(NTMath.inverse(this.logic.n, this.logic.q));
+		if (this.logic.is_ntt) this.logic.inv_n = NTMath.inverse(BigInt(this.logic.n), BigInt(this.logic.q));
 		else this.logic.inv_n=1/this.logic.n;
 	}
 	_logical_proot(){
@@ -114,8 +114,8 @@ class Ntt extends Algorithm{
 
 		var nullos_lv=Array.apply(null, Array(this.logic.lv+1));
 
-		for (j=o+1;j<i;j++) this._pusher(this.logic.a, 0, this.logic.is_ntt);
-		for (j=m+1;j<i;j++) this._pusher(this.logic.b, 0, this.logic.is_ntt);
+		for (j=o+1; j<i; j++) this._pusher(this.logic.a, 0n, this.logic.is_ntt);
+		for (j=m+1; j<i; j++) this._pusher(this.logic.b, 0n, this.logic.is_ntt);
 		this._logical_butterfly();
 
 		//Totient and implausibility of further actions
@@ -146,14 +146,14 @@ class Ntt extends Algorithm{
 
 		this.logic.a=[];
 		this.logic.b=[];
-		c=this.dissolve_input(fas);
+		c=this.dissolve_input(fas, true);
 
-		this.logic.o=c.get_next();
+		this.logic.o = Number(c.get_next());
 		for (i=0;i<=this.logic.o;i++) this._pusher(this.logic.a, c.get_next(), this.logic.is_ntt);
-		this.logic.m=c.get_next();
+		this.logic.m = Number(c.get_next());
 		for (i=0;i<=this.logic.m;i++) this._pusher(this.logic.b, c.get_next(), this.logic.is_ntt);
 		if (this.logic.is_ntt) {
-			this.logic.q=c.get_next();
+			this.logic.q = Number(c.get_next());
 			this.logic.Bq=BigInt(this.logic.q);
 		}
 	}
