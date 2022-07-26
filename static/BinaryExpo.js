@@ -1,27 +1,27 @@
 class BinaryExpo extends Algorithm{
 	logical_box(){
-		var i, a_pow=this.logic.a, bits=[], b=this.logic.b, res=1, multipla;
+		var i, a_pow=(this.logic.a)%this.logic.m, bits=[], b=this.logic.b, res=1n, multipla;
 
 		this.logic.a_powers=[1];
 		this.logic.b_bits=[];
 		this.logic.b_values=[];
-		this.logic.results=[1];
+		this.logic.results=[1n];
 		this.logic.multiplas=[];
-		this.logic.powers_2=[0, 1];
+		this.logic.powers_2=[0n, 1n];
 
 		while(b>0){
-			multipla = (((b%2)==0)?1:a_pow);
+			multipla = (((b%2n) == 0)? 1n :a_pow);
 			res = (res*multipla)%this.logic.m;
 
 			this.logic.a_powers.push(a_pow);
-			this.logic.b_bits.push(b%2);
+			this.logic.b_bits.push(b%2n);
 			this.logic.b_values.push(b);
 			this.logic.results.push(res);
 			this.logic.multiplas.push(multipla);
-			this.logic.powers_2.push(ArrayUtils.get_elem(this.logic.powers_2, -1)*2);
+			this.logic.powers_2.push(ArrayUtils.get_elem(this.logic.powers_2, -1)*2n);
 
 			a_pow = (a_pow*a_pow)%this.logic.m;
-			b=Math.floor(b/2);
+			b=b/2n;
 		}
 		this.logic.powers_2.pop();
 	}
@@ -115,7 +115,7 @@ class BinaryExpo extends Algorithm{
 
 	read_data(){
 		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
+		var c=this.dissolve_input(fas, true);
 		this.logic.a=c.get_next();
 		this.logic.b=c.get_next();
 		this.logic.m=c.get_next();
@@ -212,4 +212,4 @@ class BinaryExpo extends Algorithm{
 }
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var eg1=new BinaryExpo(feral, 17, 43, 107);
+var eg1=new BinaryExpo(feral, 17n, 43n, 107n);

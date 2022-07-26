@@ -163,9 +163,10 @@ class Algorithm{
 	}
 
 	//reading input
-	dissolve_input(str){
-		var lst=[], j=0, i=0, x, a=0, is_string=false, negative=false;
+	dissolve_input(str, bigint=false){
+		var lst=[], j=0, i=0, x, is_string=false, negative=false;
 		lst.iter=-1;
+		var a = ((bigint)?0n:0);
 		lst.get_next=function(){this.iter+=1; return this[this.iter];}
 
 		while (j<str.length){
@@ -175,17 +176,21 @@ class Algorithm{
 			for (;i<str.length;i++){
 				x=str.charCodeAt(i);
 				if (x==45 && is_string==false) negative = true;
-				else if (x<58 && x>=48 && is_string==false) a=a*10+x-48;
+				else if (x<58 && x>=48 && is_string==false){
+					if (bigint) a=a*10n+BigInt(x)-48n;
+					else a=a*10+x-48;
+				}
 				else if ( (x>=65 && x<=90) || (x>=97 && x<=122) ){
 					if (a==0) a="";
 					a+=str[i];
 				}
 				else break;
 			}
+
 			if (negative && !is_string) a = -a;
 			if (j!=i) lst.push(a);
 			else i++;
-			j=i, a=0;
+			j=i, a = (bigint?0n:0);
 		}
 		return lst;
 	}
@@ -865,7 +870,7 @@ class ChildBigIntMath{
 
 
 class NTMath{
-	static pow(ap, bp, mp=1000000007){
+	static pow(ap, bp, mp=1000000007){ //BIfriendly
 		var res=1n, a=BigInt(ap), b=BigInt(bp), m=BigInt(mp);
 		for (;b>0;b=b/2n){
 			if (b%2n == 1n) res=(res*a)%m;
@@ -883,7 +888,8 @@ class NTMath{
 		return res;
 	}
 
-	static gcd(a, b){
+	static gcd(ap, bp){ //BIfriendly
+		var a = BigInt(ap), b = BigInt(bp);
 		var c;
 		while (b>0){
 			c=a%b;
@@ -897,11 +903,11 @@ class NTMath{
 		return Math.floor((a*b)/NTMath.gcd(a, b));
 	}
 
-	static ext_gcd(a, b){
-		var p=[1, 0], q=[0, 1], lst=2, c, z;
+	static extended_gcd(a, b){
+		var p=[1n, 0n], q=[0n, 1n], lst=2, c, z;
 
 		while (b>0){
-			z=Math.floor(a/b);
+			z=a/b;
 			p.push(p[lst-2]-z*p[lst-1]);
 			q.push(q[lst-2]-z*q[lst-1]);
 			c=a%b, a=b, b=c;
@@ -987,53 +993,60 @@ class NTMath{
 		return p3;
 	}
 
-	//Muller-Robinho
+	//Muller-Robinho - BIfriendly
 	static check_prime(x, tests=20){
-		if (x==1) return false;
+		if (x == 1) return false;
 
 		for (var i=0; i<tests; i++){
-			var expo = x-1;
-			var base = Math.floor((Math.random()*(x-1))+1)%x;
+			var expo = x-1n;
+			var base = BigInt(Math.floor(Math.random()*(1<<30)))%(x-1n)+1n; //Wrong - but, for all practical purposes, it doesn't matter
 
 			var res = NTMath.pow(base, expo, x);
-			if (res != 1) return false;
-			expo = Math.floor(expo/2);
+			if (res != 1n) return false;
+			expo = expo/2n;
 
-			while (expo > 0 && expo%2 == 0){
+			while (expo > 0 && expo%2n == 0){
 				var res = NTMath.pow(base, expo, x);
-				if (res != x-1 && res != 1) return false;
-				if (res == x-1) break;
+				if (res != x-1n && res != 1n) return false;
+				if (res == x-1n) break;
 
-				expo = Math.floor(expo/2);
+				expo = expo/2n;
 			}
 		}
 		return true;
 	}
 
-	static pollard_rho_factorize(x){
+	//Pollard-rho - BIfriendly
+	static pollard_rho_factorize(xp){
+		var x = BigInt(xp)
 		var prime = NTMath.check_prime(x);
+		console.log(x, NTMath.check_prime(x));
 		if (x == 1) return [];
 		if (prime) return [x];
 
-
+		var modulus = x;
 		while(true){
-			var g = 1;
-			var seed = Math.floor(Math.random() * x);
-			var free = Math.floor(Math.random() * x);
-			var apply_poly = function(x){return x*x + 7*x + free}
+			var g = 1n;
+			var seed = BigInt(Math.floor(Math.random() * (1<<30)))%x; //wrong - but doesn't matter
+			var free = BigInt(Math.floor(Math.random() * (1<<30)));
+			var apply_poly = function(x){return (x*x + 7n*x + free)%modulus};
 
 			var slow = seed;
 			var fast = seed;
 
-			while (g == 1){
+			var abs = function(a){return ((a<0)?(-a):a);}
+			console.log(g);
+			while (g == 1n){
 				var slow = apply_poly(slow);
 				var fast = apply_poly(apply_poly(fast));
-				g = NTMath.gcd(Math.abs(fast-slow), x);
+
+				g = NTMath.gcd(abs(fast-slow), x);
+				console.log(fast, slow, x, g);
 			}
 			if (g != x) break;
 		}
 
-		var res = [...this.pollard_rho_factorize(g), ...this.pollard_rho_factorize(Math.floor(x/g))];
+		var res = [...this.pollard_rho_factorize(g), ...this.pollard_rho_factorize(x/g)];
 		res.sort((a,b) => {return (a < b) ? -1 : ((a==b)?0:1)});
 		return res;
 	}

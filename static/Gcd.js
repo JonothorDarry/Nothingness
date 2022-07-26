@@ -5,14 +5,14 @@ class SuperEuclid{
 		logica.a=['-', w];
 		logica.b=[w, v];
 		logica.z=['-'];
-		logica.p=[1, 0];
-		logica.q=[0, 1];
+		logica.p=[1n, 0n];
+		logica.q=[0n, 1n];
 
 		var index=2;
 		var a=w, b=v, c, z, p, q;
 
 		while(b>0){
-			z = Math.floor(a/b);
+			z = a/b;
 			p = logica.p[index-2]-z*logica.p[index-1];
 			q = logica.q[index-2]-z*logica.q[index-1];
 
@@ -212,7 +212,8 @@ class EuclidGcd extends Algorithm{
 		var grid=elems.grid;
 		var div=elems.div;
 
-		var mx_width = Representation_utils.get_width(Math.max(this.logic.v, this.logic.w), 30);
+		var max = function(a,b){return (a>b)?a:b;};
+		var mx_width = Representation_utils.get_width(max(this.logic.v, this.logic.w), 30);
 		var partial_stylistic = {'general':{'border':'1px solid white'}, 'px':{'width':mx_width, 'height':30, 'lineHeight':30}};
 		var standard_stylistic = {'color':4, 'stylistic':partial_stylistic};
 
@@ -233,9 +234,9 @@ class EuclidGcd extends Algorithm{
 
 	read_data(){
 		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
-		this.logic.w=c.get_next();
-		this.logic.v=c.get_next();
+		var c=this.dissolve_input(fas, true);
+		this.logic.w = BigInt(c.get_next());
+		this.logic.v = BigInt(c.get_next());
 	}
 
 	constructor(block, a, b){
@@ -292,7 +293,8 @@ class ExtendedEuclidGcd extends Algorithm{
 		var grid=elems.grid;
 		var div=elems.div;
 
-		var mx_width = Representation_utils.get_width(Math.max(this.logic.v, this.logic.w), 30);
+		var max = function(a,b){return (a>b)?a:b;};
+		var mx_width = Representation_utils.get_width(max(this.logic.v, this.logic.w), 30);
 		var partial_stylistic = {'general':{'border':'1px solid white'}, 'px':{'width':mx_width, 'height':30, 'lineHeight':30}};
 		var standard_stylistic = {'color':4, 'stylistic':partial_stylistic};
 
@@ -324,7 +326,7 @@ class ExtendedEuclidGcd extends Algorithm{
 
 	read_data(){
 		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
+		var c=this.dissolve_input(fas, true);
 		this.logic.w=c.get_next();
 		this.logic.v=c.get_next();
 	}
@@ -408,8 +410,8 @@ class ExtendedEuclidGcd extends Algorithm{
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 feral.check=document.getElementById('Nothingness1');
-var eg1=new EuclidGcd(feral, 84, 35);
+var eg1=new EuclidGcd(feral, 84n, 35n);
 
 var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 feral2.check=document.getElementById('Nothingness2');
-var eg2=new ExtendedEuclidGcd(feral2, 84, 35);
+var eg2=new ExtendedEuclidGcd(feral2, 84n, 35n);

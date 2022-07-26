@@ -340,7 +340,7 @@ class Muller extends Partial{
 
 class PollardRho extends Algorithm{
 	_logic_calculate_poly(x){
-		var value=0, i;
+		var value=0n, i;
 		for (i=this.logic.poly_deg; i>=0; i--)
 			value=(value*x+this.logic.poly[i])%this.logic.m;
 		return value;
@@ -381,8 +381,9 @@ class PollardRho extends Algorithm{
 			cur_2k = this._logic_calculate_poly(cur_2k);
 			this.logic.w.push(cur_2k);
 
-			diff=Math.abs(cur_2k-cur_k);
-			gcd=NTMath.gcd(Math.abs(cur_2k-cur_k), this.logic.m);
+			var abs = function(a){return ((a>0)?a:(-a));};
+			diff = abs(cur_2k-cur_k);
+			gcd=NTMath.gcd(diff, this.logic.m);
 
 			this.logic.gcds.push(gcd);
 			this.logic.diff.push(diff);
@@ -401,7 +402,7 @@ class PollardRho extends Algorithm{
 		values[x] = 1;
 
 		while(true){
-			x = (this._logic_calculate_poly(x))%factor;
+			x = this._logic_calculate_poly(x)%factor;
 			array.push(x);
 			if (values[x]>0) break;
 			values[x] = i;
@@ -433,10 +434,10 @@ class PollardRho extends Algorithm{
 	logical_box(){
 		if (this.logic.poly_deg == null){
 			this.logic.poly_deg = 2;
-			this.logic.poly = [1, 0, 1];
+			this.logic.poly = [1n, 0n, 1n];
 		}
 		if (this.logic.starter == null)
-			this.logic.starter = 3;
+			this.logic.starter = 3n;
 
 		this.fill_floyd();
 
@@ -722,12 +723,12 @@ class PollardRho extends Algorithm{
 			this.logic.poly = ArrayUtils.steady(this.logic.poly_deg+1, 0);
 
 			for (i=this.logic.poly_deg; i>=0; i--){
-				this.logic.poly[i] = c.get_next();								
+				this.logic.poly[i] = BigInt(c.get_next());								
 			}
 		}
 
 		else if (v=='Y'){
-			this.logic.starter = c.get_next();
+			this.logic.starter = BigInt(c.get_next());
 		}
 	}
 
@@ -738,7 +739,7 @@ class PollardRho extends Algorithm{
 		this.logic.mono_prime = this.radio_factor.checked;
 		this.logic.multi_prime = this.radio_all.checked;
 
-		this.logic.m=c.get_next();
+		this.logic.m=BigInt(c.get_next());
 		this.read_part(c);
 		this.read_part(c);
 	}
@@ -847,4 +848,4 @@ var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
 feral2.radio_simple=document.getElementById('Basic');
 feral2.radio_factor=document.getElementById('Single factor');
 feral2.radio_all=document.getElementById('All factors');
-var sk2=new PollardRho(feral2, 18209);
+var sk2=new PollardRho(feral2, 18209n);

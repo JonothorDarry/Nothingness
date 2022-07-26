@@ -26,7 +26,7 @@ class Crt extends Algorithm{
 			var c2 = cs[0];
 			var s2 = cs[1];
 
-			var ext_gcd_res = NTMath.ext_gcd(s1, s2);
+			var ext_gcd_res = NTMath.extended_gcd(s1, s2);
 			var gcd = ext_gcd_res[0];
 			var ps1_base = ext_gcd_res[1];
 			var ps2_base = ext_gcd_res[2];
@@ -36,11 +36,11 @@ class Crt extends Algorithm{
 				this.logic.proto_results = [new Result(), ...this.logic.results];
 				break;
 			}
-			var multipla_const = Math.floor((c2-c1)/gcd);
+			var multipla_const = (c2-c1)/gcd;
 			var ps1_final = ps1_base*multipla_const;
 			var ps2_final = ps2_base*multipla_const;
 
-			var final_mod = Math.floor(s1*s2 / gcd);
+			var final_mod = (s1*s2) / gcd;
 			var final_congruent = (ps1_final*s1 + c1) % final_mod;
 			if (final_congruent < 0) final_congruent += final_mod;
 
@@ -125,7 +125,7 @@ class Crt extends Algorithm{
 
 	read_data(){
 		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
+		var c=this.dissolve_input(fas, true);
 		this.logic.n=c.get_next();
 		this.logic.systems = [];
 		for (i=0;i<this.logic.n;i++) this.logic.systems.push([c.get_next(), c.get_next()]);
@@ -267,4 +267,4 @@ class Crt extends Algorithm{
 }
 
 var feral1 = Algorithm.ObjectParser(document.getElementById('Algo1'));
-var eg1=new Crt(feral1, 3, [[2, 3], [5, 7], [8, 33]]);
+var eg1=new Crt(feral1, 3n, [[2n, 3n], [5n, 7n], [8n, 33n]]);
