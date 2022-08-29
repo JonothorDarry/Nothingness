@@ -84,15 +84,29 @@
 			{% if argos.color_description != false %}
 				<!-- <button style="margin-left:30px; background-color:#8888FF; width:500px; height:30px; text-align:center">Show color description</button> -->
 				<table class="beauty_table" style="margin-left:5%">
-					<caption>Colors and their meaning</caption>
-					<thead>
+					<caption style="background-color:rgba(204, 0, 68, .4); min-width:1000px">Colors and their meaning <span style="float:right; color:#0000FF" id="table_{{id}}_caption" onclick = "
+						if (getElementById('table_{{id}}_caption').innerHTML == '[hide]'){
+							getElementById('table_{{id}}_head').style.display = 'none';
+							getElementById('table_{{id}}_body').style.display = 'none';
+							getElementById('table_{{id}}_caption').innerHTML = '[show]';
+						}
+						else{
+							var value_reverted = 'table';
+							getElementById('table_{{id}}_head').style.display = '';
+							getElementById('table_{{id}}_body').style.display = '';
+							getElementById('table_{{id}}_caption').innerHTML = '[hide]';
+						}
+					"
+
+					>[show]</span></caption>
+					<thead id="table_{{id}}_head" style="display:none">
 						<tr>
 							<td>Color</td>
 							<td>Standard meaning - what color intends to show?</td>
 							<td>Particular meaning here</td>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="table_{{id}}_body" style="display:none">
 						{% for key, value in argos.color_description.items() %}
 							<tr>
 								<td style="background-color:{{ algo_colors[key].color }}; height:30px"></td>
