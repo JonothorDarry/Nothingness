@@ -384,7 +384,7 @@ class Grid{
 
 		if (params.place) this.grid=Representation_utils.gridify_div(params.place, n+params.top_margin, m+params.left_margin, style, params.divs);
 		else{
-			var div_for_grid = Modern_representation.gridmaker(n);
+			var div_for_grid = Modern_representation.gridmaker(n + params.top_margin);
 			this.place = {'full_div':div_for_grid.full_div, 'rows':div_for_grid.rows};
 
 			this.grid = Representation_utils.modern_gridify_div(this.place.rows, n+params.top_margin, m+params.left_margin, style, params.divs);
@@ -741,7 +741,7 @@ class Modern_representation{
 		104:'rgba(255, 255, 255, 0.0)'
 	}
 
-	static button_creator(inner_html, stylistic){
+	static button_creator(inner_html, stylistic={}){
 		var base={
 			'general':{'backgroundColor':'#FFFFFF', 
 				'color':'#FFFFFF',
@@ -1021,7 +1021,6 @@ class NTMath{
 	static pollard_rho_factorize(xp){
 		var x = BigInt(xp)
 		var prime = NTMath.check_prime(x);
-		console.log(x, NTMath.check_prime(x));
 		if (x == 1) return [];
 		if (prime) return [x];
 
@@ -1036,13 +1035,11 @@ class NTMath{
 			var fast = seed;
 
 			var abs = function(a){return ((a<0)?(-a):a);}
-			console.log(g);
 			while (g == 1n){
 				var slow = apply_poly(slow);
 				var fast = apply_poly(apply_poly(fast));
 
 				g = NTMath.gcd(abs(fast-slow), x);
-				console.log(fast, slow, x, g);
 			}
 			if (g != x) break;
 		}
