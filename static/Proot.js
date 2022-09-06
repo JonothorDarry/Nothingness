@@ -202,11 +202,11 @@ class Proot extends Algorithm{
 		this.logic.totient_factors = this._logical_get_distinct_factors(factorized_totient);
 	}
 
-	_logical_find_proot(prob){
+	_logical_find_proot(deterministic){
 		var potential_root=1;
 		this.logic.all_potential_roots = []
 		while(true){
-			if (prob==true) potential_root = Math.floor(Math.random()*(this.logic.partial_m-2))+2;
+			if (!deterministic) potential_root = Math.floor(Math.random()*(Number(this.logic.partial_m)-2))+2;
 			else potential_root += 1;
 			var root = {
 				'potential_root': BigInt(potential_root),
@@ -273,7 +273,7 @@ class Proot extends Algorithm{
 		if (!this.logic.correct_number)
 			return;
 		this._logical_factorize_totient();
-		this._logical_find_proot(false);
+		this._logical_find_proot(this.logic.is_deter);
 		this._logical_make_all_divisors();
 	}
 
@@ -373,7 +373,7 @@ class Proot extends Algorithm{
 			next_to_fill=3;
 		}
 
-		if (this.logic.full_m%2n == 0n && this.logic.post_expo_primitive_root%2n == 0n){
+		if (this.logic.full_m%2n == 0n){
 			var factorz_1 = this._presentation_create_factors_and_append(2, 1, grid.get(next_to_fill, factorization_column));
 			var factorz_2 = this._presentation_create_factors_and_append(prime[0], prime[1], grid.get(next_to_fill, factorization_column));
 
@@ -419,7 +419,6 @@ class Proot extends Algorithm{
 			for (var j=0; j<this.logic.divisors_per_depth[i].length; j++){
 				if (this.logic.divisors_per_depth[x][y].value % this.logic.divisors_per_depth[i][j].value == 0){
 					vertexes.push(this.buttons.vertexes[i][j]);
-					console.log(i, j, this.buttons.edges[i]);
 					for (var edge of this.buttons.edges[i][j]) edges.push(edge);
 				}
 			}
@@ -502,11 +501,15 @@ class Proot extends Algorithm{
 		var fas=this.input.value;
 		var c=this.dissolve_input(fas);
 		this.logic.full_m = BigInt(c.get_next());
+		this.logic.is_deter = this.deter.checked;
 	}
 
 	constructor(block, full_m){
 		super(block);
 		this.logic.full_m = full_m;
+		this.deter = block.radio_d;
+		this.logic.is_deter = this.deter.checked;
+
 		this.version=5;
 		this.palingenesia();
 	}
@@ -569,6 +572,7 @@ class Proot extends Algorithm{
 				for (var vertex of level_vertexes){
 					if (i != this.buttons.vertexes.length-1) staat.push([0, vertex, 6]);
 					else staat.push([0, vertex, 31]);
+					staat.push([1, vertex, vertex.innerHTML, vertex.innerHTML.slice(0, vertex.innerHTML.length-3)+'? 1']);
 				}
 			}
 		}
@@ -578,12 +582,19 @@ class Proot extends Algorithm{
 			var factor = candidate.results[s[2]].factor;
 			var result = candidate.results[s[2]].result;
 
-			if (result == 1) staat.push([0, ArrayUtils.get_elem(this.buttons.vertexes, -2)[s[2]], 31]);
+			if (result == 1){
+				var x = ArrayUtils.get_elem(this.buttons.vertexes, -2)[s[2]];
+				staat.push([0, x, 31]);
+				staat.push([1, x, x.innerHTML, x.innerHTML.slice(0, x.innerHTML.length-3)+'&equiv; 1']);
+			}
+
 			else{
 				//staat.push([0, ArrayUtils.get_elem(this.buttons.vertexes, -2)[s[2]], 30]);
 				var falling = this._presentation_get_fall(this.buttons.vertexes.length-2, s[2]);
-				console.log(falling);
-				for (var x of falling.vertexes) staat.push([0, x, 30]);
+				for (var x of falling.vertexes){
+					staat.push([0, x, 30]);
+					staat.push([1, x, x.innerHTML, x.innerHTML.slice(0, x.innerHTML.length-3)+'&nequiv; 1']);
+				}
 				for (var x of falling.edges) this.modern_pass_color(x, 30);
 			}
 		}
