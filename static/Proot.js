@@ -250,7 +250,6 @@ class Proot extends Algorithm{
 
 			var ap_old_length = all_powers.length;
 			for (var expo=1; expo <= factor[1]; expo++){
-
 				for (var i=0; i<ap_old_length; i++){
 					var partial = structuredClone(all_powers[i].factors);
 					partial[factor[0]] = expo;
@@ -262,6 +261,7 @@ class Proot extends Algorithm{
 		}
 
 		var list_of_divisors_per_depth = ArrayUtils.steady(ArrayUtils.get_elem(all_powers, -1).divisors+1, 0).map(e => []);
+		all_powers = ArrayUtils.revert(all_powers);
 		for (var x of all_powers){
 			list_of_divisors_per_depth[x.divisors].push({'value':x.value, 'factors':x.factors});
 		}
@@ -277,23 +277,30 @@ class Proot extends Algorithm{
 		this._logical_make_all_divisors();
 	}
 
-	_presentation_create_factored_part(name, value, to_factor=null){
+	_presentation_create_factored_part(name, value, button_name, to_factor=null, to_factor_name=null){
 		var div = Modern_representation.div_creator('', {'general':{'display':'block'}});
 		var title = Modern_representation.button_creator(name, {'px':{'width':50}});
 		var button = Modern_representation.button_creator(value, {'px':{'width':100}});
 		Representation_utils.Painter(title, 5);
-		Representation_utils.Painter(button, 0);
+		Representation_utils.Painter(button, 4);
 		div.appendChild(title);
 		div.appendChild(button);
+		this.buttons[button_name] = button;
 
 		if (to_factor != null){
 			var equality_sign = Modern_representation.button_creator('=', {'px':{'width':20}, 'general':{'color':'#000000'}});
 			div.appendChild(equality_sign);
+			Representation_utils.Painter(equality_sign, 4);
+			this.buttons[`${button_name}_equality`] = equality_sign;
 
+			this.buttons[to_factor_name] = [];
 			for (var x of to_factor){
 				var factor_button = Representation_utils.expo_style_button_creator(this.stylistic, {'base':x[0], 'expo':x[1]});
 				div.appendChild(factor_button.base);
 				div.appendChild(factor_button.expo);
+				Representation_utils.Painter(factor_button.base, 4);
+				Representation_utils.Painter(factor_button.expo, 4);
+				this.buttons[to_factor_name].push(factor_button);
 			}
 		}
 
@@ -303,9 +310,9 @@ class Proot extends Algorithm{
 	_presentation_factor_part(){
 		var factor_div = Modern_representation.div_creator('', {'general':{'display':'block'}});
 
-		factor_div.appendChild(this._presentation_create_factored_part('m', this.logic.full_m, this.logic.m_factors));
-		factor_div.appendChild(this._presentation_create_factored_part('m\'', this.logic.partial_m));
-		factor_div.appendChild(this._presentation_create_factored_part('&phi;(m\')', this.logic.totient, this.logic.totient_factors));
+		factor_div.appendChild(this._presentation_create_factored_part('m', this.logic.full_m, 'full_m', this.logic.m_factors, 'm_factors'));
+		factor_div.appendChild(this._presentation_create_factored_part('m\'', this.logic.partial_m, 'partial_m'));
+		factor_div.appendChild(this._presentation_create_factored_part('&phi;(m\')', this.logic.totient, 'totient', this.logic.totient_factors, 'totient_factors'));
 
 		return factor_div;
 	}
@@ -322,10 +329,12 @@ class Proot extends Algorithm{
 		Representation_utils.Painter(title, 5);
 		candidates_div.appendChild(title);
 
+		this.buttons.candidates = [];
 		for (var x of this.logic.all_potential_roots){
 			var candidate = Modern_representation.button_creator(x.potential_root, {'px':{'width':mid_width}, 'general':{'display':'block'}});
-			Representation_utils.Painter(candidate, 0);
+			Representation_utils.Painter(candidate, 4);
 			candidates_div.appendChild(candidate);
+			this.buttons.candidates.push(candidate);
 		}
 
 		return candidates_div;
@@ -335,6 +344,7 @@ class Proot extends Algorithm{
 		var factor_button = Representation_utils.expo_style_button_creator(this.stylistic, {'base':base, 'expo':expo});
 		div_to_pass.appendChild(factor_button.base);
 		div_to_pass.appendChild(factor_button.expo);
+		return factor_button;
 	}
 
 	_presentation_final_modifier(){
@@ -347,26 +357,29 @@ class Proot extends Algorithm{
 		grid.filler([0, [0, 1]], ['mod', 'Primitive root'], {'color':5})
 
 		var prime = ArrayUtils.get_elem(this.logic.m_factors, -1);
-		this._presentation_create_factors_and_append(prime[0], 1, grid.get(1, factorization_column));
+		var factorz = this._presentation_create_factors_and_append(prime[0], 1, grid.get(1, factorization_column));
 		Modern_representation.button_modifier(grid.get(1, proot_column), {'inner_html':this.logic.proto_primitive_root})
-		Representation_utils.Painter(grid.get(1, proot_column), 0);
+		Representation_utils.Painter(grid.get(1, proot_column), 4);
 		var next_to_fill=2;
+		this.buttons.final_proot_proto = {'value': grid.get(1, proot_column), 'factor': factorz};
 
 		if (ArrayUtils.get_elem(this.logic.m_factors, -1)[1] > 1){
-			this._presentation_create_factors_and_append(prime[0], prime[1], grid.get(next_to_fill, factorization_column));
+			var factorz = this._presentation_create_factors_and_append(prime[0], prime[1], grid.get(next_to_fill, factorization_column));
 
 			Modern_representation.button_modifier(grid.get(next_to_fill, 1), {'inner_html':this.logic.post_expo_primitive_root})
-			Representation_utils.Painter(grid.get(next_to_fill, proot_column), 0);
+			Representation_utils.Painter(grid.get(next_to_fill, proot_column), 4);
+			this.buttons.final_proot_expo = {'value': grid.get(next_to_fill, proot_column), 'factor': factorz};
 
 			next_to_fill=3;
 		}
 
 		if (this.logic.full_m%2n == 0n && this.logic.post_expo_primitive_root%2n == 0n){
-			this._presentation_create_factors_and_append(2, 1, grid.get(next_to_fill, factorization_column));
-			this._presentation_create_factors_and_append(prime[0], prime[1], grid.get(next_to_fill, factorization_column));
+			var factorz_1 = this._presentation_create_factors_and_append(2, 1, grid.get(next_to_fill, factorization_column));
+			var factorz_2 = this._presentation_create_factors_and_append(prime[0], prime[1], grid.get(next_to_fill, factorization_column));
 
 			Modern_representation.button_modifier(grid.get(next_to_fill, proot_column), {'inner_html':this.logic.full_primitive_root});
-			Representation_utils.Painter(grid.get(next_to_fill, 1), 0);
+			Representation_utils.Painter(grid.get(next_to_fill, 1), 4);
+			this.buttons.final_proot_final = {'value': grid.get(next_to_fill, proot_column), 'factor': [factorz_1, factorz_2]};
 		}
 
 		return grid.place.full_div;
@@ -390,7 +403,6 @@ class Proot extends Algorithm{
 		for (var x in factors){
 			factors_list.push([parseInt(x), factors[x]]);
 		}
-		console.log(factors_list);
 		factors_list.sort((a, b) => (a[0]<b[0])?-1:1);
 
 		var res = `<sup>`;
@@ -399,7 +411,20 @@ class Proot extends Algorithm{
 		}
 		res += `</sup>`
 		return res;
+	}
 
+	_presentation_get_fall(x, y){ //brute - nie ma sensu zmieniać
+		var vertexes=[], edges=[];
+		for (var i=0; i<this.logic.divisors_per_depth.length; i++){
+			for (var j=0; j<this.logic.divisors_per_depth[i].length; j++){
+				if (this.logic.divisors_per_depth[x][y].value % this.logic.divisors_per_depth[i][j].value == 0){
+					vertexes.push(this.buttons.vertexes[i][j]);
+					console.log(i, j, this.buttons.edges[i]);
+					for (var edge of this.buttons.edges[i][j]) edges.push(edge);
+				}
+			}
+		}
+		return {'vertexes':vertexes, 'edges':edges};
 	}
 
 	_presentation_graph(){
@@ -407,7 +432,10 @@ class Proot extends Algorithm{
 		var button_width = 180, button_height=40;
 		var full_div = Modern_representation.div_creator('', {'px':params_box});
 		var divisor_positions = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
-		//var edges = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
+		this.buttons.vertexes = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
+		this.buttons.edges = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
+
+		var edges = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
 
 		for (var i=0; i<this.logic.divisors_per_depth.length; i++){
 			var top_percent = ((this.logic.divisors_per_depth.length - i)/(this.logic.divisors_per_depth.length+1))*100;
@@ -418,14 +446,20 @@ class Proot extends Algorithm{
 				var basis = `g<sup>${x.value}</sup> ? 1`; 
 				//var basis = `g${this._presentation_html_as_factors(x.factors)} = g<sup>${x.value}</sup> ? 1`; //Uncomment for full factorization
 				if (i == this.logic.divisors_per_depth.length-1) basis = `g<sup>&phi;(${this.logic.partial_m})</sup> = g<sup>${x.value}</sup> &equiv; 1`;
-				if (i == this.logic.divisors_per_depth.length-2) basis = `g<sup>&phi;(${this.logic.partial_m})/${this.logic.totient_factors[this.logic.totient_factors.length-j-1][0]}</sup> = ` + basis;
+				if (i == this.logic.divisors_per_depth.length-2) basis = `g<sup>&phi;(${this.logic.partial_m})/${this.logic.totient_factors[j][0]}</sup> = ` + basis;
 
-				var btn = Modern_representation.button_creator(basis, {'general':{'top':`${top_percent}%`, 'left':`${left_percent}%`, 'position':'absolute'}, 'px':{'width':button_width, 'height':button_height}});
-				Representation_utils.Painter(btn, 0);
+				var btn = Modern_representation.button_creator(basis, {'general':{'top':`${top_percent}%`, 'left':`${left_percent}%`, 'position':'absolute'}, 'px':{'width':button_width, 'height':button_height}, '%':{'borderRadius':40}});
+				this.buttons.vertexes[i].push(btn);
+				Representation_utils.Painter(btn, 4);
 				full_div.appendChild(btn);
 
 				divisor_positions[i].push({'y':top_percent/100 + button_height/(params_box.height*2), 'x':left_percent/100 + button_width/(params_box.width*2)});
 			}
+		}
+
+		for (var i=0; i<this.logic.divisors_per_depth.length; i++){
+			edges[i] = ArrayUtils.steady(this.logic.divisors_per_depth[i].length, 0).map(e => []);
+			this.buttons.edges[i] = ArrayUtils.steady(this.logic.divisors_per_depth[i].length, 0).map(e => []);
 		}
 
 		for (var i=0; i<this.logic.divisors_per_depth.length-1; i++){
@@ -433,8 +467,12 @@ class Proot extends Algorithm{
 				for (var ij=0; ij<this.logic.divisors_per_depth[i+1].length; ij++){
 					if (this.logic.divisors_per_depth[i+1][ij].value % this.logic.divisors_per_depth[i][j].value == 0){
 						var edge = Graph_utils.create_edge(divisor_positions[i][j], divisor_positions[i+1][ij], {'height':2}, params_box);
+						edges[i+1][ij].push([i, j]);
+						this.buttons.edges[i+1][ij].push(edge);
+
+
 						Modern_representation.button_modifier(edge, {'stylistic':{'general':{'zIndex':-1}}});
-						console.log(edge);
+						Representation_utils.Painter(edge, 4);
 						full_div.appendChild(edge);
 					}
 				}
@@ -476,17 +514,106 @@ class Proot extends Algorithm{
 	BeginningExecutor(){
 		this.read_data();
 		this.palingenesia();
-		this.lees.push([0]);
+		this.lees.push([1]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
-		if (s[0]==0){
-			for (i=0; i<=this.logic.L; i++){
-				this.pass_color(this.buttons.counts[i], 0, 1);
+		if (s[0] == 1){
+			this.modern_pass_color(this.buttons.full_m, 1);
+			staat.push([0, this.buttons.full_m_equality, 102]);
+
+			for (var x of this.buttons.m_factors){
+				this.modern_pass_color(x.base, 1);
+				this.modern_pass_color(x.expo, 1);
+			}
+		}
+
+		if (s[0] == 2){
+			this.modern_pass_color(ArrayUtils.get_elem(this.buttons.m_factors, -1).base, 14);
+			this.modern_pass_color(this.buttons.partial_m, 1);
+		}
+
+		if (s[0] == 3){
+			this.modern_pass_color(this.buttons.totient, 1);
+			staat.push([0, this.buttons.totient_equality, 102]);
+
+			for (var x of this.buttons.totient_factors){
+				this.modern_pass_color(x.base, 1);
+				this.modern_pass_color(x.expo, 1);
+			}
+
+			for (var i=0; i<this.buttons.vertexes.length; i++){
+				var level_vertexes = this.buttons.vertexes[i];
+				for (var vertex of level_vertexes){
+					if (i != this.buttons.vertexes.length-1) staat.push([0, vertex, 6]);
+					else staat.push([0, vertex, 31]);
+				}
+			}
+
+			for (var level_edges of this.buttons.edges){
+				for (var set_edges of level_edges){
+					for (var edge of set_edges) staat.push([0, edge, 5]);
+				}
+			}
+		}
+
+		if (s[0] == 4){
+			var color_past_glory = 14;
+			this.modern_pass_color(this.buttons.candidates[s[1]], 1, color_past_glory);
+			if (s[1] > 0) staat.push([0, this.buttons.candidates[s[1]-1], 0]);
+
+			for (var i=0; i<this.buttons.vertexes.length; i++){
+				var level_vertexes = this.buttons.vertexes[i];
+				for (var vertex of level_vertexes){
+					if (i != this.buttons.vertexes.length-1) staat.push([0, vertex, 6]);
+					else staat.push([0, vertex, 31]);
+				}
+			}
+		}
+
+		if (s[0] == 5){
+			var candidate = this.logic.all_potential_roots[s[1]];
+			var factor = candidate.results[s[2]].factor;
+			var result = candidate.results[s[2]].result;
+
+			if (result == 1) staat.push([0, ArrayUtils.get_elem(this.buttons.vertexes, -2)[s[2]], 31]);
+			else{
+				//staat.push([0, ArrayUtils.get_elem(this.buttons.vertexes, -2)[s[2]], 30]);
+				var falling = this._presentation_get_fall(this.buttons.vertexes.length-2, s[2]);
+				console.log(falling);
+				for (var x of falling.vertexes) staat.push([0, x, 30]);
+				for (var x of falling.edges) this.modern_pass_color(x, 30);
+			}
+		}
+
+		if (s[0] == 6){
+			if (s[1] == 0){
+				this.modern_pass_color(ArrayUtils.get_elem(this.buttons.candidates, -1), 14, 0);
+				this.modern_pass_color(this.buttons.final_proot_proto.value, 1, 14);
+			}
+
+			if (s[1] == 1){
+				if (this.logic.m_factors.length > 1) this.modern_pass_color(this.buttons.final_proot_expo.value, 1, 14);
+				else staat.push([0, this.buttons.final_proot_final.value, 1]);
+			}
+			if (s[1] == 2){
+				staat.push([0, this.buttons.final_proot_proto.value, 0]);
+				staat.push([0, this.buttons.final_proot_final.value, 1]);
+			}
+		}
+
+		if (s[0] == 100){
+			if (this.logic.m_factors.length == 1 && this.logic.m_factors[0][1] == 1) staat.push([0, this.buttons.final_proot_proto.value, 8]);
+			else if (this.logic.m_factors.length == 2){
+				staat.push([0, this.buttons.final_proot_expo.value, 0]);
+				staat.push([0, this.buttons.final_proot_final.value, 8]);
+			}
+
+			else{
+				staat.push([0, this.buttons.final_proot_proto.value, 0]);
+				staat.push([0, this.buttons.final_proot_expo.value, 8]);
 			}
 		}
 	}
@@ -495,14 +622,25 @@ class Proot extends Algorithm{
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 
-		if (s[0]==0) return [100];
+		if (s[0] == 1) return [2];
+		if (s[0] == 2) return [3];
+		if (s[0] == 3) return [4, 0];
+		if (s[0] == 4) return [5, s[1], 0];
+		if (s[0] == 5 && this.logic.all_potential_roots[s[1]].results.length-1 > s[2]) return [5, s[1], s[2]+1]; //Babool
+		else if (s[0] == 5){
+			if (s[1]+1 == this.logic.all_potential_roots.length) return [6, 0];
+			else return [4, s[1]+1];
+		}
+		if (s[0] == 6 && s[1] == 0 && (this.logic.full_m%2n == 0 || ArrayUtils.get_elem(this.logic.m_factors, -1)[1] > 1)) return [6, 1];
+		else if (s[0] == 6 && s[1] == 1 && (this.logic.full_m%2n == 0 && ArrayUtils.get_elem(this.logic.m_factors, -1)[1] > 1)) return [6, 2];
+		else if (s[0] == 6) return [100];
 	}
 
 	StatementComprehension(){
 		var l=this.lees.length;
 		var s=this.lees[l-1], x=s[1];
 
-		if (s[0]==0) return `Whatever`;
+		if (s[0] == 1) return `Whatever`;
 	}
 }
 
