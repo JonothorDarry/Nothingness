@@ -229,7 +229,7 @@ class Proot extends Algorithm{
 		var prime = ArrayUtils.get_elem(this.logic.m_factors, -1)[0];
 		this.logic.proto_primitive_root = ArrayUtils.get_elem(this.logic.all_potential_roots, -1).potential_root;
 
-		if (ArrayUtils.get_elem(this.logic.m_factors, -1)[1] > 1 && NTMath.pow(root.potential_root, prime-1n, prime*prime) != 1n)
+		if (ArrayUtils.get_elem(this.logic.m_factors, -1)[1] > 1 && NTMath.pow(root.potential_root, prime-1n, prime*prime) == 1n)
 			this.logic.post_expo_primitive_root = this.logic.proto_primitive_root + prime;
 		else
 			this.logic.post_expo_primitive_root = this.logic.proto_primitive_root;
@@ -399,17 +399,10 @@ class Proot extends Algorithm{
 
 	//Currently dead
 	_presentation_html_as_factors(factors){
-		var factors_list = [];
-		for (var x in factors){
-			factors_list.push([parseInt(x), factors[x]]);
-		}
-		factors_list.sort((a, b) => (a[0]<b[0])?-1:1);
-
-		var res = `<sup>`;
-		for (var x of factors_list){
+		var res = ``;
+		for (var x of factors){
 			res += `${x[0]}<sup>${x[1]}</sup>`;
 		}
-		res += `</sup>`
 		return res;
 	}
 
@@ -427,14 +420,15 @@ class Proot extends Algorithm{
 	}
 
 	_presentation_graph(){
-		var params_box = {'width':1200, 'height':1000};
-		var button_width = 180, button_height=40;
+		var params_box = {'width':1500, 'height':1000};
+		var button_width = 240, button_height=40;
 		var full_div = Modern_representation.div_creator('', {'px':params_box});
 		var divisor_positions = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
 		this.buttons.vertexes = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
 		this.buttons.edges = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
 
 		var edges = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
+		var sgns = [' ? ', ' &equiv; ', ' &nequiv; '];
 
 		for (var i=0; i<this.logic.divisors_per_depth.length; i++){
 			var top_percent = ((this.logic.divisors_per_depth.length - i)/(this.logic.divisors_per_depth.length+1))*100;
@@ -442,12 +436,22 @@ class Proot extends Algorithm{
 				var x=this.logic.divisors_per_depth[i][j];
 				var left_percent = ((j+1)/(this.logic.divisors_per_depth[i].length+1))*100;
 
-				var basis = `g<sup>${x.value}</sup> ? 1`; 
+				var post_basis = `1 (mod ${this.logic.partial_m})`;
+				var basis = `g<sup>${x.value}</sup>`; 
 				//var basis = `g${this._presentation_html_as_factors(x.factors)} = g<sup>${x.value}</sup> ? 1`; //Uncomment for full factorization
-				if (i == this.logic.divisors_per_depth.length-1) basis = `g<sup>&phi;(${this.logic.partial_m})</sup> = g<sup>${x.value}</sup> &equiv; 1`;
+				if (i == this.logic.divisors_per_depth.length-1) basis = `g<sup>&phi;(${this.logic.partial_m})</sup> = g<sup>${x.value}</sup>`;
 				if (i == this.logic.divisors_per_depth.length-2) basis = `g<sup>&phi;(${this.logic.partial_m})/${this.logic.totient_factors[j][0]}</sup> = ` + basis;
 
-				var btn = Modern_representation.button_creator(basis, {'general':{'top':`${top_percent}%`, 'left':`${left_percent}%`, 'position':'absolute'}, 'px':{'width':button_width, 'height':button_height}, '%':{'borderRadius':40}});
+				var standard_value = basis + sgns[0] + post_basis;
+				if (i == this.logic.divisors_per_depth.length-1) standard_value = basis + sgns[1] + post_basis;
+				var btn = Modern_representation.button_creator(standard_value, {'general':{'top':`${top_percent}%`, 'left':`${left_percent}%`, 'position':'absolute'}, 'px':{'width':button_width, 'height':button_height}, '%':{'borderRadius':40}});
+
+				//Utils for writing stuff
+				btn._data_values = [];
+				for (var sgn of sgns) btn._data_values.push(basis + sgn + post_basis);
+				btn._data_values = [...btn._data_values, basis, post_basis];
+
+
 				this.buttons.vertexes[i].push(btn);
 				Representation_utils.Painter(btn, 4);
 				full_div.appendChild(btn);
@@ -477,7 +481,6 @@ class Proot extends Algorithm{
 				}
 			}
 		}
-
 		return full_div;
 	}
 
@@ -567,12 +570,12 @@ class Proot extends Algorithm{
 			this.modern_pass_color(this.buttons.candidates[s[1]], 1, color_past_glory);
 			if (s[1] > 0) staat.push([0, this.buttons.candidates[s[1]-1], 0]);
 
-			for (var i=0; i<this.buttons.vertexes.length; i++){
+			for (var i=0; i<this.buttons.vertexes.length-1; i++){
 				var level_vertexes = this.buttons.vertexes[i];
 				for (var vertex of level_vertexes){
 					if (i != this.buttons.vertexes.length-1) staat.push([0, vertex, 6]);
 					else staat.push([0, vertex, 31]);
-					staat.push([1, vertex, vertex.innerHTML, vertex.innerHTML.slice(0, vertex.innerHTML.length-3)+'? 1']);
+					staat.push([1, vertex, vertex.innerHTML, vertex._data_values[0]]);
 				}
 			}
 		}
@@ -585,7 +588,7 @@ class Proot extends Algorithm{
 			if (result == 1){
 				var x = ArrayUtils.get_elem(this.buttons.vertexes, -2)[s[2]];
 				staat.push([0, x, 31]);
-				staat.push([1, x, x.innerHTML, x.innerHTML.slice(0, x.innerHTML.length-3)+'&equiv; 1']);
+				staat.push([1, x, x.innerHTML, x._data_values[1]]);
 			}
 
 			else{
@@ -593,9 +596,12 @@ class Proot extends Algorithm{
 				var falling = this._presentation_get_fall(this.buttons.vertexes.length-2, s[2]);
 				for (var x of falling.vertexes){
 					staat.push([0, x, 30]);
-					staat.push([1, x, x.innerHTML, x.innerHTML.slice(0, x.innerHTML.length-3)+'&nequiv; 1']);
+					staat.push([1, x, x.innerHTML, x._data_values[2]]);
 				}
 				for (var x of falling.edges) this.modern_pass_color(x, 30);
+
+				var btn = ArrayUtils.get_elem(this.buttons.vertexes, -2)[s[2]];
+				staat.push([1, btn, btn._data_values[2], btn._data_values[3] + ` &equiv; ${result} (mod ${this.logic.partial_m})`]);
 			}
 		}
 
@@ -606,7 +612,7 @@ class Proot extends Algorithm{
 			}
 
 			if (s[1] == 1){
-				if (this.logic.m_factors.length > 1) this.modern_pass_color(this.buttons.final_proot_expo.value, 1, 14);
+				if (ArrayUtils.get_elem(this.logic.m_factors, -1)[1] > 1) this.modern_pass_color(this.buttons.final_proot_expo.value, 1, 14);
 				else staat.push([0, this.buttons.final_proot_final.value, 1]);
 			}
 			if (s[1] == 2){
@@ -648,10 +654,26 @@ class Proot extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr];
 
-		if (s[0] == 1) return `Whatever`;
+		if (s[0] == 1) return `The algorithm commences: first, one can get the factorization of m=${this.logic.full_m}. It can be obtained in any way, if m a has a primitive root, it can be obtained in polynomial time - because of its peculiar structure (2<sup>something</sup>p<sup>some_other_thing</sup>). Regardless of used method, the result is ${this.logic.full_m} = ${this._presentation_html_as_factors(this.logic.m_factors)}.`;
+		if (s[0] == 2) return `Then, instead of finding primitive root modulo ${this.logic.full_m}, we can find primitive root modulo non-odd prime factor of ${this.logic.full_m} - that is, ${this.logic.partial_m}, and then transform the resulting primitive root into primitive root for ${this.logic.full_m}.`;
+		if (s[0] == 3) return `In order to find primitive root mod ${this.logic.partial_m}, one can first find factorization of &phi;(${this.logic.partial_m}). Note, that from the lemmas, if for a certain number g, for all divisors d:d|&phi;(${this.logic.partial_m}) except for d=&phi;(${this.logic.partial_m}), g<sup>d</sup> &nequiv; 1 (mod ${this.logic.partial_m}), then g is a primitive root modulo ${this.logic.partial_m}.`;
+		if (s[0] == 4) return `Next candidate is drawn: ${this.logic.all_potential_roots[s[1]].potential_root}.`
+		if (s[0] == 5) return `Now, a check occurs: is ${this.logic.all_potential_roots[s[1]].potential_root}<sup>&phi;(${this.logic.partial_m}/${this.logic.totient_factors[s[2]][0]})</sup> &equiv; 1 (mod ${this.logic.partial_m})? ${(this.logic.all_potential_roots[s[1]].results[s[2]].result==1)?`It is, and so, ${this.logic.all_potential_roots[s[1]].potential_root} is not a primitive root, next candidate has to be found`:`No, ${this.logic.all_potential_roots[s[1]].potential_root}<sup>${(this.logic.partial_m-1n)/this.logic.totient_factors[s[2]][0]}</sup> &equiv; ${this.logic.all_potential_roots[s[1]].results[s[2]].result} (mod ${this.logic.partial_m}). Note that this implies, that for any divisor d of ${(this.logic.partial_m-1n)/this.logic.totient_factors[s[2]][0]}, that ${this.logic.all_potential_roots[s[1]].potential_root}<sup>d</sup> &nequiv; 1 (mod ${this.logic.partial_m}).`}`
+
+		if (s[0] == 6 && s[1] == 0) return `So, it appears, that ${this.logic.proto_primitive_root} is a primitive root modulo ${this.logic.partial_m}`;
+		if (s[0] == 6 && s[1] == 1 && ArrayUtils.get_elem(this.logic.m_factors, -1)[1] > 1){
+			var prime = ArrayUtils.get_elem(this.logic.m_factors, -1)[0];
+			return `Now, primitive root modulo ${(this.logic.full_m % 2n == 0n) ? (this.logic.full_m/2n) : this.logic.full_m} is either equal to ${this.logic.proto_primitive_root} or ${this.logic.proto_primitive_root + this.logic.partial_m}. As ${this.logic.proto_primitive_root}<sup>${this.logic.partial_m-1n}</sup> &equiv; ${NTMath.pow(this.logic.proto_primitive_root, prime-1n, prime*prime)} (mod ${this.logic.partial_m*this.logic.partial_m}), then primitive root modulo ${(this.logic.full_m % 2n == 0n) ? (this.logic.full_m/2n) : this.logic.full_m} is equal to ${this.logic.post_expo_primitive_root}.`;
+		}
+
+		if (s[0] == 6){
+			if (this.logic.post_expo_primitive_root % 2n == 0n) return `As the primitive root modulo ${this.logic.full_m/2n} is divisible by 2, then ${this.logic.post_expo_primitive_root} cannot be a primitive root modulo ${this.logic.full_m}, because it is not coprime to 2; but ${this.logic.post_expo_primitive_root} + ${this.logic.full_m}/2 = ${this.logic.final_primitive_root} can be, and is a primitive root.`;
+			else return `As the primitive root modulo ${this.logic.full_m/2n} is not divisible by 2, then ${this.logic.post_expo_primitive_root} is a primitive root modulo ${this.logic.full_m}.`;
+		}
+
+		if (s[0] == 100) return `And so, the primitive root modulo ${this.logic.full_m} was found, it is equal to ${this.logic.full_primitive_root}.`;
 	}
 }
 
