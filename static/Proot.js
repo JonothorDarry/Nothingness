@@ -168,7 +168,14 @@ class Proot extends Algorithm{
 	}
 
 	_logical_factorize_m(){
+		this.logic.standard_number = true;
+		if (this.logic.full_m == 1 || this.logic.full_m == 2 || this.logic.full_m == 4){
+			this.logic.standard_number = false;
+			return;
+		}
 		var factors = NTMath.pollard_rho_factorize(this.logic.full_m);
+
+
 		this.logic.m_factors = this._logical_get_distinct_factors(factors);
 		var distinct_factors = [];
 		for (var x of factors){
@@ -270,7 +277,12 @@ class Proot extends Algorithm{
 
 	logical_box(){
 		this._logical_factorize_m();
-		if (!this.logic.correct_number)
+		if (!this.logic.standard_number){
+			var mapping = {'1':1, '2':1, '4':3};
+			this.logic.full_primitive_root = mapping[this.logic.full_m];
+		}
+
+		if (!this.logic.correct_number || !this.logic.standard_number)
 			return;
 		this._logical_factorize_totient();
 		this._logical_find_proot(this.logic.is_deter);
@@ -296,6 +308,7 @@ class Proot extends Algorithm{
 			this.buttons[to_factor_name] = [];
 			for (var x of to_factor){
 				var factor_button = Representation_utils.expo_style_button_creator(this.stylistic, {'base':x[0], 'expo':x[1]});
+				Modern_representation.button_modifier(factor_button.base, {'stylistic':{'px':{'width':this.presentation_factor_length}}});
 				div.appendChild(factor_button.base);
 				div.appendChild(factor_button.expo);
 				Representation_utils.Painter(factor_button.base, 4);
@@ -311,8 +324,10 @@ class Proot extends Algorithm{
 		var factor_div = Modern_representation.div_creator('', {'general':{'display':'block'}});
 
 		factor_div.appendChild(this._presentation_create_factored_part('m', this.logic.full_m, 'full_m', this.logic.m_factors, 'm_factors'));
-		factor_div.appendChild(this._presentation_create_factored_part('m\'', this.logic.partial_m, 'partial_m'));
-		factor_div.appendChild(this._presentation_create_factored_part('&phi;(m\')', this.logic.totient, 'totient', this.logic.totient_factors, 'totient_factors'));
+		if (this.logic.correct_number){
+			factor_div.appendChild(this._presentation_create_factored_part('m\'', this.logic.partial_m, 'partial_m'));
+			factor_div.appendChild(this._presentation_create_factored_part('&phi;(m\')', this.logic.totient, 'totient', this.logic.totient_factors, 'totient_factors'));
+		}
 
 		return factor_div;
 	}
@@ -342,6 +357,7 @@ class Proot extends Algorithm{
 
 	_presentation_create_factors_and_append(base, expo, div_to_pass){
 		var factor_button = Representation_utils.expo_style_button_creator(this.stylistic, {'base':base, 'expo':expo});
+		Modern_representation.button_modifier(factor_button.base, {'stylistic':{'px':{'width':this.presentation_factor_length}}});
 		div_to_pass.appendChild(factor_button.base);
 		div_to_pass.appendChild(factor_button.expo);
 		return factor_button;
@@ -349,12 +365,22 @@ class Proot extends Algorithm{
 
 	_presentation_final_modifier(){
 		var mid_width = 300;
-		var for_grid = {'px':{'width':150}};
+		var for_grid = {'px':{'width':Math.max(150, this.presentation_factor_length*2+40)}};
 
 		var grid = new Grid(4, 2, for_grid, {'top_margin':1});
 		var factorization_column = 0;
 		var proot_column = 1;
 		grid.filler([0, [0, 1]], ['mod', 'Primitive root'], {'color':5})
+		if (!this.logic.standard_number){
+			Modern_representation.button_modifier(grid.get(1, proot_column), {'inner_html':this.logic.full_primitive_root})
+			Representation_utils.Painter(grid.get(1, proot_column), 4);
+
+			Modern_representation.button_modifier(grid.get(1, factorization_column), {'inner_html':this.logic.full_m})
+			Representation_utils.Painter(grid.get(1, factorization_column), 4);
+			this.buttons.final_proot_proto = {'value': grid.get(1, proot_column), 'factor': grid.get(1, factorization_column)};
+
+			return grid.place.full_div;
+		}
 
 		var prime = ArrayUtils.get_elem(this.logic.m_factors, -1);
 		var factorz = this._presentation_create_factors_and_append(prime[0], 1, grid.get(1, factorization_column));
@@ -386,14 +412,23 @@ class Proot extends Algorithm{
 	}
 
 	_presentation_left_belt(){
+		if (this.logic.standard_number) this.presentation_factor_length = Math.max(this.logic.partial_m.toString().length*10, 40);
+
 		var full_div = Modern_representation.div_creator('');
 		var div_upper = this._presentation_factor_part();
-		var div_mid = this._presentation_candidates();
-		var div_lower = this._presentation_final_modifier();
 
 		full_div.appendChild(div_upper);
-		full_div.appendChild(div_mid);
-		full_div.appendChild(div_lower);
+
+		if (this.logic.correct_number){
+			var div_mid = this._presentation_candidates();
+			full_div.appendChild(div_mid);
+		}
+
+		if (this.logic.correct_number || !this.logic.standard_number){
+			var div_lower = this._presentation_final_modifier();
+			full_div.appendChild(div_lower);
+		}
+
 		return full_div;
 	}
 
@@ -420,9 +455,11 @@ class Proot extends Algorithm{
 	}
 
 	_presentation_graph(){
-		var params_box = {'width':1500, 'height':1000};
-		var button_width = 240, button_height=40;
+		var button_width = Math.max(this.logic.partial_m.toString().length*10*4+120, 240), button_height=40;
+		var params_box = {'width':Math.max(...this.logic.divisors_per_depth.map(e => e.length))*(button_width+160), 'height':this.logic.divisors_per_depth.length*180};
+
 		var full_div = Modern_representation.div_creator('', {'px':params_box});
+		full_div.style.border = '4px grey dotted'
 		var divisor_positions = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
 		this.buttons.vertexes = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
 		this.buttons.edges = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
@@ -430,11 +467,12 @@ class Proot extends Algorithm{
 		var edges = ArrayUtils.steady(this.logic.divisors_per_depth.length, 0).map(e => []);
 		var sgns = [' ? ', ' &equiv; ', ' &nequiv; '];
 
+		var min_top_diff = 1/(2*(this.logic.divisors_per_depth.length+1))*100;
 		for (var i=0; i<this.logic.divisors_per_depth.length; i++){
 			var top_percent = ((this.logic.divisors_per_depth.length - i)/(this.logic.divisors_per_depth.length+1))*100;
 			for (var j=0; j<this.logic.divisors_per_depth[i].length; j++){
 				var x=this.logic.divisors_per_depth[i][j];
-				var left_percent = ((j+1)/(this.logic.divisors_per_depth[i].length+1))*100;
+				var left_percent = ((j+1)/(this.logic.divisors_per_depth[i].length+1) - button_width/(params_box.width*2))*100;
 
 				var post_basis = `1 (mod ${this.logic.partial_m})`;
 				var basis = `g<sup>${x.value}</sup>`; 
@@ -489,10 +527,12 @@ class Proot extends Algorithm{
 		this.place.style.width = 'max-content';
 
 		var div_left = this._presentation_left_belt();
-		var div_right = this._presentation_graph();
-
 		this.place.appendChild(div_left);
-		this.place.appendChild(div_right);
+
+		if (this.logic.correct_number && this.logic.standard_number){
+			var div_right = this._presentation_graph();
+			this.place.appendChild(div_right);
+		}
 	}
 
 	palingenesia(){
@@ -520,7 +560,8 @@ class Proot extends Algorithm{
 	BeginningExecutor(){
 		this.read_data();
 		this.palingenesia();
-		this.lees.push([1]);
+		if (this.logic.standard_number) this.lees.push([1]);
+		else this.lees.push([102]);
 	}
 
 	StateMaker(s){
@@ -624,7 +665,8 @@ class Proot extends Algorithm{
 		if (s[0] == 100){
 			if (this.logic.m_factors.length == 1 && this.logic.m_factors[0][1] == 1) staat.push([0, this.buttons.final_proot_proto.value, 8]);
 			else if (this.logic.m_factors.length == 2){
-				staat.push([0, this.buttons.final_proot_expo.value, 0]);
+				if (this.logic.m_factors[1][1] > 1) staat.push([0, this.buttons.final_proot_expo.value, 0]);
+				else staat.push([0, this.buttons.final_proot_proto.value, 0]);
 				staat.push([0, this.buttons.final_proot_final.value, 8]);
 			}
 
@@ -633,13 +675,20 @@ class Proot extends Algorithm{
 				staat.push([0, this.buttons.final_proot_expo.value, 8]);
 			}
 		}
+
+		if (s[0] == 102){
+			staat.push([0, this.buttons.full_m, 0]);
+			staat.push([0, this.buttons.final_proot_proto.factor, 0]);
+			staat.push([0, this.buttons.final_proot_proto.value, 8]);
+		}
 	}
 
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
 
-		if (s[0] == 1) return [2];
+		if (s[0] == 1 && this.logic.correct_number) return [2];
+		if (s[0] == 1) return [101];
 		if (s[0] == 2) return [3];
 		if (s[0] == 3) return [4, 0];
 		if (s[0] == 4) return [5, s[1], 0];
@@ -674,6 +723,15 @@ class Proot extends Algorithm{
 		}
 
 		if (s[0] == 100) return `And so, the primitive root modulo ${this.logic.full_m} was found, it is equal to ${this.logic.full_primitive_root}.`;
+		if (s[0] == 101){
+			var base = `As the factorization of ${this.logic.full_m} doesn't follow patter bp<sup>x</sup>, where p is an odd prime and b is either 1 or 2, and it is not equal to 1, 2 or 4, then there is no primitive root modulo ${this.logic.m}. In particular, `;
+			var sub_message;
+			if (this.logic.problem == 'too many factors') sub_message = `${this.logic.full_m} has more than two prime factors in its factorization.`;
+			if (this.logic.problem == 'two odd factors') sub_message = `${this.logic.full_m} has two odd prime factors in factorization.`;
+			if (this.logic.problem == 'too many twos' || this.logic.problem == '2 to k above 8') sub_message = `${this.logic.full_m} is divisible by 4, yet not equal to 4.`;
+			return base + sub_message;
+		}
+		if (s[0] == 102) return `This number - ${this.logic.full_m} is one of three special cases (1, 2, 4) and thus has predefined primitive root - ${this.logic.full_primitive_root}. For those three numbers, one can use an algorithm, but one would need to adapt it a bit, which seems futile.`;
 	}
 }
 
@@ -689,4 +747,4 @@ var sk2=new Proot(feral2, 334562n);
 //Composite: 859548722
 //Ultra-composite: 
 //Problematic-deterministic: 409
-//Large primes: 33456259, 998244353, 1000000007
+//Large primes: 33456259, 998244353, 1000000007, 421607, 18670177
