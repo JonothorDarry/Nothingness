@@ -66,7 +66,7 @@ class Order extends Partial{
 		var i, a=g;
 		var dv=document.createElement("DIV"), btn=[];
 		dv.style.position="relative";
-		dv.style.width=`${(this.logic.lambda+6)*40}px`;
+		dv.style.width=`${(Number(this.logic.lambda)+6)*40}px`;
 		dv.style.height="40px"
 		var lst=['x', g, 'x', 0, 'x'];
 		for (i=1;i<mod;i++){
@@ -103,7 +103,7 @@ class Order extends Partial{
 		this.place.position="relative";
 		dv.style.position="sticky";
 		dv.style.top=0;
-		dv.style.width=`${(this.logic.lambda+6)*40}px`;
+		dv.style.width=`${(Number(this.logic.lambda)+6)*40}px`;
 		dv.style.height="40px"
 		var lst=['x', 'g', `ord<sub>${x}</sub>(g)`, 'g<sup>i</sup>; i='];
 
@@ -706,7 +706,7 @@ class Proot extends Algorithm{
 		var s=this.lees[this.state_nr];
 
 		if (s[0] == 1) return `The algorithm commences: first, one can get the factorization of m=${this.logic.full_m}. It can be obtained in any way, if m a has a primitive root, it can be obtained in polynomial time - because of its peculiar structure (2<sup>something</sup>p<sup>some_other_thing</sup>). Regardless of used method, the result is ${this.logic.full_m} = ${this._presentation_html_as_factors(this.logic.m_factors)}.`;
-		if (s[0] == 2) return `Then, instead of finding primitive root modulo ${this.logic.full_m}, we can find primitive root modulo non-odd prime factor of ${this.logic.full_m} - that is, ${this.logic.partial_m}, and then transform the resulting primitive root into primitive root for ${this.logic.full_m}.`;
+		if (s[0] == 2) return `Then, instead of finding primitive root modulo ${this.logic.full_m}, we can find primitive root modulo odd prime factor of ${this.logic.full_m} - that is, ${this.logic.partial_m}, and then transform the resulting primitive root into primitive root for ${this.logic.full_m}.`;
 		if (s[0] == 3) return `In order to find primitive root mod ${this.logic.partial_m}, one can first find factorization of &phi;(${this.logic.partial_m}). Note, that from the lemmas, if for a certain number g, for all divisors d:d|&phi;(${this.logic.partial_m}) except for d=&phi;(${this.logic.partial_m}), g<sup>d</sup> &nequiv; 1 (mod ${this.logic.partial_m}), then g is a primitive root modulo ${this.logic.partial_m}.`;
 		if (s[0] == 4) return `Next candidate is drawn: ${this.logic.all_potential_roots[s[1]].potential_root}.`
 		if (s[0] == 5) return `Now, a check occurs: is ${this.logic.all_potential_roots[s[1]].potential_root}<sup>&phi;(${this.logic.partial_m}/${this.logic.totient_factors[s[2]][0]})</sup> &equiv; 1 (mod ${this.logic.partial_m})? ${(this.logic.all_potential_roots[s[1]].results[s[2]].result==1)?`It is, and so, ${this.logic.all_potential_roots[s[1]].potential_root} is not a primitive root, next candidate has to be found`:`No, ${this.logic.all_potential_roots[s[1]].potential_root}<sup>${(this.logic.partial_m-1n)/this.logic.totient_factors[s[2]][0]}</sup> &equiv; ${this.logic.all_potential_roots[s[1]].results[s[2]].result} (mod ${this.logic.partial_m}). Note that this implies, that for any divisor d of ${(this.logic.partial_m-1n)/this.logic.totient_factors[s[2]][0]}, that ${this.logic.all_potential_roots[s[1]].potential_root}<sup>d</sup> &nequiv; 1 (mod ${this.logic.partial_m}).`}`

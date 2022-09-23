@@ -18,20 +18,18 @@ class XXXX extends Algorithm{
 	constructor(block, n){
 		super(block);
 		this.logic.n=n;
-		this.version=4;
+		this.version=5;
 		this.palingenesia();
 	}
 
 	BeginningExecutor(){
 		this.read_data();
-		this.palingnesia();
+		this.palingenesia();
 		this.lees.push([0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
-		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+	StateMaker(s){
+		var i, staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0]==0){
 			for (i=0; i<=this.logic.L; i++){

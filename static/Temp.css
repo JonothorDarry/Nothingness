@@ -10,7 +10,10 @@
         height:25px;
 }
 
-.sender:hover, .previous:hover, .next:hover, .finish:hover{background-color: #333333;}
+.sender:hover, .previous:hover, .next:hover, .finish:hover, .show:hover{
+	background-color: #333333;
+	cursor:pointer;
+}
 
 h2{
 	position: relative;
@@ -148,7 +151,6 @@ h3,h4,h5,h6{
 	text-align: center;
 	color:#000000;
 }
-
 
 #problems{
 	margin-left:5%;

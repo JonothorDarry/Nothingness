@@ -444,7 +444,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 	_presentation_mark_marked(){
 		for (var i=1; i <= this.logic.tree.n; i++){
 			if (this.logic.is_marked[i] == 0) continue;
-			Modern_representation.button_modifier(this.buttons.vertexes[i], {'stylistic':{'general':{'borderWidth':'10px', 'borderStyle':'solid', 'borderColor':'#804000'}}});
+			Modern_representation.button_modifier(this.buttons.vertexes[i], {'stylistic':{'general':{'borderWidth':'10px', 'borderStyle':'solid', 'borderColor':'#804000', 'left':`calc(${this.buttons.vertexes[i].style.left} - 10px)`}}});
 		}
 	}
 

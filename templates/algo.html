@@ -19,61 +19,7 @@
 }
 %}
 
-{% macro algorithm(id, header_text, input_format, start_value, input_type='input', algo_type='algo', add_on=none, added_elements=none, vehement=false) %}
-		<div id="Algo{{id}}" class="pureAlgo">
-			<h4 class={{algo_type}}>{{header_text}}</h4>
-			{% autoescape off %}
-				{{input_format}}
-			{% endautoescape %}
-
-			<div id="Inputter{{id}}">
-				<form>
-					{% if input_type=='input' %}
-						<input class="inputter" id="SomeInput{{id}}" name="SomeInput" value="{{start_value}}">
-					{% else %}
-						{% autoescape off %}
-						<textarea class="inputter" id="SomeInput{{id}}" name="SomeInput">{{start_value}}</textarea>
-						{% endautoescape %}
-					{% endif %}
-				</form>
-			</div>
-
-			{% if algo_type=='algo' %}
-			<div id="Buttons{{id}}" style="position:sticky; top:0; left:0; z-index:2; display:inline-block;">
-					<button id="Sender{{id}}" class="sender">Begin</button>
-					<button id="Prever{{id}}" class="previous">Previous Move</button>
-					<button id="Nexter{{id}}" class="next">Next Move</button>
-					<button id="Finisher{{id}}" class="finish">Finish</button>
-
-					{% if add_on=='radio' %}
-						{% set y=added_elements[0] %}
-						<input type="radio" id="{{y}}" name="algoType" checked><label for="{{y}}">{{y}}</label>
-						{% for x in added_elements[1:] %}
-							<input type="radio" id="{{x}}" name="algoType"><label for="{{x}}">{{x}}</label>
-						{% endfor %}
-					{% endif %}
-
-					{% if add_on=='checkbox' %}
-						<input type="checkbox" id="{{added_elements}}{{id}}" name="shower"><label for="{{added_elements}}{{id}}">Show only table</label> <!--GCD-targeted-->
-					{% endif %}
-			</div>
-
-			{% else %}
-				<button id="Show{{id}}" class="show">Show</button>
-			{% endif %}
-
-			<div class="breakAlgo"></div>
-			<div id="Primez{{id}}" class="primez"></div>
-			<div id="Comprehend{{id}}" class="comprehend"
-						   {% if vehement==true %}
-							   style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"
-						   {% endif %}
-			></div>
-		</div>
-{% endmacro %}
-
-
-<!-- New version - use only this! -->
+<!-- New version - use only this! Correct in time for Choice article-->
 {% macro neo_algorithm(id, header_text, input_format, start_value, kvargos={}) %}
 		{% set argos={'input_type':'input', 'algo_type':'algo', 'add_on':none, 'added_elements':none, 'vehement':false, 'color_description':false} %}
 		{% set _=argos.update(kvargos) %}
@@ -84,7 +30,7 @@
 			{% if argos.color_description != false %}
 				<!-- <button style="margin-left:30px; background-color:#8888FF; width:500px; height:30px; text-align:center">Show color description</button> -->
 				<table class="beauty_table" style="margin-left:5%">
-					<caption style="background-color:rgba(204, 0, 68, .4); min-width:1000px">Colors and their meaning <span style="float:right; color:#0000FF" id="table_{{id}}_caption" onclick = "
+					<caption style="background-color:rgba(204, 0, 68, .4); min-width:1000px">Colors and their meaning <span style="float:right; color:#0000FF; cursor:pointer" id="table_{{id}}_caption" onclick = "
 						if (getElementById('table_{{id}}_caption').innerHTML == '[hide]'){
 							getElementById('table_{{id}}_head').style.display = 'none';
 							getElementById('table_{{id}}_body').style.display = 'none';
@@ -166,5 +112,118 @@
 							   style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"
 						   {% endif %}
 			></div>
+		</div>
+{% endmacro %}
+
+
+{% macro neo_double_algorithm(properties_algorithm, properties_querier, full_title) %}
+		{% set properties_algorithm_argos={'input_type':'input', 'algo_type':'algo', 'add_on':none, 'added_elements':none, 'vehement':false, 'color_description':false} %}
+		{% set properties_querier_argos={'input_type':'input', 'algo_type':'algo', 'add_on':none, 'added_elements':none, 'vehement':false, 'color_description':false} %}
+		{% set _=properties_algorithm_argos.update(properties_algorithm.kvargos) %}
+		{% set _=properties_querier_argos.update(properties_querier.kvargos) %}
+
+		<div class="Algo{{properties_algorithm.id}} Algo{{properties_querier.id}}" class="pureAlgo">
+			<h4 class="querier">{{full_title}}</h4>
+			<table>
+				<tr>
+					<td><h5 class={{properties_algorithm_argos.algo_type}}>{{properties_algorithm.header_text}}</h5></td>
+					<td><h5 class={{properties_querier_argos.algo_type}}>{{properties_querier.header_text}}</h5></td>
+				</tr>
+
+				<tr>
+					<td>
+					{% autoescape off %}
+						<div style="max-width:800px">
+						{{properties_algorithm.input_format}}
+						</div>
+					{% endautoescape %}
+					</td>
+					<td>
+					{% autoescape off %}
+						<div style="max-width:800px">
+						{{properties_querier.input_format}}
+						</div>
+					{% endautoescape %}
+					</td>
+				</tr>
+
+				<tr>
+					<td style="vertical-align:bottom">
+						<div id="Inputter{{properties_algorithm.id}}">
+							<form method="get">
+								{% if properties_algorithm_argos.input_type=='input' %}
+									<input class="inputter" id="SomeInput{{properties_algorithm.id}}" name="SomeInput" value="{{properties_algorithm.start_value}}"  onkeypress="enter(event, 'Sender{{id}}');">
+								{% else %}
+									{% autoescape off %}
+									<textarea class="inputter" id="SomeInput{{properties_algorithm.id}}" name="SomeInput">{{properties_algorithm.start_value}}</textarea>
+									{% endautoescape %}
+								{% endif %}
+							</form>
+						</div>
+					</td>
+
+					<td style="vertical-align:bottom">
+						<div id="Inputter{{properties_querier.id}}">
+							<form method="get">
+								{% if properties_querier_argos.input_type=='input' %}
+									<input class="inputter" id="SomeInput{{properties_querier.id}}" name="SomeInput" value="{{properties_querier.start_value}}"  onkeypress="enter(event, 'Sender{{properties_querier.id}}');">
+								{% else %}
+									{% autoescape off %}
+									<textarea class="inputter" id="SomeInput{{properties_querier.id}}" name="SomeInput">{{properties_querier.start_value}}</textarea>
+									{% endautoescape %}
+								{% endif %}
+							</form>
+						</div>
+					</td>
+				</tr>
+
+				<tr><td>
+					{% if properties_algorithm_argos.algo_type=='algo' %}
+					<div id="Buttons{{id}}" style="position:sticky; top:0; left:0; z-index:2; display:inline-block;">
+						<button id="Sender{{properties_algorithm.id}}" class="sender">Begin</button>
+							<button id="Prever{{properties_algorithm.id}}" class="previous">Previous Move</button>
+							<button id="Nexter{{properties_algorithm.id}}" class="next">Next Move</button>
+							<button id="Finisher{{properties_algorithm.id}}" class="finish">Finish</button>
+							<label>Visualization progress: <input type="range" class="progress" id="Progress{{properties_algorithm.id}}"></label>
+					{% else %}
+					<div id="Buttons{{properties_algorithm.id}}" style="display:inline-block;">
+						<button id="Show{{properties_algorithm.id}}" class="show">Show</button>
+					{% endif %}
+					</div>
+				</td><td>
+					{% if properties_querier_argos.algo_type=='algo' %}
+					<div id="Buttons{{properties_querier.id}}" style="position:sticky; top:0; left:0; z-index:2; display:inline-block;">
+						<button id="Sender{{properties_querier.id}}" class="sender">Begin</button>
+							<button id="Prever{{properties_querier.id}}" class="previous">Previous Move</button>
+							<button id="Nexter{{properties_querier.id}}" class="next">Next Move</button>
+							<button id="Finisher{{properties_querier.id}}" class="finish">Finish</button>
+							<label>Visualization progress: <input type="range" class="progress" id="Progress{{properties_querier.id}}"></label>
+					{% else %}
+					<div id="Buttons{{properties_querier.id}}" style="display:inline-block;">
+						<button id="Show{{properties_querier.id}}" class="show">Show</button>
+					{% endif %}
+					</div>
+				</td></tr>
+
+
+				<tr>
+					<td><div id="Primez{{properties_algorithm.id}}" class="primez"></div></td>
+					<td style="vertical-align:top"><div id="Primez{{properties_querier.id}}" class="primez"></div></td>
+				</tr>
+
+				<tr>
+					<td><div id="Comprehend{{properties_algorithm.id}}" class="comprehend"
+						   {% if properties_algorithm_argos.vehement==true %}
+							   style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"
+						   {% endif %}
+					></div></td>
+
+					<td><div id="Comprehend{{properties_querier.id}}" class="comprehend"
+						   {% if properties_querier_argos.vehement==true %}
+							   style="background-color:#FFFFAA; position:sticky; bottom:0; z-index:1;"
+						   {% endif %}
+					></div></td>
+				</tr>
+			</table>
 		</div>
 {% endmacro %}

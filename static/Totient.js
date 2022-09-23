@@ -581,7 +581,7 @@ var sk4=new Totient_IEP(feral4, 130);
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var sk=new TotientSieve(feral, 30);
 
-var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
-var sk2=new PowerTower(feral2, 6, 107, [2, 7, 3, 12, 43, 25]);
+//var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+//var sk2=new PowerTower(feral2, 6, 107, [2, 7, 3, 12, 43, 25]);
 //No help found here
 //Only dreadful tears

@@ -64,7 +64,7 @@ class Lca_binary extends Algorithm{
 
 		var div = Graph_utils.create_edge(tr.parameters.vertexes[vertex_a], tr.parameters.vertexes[vertex_b], {'height':2, 'backgroundColor':'rgba(255, 255, 255, .0)'}, {'width':tr.width, 'height':tr.height});
 		var empty = `rgba(255, 255, 255, 0.0)`;
-		Modern_representation.button_modifier(div, {'stylistic':{'general':{'border':'2px dashed #440000', 'zIndex':-3, 'borderRadius':'0 0 100% 100%', 'borderColor': `${empty} ${empty} ${empty} ${empty}`}}});
+		Modern_representation.button_modifier(div, {'stylistic':{'general':{'border':'2px dashed #440000', 'zIndex':-3, 'borderRadius':'0 0 100% 100%', 'borderColor': `${empty} ${empty} ${empty} ${empty}`, 'transformOrigin':'top left'}}});
 		div.style.height = div.style.width;
 		tr.place.appendChild(div);
 		return div;
@@ -152,15 +152,13 @@ class Lca_binary extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		this.read_data();
 		this.palingenesia();
 		this.lees.push([0, 0]);
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
+	StateMaker(s){
+		var staat=[], i;
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
 		if (s[0] == 0){
@@ -210,8 +208,7 @@ class Lca_binary extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr], x=s[1];
 
 		if (s[0] == 0) return `The tree is processed using dfs, for each vertex: (1) Size of its subtree, (2) its parent and (3) its preorder number are found.`;
 		if (s[0] == 1) return `Now, ${1<<s[2]}-th parent of ${s[1]} is equal to par<sub>${1<<s[2]}</sub>(${s[1]}) = par<sub>${1<<(s[2]-1)}</sub>(par<sub>${1<<(s[2]-1)}</sub>(${s[1]})) = par<sub>${1<<(s[2]-1)}</sub>(${this.logic.lca_parents[s[1]][s[2]-1]}) = ${this.logic.lca_parents[s[1]][s[2]]}`;
@@ -344,7 +341,7 @@ class Lca_binary_querier extends Algorithm{
 			name.innerHTML = x.column_name;
 			Representation_utils.Painter(name, 5);
 			Modern_representation.button_modifier(name, {'stylistic':{'px':{'width':x.width}}});
-			this.buttons[x.button_name] = grid.filler([[1, x.array.length], x.column_index], x.array, {'color':0, 'stylistic':{'px':{'width':x.width}}});
+			this.buttons[x.button_name] = grid.filler([[1, x.array.length], x.column_index], x.array, {'color':4, 'stylistic':{'px':{'width':x.width}}});
 		}
 
 		for (var x of this.buttons.expression) x.style.textAlign = 'right';
@@ -394,6 +391,8 @@ class Lca_binary_querier extends Algorithm{
 
 	constructor(block, lca_tree, type, x, y){
 		super(block);
+		Modern_representation.button_modifier(this.wisdom, {'stylistic':{'px':{'width':600}}});
+
 		this.logic.type = type; //l for lca, k for kth parent
 		this.logic.x = x;
 		this.logic.y = y;
@@ -405,7 +404,6 @@ class Lca_binary_querier extends Algorithm{
 	}
 
 	BeginningExecutor(){
-		this.starter();
 		this.read_data();
 
 		if (this.parent_algorithm.finito == false) {
@@ -418,10 +416,8 @@ class Lca_binary_querier extends Algorithm{
 		else this.lees.push([20, 0]); //lca
 	}
 
-	StateMaker(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], staat=[], i;
-		var staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+	StateMaker(s){
+		var staat=this.ephemeral.staat, passer=this.ephemeral.passer, i;
 
 		var opera = this.logic.operations[s[1]];
 		if (s[0] == 10){ //start kth anc
@@ -442,10 +438,11 @@ class Lca_binary_querier extends Algorithm{
 			var a = opera[1], bit=opera[3];
 			var par = this.parent_algorithm.logic.lca_parents[a][opera[3]];
 
-			if (a==par){
+			if (a == par){
 				staat.push([1, this.parent_algorithm.buttons.kth_queries[par][bit], 1, 0]);
 			}
 
+			this.modern_pass_color(this.parent_algorithm.buttons.lca_parents[a][bit], 101, 0);
 			passer.push([0, this.parent_algorithm.buttons.vertexes[a], 0]);
 			this.modern_pass_color(this.parent_algorithm.buttons.vertexes[par], 101, 15);
 
@@ -454,7 +451,7 @@ class Lca_binary_querier extends Algorithm{
 				if (a!=par) passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 42]);
 			}
 
-			if (a!=par) this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[a][bit], 14, 42);
+			if (a != par) this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[a][bit], 14, 42);
 			this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[par][bit], 1, 2);
 
 			var empty = `rgba(255, 255, 255, 0.0)`;
@@ -473,13 +470,74 @@ class Lca_binary_querier extends Algorithm{
 
 		if (s[0] == 20){ //Lca start
 			var a=opera[1];
-			this.modern_pass_color(this.parent_algorithm.buttons.vertexes[this.logic.x], 101, 0);
-			this.modern_pass_color(this.parent_algorithm.buttons.vertexes[this.logic.y], 101, 0);
+			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.x], 101]);
+			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.y], 12]);
 		}
 
-		if (s[0] == 21){ //Checkin' anc(a, b)
-			this.modern_pass_color(this.parent_algorithm.buttons.preorder[this.logic.x], 14, 0);
-			this.modern_pass_color(this.parent_algorithm.buttons.sons[this.logic.y], 14, 0);
+		if (s[0] > 20 && s[0] < 26){
+			var operation = this.logic.operations[s[1] + 2];
+			var proper_bit = operation[2];
+			var checked_parent = operation[3];
+			var x = operation[1];
+			var position = s[1];
+
+			if (s[0] == 21){ 
+				this.modern_pass_color(this.buttons.expression[position], 1, 0);
+				staat.push([1, this.buttons.logical[position], this.buttons.logical[position].innerHTML, '?']);
+				staat.push([0, this.buttons.logical[position], 6]);
+				staat.push([0, this.parent_algorithm.buttons.lca_parents[x][proper_bit], 15]);
+				staat.push([0, this.parent_algorithm.buttons.vertexes[checked_parent], 15]);
+			}
+
+			if (s[0] == 22 || s[0] == 24){
+				this.modern_pass_color(this.buttons.logical[position], 1, 0);
+				staat.push([1, this.buttons.logical[position], this.buttons.logical[position].innerHTML, ((s[0] == 22)?'True':'False')]);
+
+				this.modern_pass_color(this.parent_algorithm.buttons.preorder[checked_parent], 14);
+				this.modern_pass_color(this.parent_algorithm.buttons.sons[checked_parent], 14);
+				this.modern_pass_color(this.parent_algorithm.buttons.preorder[this.logic.y], 14);
+
+				for (var i=this.parent_algorithm.logic.tree.pre[checked_parent]; i < this.parent_algorithm.logic.tree.pre[checked_parent] + this.parent_algorithm.logic.tree.sons[checked_parent]; i++){
+					var apre = this.parent_algorithm.logic.tree.apre[i];
+					var button = this.parent_algorithm.buttons.vertexes[apre];
+					if (apre == x) this.modern_pass_color(button, [101, 30], 101);
+					else if (apre == this.logic.y) this.modern_pass_color(button, [12, 30], 12);
+					else if (apre == checked_parent) this.modern_pass_color(button, [15, 30], 15);
+					else this.modern_pass_color(button, 30);
+				}
+			}
+
+			if (s[0] == 23 || s[0] == 25){
+				this.modern_pass_color(this.buttons.movement[position], 1, 0);
+				staat.push([0, this.parent_algorithm.buttons.lca_parents[x][proper_bit], 0]);
+				if (s[0] == 23){
+					if (this.logic.operations.length == s[1] + 4) this.modern_pass_color(this.parent_algorithm.buttons.vertexes[x], 101, 0);
+					staat.push([0, this.parent_algorithm.buttons.vertexes[checked_parent], 0]);
+					if (proper_bit != 0) staat.push([0, this.parent_algorithm.buttons.lca_parents[x][proper_bit-1], 15]);
+				}
+
+				else{
+					staat.push([0, this.parent_algorithm.buttons.vertexes[x], 0]);
+					if (this.logic.operations.length == s[1] + 4) this.modern_pass_color(this.parent_algorithm.buttons.vertexes[checked_parent], 101, 0);
+					else staat.push([0, this.parent_algorithm.buttons.vertexes[checked_parent], 101]);
+					staat.push([0, this.parent_algorithm.buttons.lca_parents[checked_parent][proper_bit], 15]);
+				}
+			}
+		}
+		if (s[0] == 26){
+			var checked_parent = this.logic.x;
+			this.modern_pass_color(this.parent_algorithm.buttons.preorder[checked_parent], 14);
+			this.modern_pass_color(this.parent_algorithm.buttons.sons[checked_parent], 14);
+			this.modern_pass_color(this.parent_algorithm.buttons.preorder[this.logic.y], 14);
+
+			//copied temporarily(?) - almost
+			for (var i=this.parent_algorithm.logic.tree.pre[checked_parent]; i < this.parent_algorithm.logic.tree.pre[checked_parent] + this.parent_algorithm.logic.tree.sons[checked_parent]; i++){
+				var apre = this.parent_algorithm.logic.tree.apre[i];
+				var button = this.parent_algorithm.buttons.vertexes[apre];
+				if (apre == this.logic.x) this.modern_pass_color(button, [101, 30], 101);
+				else if (apre == this.logic.y) this.modern_pass_color(button, [12, 30], 12);
+				else this.modern_pass_color(button, 30);
+			}
 		}
 
 		if (s[0] == 100){ //Query finished
@@ -493,6 +551,12 @@ class Lca_binary_querier extends Algorithm{
 			staat.push([0, this.buttons.closer_vertices[this.logic.subsequent_pairs.length-1], 2]);
 			staat.push([0, this.buttons.closer_vertices[0], 8]);
 			staat.push([0, ArrayUtils.get_elem(this.buttons.closer_vertices, -1), 8]);
+		}
+
+		if (s[0] == 102){
+			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.lca_ans], 8]);
+			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.x], 12]);
+			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.y], 12]);
 		}
 	}
 
@@ -508,22 +572,63 @@ class Lca_binary_querier extends Algorithm{
 		}
 
 		if (this.logic.type == 'l'){
+			if (s[0] == 20) return [26, 0];
+			if (s[0] == 26 && this.logic.operations.length > 3) return [21, 0]; //next condition - wat if straight A?
+			if (s[0] == 26) return [102, 0];
 
+			if (s[0] == 21 && this.logic.operations[s[1]+2][0] == 'L') return [22, s[1]];
+			if (s[0] == 21) return [24, s[1]];
+
+			if (s[0] == 22) return [23, s[1]];
+			if (s[0] == 24) return [25, s[1]];
+
+			if ((s[0] == 23 || s[0] == 25) && s[1] == this.logic.operations.length-4) return [102];
+			return [21, s[1]+1];
 		}
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr];
 
-		return ``;
+		if (this.logic.type == 'k'){
+			if (s[0] == 100) return `All we need to do right now is to find par<sub>0</sub>(${this.logic.res}) = ${this.logic.res} - and so, our quest has been solved, for par<sub>${this.logic.y}</sub>(${this.logic.x}) = ${this.logic.res}!`;
+
+			var opera = this.logic.operations[s[1]];
+			var _y = opera[2] << opera[3];
+			if (s[0] == 10) return `The aim of this algorithm is to find ${this.logic.y}. ancestor of ${this.logic.x}.`;
+			if (s[0] == 11) return `Notice, that ${_y} has a bit associated with ${1 << opera[3]} not set (i.e. ${_y}&${1 << opera[3]} = 0, where & denotes logical AND operator). Thus, nothing shall be done.`;
+			if (s[0] == 12) return `Notice, that ${_y} has a bit associated with ${1 << opera[3]} set (i.e. ${_y}&${1 << opera[3]} > 0, where & denotes logical AND operator). Thus, we may move upwards in the tree, noticing, that par<sub>${_y}</sub>(${opera[1]}) = par<sub>${_y} - ${1 << opera[3]}</sub>(par<sub>${1 << opera[3]}</sub>(${opera[1]})) = par<sub>${_y - (1 << opera[3])}</sub>(${this.parent_algorithm.logic.lca_parents[opera[1]][opera[3]]}) - where we use information about all 2<sup>k</sup>-th ancestors of all vertexes. And so, only the last expression will be used to obtain the final solution.`;
+		}
+
+		else{
+			if (s[0] == 102) return `And so, the algorithm has ended, the result is equal to lca(${this.logic.x}, ${this.logic.y}) = ${this.logic.lca_ans}.`;
+			if (s[0] == 20) return `The query asks for finding lca(${this.logic.x}, ${this.logic.y}) in a given tree. It will be found by ascending from ${this.logic.x} to a vertex of highest depth, which is not an ancestor of ${this.logic.y}.`;
+			if (s[0] == 26) return `First of all, if ${this.logic.x} is an ancestor of ${this.logic.y}, then the rest of the algorithm wouldn't correctly find a lowest ancestor; ${this.logic.x == this.logic.lca_ans ? `it is, so the algorithm shall end with answer lca(${this.logic.x}, ${this.logic.y}) = ${this.logic.lca_ans}`:`it isn't, so, the algorithm continues.`}`;
+
+			var opera = this.logic.operations[s[1]+2];
+			var pre_x = this.parent_algorithm.logic.tree.pre[opera[3]];
+			var sons_x = this.parent_algorithm.logic.tree.sons[opera[3]];
+			var pre_y = this.parent_algorithm.logic.tree.pre[this.logic.y];
+			if (s[0] == 21) return `Now: is par<sub>${1<<opera[2]}</sub>(${opera[1]}) = ${opera[3]} an ancestor to ${this.logic.y}? ...`;
+			if (s[0] == 22) return `It is, because pre(${opera[3]}) = ${pre_x} &le; pre(${this.logic.y}) = ${pre_y} and pre(${opera[3]}) + sons(${opera[3]}) = ${pre_x} + ${sons_x} = ${pre_x+sons_x} > pre(${this.logic.y}) = ${pre_y}, and so, lca(${opera[1]}, ${this.logic.y}) is equal to par<sub>k</sub>(${opera[1]}), where k < ${1<<opera[2]}.`;
+			if (s[0] == 23) return `What follows, we can search for a non-ancestor of ${this.logic.y} among par<sub>k</sub>(${opera[1]}) for k being lower powers of two than ${1<<opera[2]}.`;
+
+			if (s[0] == 24){
+				var partial;
+				if (pre_x > pre_y) partial = `pre(${opera[1]}) = ${pre_x} > pre(${this.logic.y}) = ${pre_y}`;
+				else partial = `pre(${opera[3]}) + sons(${opera[3]}) = ${pre_x} + ${sons_x} = ${pre_x+sons_x} &le; pre(${this.logic.y}) = ${pre_y}`;
+				return `It is not, because ${partial}, and so, lca(${opera[1]}, ${this.logic.y}) is equal to par<sub>k</sub>(${opera[3]}), where k &le; ${1<<opera[2]} (or < rather than &le;, if the last parent of the leaf with a greatest depth in the tree is a root).`;
+			}
+			if (s[0] == 25) return `What follows, we can search for a non-ancestor of ${this.logic.y} among par<sub>k</sub>(${opera[1]}) for k being lower powers of two than ${1<<opera[2]}.`;
+
+		}
 	}
 }
 
-var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+var feral2=Algorithm.ObjectParser(document.getElementsByClassName('Algo2')[0], 2);
 var eg2=new Lca_binary(feral2, [[1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [3, 7], [7, 8]]);
 //var eg2=new Lca_binary(feral2, [[1, 2], [2, 3], [3, 4], [4, 5], [2, 6], [6, 7]]);
 //var eg2=new Lca_binary(feral2, [[1, 2], [1, 3], [2, 4], [4, 6], [6, 7], [6, 8], [8, 9], [3, 11], [3, 12], [12, 13], [2, 5], [5, 10]]);
 
-var feral3=Algorithm.ObjectParser(document.getElementById('Algo3'));
-var eg3=new Lca_binary_querier(feral3, eg2, 'l', 7, 4);
+var feral3=Algorithm.ObjectParser(document.getElementsByClassName('Algo3')[0], 3);
+var eg3=new Lca_binary_querier(feral3, eg2, 'l', 8, 5);

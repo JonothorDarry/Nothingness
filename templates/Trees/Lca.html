@@ -63,27 +63,20 @@
 
 				<article>
 					<div style="width:max-content">
-						<div style="display:inline-block; position:relative;">
-						{{ algo.neo_algorithm(2, 'Finding lowest common ancestor and k-th ancestor of a vertex', '
-						<p style="width:600px">Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree. \(q\) is the amount of queries. The queries follow in format: \(c_i, x_i, y_i\): if \(c_i=\)=\'k\', then query will return \(y_i\)-th ancestor of \(x_i\). If \(c_i=\)\'l\', then query will return \(lca(x_i, y_i)\).<br>
-							\(n\)<br>
-							\(a_1, b_1\)<br>
-							\(\dots\)<br>
-							\(a_{n-1}, b_{n-1}\)<br>
-							</p>
-						'
-						, '7&#10;1 2&#10;2 3&#10;3 4&#10;4 5&#10;2 6&#10;6 7', {'input_type':'textarea'
-						}) }}
-						</div>
-
-						<div style="display:inline-block; position:relative; vertical-align:top">
-						{{ algo.neo_algorithm(3, 'Queries', '
-						<p>Input format: Queries in a format: \(c, x, y\): if \(c=\)\'k\', then query will return \(y\)-th ancestor of \(x\). If \(c=\)\'l\', then query will return \(lca(x, y)\). Constraint: \(x, y \le n\).<br>
-							\(c, x, y\)<br>
-							</p>
-						'
-						, 'l 7 4', {} ) }}
-						</div>
+						{{ algo.neo_double_algorithm({'id':2, 'header_text':'Lowest common ancestor preprocessing', 'input_format':'<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree. \(q\) is the amount of queries.<br>
+						\(n\)<br>
+						\(a_1, b_1\)<br>
+						\(\dots\)<br>
+						\(a_{n-1}, b_{n-1}\)<br>
+						</p>
+						',
+						'start_value':'8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;', 'kvargos':{'input_type':'textarea'}
+}, {'id':3, 'header_text':'Queries', 'input_format':'
+					<p>Input format: Queries in a format: \(c, x, y\): if \(c=\)\'k\', then query will return \(y\)-th ancestor of \(x\). If \(c=\)\'l\', then query will return \(lca(x, y)\). Constraint: \(x, y \le n\).<br>
+						\(c, x, y\)<br>
+						</p>
+					'
+					, 'start_value':'l 8 5', 'kvargos':{} },  'Lowest Common Ancestor with binary lifting') }}
 					</div>
 				</article>
 			</section>

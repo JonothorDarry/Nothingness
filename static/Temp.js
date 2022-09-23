@@ -312,17 +312,33 @@ class Algorithm{
 	}
 
 
-	static ObjectParser(v){
-		var dick={
-			'primePlace':v.getElementsByClassName('primez')[0],
-			'sendButton':v.getElementsByClassName('sender')[0],
-			'prevButton':v.getElementsByClassName('previous')[0],
-			'nextButton':v.getElementsByClassName('next')[0],
-			'input':v.getElementsByClassName('inputter')[0],
-			'output':v.getElementsByClassName('comprehend')[0],
-			'finitButton':v.getElementsByClassName('finish')[0],
-			'progressBar':v.getElementsByClassName('progress')[0]
-		};
+	//To fix - trashcode
+	static ObjectParser(v, id=0){
+		if (id == 0){
+			var dick={
+			       'primePlace':v.getElementsByClassName('primez')[0],
+			       'sendButton':v.getElementsByClassName('sender')[0],
+			       'prevButton':v.getElementsByClassName('previous')[0],
+			       'nextButton':v.getElementsByClassName('next')[0],
+			       'input':v.getElementsByClassName('inputter')[0],
+			       'output':v.getElementsByClassName('comprehend')[0],
+			       'finitButton':v.getElementsByClassName('finish')[0],
+			       'progressBar':v.getElementsByClassName('progress')[0]
+			};
+		}
+
+		else{
+			var dick={
+				'primePlace':document.getElementById(`Primez${id}`),
+				'sendButton':document.getElementById(`Sender${id}`),
+				'prevButton':document.getElementById(`Prever${id}`),
+				'nextButton':document.getElementById(`Nexter${id}`),
+				'input':document.getElementById(`SomeInput${id}`),
+				'output':document.getElementById(`Comprehend${id}`),
+				'finitButton':document.getElementById(`Finisher${id}`),
+				'progressBar':document.getElementById(`Progress${id}`)
+			};
+		}
 		return dick;
 	}
 
@@ -1340,6 +1356,7 @@ class Graph_utils{
 	}
 	*/
 }
+
 
 class Modern_tree_presenter{
 	//Gives position to a tree - banal shit boring, besides tree is bad

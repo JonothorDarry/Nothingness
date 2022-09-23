@@ -128,6 +128,8 @@ class ExtendedSieve extends Sieve{
 	}
 
 	presentation(){
+		Modern_representation.button_modifier(this.place, {'stylistic':{'px':{'width':900}}});
+		Modern_representation.button_modifier(this.wisdom, {'stylistic':{'px':{'width':900}}});
 		this.present={};
 		this._presentation_colors_set();
 		var buttons={'sieve':[]}, i=0, j=0, btn;
@@ -347,12 +349,13 @@ class Factorizer extends Algorithm{
 	}
 }
 
+//Pollard-rho under da hood
 class Simple_factorizer extends Algorithm{
 	logical_box(){
-		this.logic.limit=Math.ceil(Math.sqrt(this.logic.x));
+		this.logic.limit = Math.ceil(Math.sqrt(this.logic.x));
 		var cur_x=this.logic.x, count;
-		this.logic.xp=[];
-		this.logic.factors=[];
+		this.logic.xp = [];
+		this.logic.factors = [];
 		
 		for (var i=2; i<=this.logic.limit && cur_x>1; i++){
 			count=0;
@@ -463,10 +466,10 @@ var eg4=new Simple_factorizer(feral4, 84);
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
 var sk=new Sieve(feral, 30);
 
-var feral2=Algorithm.ObjectParser(document.getElementById('Algo2'));
+var feral2=Algorithm.ObjectParser(document.getElementsByClassName('Algo2')[0], 2);
 var sk2=new ExtendedSieve(feral2, 30);
 
-var foul=Algorithm.ObjectParser(document.getElementById('querySection'));
+var foul=Algorithm.ObjectParser(document.getElementsByClassName('Algo3')[0], 3);
 var sk3=new Factorizer(foul, 24, sk2);
 
 //x.value="Jonasz";
