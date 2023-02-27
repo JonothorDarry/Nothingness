@@ -1,6 +1,8 @@
 # Nothingness
 Some algorithm visualizations, mostly related to number theory. 
 
+As heroku dyno suffers from symptoms of being dead, here is the new link - https://nothingness.onrender.com/
+
 ## Shortcomings of applications visualizing algorithms I've seen:
  1) They have an absurd amount of pop-ups I never ever read.
  2) They don't allow to visualize a mechanism on a huge testcase.
@@ -23,8 +25,6 @@ Some algorithm visualizations, mostly related to number theory.
  3) "Finish" allows to move visualization to its last state.
  4) "Visualization Progress" bar allows to move the visualization from one state to another.
  5) Some algorithms have additional options: they usually allow either to disable some feature (for example, disable displaying grids in gcd visualization - which is handy for showing table on large data) or enable some feature (for example, showing rho's in pollard-rho algorithm - either for found divisor, or all divisors in form \(p^k\))
-
-In order to use it, you can use Heroku platform: https://algos.herokuapp.com/
 
 If You want to see, how the application looks like, and you have python with flask, then:
 
