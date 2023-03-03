@@ -34,16 +34,16 @@
 		<h2>Number Theory</h2>
 		<div class="domainContainer">
 			<div class="btnContainer">
-				<a class="wisdom" href="/gcd">\(
+				<a class="wisdom" href="/{{ji_urls['gcd']}}">\(
 					gcd(a, b)
 				\)</a>
 				<p class="algoName">Greatest Common Divisor</p>
 			</div>
 
 			<div class="btnContainer">
-				<a class="wisdom" href="/erasto" style="font-size:12px">\(
+				<a class="wisdom" href="/{{ji_urls['sieve']}}" style="font-size:12px">\(
 					\begin{array}{|c|c|c|c|}
-					{% set primez = [2, 3, 5, 7, 11, 13, 17] %}
+					{% set primez = [2, 3, 5, 7, 11, 13, 17, 19, 23] %}
 					{% for i in [0,1,2,3] %}
 						\hline
 						{% for j in [0,1,2,3] %}
@@ -69,7 +69,7 @@
 			</div>
 
 			<div class="btnContainer">
-				<a class="wisdom" href="/crt">\(
+				<a class="wisdom" href="/{{ji_urls['crt']}}">\(
 					\begin{cases}
 						x \equiv c_1\ (mod\ m_1) \\
 						x \equiv c_2\ (mod\ m_2) \\
@@ -79,51 +79,51 @@
 			</div>
 
 			<div class="btnContainer">
-				<a class="wisdom nt_combinato" href="/divisors">\(
+				<a class="wisdom nt_combinato" href="/{{ji_urls['divisors']}}">\(
 					d|x
 				\)</a>
 				<p class="algoName">Divisors</p>
 			</div>
 
 			<div class="btnContainer">
-				<a class="wisdom" href="/binex">\(
+				<a class="wisdom" href="/{{ji_urls['binex']}}">\(
 					a^b \equiv x \pmod m
 				\)</a>
 				<p class="algoName">Binary Exponentation</p>
 			</div>
 
 			<div class="btnContainer">
-				<a class="wisdom" href="/totient">\(
+				<a class="wisdom" href="/{{ji_urls['totient']}}">\(
 					\phi (x)
 				\)</a>
 				<p class="algoName">Totient Function</p>
 			</div>
 			<div class="btnContainer">
-				<a class="wisdom" href="/proot">\(
+				<a class="wisdom" href="/{{ji_urls['proot']}}">\(
 					ord_n(g)=\phi(n)
 				\)</a>
 				<p class="algoName">Primitive Root</p>
 			</div>
 			<div class="btnContainer">
-				<a class="wisdom nt_combinato" href="/ntt">\(
+				<a class="wisdom nt_combinato" href="/{{ji_urls['ntt']}}">\(
 					A(x)B(x) \equiv C(x)
 				\)</a>
 				<p class="algoName">Number Theoretic Transform and generating functions</p>
 			</div>
 			<div class="btnContainer">
-				<a class="wisdom" href="/dlog">\(
+				<a class="wisdom" href="/{{ji_urls['dlog']}}">\(
 					a^x \equiv b \pmod m
 				\)</a>
 				<p class="algoName">Discrete Logarithm</p>
 			</div>
 			<div class="btnContainer">
-				<a class="wisdom" href="/advpr">\(
+				<a class="wisdom" href="/{{ji_urls['advpr']}}">\(
 					a^{ {2^k}s} \equiv \pm 1
 				\)</a>
 				<p class="algoName">Advanced Primes</p>
 			</div>
 			<div class="btnContainer">
-				<a class="wisdom" href="/prcount">\(
+				<a class="wisdom" href="/{{ji_urls['primescnt']}}">\(
 					\pi(x)
 				\)</a>
 				<p class="algoName">Counting Primes</p>
@@ -173,7 +173,7 @@
 		<h2>Tree</h2>
 			<div class="domainContainer">
 				<div class="btnContainer">
-					<a class="wisdom treebutton" href="/treewalk" style="font-size:12px">
+					<a class="wisdom treebutton" href="/{{ji_urls['treewalk']}}" style="font-size:12px">
 						<div style="width:180px; height:180px; position:relative">
 							{% include 'ImagesForButtons/tree_walk.html' %}
 						</div>
@@ -181,16 +181,14 @@
 					<p class="algoName">Tree Walk</p>
 				</div>
 
-				<!--
 				<div class="btnContainer">
-					<a class="wisdom treebutton" href="/lca" style="font-size:12px">
+					<a class="wisdom treebutton" href="/{{ji_urls['lca']}}" style="font-size:12px">
 						<div style="width:180px; height:180px; position:relative">
 							{% include 'ImagesForButtons/lca.html' %}
 						</div>
 					</a>
 					<p class="algoName">Lowest Common Ancestor</p>
 				</div>
-				-->
 
 				<!--
 				<div class="btnContainer">

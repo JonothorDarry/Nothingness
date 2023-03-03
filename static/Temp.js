@@ -197,7 +197,7 @@ class Algorithm{
 
 	//Operations starting BeginningExecutor
 	starter(){
-		if (this.querier==true) this.reset_state_machine(true);
+		if (this.querier == true) this.reset_state_machine(true);
 
 		this.lees=[];
 		this.state_transformation=[];
@@ -233,7 +233,7 @@ class Algorithm{
 	StateUnmaker(){
 		var i, elem;
 
-		if (this.state_nr < 0 || this.state_nr == undefined) return;
+		if (this.state_nr < 0 || this.state_nr == undefined || this.state_transformation.length == 0) return; //last condition - botched algorithm before
 		//Back to times of Splendor: 0 - buttons, 1 - innerHTML, 2 - list, 3 - field, 5 - fun
 		var x=this.state_transformation[this.state_nr];
 		for (i=x.length-1; i>=0; i--){

@@ -738,7 +738,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 				value = this.state.longest_distance_1[par].current();
 			}
 			else{
-				str_2 = str_2 + ` The answer is no - ${a} is equal to than ${this.state.furthest_vertex_1[par].current()}, so we have to use a distance equal to ${this.state.longest_distance_2[par].current()}.`
+				str_2 = str_2 + ` The answer is no - ${a} is equal to ${this.state.furthest_vertex_1[par].current()}, so we have to use a distance equal to ${this.state.longest_distance_2[par].current()}.`
 				value = this.state.longest_distance_2[par].current();
 
 			}

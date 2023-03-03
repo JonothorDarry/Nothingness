@@ -83,6 +83,10 @@
 
 			<article>
 				<h2>Summary</h2>
+				<ol>
+					<li>In order to get lowest common ancestor of two vertices, one can keep in memory all its 2<sup>k</sup>-th ancestors for each \(k \in \{1, 2, \dots \log_2(n)\}\), where \(n\) is the size of the tree. Those can be obtained using the fact, that \(anc_{2k}(n) = anx_k(anc_k(n))\). This allows finding \(k\)-th ancestor and lowst common ancestor in \(O(n \log n + q \log n)\).</li>
+					<li>One can also find \(lca(a,b)\) using the fact, that it is the vertex with lowest depth on a path from \(a\) to \(b\) - </li>
+
 			
 
 				<h3>Problems</h3>
@@ -96,7 +100,7 @@
 			<div id="problems"></div>
 			<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
 
-			<script src="{{url_for('static', filename='Lca.js')}}"></script>
+			<script type='module' src="{{url_for('static', filename='Trees/LCA/merger.js')}}"></script>
 			<form id="page" style="display:none"></form>
 		</main>
 		{{ footers.full_lower() }}
