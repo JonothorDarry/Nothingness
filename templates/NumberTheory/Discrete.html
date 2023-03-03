@@ -49,7 +49,7 @@
 		<h2>Problem II - discrete logarithm for not necessarily coprime numbers</h2>
 		<p>Suppose You are given numbers \(1 \le a, b, m \le 10^{12}\), and thine aim is to find such \(x\) that \(a^x \equiv b \pmod m\).</p>
 		<h3>Simple solution</h3>
-		<p>Solving this problem relies on changing values \(a, b, m\) in such way, that \(gcd(a, m)=1\) anew, then one can pass problem to any other algorithm solving discrete logarithm problem.</p>
+		<p>Solving this problem relies on changing values \(a, b, m\) in such way, that if one can make \(gcd(a, m)=1\) anew, then one can pass problem to any other algorithm solving discrete logarithm problem.</p>
 		<ol>
 			<li>First, if \(b \equiv 1 \pmod m\), then 0 is the solution</li>
 			<li>Otherwise, if \(gcd(a,m) \nmid gcd(b,m)\), then there cannot be a solution - because \(\forall_{x \gt 0} (gcd(a, m) | gcd(a^x, m) \land gcd(a, m) \nmid gcd(b,m)) \implies (gcd(a^x,m) \nmid gcd(b,m))\).</li>
@@ -155,7 +155,7 @@
 			<li><a href=https://codeforces.com/problemset/problem/1106/F>Lunar New Year and a Recursive Sequence</a></li>
 		</ol>
 
-		<script src="{{url_for('static', filename='Dlog.js')}}"></script>
+		<script type='module' src="{{url_for('static', filename='NumberTheory/Dlog/merger.js')}}"></script>
 		<form id="page" style="display:none"></form>
 		{{ footers.full_lower() }}
 	</body>

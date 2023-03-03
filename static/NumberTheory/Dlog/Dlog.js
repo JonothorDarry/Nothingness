@@ -255,6 +255,4 @@ class Dlog extends Algorithm{
 		if (s[0]==100) return `Solution was found, it is equal to ${this.logic.dlog}: ${this.logic.a}<sup>${this.logic.dlog}</sup> &equiv; ${this.logic.a}<sup>${this.logic.solution_part_anx*this.logic.s}</sup> * ${this.logic.a}<sup>${this.logic.sorted_ax[this.logic.solution_part_ax][0]}</sup> &equiv; ${this.logic.b} (mod ${this.logic.m}).`;
 	}
 }
-
-var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));
-var eg=new Dlog(feral, 6n, 17n, 23n);
+export default Dlog;
