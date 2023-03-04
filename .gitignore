@@ -4,3 +4,7 @@
 *.log
 *.out
 uncommitables/*
+
+static/Irrelevant/*
+__pycache__/*
+github.txt
