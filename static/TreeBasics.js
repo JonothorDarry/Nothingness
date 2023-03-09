@@ -651,7 +651,10 @@ class DoubleWalk extends Algorithm{ //Non-working example
 				staat.push([6, this.state.furthest_vertex_2[a]]);
 			}
 
-			else if (type[0][1] == '1') this.pass_color(this.buttons.longest_distances[a][1], 0, [13, 14], 0);
+			else if (type[0][1] == '1'){
+				this.pass_color(this.buttons.longest_distances[a][1], 0, [13, 14], 0);
+				staat.push([6, this.state.furthest_vertex_2[a]]);
+			}
 
 			var prev;
 			if (starting_vertex.current()){
@@ -660,7 +663,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 
 				prev = a;
 				var next_full;
-				while (true){
+				while (true){ //Up
 					next_full = this.state.furthest_vertex_1[b].current();
 					if (next_full == prev) next_full = this.state.furthest_vertex_2[b].current();
 
@@ -673,7 +676,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 				prev = b;
 				b = next_full;
 
-				while (b != prev){
+				while (b != prev){ //Down
 					next_full = this.state.furthest_vertex_1[b].current();
 					if (next_full == prev) next_full = this.state.furthest_vertex_2[b].current();
 

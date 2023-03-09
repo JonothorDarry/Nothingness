@@ -1,6 +1,6 @@
 import Lca_binary from './Lca_binary.js'
 import Lca_binary_querier from './Lca_binary_querier.js'
-console.log(Lca_binary)
+import Lca_RMQ from './Lca_RMQ.js'
 
 var feral2=Algorithm.ObjectParser(document.getElementsByClassName('Algo2')[0], 2);
 var eg2=new Lca_binary(feral2, [[1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [3, 7], [7, 8]]);
@@ -9,3 +9,6 @@ var eg2=new Lca_binary(feral2, [[1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [3, 7], 
 
 var feral3=Algorithm.ObjectParser(document.getElementsByClassName('Algo3')[0], 3);
 var eg3=new Lca_binary_querier(feral3, eg2, 'l', 8, 5);
+
+var feral4=Algorithm.ObjectParser(document.getElementsByClassName('Algo4')[0], 4);
+var eg4=new Lca_RMQ(feral4, [[1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [3, 7], [7, 8]]);
