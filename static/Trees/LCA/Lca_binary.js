@@ -72,10 +72,7 @@ class Lca_binary extends Algorithm{
 
 	static presentation_color_edge(arc, color){
 		var style = {'general':{'zIndex':-2}};
-		if (color.length == 2){
-			//style.general.borderColor = `rgba(255,255,255,0.0) ${color[0]}  ${color[1]}`; //Discontinued - no border-left-image or sth
-		}
-		else style.general.borderColor = `rgba(255,255,255,0.0) ${color} ${color} ${color}`;
+		if (color.length != 2) style.general.borderColor = `rgba(255,255,255,0.0) ${color} ${color} ${color}`; //Previously for color.legnth==2: style.general.borderColor = `rgba(255,255,255,0.0) ${color[0]}  ${color[1]}`; //Discontinued - no border-left-image or sth
 
 		Modern_representation.button_modifier(arc, {'stylistic':style});
 	}

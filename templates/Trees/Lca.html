@@ -46,6 +46,7 @@
 					<li>For each vertex \(x\) find out \(par_1(x)\) - using dfs.</li>
 					<li>For each subsequent \(k\) for each vertex \(x\) find out \(par_{2^{k+1}}(x) = par_{2^k}(par_{2^k}(x))\) for all such \(k \le m\), that \(2^m \le n\) - so, \(m = \lceil \log_2(n) \rceil\).</li>
 				</ol>
+				</p>
 				<h4>Querying phase</h4>
 				<p>There are two problems to solve:
 				<ol>
@@ -58,7 +59,6 @@
 						This allows constructing the following algorithm: search for ancestors of \(a\), from \(par_{2^m}(a)\) to \(par_1(a)\); if \(par_x(a)\) is not an ancestor of \(b\), set \(a\) to \(par_x(a)\) and continue from \(x\). At the end of the process, return \(par_1(a)\). The only corner case in need of attention: if \(a\) is an ancestor of \(b\) or \(b\) is an ancestor of \(a\), then, at the beginning of the algorithm, \(a\) or \(b\) should be returned.
 					</li>
 				</ol>
-
 				</p>
 
 				<article>
@@ -79,15 +79,42 @@
 					, 'start_value':'l 8 5', 'kvargos':{} },  'Lowest Common Ancestor with binary lifting') }}
 					</div>
 				</article>
+
+
+				<h3>Solution II: RMQ-based solution - \(O(n\log(n) + q)\) (depending on RMQ solution) for finding lca</h3>
+				<p>Let the sequence \(path\) denote the order of processing vertices in the dfs. Each time a vertex is entered in dfs (by moving upwards or downwards towards it), a vertex is added to a sequence \(path\). Furthermore, let \(time(x)\) denote first occurence of a vertex \(x\) in a sequence \(path\). Let's say, we are searching for \(lca(a,b)\), and \(time(a) \le time(b)\). In this representation:</p>
+				<ol>
+					<li>There is an index \(i\), where \(time(a) \le i \le time(b)\) and \(path_i = lca(a,b)\) - because dfs after processing vertex \(a\) had to go upwards to \(lca(a, b)\) before going downwards to find \(b\).</li>
+					<li>The minimal depth of any vertex in sequence \(path\) between \(time(a)\) and \(time(b)\) is \(depth(lca(a,b))\) - because \(lca(a,b)\) was entered before \(a\) and \(lca(a,b)\) cannot be exited in dfs before reaching \(b\).</li>
+				</ol>
+				<p>Thus, in order to find \(lca(a,b)\) you can find vertex present in a sequence \(path\) between indexes \(time(a)\) and \(time(b)\) with minimal depth. This can be solved using RMQ - either with segment tree, or sparse table, or whatever.</p>
+
+				<article>
+					<div style="width:max-content">
+						{{ algo.neo_double_algorithm({'id':4, 'header_text':'Lowest common ancestor preprocessing', 'input_format':'<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree. \(q\) is the amount of queries.<br>
+						\(n\)<br>
+						\(a_1, b_1\)<br>
+						\(\dots\)<br>
+						\(a_{n-1}, b_{n-1}\)<br>
+						</p>
+						',
+						'start_value':'8&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;', 'kvargos':{'input_type':'textarea'}
+}, {'id':3, 'header_text':'Queries', 'input_format':'
+					<p>Input format: Queries in a format: \(x, y\): The query will return \(lca(x, y)\). Constraint: \(x, y \le n\).<br>
+						\(x, y\)<br>
+						</p>
+					'
+					, 'start_value':'8 5', 'kvargos':{} },  'Lowest Common Ancestor with RMQ') }}
+					</div>
+				</article>
 			</section>
 
 			<article>
 				<h2>Summary</h2>
 				<ol>
-					<li>In order to get lowest common ancestor of two vertices, one can keep in memory all its 2<sup>k</sup>-th ancestors for each \(k \in \{1, 2, \dots \log_2(n)\}\), where \(n\) is the size of the tree. Those can be obtained using the fact, that \(anc_{2k}(n) = anx_k(anc_k(n))\). This allows finding \(k\)-th ancestor and lowst common ancestor in \(O(n \log n + q \log n)\).</li>
+					<li>In order to get lowest common ancestor of two vertices, one can keep in memory all its 2<sup>k</sup>-th ancestors for each \(k \in \{1, 2, \dots \log_2(n)\}\), where \(n\) is the size of the tree. Those can be obtained using the fact, that \(anc_{2k}(n) = anc_k(anc_k(n))\). This allows finding \(k\)-th ancestor and lowst common ancestor in \(O(n \log n + q \log n)\).</li>
 					<li>One can also find \(lca(a,b)\) using the fact, that it is the vertex with lowest depth on a path from \(a\) to \(b\) - </li>
-
-			
+				</ol>
 
 				<h3>Problems</h3>
 				<p>Ideas shown here are usually useful for problems involving queries on never-changing trees. Examples include:</p>
