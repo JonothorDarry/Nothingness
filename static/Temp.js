@@ -552,6 +552,7 @@ class Representation_utils{
 		var olden;
 		if (only_bg==1) olden=btn.style.color;
 		if (col==0 || col==1 || col==4 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14 || col==15 || col == 101) btn.style.color="#FFFFFF";
+		else if (col == 104) btn.style.color = Modern_representation.colors[104];
 		else if (col==102) btn.style.color = "#000000";
 		else btn.style.backgroundColor="#FFFFFF";
 

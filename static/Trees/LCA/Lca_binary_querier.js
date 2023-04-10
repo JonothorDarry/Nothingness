@@ -190,8 +190,8 @@ class Lca_binary_querier extends Algorithm{
 	BeginningExecutor(){
 		this.read_data();
 
-		if (this.parent_algorithm.finito == false) {
-			this.lees.push([101]);
+		if (!this.parent_algorithm.is_runtime_finished()) {
+			this.lees.push([105]);
 			return;
 		}
 		this.palingenesia();
@@ -202,6 +202,7 @@ class Lca_binary_querier extends Algorithm{
 
 	StateMaker(s){
 		var staat=this.ephemeral.staat, passer=this.ephemeral.passer, i;
+		if (s[0] == 105) return;
 
 		var opera = this.logic.operations[s[1]];
 		if (s[0] == 10){ //start kth anc
@@ -378,6 +379,7 @@ class Lca_binary_querier extends Algorithm{
 
 	StatementComprehension(){
 		var s=this.lees[this.state_nr];
+		if (s[0] == 105) return `In order to start a query you need to finish the lca preprocessing.`
 
 		if (this.logic.type == 'k'){
 			if (s[0] == 100) return `All we need to do right now is to find par<sub>0</sub>(${this.logic.res}) = ${this.logic.res} - and so, our quest has been completed, for par<sub>${this.logic.y}</sub>(${this.logic.x}) = ${this.logic.res}!`;

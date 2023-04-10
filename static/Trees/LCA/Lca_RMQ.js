@@ -2,6 +2,7 @@ class Lca_RMQ extends Algorithm{
 	_logical_dfs_eulerian(a){
 		for (var vertex of this.logic.tree.kids[a]){
 			this.logic.path.push(vertex);
+			this.logic.time[vertex] = this.logic.path.length-1;
 			this.logic.all_transitions.push(['enter', vertex]);
 			this._logical_dfs_eulerian(vertex);
 		}
@@ -11,6 +12,8 @@ class Lca_RMQ extends Algorithm{
 
 	logical_box(){
 		this.logic.path = [1];
+		this.logic.time = ArrayUtils.steady(this.logic.n+1, 0);
+		this.logic.time[1] = 0;
 		this.logic.all_transitions = [['start', 1]];
 		this._logical_dfs_eulerian(1);
 		this.logic.path.pop();
@@ -114,8 +117,16 @@ class Lca_RMQ extends Algorithm{
 	presentation_place_depth(){
 		this.buttons.depth = [null];
 		for (var v=1; v<=this.logic.tree.n; v++){
-			this.presentation_append_companion(v, -1, 1, 'dep');
-			this.buttons.depth.push(this.presentation_append_companion(v, -2, 1, this.logic.tree.depth[v], 104));
+			this.presentation_append_companion(v, -1, -1, 'dep');
+			this.buttons.depth.push(this.presentation_append_companion(v, -2, -1, this.logic.tree.depth[v], 104));
+		}
+	}
+
+	presentation_place_time(){
+		this.buttons.time = [null];
+		for (var v=1; v<=this.logic.tree.n; v++){
+			this.presentation_append_companion(v, 1, -1, 'time');
+			this.buttons.time.push(this.presentation_append_companion(v, 2, -1, this.logic.time[v], 104));
 		}
 	}
 
@@ -128,6 +139,8 @@ class Lca_RMQ extends Algorithm{
 			'nonsense':this.stylistic
 		});
 		this.presentation_place_depth();
+		this.presentation_place_time();
+
 		this.buttons.vertexes = this.buttons.present_tree.buttons.vertexes;
 		this.buttons.edges = this.buttons.present_tree.buttons.edges;
 
@@ -146,10 +159,10 @@ class Lca_RMQ extends Algorithm{
 
 		this.buttons.rmq_table = [];
 		full_table.single_filler([-1, -1], 'Layer \\ index', {'color':6, 'stylistic':{'px':{'width':120}}});
-		full_table.filler([-1, [0, this.logic.path.length-1]], ArrayUtils.range(0, this.logic.path.length-1), {'color':5});
+		this.buttons.time_indexes = full_table.filler([-1, [0, this.logic.path.length-1]], ArrayUtils.range(0, this.logic.path.length-1), {'color':5});
+		this.buttons.layer_indexes = full_table.filler([[0, this.logic.layers], -1], ArrayUtils.range(0, this.logic.layers), {'color':5, 'stylistic':{'px':{'width':120}}});
 		for (var i=0; i<=this.logic.layers; i++){
 			this.buttons.rmq_table.push([]);
-			full_table.single_filler([i, -1], i, {'color':5, 'stylistic':{'px':{'width':120}}});
 			full_table.filler([i, [0, this.logic.path.length-1]], this.logic.rmq_table[i], {'color':104, 'stylistic':{'%':{'borderRadius':100}}});
 
 			for (var j=0; j<this.logic.path.length; j++) this.buttons.rmq_table[i].push(full_table.get(i, j));
@@ -219,7 +232,11 @@ class Lca_RMQ extends Algorithm{
 
 			var message = this.logic.all_transitions[s[1]][0];
 			this.modern_pass_color(this.buttons.vertexes[vertex], 15);
-			if (message == 'start' || message == 'enter') this.modern_pass_color(this.buttons.depth[vertex], 1, 0);
+			if (message == 'start' || message == 'enter'){
+				this.modern_pass_color(this.buttons.depth[vertex], 1, 0);
+				this.modern_pass_color(this.buttons.time[vertex], 1, 0);
+				this.modern_pass_color(this.buttons.time_indexes[this.logic.time[vertex]], 14, 5);
+			}
 
 			var edge_to_paint;
 			if (message == 'enter'){
@@ -267,11 +284,11 @@ class Lca_RMQ extends Algorithm{
 	StatementComprehension(){
 		var s=this.lees[this.state_nr], x=s[1];
 
-		if (s[0]==0 && s[1]==0) return `The preprocessing phase for this LCA method starts - as usual - with dfs starting from an arbitrary vertex, such as vertex labeled as 1. Vertex 1 is added to the path, its depth set to 0.`;
+		if (s[0]==0 && s[1]==0) return `The preprocessing phase for this LCA method starts - as usual - with dfs starting from an arbitrary vertex, such as vertex labeled as 1. Vertex 1 is added to the path, its depth set to 0, its time set to the first index of a path - 0.`;
 		if (s[0]==0){
 			var message = this.logic.all_transitions[s[1]][0];
 			var vertex_operated = this.logic.all_transitions[s[1]][1];
-			if (message=='enter') return `The vertex ${vertex_operated} is entered, so vertex ${vertex_operated} is added to the path. Its depth is set to the depth of its its parent plus one, so dep(${vertex_operated}) = dep(${this.logic.tree.par[vertex_operated]})+1 = ${this.logic.tree.depth[vertex_operated]}.`;
+			if (message=='enter') return `The vertex ${vertex_operated} is entered, so vertex ${vertex_operated} is added to the path. Its depth is set to the depth of its its parent plus one, so dep(${vertex_operated}) = dep(${this.logic.tree.par[vertex_operated]})+1 = ${this.logic.tree.depth[vertex_operated]}. Its time is set to the current index of the path - ${this.logic.time[vertex_operated]}.`;
 			return `The vertex ${vertex_operated} is exited, its parent - vertex ${this.logic.tree.par[vertex_operated]} - is added to the path.`;
 		}
 		if (s[0] == 1){
