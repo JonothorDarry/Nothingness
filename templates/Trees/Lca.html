@@ -83,17 +83,18 @@
 
 
 				<h3>Solution II: RMQ-based solution - \(O(n\log(n) + q)\) (depending on RMQ solution) for finding lca</h3>
-				<p>Let the sequence \(path\) denote the order of processing vertices in the dfs. Each time a vertex is entered in dfs (by moving upwards or downwards towards it), a vertex is added to a sequence \(path\). Furthermore, let \(time(x)\) denote first occurence of a vertex \(x\) in a sequence \(path\). Let's say, we are searching for \(lca(a,b)\), and \(time(a) \le time(b)\). In this representation:</p>
+				<p>Let the sequence \(path\) denote the order of processing vertices in the dfs. Each time the vertex is entered during the dfs (by moving upwards or downwards towards it), the vertex is added to a sequence \(path\). Furthermore, let \(time(x)\) denote first occurence of a vertex \(x\) in a sequence \(path\). Let's say, we are searching for \(lca(a,b)\), and \(time(a) \le time(b)\). In this representation:</p>
 				<ol>
 					<li>There is an index \(i\), where \(time(a) \le i \le time(b)\) and \(path_i = lca(a,b)\) - because dfs after processing vertex \(a\) had to go upwards to \(lca(a, b)\) before going downwards to find \(b\).</li>
-					<li>The minimal depth of any vertex in sequence \(path\) between \(time(a)\) and \(time(b)\) is \(depth(lca(a,b))\) - because \(lca(a,b)\) cannot be exited in dfs before reaching \(b\).</li>
+					<li>The minimal depth of any vertex in sequence \(path\) between \(time(a)\) and \(time(b)\) is \(depth(lca(a,b))\) - because \(lca(a,b)\) cannot be exited (removed from dfs stack) during the dfs before reaching \(b\).</li>
 				</ol>
-				<p>Thus, in order to find \(lca(a,b)\) you can find vertex present in a sequence \(path\) between indexes \(time(a)\) and \(time(b)\) with minimal depth. This can be solved using RMQ - either with segment tree, or sparse table, or whatever.</p>
+				<p>Thus, in order to find \(lca(a,b)\) you can find a vertex present in a sequence \(path\) between indexes \(time(a)\) and \(time(b)\) with minimal depth. This can be solved using RMQ - either with a segment tree, or a sparse table, or whatever.</p>
 				<h4>The exact mechanics of range minimum query using the sparse table</h4>
 				<p>Let's say we've got an array \(array\) and our aim is to be able to answer a question in form \(f\_min(l,r) = \min\{array_l, array_{l+1}, \dots, array_r\}\).</p>
 				<p>Our first aim is to construct a table \(sparse\) allowing us to answer queries in form \(f\_min(l, l+2^k-1)\). Let \(sparse_{k,l} = f\_min(l, l+2^k-1)\).</p>
 				<p>To start, \(sparse_{0,x} = array_{x}\).</p>
 				<p>Then, \(sparse_{k,x} = \min\{array_x, array_{x+1}, \dots, array_{x+2^k-1}\} = \min\{\min\{array_x, array_{x+1}, \dots, array_{x+2^{k-1}-1}\}, \min\{array_{x+2^{k-1}}, array_{x+2^{k-1}+1}, \dots, array_{x+2^k-1}\}\} = \min\{sparse_{k-1,x}, sparse_{k-1, x+2^{k-1}}\}\). So, if \(sparse_{k-1,h}\) is known for any \(h\), then \(sparse_{k, x}\) is easily attainable.</p>
+				<p> Note, that \(sparse_{k-1, x+2^k}\) may not exist (when \(x+2^k\) is bigger than the length of \(array\)) - in this case \(sparse_{k, x} = sparse_{k-1, x}\).</p>
 				<p>Now, in order to answer query in a form \(f\_min(l,r)\) we can find two (not necessarily distinct) intervals \(&lt; l, l+2^k-1 &gt;\) and \(&lt;r-2^k+1, r&gt;\), such that:
 				$$
 				\begin{cases}
@@ -110,7 +111,7 @@
 				$$
 				And so, \(k=\lfloor log_2(r-l+1) \rfloor\) always satisfies those demands.</p>
 				<p>Finally \(f\_min(l, r) = \min\{sparse_{k, l}, sparse_{k, r-2^k+1}\}\) with \(k=\lfloor log_2(r-l+1) \rfloor\).</p>
-				<p>To find \(\lfloor log_2(r-l+1) \rfloor\), a math library can be employed, or the properties
+				<p>To find \(\lfloor log_2(r-l+1) \rfloor\), a math library can be employed, or properties:
 				$$
 					\lfloor \log_2(1) \rfloor = 0 \\
 					\lfloor \log_2(x) \rfloor = \lfloor log_2(x &gt; &gt; 1) \rfloor + 1 \text{ for \(x \ge 2\)} 
