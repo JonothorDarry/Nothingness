@@ -109,9 +109,9 @@
 				$$
 				And so, \(k=\lfloor log_2(r-l+1) \rfloor\) always satisfies those demands.</p>
 				<p>Finally \(f\_min(l, r) = \min\{sparse_{k, l}, sparse_{k, r-2^k+1}\}\) with \(k=\lfloor log_2(r-l+1) \rfloor\).</p>
-				<h4>Additional considerations regarding use of range minimum query for lowest common ancestor problem</h4>
+				<h4>Additional considerations regarding the use of range minimum query for lowest common ancestor problem</h4>
 				<p>In order to use range minimum queries, the vertices need to be compared by their depths rather than by their index.</p>
-				<p>One can - instead of solving range minimu query on a path - solve queries on a preorder array. If dfs accessed vertex \(b\) after accessing vertex \(a\), then either \(lca(a, b)=a\), or \(lca(a,b)\) was accessed before accessing \(a\) (so \(pre(lca(a,b)) &lt; pre(a)\)) and the second vertex on a path from \(lca(a,b)\) to \(b\) was accessed after accessing \(a\) - because dfs had to move upwards from \(a\), then downwards from \(lca(a,b)\) towards \(b\). Thus the parent of the vertex with lowest depth among vertices with preorder in range \(&lt; pre(a);pre(b) &gt;\) is \(lca(a,b)\) if \(a\) is not an ancestor of \(b\).</p>
+				<p>One can - instead of solving range minimum query on a path - solve queries on a preorder array. If dfs accessed vertex \(b\) after accessing vertex \(a\), then either \(lca(a, b)=a\), or \(lca(a,b)\) was accessed before accessing \(a\) (so \(pre(lca(a,b)) &lt; pre(a)\)) and the second vertex on a path from \(lca(a,b)\) to \(b\) was accessed after accessing \(a\) - because dfs had to move upwards from \(a\), then downwards from \(lca(a,b)\) towards \(b\). Thus the parent of the vertex with lowest depth among vertices with preorder in range \(&lt; pre(a);pre(b) &gt;\) is \(lca(a,b)\) if \(a\) is not an ancestor of \(b\).</p>
 
 				<article>
 					<div style="width:max-content">
@@ -136,8 +136,8 @@
 			<article>
 				<h2>Summary</h2>
 				<ol>
-					<li>In order to get lowest common ancestor of two vertices, one can keep in memory all its 2<sup>k</sup>-th ancestors for each \(k \in \{1, 2, \dots \log_2(n)\}\), where \(n\) is the size of the tree. Those can be obtained using the fact, that \(anc_{2k}(n) = anc_k(anc_k(n))\). This allows finding \(k\)-th ancestor and lowst common ancestor in \(O(n \log n + q \log n)\).</li>
-					<li>One can also find \(lca(a,b)\) using the fact, that it is the vertex with lowest depth on a path from \(a\) to \(b\) - </li>
+					<li>In order to get lowest common ancestor of two vertices, one can keep in memory all its 2<sup>k</sup>-th ancestors for each \(k \in \{1, 2, \dots, \log_2(n)\}\), where \(n\) is the size of the tree. Those can be obtained using the fact, that \(anc_{2k}(n) = anc_k(anc_k(n))\). This allows finding \(k\)-th ancestor and lowst common ancestor in \(O(n \log n + q \log n)\).</li>
+					<li>One can also find \(lca(a,b)\) using the fact, that it is the vertex with lowest depth on a path from \(a\) to \(b\) - or vertex with lowest depth occuring during dfs traversal between the occurence of a vertex \(a\) and the occurence of a vertex \(b\) - in this version, the vertex with lowest depth between the first occurence of \(a\) and the first occurence of \(b\) in dfs traversal is \(lca(a,b)\) - which can be found with range minimum query in \(O(n \log n + q)\).</li>
 				</ol>
 
 				<h3>Problems</h3>

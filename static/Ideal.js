@@ -46,8 +46,7 @@ class XXXX extends Algorithm{
 	}
 
 	StatementComprehension(){
-		var l=this.lees.length;
-		var s=this.lees[l-1], x=s[1];
+		var s=this.lees[this.state_nr];
 
 		if (s[0]==0) return `Whatever`;
 	}
