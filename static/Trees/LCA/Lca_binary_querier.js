@@ -1,3 +1,5 @@
+import Lca_binary from './Lca_binary.js'
+
 class Lca_binary_querier extends Algorithm{
 	logical_prepare_kth(){
 		this.logic.operations = [['S', this.logic.x, this.logic.y]];

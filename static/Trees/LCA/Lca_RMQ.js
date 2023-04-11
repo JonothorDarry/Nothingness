@@ -144,11 +144,13 @@ class Lca_RMQ extends Algorithm{
 		this.buttons.vertexes = this.buttons.present_tree.buttons.vertexes;
 		this.buttons.edges = this.buttons.present_tree.buttons.edges;
 
-		this.buttons.entering_edges = [null, null];
-		this.buttons.exiting_edges = [null, null];
-		for (var i=2; i<=this.logic.tree.n; i+=1){
-			this.buttons.exiting_edges.push(this.presentation_generate_parallel(this.buttons.div_tree, this.buttons.present_tree, i, this.logic.tree.par[i], 1, -1));
-			this.buttons.entering_edges.push(this.presentation_generate_parallel(this.buttons.div_tree, this.buttons.present_tree, i, this.logic.tree.par[i], -1, 1));
+		this.buttons.edges_in_time = [];
+		for (var i=1; i<this.logic.path.length; i++){
+			var vertex_in_question = this.logic.all_transitions[i][1];
+			if (this.logic.all_transitions[i][0] == 'enter')
+				this.buttons.edges_in_time.push(this.presentation_generate_parallel(this.buttons.div_tree, this.buttons.present_tree, vertex_in_question, this.logic.tree.par[vertex_in_question], -1, 1));
+			else 
+				this.buttons.edges_in_time.push(this.presentation_generate_parallel(this.buttons.div_tree, this.buttons.present_tree, vertex_in_question, this.logic.tree.par[vertex_in_question], 1, -1));
 		}
 
 		return this.buttons.div_tree;
@@ -223,6 +225,20 @@ class Lca_RMQ extends Algorithm{
 		this.lees.push([0, 0]);
 	}
 
+	mark_edge(staat, full_edge, color){
+		var valid_arrow_color;
+		if (ArrayUtils.is_iterable(color)) {
+			valid_arrow_color = color[1];
+			staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [full_edge.edge, full_edge.edge.style.borderTopColor, Modern_representation.colors[color[0]]]]);
+		}
+		else{
+			valid_arrow_color = color;
+			staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [full_edge.edge, full_edge.edge.style.borderTopColor, Modern_representation.colors[color]]]);
+		}
+		staat.push([0, full_edge.arrows[0], valid_arrow_color]);
+		staat.push([0, full_edge.arrows[1], valid_arrow_color]);
+	}
+
 	StateMaker(s){
 		var i, staat=this.ephemeral.staat, passer=this.ephemeral.passer;
 
@@ -238,27 +254,45 @@ class Lca_RMQ extends Algorithm{
 				this.modern_pass_color(this.buttons.time_indexes[this.logic.time[vertex]], 14, 5);
 			}
 
-			var edge_to_paint;
 			if (message == 'enter'){
 				staat.push([0, this.buttons.vertexes[this.logic.tree.par[vertex]], 5]);
 				this.modern_pass_color(this.buttons.depth[this.logic.tree.par[vertex]], 13, 0);
-				edge_to_paint = this.buttons.entering_edges[the_lower_one];
 			}
-			if (message == 'exit') edge_to_paint = this.buttons.exiting_edges[the_lower_one];
 
+			var edge_to_paint = this.buttons.edges_in_time[s[1]-1];
 			this.modern_pass_color(this.buttons.rmq_table[0][s[1]], 15, 0);
 			if (message != 'start'){
 				staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [edge_to_paint.edge, Modern_representation.colors[4], Modern_representation.colors[15]]]);
 				passer.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [edge_to_paint.edge, Modern_representation.colors[15], Modern_representation.colors[4]]]);
 				this.modern_pass_color(edge_to_paint.arrows[0], 15, 104);
 				this.modern_pass_color(edge_to_paint.arrows[1], 15, 104);
-				
 			}
 		}
 		if (s[0] == 1){
 			var next_pos = s[2]+(1<<(s[1]-1));
 			this.modern_pass_color(this.buttons.rmq_table[s[1]][s[2]], 1, 0);
 			this.modern_pass_color(this.buttons.rmq_table[s[1]-1][s[2]], 13, 0);
+
+			/// Część odpowiedzialna za klepanie edge'y w trakcie RMQ
+			if (s[2] == 0){
+				var limit_1 = Math.min(this.logic.path.length-1, (1<<(s[1]-1))-1);
+				var limit_2 = Math.min(this.logic.path.length-1, (1<<s[1])-1);
+				for (var i=0; i<limit_1; i++){
+					this.mark_edge(staat, this.buttons.edges_in_time[i], 13);
+				}
+				for (var i=Math.max(limit_1+1, 0); i<limit_2; i++){
+					this.mark_edge(staat, this.buttons.edges_in_time[i], 14);
+				}
+				if (limit_1 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limit_1], [13, 14]);
+			}
+
+			else{
+				if (s[2] >= 1) this.mark_edge(staat, this.buttons.edges_in_time[s[2]-1], 104);
+				if (s[1]!=1 && s[2]+(1<<s[1])-2 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[s[2]+(1<<s[1])-2], 14);
+				var limiting_line = s[2]+(1<<(s[1]-1))-2;
+				if (s[1]!=1 && limiting_line < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limiting_line], 13);
+				if (limiting_line+1 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limiting_line+1], [13, 14]);
+			}
 
 			if (next_pos < this.logic.path.length){
 				this.modern_pass_color(this.buttons.rmq_table[s[1]-1][next_pos], 14, 0);
