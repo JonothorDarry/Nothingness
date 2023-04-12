@@ -1,3 +1,6 @@
+import Algorithm from '../../Base/Algorithm.js';
+import Partial from '../../Base/Partial.js';
+
 import Muller from './Muller.js'
 import PollardRho from './PollardRho.js'
 

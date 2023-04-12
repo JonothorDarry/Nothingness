@@ -1,3 +1,10 @@
+import NTMath from '../../Base/NTMath.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Algorithm from '../../Base/Algorithm.js';
+import Graph_utils from '../../Base/Graph_utils.js';
+
 class PollardRho extends Algorithm{
 	_logic_calculate_poly(x){
 		var value=0n, i;
@@ -157,7 +164,7 @@ class PollardRho extends Algorithm{
 		function get_wo_px(x){return x.slice(0, x.length-2);};
 
 		var arrow = Modern_representation.button_creator('', {});
-		for (var x of div.style) arrow.style[x] = div.style[x];
+		for (var [_, x] of Object.entries(div.style)) arrow.style[x] = div.style[x];
 		var rotation = parseFloat(div.style.transform.slice(7, div.style.transform.length-5));
 		if (!rotation) rotation = 0;
 

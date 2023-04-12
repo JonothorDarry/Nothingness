@@ -1,3 +1,10 @@
+import NTMath from '../../Base/NTMath.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Grid from '../../Base/Grid.js';
+import Partial from '../../Base/Partial.js';
+
 class Muller extends Partial{
 	constructor(block, m){
 		super(block);
@@ -337,4 +344,4 @@ class Muller extends Partial{
 		this.presentation();
 	}
 }
-export default Muller
+export default Muller;
