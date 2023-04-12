@@ -1,3 +1,8 @@
+import Algorithm from '../../Base/Algorithm.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Grid from '../../Base/Grid.js';
 import Lca_binary from './Lca_binary.js'
 
 class Lca_binary_querier extends Algorithm{
@@ -425,4 +430,4 @@ class Lca_binary_querier extends Algorithm{
 		}
 	}
 }
-export default Lca_binary_querier
+export default Lca_binary_querier;

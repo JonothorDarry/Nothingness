@@ -88,7 +88,7 @@ test('Pollard Rho', () => {
 	input.value = `
 		2206637
 		Y 2
-	`
+	`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.gcds[algo.logic.gcds.length-1]).toBe(317n);
 	block.radio_all.checked = true;
@@ -98,7 +98,7 @@ test('Pollard Rho', () => {
 	input.value = `
 		18209
 		X 4 1 0 4 0 5
-	`
+	`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.gcds[algo.logic.gcds.length-1]).toBe(139n);
 
@@ -106,7 +106,7 @@ test('Pollard Rho', () => {
 		18209
 		X 4 1 0 4 0 5
 		Y 7990
-	`
+	`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.gcds[algo.logic.gcds.length-1]).toBe(131n);
 
@@ -114,7 +114,7 @@ test('Pollard Rho', () => {
 		17
 		X 4 1 0 4 0 5
 		Y 131
-	`
+	`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.gcds[algo.logic.gcds.length-1]).toBe(17n);
 });

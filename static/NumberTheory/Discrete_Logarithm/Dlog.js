@@ -1,3 +1,10 @@
+import Algorithm from '../../Base/Algorithm.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Object_utils from '../../Base/Object_utils.js';
+import NTMath from '../../Base/NTMath.js';
+
 class Dlog extends Algorithm{
 	logical_box(){
 		this.logic.success=false;

@@ -44,8 +44,8 @@ class Modern_representation{
 		btn._color = col;
 
 		if ('upper' in btn){
-			Representation_utils.Painter(btn.upper, col, only_bg);
-			Representation_utils.Painter(btn.lower, col, only_bg);
+			Modern_representation.Painter(btn.upper, col, only_bg);
+			Modern_representation.Painter(btn.lower, col, only_bg);
 			return;
 		}
 		var olden;

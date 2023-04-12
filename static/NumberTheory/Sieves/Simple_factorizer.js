@@ -1,3 +1,8 @@
+import Algorithm from '../../Base/Algorithm.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import NTMath_presentation from '../../Base/NTMath_presentation.js';
+
 class Simple_factorizer extends Algorithm{
 	logical_box(){
 		this.logic.limit = Math.ceil(Math.sqrt(this.logic.x));

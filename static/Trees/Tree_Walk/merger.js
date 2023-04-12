@@ -1,3 +1,4 @@
+import Algorithm from '../../Base/Algorithm.js';
 import DiamFinder from './DiamFinder.js'
 import DoubleWalk from './DoubleWalk.js'
 

@@ -1,3 +1,11 @@
+import Algorithm from '../../Base/Algorithm.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Grid from '../../Base/Grid.js';
+import Graph_utils from '../../Base/Graph_utils.js';
+import NTMath from '../../Base/NTMath.js';
+
 class Proot extends Algorithm{
 	_logical_get_distinct_factors(factors){
 		var distinct_factors = [];

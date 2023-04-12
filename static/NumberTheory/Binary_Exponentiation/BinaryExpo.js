@@ -1,3 +1,9 @@
+import Algorithm from '../../Base/Algorithm.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Grid from '../../Base/Grid.js'
+
 class BinaryExpo extends Algorithm{
 	logical_box(){
 		var i, a_pow=(this.logic.a)%this.logic.m, bits=[], b=this.logic.b, res=1n, multipla;
@@ -213,4 +219,4 @@ class BinaryExpo extends Algorithm{
 		if (s[0] == 100) return `Now, the process ends ${this.logic.a}<sup>${this.logic.b}</sup> &equiv; ${this.state.res.current()} (mod ${this.logic.m}).`;
 	}
 }
-export default BinaryExpo
+export default BinaryExpo;

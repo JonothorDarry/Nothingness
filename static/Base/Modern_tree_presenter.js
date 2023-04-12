@@ -1,3 +1,6 @@
+import ArrayUtils from './ArrayUtils.js';
+import Graph_utils from './Graph_utils.js';
+
 class Modern_tree_presenter{
 	//Gives position to a tree - banal shit boring, besides tree is bad
 	_calculate_position_vertexes(){

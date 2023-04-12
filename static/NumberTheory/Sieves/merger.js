@@ -1,3 +1,5 @@
+import Algorithm from '../../Base/Algorithm.js';
+
 import ExtendedSieve from './ExtendedSieve.js'
 //Pollard-rho under da hood
 import Factorizer from './Factorizer.js'

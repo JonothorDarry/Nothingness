@@ -1,7 +1,10 @@
+import Algorithm from '../../Base/Algorithm.js';
+import Partial from '../../Base/Partial.js';
+
 import Totient_CRT from "./Totient_CRT.js";
 import Totient_IEP from "./Totient_IEP.js";
 import TotientSieve from "./TotientSieve.js";
-import PowerTower from "./PowerTower.js";
+//import PowerTower from "./PowerTower.js";
 
 var feral3=Partial.ObjectParser(document.getElementById('Algo3'));
 var sk3=new Totient_CRT(feral3, 10, 17);

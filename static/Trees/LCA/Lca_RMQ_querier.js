@@ -1,3 +1,7 @@
+import Algorithm from '../../Base/Algorithm.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Grid from '../../Base/Grid.js';
+
 class Lca_RMQ_querier extends Algorithm{
 	logical_box(){
 		var t1 = this.parent_algorithm.logic.time[this.logic.x];

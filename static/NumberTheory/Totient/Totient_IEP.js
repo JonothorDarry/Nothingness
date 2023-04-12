@@ -1,3 +1,9 @@
+import Partial from '../../Base/Partial.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Grid from '../../Base/Grid.js';
+
 class Totient_IEP extends Partial{
 	_logical_mark_numbers(){
 		var i=0, j, x=this.logic.n;
@@ -191,4 +197,4 @@ class Totient_IEP extends Partial{
 		this.ShowReality();
 	}
 }
-export default Totient_IEP
+export default Totient_IEP;

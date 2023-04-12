@@ -1,3 +1,11 @@
+import Algorithm from '../../Base/Algorithm.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Modern_tree from '../../Base/Modern_tree.js';
+import Modern_tree_presenter from '../../Base/Modern_tree_presenter.js';
+import Graph_utils from '../../Base/Graph_utils.js';
+
 class Lca_binary extends Algorithm{
 	logical_box(){
 		var tree = this.logic.tree;
@@ -212,4 +220,4 @@ class Lca_binary extends Algorithm{
 		if (s[0] == 100) return `Now, all necessary parents were found, time for query solving.`
 	}
 }
-export default Lca_binary
+export default Lca_binary;

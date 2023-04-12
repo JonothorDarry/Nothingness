@@ -1,3 +1,4 @@
+import Algorithm from '../../Base/Algorithm.js';
 import Lca_binary from './Lca_binary.js'
 import Lca_binary_querier from './Lca_binary_querier.js'
 import Lca_RMQ from './Lca_RMQ.js'

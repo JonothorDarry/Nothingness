@@ -1,3 +1,11 @@
+import Algorithm from '../../Base/Algorithm.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Grid from '../../Base/Grid.js';
+import Modern_tree from '../../Base/Modern_tree.js';
+import Modern_tree_presenter from '../../Base/Modern_tree_presenter.js';
+
 class Segtree_Counter extends Algorithm{
 	_logical_construct_tree(){
 		var maximus = this.logic.queries.reduce((previousValue, currentValue) => Math.max(previousValue, currentValue.interval), 0);

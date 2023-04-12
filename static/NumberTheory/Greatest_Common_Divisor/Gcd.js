@@ -1,3 +1,10 @@
+import Algorithm from '../../Base/Algorithm.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Grid from '../../Base/Grid.js';
+import Object_utils from '../../Base/Object_utils.js'
+
 class SuperEuclid{
 	static logical_box(w, v){
 		var logica={};

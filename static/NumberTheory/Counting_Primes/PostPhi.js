@@ -1,3 +1,9 @@
+import Algorithm from '../../Base/Algorithm.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Graph_utils from '../../Base/Graph_utils.js';
+
 class PostPhi extends Algorithm{
 	_logical_construct_sieve(x){
 		var i, j;

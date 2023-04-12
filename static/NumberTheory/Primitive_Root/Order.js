@@ -1,3 +1,8 @@
+import Partial from '../../Base/Partial.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import NTMath from '../../Base/NTMath.js';
+
 class Order extends Partial{
 	constructor(block, x){
 		super(block);

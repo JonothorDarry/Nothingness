@@ -1,3 +1,4 @@
+import Algorithm from '../../Base/Algorithm.js';
 import Dlog from "./Dlog.js";
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));

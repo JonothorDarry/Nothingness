@@ -1,3 +1,5 @@
+import Algorithm from '../../Base/Algorithm.js';
+import Partial from '../../Base/Partial.js';
 import Order from './Order.js'
 import Proot from './Proot.js'
 

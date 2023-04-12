@@ -1,3 +1,4 @@
+import Algorithm from '../../Base/Algorithm.js';
 import Crt from './Crt.js'
 
 var feral1 = Algorithm.ObjectParser(document.getElementById('Algo1'));

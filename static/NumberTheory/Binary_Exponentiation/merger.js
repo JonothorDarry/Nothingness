@@ -1,3 +1,4 @@
+import Algorithm from '../../Base/Algorithm.js';
 import BinaryExpo from './BinaryExpo.js'
 
 var feral=Algorithm.ObjectParser(document.getElementById('Algo1'));

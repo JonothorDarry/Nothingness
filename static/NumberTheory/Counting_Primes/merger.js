@@ -1,3 +1,4 @@
+import Algorithm from '../../Base/Algorithm.js';
 import PostPhi from './PostPhi.js'
 import Segtree_Counter from './Segtree_Counter.js'
 

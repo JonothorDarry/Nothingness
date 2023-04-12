@@ -1,3 +1,9 @@
+import Algorithm from '../../Base/Algorithm.js';
+import NTMath from '../../Base/NTMath.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import Grid from '../../Base/Grid.js';
+
 class Crt extends Algorithm{
 	logical_box(){
 		function Result(validity, c1, s1, c2, s2, gcd, ps1_base, ps2_base, multipla_const, ps1_final, ps2_final, final_congruent, final_mod){
@@ -128,7 +134,7 @@ class Crt extends Algorithm{
 		var c=this.dissolve_input(fas, true);
 		this.logic.n=c.get_next();
 		this.logic.systems = [];
-		for (i=0;i<this.logic.n;i++) this.logic.systems.push([c.get_next(), c.get_next()]);
+		for (var i=0;i<this.logic.n;i++) this.logic.systems.push([c.get_next(), c.get_next()]);
 	}
 
 	constructor(block, n, systems){
