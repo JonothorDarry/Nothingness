@@ -6,40 +6,7 @@ import Algorithm from '../../../static/Base/Algorithm.js';
 import Partial from '../../../static/Base/Partial.js';
 import Muller from '../../../static/NumberTheory/Advanced_Primes/Muller.js';
 import PollardRho from '../../../static/NumberTheory/Advanced_Primes/PollardRho.js';
-
-const click_event = new MouseEvent("click", {
-	view: window,
-	bubbles: true,
-	cancelable: true,
-});
-
-const partial_standard = `
-		<!DOCTYPE html>
-		<div class="primez" id="1"></div>
-		<div class="show" id="2"></div>
-		<div class="comprehend" id="3"></div>
-`;
-const algorithm_standard = `
-		<!DOCTYPE html>
-		<div class="primez" id="1"></div>
-		<div class="sender" id="2"></div>
-		<div class="previous" id="3"></div>
-		<div class="next" id="4"></div>
-		<div class="comprehend" id="5"></div>
-		<div class="finish" id="6"></div>
-		<div class="progress" id="7"></div>
-`;
-
-var basic_moving_test = function(algorithm, doc){
-	doc.getElementsByClassName('sender')[0].dispatchEvent(click_event)
-	expect(algorithm.state_nr).toBe(0);
-	doc.getElementsByClassName('finish')[0].dispatchEvent(click_event)
-	expect(algorithm.state_nr).toBe(algorithm.all_states_nr);
-
-	var prev = doc.getElementsByClassName('previous')[0];
-	for (var i=0; i<algorithm.all_states_nr; i++) prev.dispatchEvent(click_event);
-	expect(algorithm.state_nr).toBe(0);
-}
+import {click_event, algorithm_standard, partial_standard, basic_moving_test} from '../fundamental.js'
 
 test('Muller', () => {
 	document.write(partial_standard + `
