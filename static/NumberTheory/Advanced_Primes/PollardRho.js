@@ -387,26 +387,26 @@ class PollardRho extends Algorithm{
 
 		if (v=='X'){
 			this.logic.poly_deg=c.get_next();
-			this.logic.poly = ArrayUtils.steady(this.logic.poly_deg+1, 0);
+			this.logic.poly = ArrayUtils.steady(this.logic.poly_deg+1n, 0);
 
 			for (i=this.logic.poly_deg; i>=0; i--){
-				this.logic.poly[i] = BigInt(c.get_next());								
+				this.logic.poly[i] = c.get_next();
 			}
 		}
 
 		else if (v=='Y'){
-			this.logic.starter = BigInt(c.get_next());
+			this.logic.starter = c.get_next();
 		}
 	}
 
 	read_data(){
 		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
+		var c=this.dissolve_input(fas, true);
 		
 		this.logic.mono_prime = this.radio_factor.checked;
 		this.logic.multi_prime = this.radio_all.checked;
 
-		this.logic.m=BigInt(c.get_next());
+		this.logic.m=c.get_next();
 		this.read_part(c);
 		this.read_part(c);
 	}

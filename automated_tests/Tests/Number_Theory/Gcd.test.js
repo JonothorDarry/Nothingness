@@ -14,18 +14,17 @@ test('Euclidean algorithm', () => {
 	`);
 	var block = Algorithm.ObjectParser(document);
 	block.check = document.getElementById('Nothingness1');
-	var input = block.input;
 	var algo = new EuclidGcd(block, 84n, 35n);
 
 	basic_moving_test(algo, document);
 	expect(algo.logic.a[algo.logic.a.length-1]).toBe(7n);
 
 	block.check.checked = true;
-	input.value = `7121838184852866945 319028125233196861`;
+	block.input.value = `7121838184852866945 319028125233196861`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.a[algo.logic.a.length-1]).toBe(1000000007n);
 
-	input.value = `1 32801`;
+	block.input.value = `1 32801`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.a[algo.logic.a.length-1]).toBe(1n);
 });
@@ -44,11 +43,11 @@ test('Extended Euclidean algorithm', () => {
 	expect(algo.logic.a[algo.logic.a.length-1]).toBe(7n);
 
 	block.check.checked = true;
-	input.value = `7121838184852866945 319028125233196861`;
+	block.input.value = `7121838184852866945 319028125233196861`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.a[algo.logic.a.length-1]).toBe(1000000007n);
 
-	input.value = `1 32801`;
+	block.input.value = `1 32801`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.a[algo.logic.a.length-1]).toBe(1n);
 });

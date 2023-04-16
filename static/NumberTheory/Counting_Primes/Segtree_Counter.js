@@ -255,7 +255,7 @@ class Segtree_Counter extends Algorithm{
 
 		//1 - starter, query sort
 		if (s[0]==1){
-			for (i=0; i<this.buttons.q_intervals.length; i++){
+			for (var i=0; i<this.buttons.q_intervals.length; i++){
 				this.pass_color(this.buttons.q_intervals[i], 0, 1, 0);
 				this.pass_color(this.buttons.q_prime_nrs[i], 0, 1, 0);
 				staat.push([6, this.state.q_intervals[i]]);
@@ -431,4 +431,4 @@ class Segtree_Counter extends Algorithm{
 		return '';
 	}
 }
-export default Segtree_Counter
+export default Segtree_Counter;

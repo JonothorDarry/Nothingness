@@ -84,4 +84,11 @@ test('Pollard Rho', () => {
 	`;
 	basic_moving_test(algo, document);
 	expect(algo.logic.gcds[algo.logic.gcds.length-1]).toBe(17n);
+
+	block.radio_simple.checked = true;
+	input.value = `
+		22782126392474883631
+	`;
+	basic_moving_test(algo, document);
+	expect(algo.logic.gcds[algo.logic.gcds.length-1]).toBe(73n);
 });

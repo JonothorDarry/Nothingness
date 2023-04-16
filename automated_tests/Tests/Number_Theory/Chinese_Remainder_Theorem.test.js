@@ -19,14 +19,13 @@ test('Chinese Remainder Theorem', () => {
 	`);
 
 	var block = Algorithm.ObjectParser(document);
-	var input = block.input;
 	var algo = new Crt(block, 3, [[2n, 3n], [5n, 7n], [8n, 33n]]);
 
 	basic_moving_test(algo, document);
 	expect(algo.logic.results[algo.logic.results.length-1].final_congruent).toBe(173n);
 	expect(algo.logic.results[algo.logic.results.length-1].final_mod).toBe(231n);
 
-	input.value = `4
+	block.input.value = `4
 		1237 12712390
 		390281 13232098712
 		181 23882

@@ -345,4 +345,4 @@ class PostPhi extends Algorithm{
 		}
 	}
 }
-export default PostPhi
+export default PostPhi;

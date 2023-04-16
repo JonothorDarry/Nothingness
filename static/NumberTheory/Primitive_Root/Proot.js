@@ -143,7 +143,7 @@ class Proot extends Algorithm{
 	_presentation_create_factored_part(name, value, button_name, to_factor=null, to_factor_name=null){
 		var div = Modern_representation.div_creator('', {'general':{'display':'block'}});
 		var title = Modern_representation.button_creator(name, {'px':{'width':50}});
-		var button = Modern_representation.button_creator(value, {'px':{'width':100}});
+		var button = Modern_representation.button_creator(value, {'px':{'width':Math.max(100, value.toString().length*10)}});
 		Representation_utils.Painter(title, 5);
 		Representation_utils.Painter(button, 4);
 		div.appendChild(title);
@@ -263,7 +263,7 @@ class Proot extends Algorithm{
 	}
 
 	_presentation_left_belt(){
-		if (this.logic.standard_number) this.presentation_factor_length = Math.max(this.logic.partial_m.toString().length*10, 40);
+		if (this.logic.standard_number && this.logic.correct_number) this.presentation_factor_length = Math.max(this.logic.partial_m.toString().length*10, 40);
 
 		var full_div = Modern_representation.div_creator('');
 		var div_upper = this._presentation_factor_part();
@@ -393,8 +393,8 @@ class Proot extends Algorithm{
 
 	read_data(){
 		var fas=this.input.value;
-		var c=this.dissolve_input(fas);
-		this.logic.full_m = BigInt(c.get_next());
+		var c=this.dissolve_input(fas, true);
+		this.logic.full_m = c.get_next();
 		this.logic.is_deter = this.deter.checked;
 	}
 
@@ -585,4 +585,4 @@ class Proot extends Algorithm{
 		if (s[0] == 102) return `This number - ${this.logic.full_m} is one of three special cases (1, 2, 4) and thus has predefined primitive root - ${this.logic.full_primitive_root}. For those three numbers, one can use an algorithm, but one would need to adapt it a bit, which seems futile.`;
 	}
 }
-export default Proot
+export default Proot;
