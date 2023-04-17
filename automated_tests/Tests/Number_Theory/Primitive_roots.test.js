@@ -10,9 +10,7 @@ import Proot from '../../../static/NumberTheory/Primitive_Root/Proot.js';
 import {click_event, algorithm_standard, partial_standard, basic_moving_test} from '../fundamental.js'
 
 test('Orders', () => {
-	document.write(partial_standard + `
-		<input class="inputter" value="7" id="4">
-	`);
+	document.write(partial_standard(`7`));
 	var block = Partial.ObjectParser(document);
 	var algo = new Order(block, 7);
 	document.getElementsByClassName('show')[0].dispatchEvent(click_event)
@@ -24,8 +22,7 @@ test('Orders', () => {
 });
 
 test('Primitive root finding', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="334562" id="8">
+	document.write(algorithm_standard(`334562`) + `
 		<input type="radio" name="rho" id="Probabilistic" checked>
 		<input type="radio" name="rho" id="Deterministic">
 	`);

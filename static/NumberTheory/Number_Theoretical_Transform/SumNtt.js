@@ -91,7 +91,7 @@ class SumNtt extends Algorithm{
 		var fas=this.input.value, c;
 		c=this.dissolve_input(fas);
 		n=c.get_next();
-		for (i=0;i<n;i++) s.push(c.get_next());
+		for (var i=0;i<n;i++) s.push(c.get_next());
 
 		this.create_reality(n, s);
 		this.lees.push([0]);
@@ -135,7 +135,7 @@ class SumNtt extends Algorithm{
 
 	//color polynominal, then wash it all away
 	colorful_polynominal(coeffs, staat, passer, start_color=4, mid_color=13, end_color=0){
-		for (i=0; i<coeffs.length; i++){
+		for (var i=0; i<coeffs.length; i++){
 			staat.push([0, coeffs[i][1], start_color, 13]);
 			passer.push([0, coeffs[i][1], 13, end_color]);
 		}
@@ -153,7 +153,7 @@ class SumNtt extends Algorithm{
 
 		var polynominalize=function(coeffs){
 			var poly=``;
-			for (i=coeffs.length-1; i>0; i--){
+			for (var i=coeffs.length-1; i>0; i--){
 				poly=poly+`${coeffs[i]}x<sup>${i}</sup>+`;
 			}
 			poly+=`${coeffs[0]}`;

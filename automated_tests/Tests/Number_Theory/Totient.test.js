@@ -10,9 +10,7 @@ import TotientSieve from '../../../static/NumberTheory/Totient/TotientSieve.js';
 import {click_event, algorithm_standard, partial_standard, algorithm_standard_make, basic_moving_test} from '../fundamental.js'
 
 test('Totient with Chinese Remainder Theorem', () => {
-	document.write(partial_standard + `
-		<input class="inputter" value="10 21" id="4">
-	`);
+	document.write(partial_standard(`10 21`));
 	var block = Partial.ObjectParser(document);
 	var algo = new Totient_CRT(block, 10, 21);
 
@@ -28,9 +26,7 @@ test('Totient with Chinese Remainder Theorem', () => {
 });
 
 test('Totient with Inclusion Exclusion Principle', () => {
-	document.write(partial_standard + `
-		<input class="inputter" value="252" id="4">
-	`);
+	document.write(partial_standard(`252`));
 	var block = Partial.ObjectParser(document);
 	var algo = new Totient_IEP(block, 252);
 
@@ -51,9 +47,7 @@ test('Totient with Inclusion Exclusion Principle', () => {
 });
 
 test('Totient Sieve', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="30" id="8">
-	`);
+	document.write(algorithm_standard(`30`));
 
 	var block = Algorithm.ObjectParser(document);
 	var algo = new TotientSieve(block, 30);

@@ -8,9 +8,7 @@ import Segtree_Counter from '../../../static/NumberTheory/Counting_Primes/Segtre
 import {click_event, algorithm_standard, basic_moving_test} from '../fundamental.js'
 
 test('Recursive counting primes', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="121 7" id="8">
-	`);
+	document.write(algorithm_standard(`121 7`));
 	var block = Algorithm.ObjectParser(document);
 	var algo = new PostPhi(block, 121, 7);
 
@@ -23,16 +21,14 @@ test('Recursive counting primes', () => {
 });
 
 test('Counting primes with segment tree', () => { //Unstable sort order - sort it out
-	document.write(algorithm_standard + `
-		<input class="inputter" value="
+	document.write(algorithm_standard(`
 		5
 		7 2
 		15 3
 		11 0
 		14 4
 		12 5
-		" id="8">
-	`);
+	`));
 	var block = Algorithm.ObjectParser(document);
 	var algo = new Segtree_Counter(block, 5, [{'interval':7, 'prime_nr':2}, {'interval':15, 'prime_nr':3}, {'interval':11, 'prime_nr':0}, {'interval':14, 'prime_nr':4}, {'interval':12, 'prime_nr':3}]);
 	basic_moving_test(algo, document);

@@ -7,9 +7,7 @@ import BinaryExpo from '../../../static/NumberTheory/Binary_Exponentiation/Binar
 import {click_event, algorithm_standard, basic_moving_test} from '../fundamental.js'
 
 test('Binary Exponentiation', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="17 43 107" id="8">
-	`);
+	document.write(algorithm_standard(`17 43 107`));
 
 	var block = Algorithm.ObjectParser(document);
 	var input = block.input;

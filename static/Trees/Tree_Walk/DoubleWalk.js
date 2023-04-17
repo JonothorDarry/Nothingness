@@ -235,7 +235,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 
 		var k=c.get_next();
 		this.logic.marked = [];
-		for (i=0; i<k; i++) this.logic.marked.push(c.get_next());
+		for (var i=0; i<k; i++) this.logic.marked.push(c.get_next());
 
 		this.logic.tree = new Modern_tree(edges);
 	}

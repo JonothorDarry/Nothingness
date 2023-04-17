@@ -8,8 +8,7 @@ import ExtendedEuclidGcd from '../../../static/NumberTheory/Greatest_Common_Divi
 import {click_event, algorithm_standard, basic_moving_test} from '../fundamental.js'
 
 test('Euclidean algorithm', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="84 35" id="8">
+	document.write(algorithm_standard(`84 35`) + `
 		<input type="checkbox" id="Nothingness1">
 	`);
 	var block = Algorithm.ObjectParser(document);
@@ -30,8 +29,7 @@ test('Euclidean algorithm', () => {
 });
 
 test('Extended Euclidean algorithm', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="84 35" id="8">
+	document.write(algorithm_standard(`84 35`) + `
 		<input type="checkbox" id="Nothingness2">
 	`);
 	var block = Algorithm.ObjectParser(document);

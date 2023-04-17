@@ -11,9 +11,7 @@ import Simple_factorizer from '../../../static/NumberTheory/Sieves/Simple_factor
 import {click_event, algorithm_standard, algorithm_standard_make, basic_moving_test} from '../fundamental.js'
 
 test('Sieve', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="30" id="8">
-	`);
+	document.write(algorithm_standard(`30`));
 
 	var block = Algorithm.ObjectParser(document);
 	var input = block.input;
@@ -62,9 +60,7 @@ test('Extended Sieve', () => {
 });
 
 test('Simple Factorizer', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="24" id="8">
-	`);
+	document.write(algorithm_standard(`24`));
 
 	var block = Algorithm.ObjectParser(document);
 	var input = block.input;

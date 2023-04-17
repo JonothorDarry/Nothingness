@@ -9,14 +9,12 @@ import {click_event, algorithm_standard, basic_moving_test} from '../fundamental
 
 
 test('Chinese Remainder Theorem', () => {
-	document.write(algorithm_standard + `
-		<input class="inputter" value="
+	document.write(algorithm_standard(`
 			3
 			2 3
 			5 7
 			8 33
-		" id="8">
-	`);
+	`));
 
 	var block = Algorithm.ObjectParser(document);
 	var algo = new Crt(block, 3, [[2n, 3n], [5n, 7n], [8n, 33n]]);
