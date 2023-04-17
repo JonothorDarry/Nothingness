@@ -55,7 +55,7 @@ class Lca_RMQ extends Algorithm{
 
 	_presentation_create_arrow(div, sgn){
 		var arrow = Modern_representation.button_creator('', {});
-		for (var x of div.style) arrow.style[x] = div.style[x];
+		for (var [_, x] of Object.entries(div.style)) arrow.style[x] = div.style[x];
 		Modern_representation.button_modifier(arrow, {'stylistic':{
 			'px':{'height':2, 'borderTop':0, 'borderBottom':0}
 		}});
@@ -69,7 +69,7 @@ class Lca_RMQ extends Algorithm{
 
 	_presentation_create_subedge(div, left, tree_presenter, a, b){
 		var e = Modern_representation.button_creator('', {});
-		for (var x of div.style) e.style[x] = div.style[x];
+		for (var[_, x] of Object.entries(div.style)) e.style[x] = div.style[x];
 		var width = parseFloat(div.style.width.slice(0, div.style.width.length-2));
 
 		var sub=0.25, degree = 1-sub;

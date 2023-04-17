@@ -50,11 +50,11 @@ test('Extended Sieve', () => {
 	expect(algo.logic.lpf[756]).toBe(2);
 	expect(algo.logic.lpf[317]).toBe(317);
 
-	querier.input.value = `317`;
+	query_block.input.value = `317`;
 	basic_moving_test(querier, div_query);
 	expect(Object.keys(querier.logic.factors).length).toBe(1);
 
-	querier.input.value = `210`;
+	query_block.input.value = `210`;
 	basic_moving_test(querier, div_query);
 	expect(Object.keys(querier.logic.factors).length).toBe(4);
 });
