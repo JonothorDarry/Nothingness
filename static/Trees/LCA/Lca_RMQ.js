@@ -67,12 +67,13 @@ class Lca_RMQ extends Algorithm{
 		return arrow
 	}
 
-	_presentation_create_subedge(div, left, tree_presenter, a, b){
+	_presentation_create_subedge(div, left, tree_presenter, a, b, cut){
 		var e = Modern_representation.button_creator('', {});
 		for (var[_, x] of Object.entries(div.style)) e.style[x] = div.style[x];
 		var width = parseFloat(div.style.width.slice(0, div.style.width.length-2));
 
 		var sub=0.25, degree = 1-sub;
+		if (cut) degree=0.5
 		var tops_upper = tree_presenter.parameters['vertexes'][a]['y'];
 		var tops_lower = tree_presenter.parameters['vertexes'][b]['y'];
 		var tops_canon = (tops_upper+(tops_lower-tops_upper)*degree)*100;
@@ -96,7 +97,7 @@ class Lca_RMQ extends Algorithm{
 				'backgroundColor': '#FFFFFF',
 			},
 			'%':{'top':tops_canon, 'height':0},
-			'px':{'width':width*(1-2*sub)}
+			'px':{'width':width*(1-2*sub)*0.5}
 		}});
 
 		return e;
@@ -110,15 +111,17 @@ class Lca_RMQ extends Algorithm{
 			e2 = Graph_utils.create_edge(tr.parameters.vertexes[tr.tree.par[ideal]], tr.parameters.vertexes[ideal], {}, {'width':tr.width, 'height':tr.height});
 		}
 
-		var e2_parallel = this._presentation_create_subedge(e2, left, tree_presentation, ideal, secondary);
-		place.appendChild(e2_parallel);
+		var e2_parallel_1 = this._presentation_create_subedge(e2, left, tree_presentation, ideal, secondary, false);
+		var e2_parallel_2 = this._presentation_create_subedge(e2, left, tree_presentation, ideal, secondary, true);
+		place.appendChild(e2_parallel_1);
+		place.appendChild(e2_parallel_2);
 
-		var e2_arrow_1 = this._presentation_create_arrow(e2_parallel, 1);
-		var e2_arrow_2 = this._presentation_create_arrow(e2_parallel, -1);
+		var e2_arrow_1 = this._presentation_create_arrow(e2_parallel_1, 1);
+		var e2_arrow_2 = this._presentation_create_arrow(e2_parallel_1, -1);
 		place.appendChild(e2_arrow_1);
 		place.appendChild(e2_arrow_2);
 		return {
-			'edge': e2_parallel,
+			'edges': [e2_parallel_2, e2_parallel_1],
 			'arrows': [e2_arrow_1, e2_arrow_2]
 		}
 	}
@@ -206,6 +209,8 @@ class Lca_RMQ extends Algorithm{
 		outer_block.style.display='block';
 		this.place.appendChild(outer_block);
 		this.place.style.width = 'max-content';
+		this.presentation_utils = {};
+		this.presentation_utils.edge_colors = [32, 14];
 	}
 
 	palingenesia(){
@@ -234,15 +239,18 @@ class Lca_RMQ extends Algorithm{
 		this.lees.push([0, 0]);
 	}
 
+	//Cannot be used within passer normally (uses past data of a document object).
 	mark_edge(staat, full_edge, color){
 		var valid_arrow_color;
 		if (ArrayUtils.is_iterable(color)) {
 			valid_arrow_color = color[1];
-			staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [full_edge.edge, full_edge.edge.style.borderTopColor, Modern_representation.colors[color[0]]]]);
+			staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [full_edge.edges[0], full_edge.edges[0].style.borderTopColor, Modern_representation.colors[color[0]]]]);
+			staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [full_edge.edges[1], full_edge.edges[1].style.borderTopColor, Modern_representation.colors[color[1]]]]);
 		}
 		else{
 			valid_arrow_color = color;
-			staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [full_edge.edge, full_edge.edge.style.borderTopColor, Modern_representation.colors[color]]]);
+			staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [full_edge.edges[0], full_edge.edges[0].style.borderTopColor, Modern_representation.colors[color]]]);
+			staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [full_edge.edges[1], full_edge.edges[1].style.borderTopColor, Modern_representation.colors[color]]]);
 		}
 		staat.push([0, full_edge.arrows[0], valid_arrow_color]);
 		staat.push([0, full_edge.arrows[1], valid_arrow_color]);
@@ -271,45 +279,47 @@ class Lca_RMQ extends Algorithm{
 			var edge_to_paint = this.buttons.edges_in_time[s[1]-1];
 			this.modern_pass_color(this.buttons.rmq_table[0][s[1]], 15, 0);
 			if (message != 'start'){
-				staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [edge_to_paint.edge, Modern_representation.colors[4], Modern_representation.colors[15]]]);
-				passer.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [edge_to_paint.edge, Modern_representation.colors[15], Modern_representation.colors[4]]]);
-				this.modern_pass_color(edge_to_paint.arrows[0], 15, 104);
-				this.modern_pass_color(edge_to_paint.arrows[1], 15, 104);
+				for (var i=0; i<=1; i++){
+
+					staat.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [edge_to_paint.edges[i], Modern_representation.colors[4], Modern_representation.colors[15]]]);
+					passer.push([5, this.presentation_change_color_edge, this.presentation_revert_color_edge, [edge_to_paint.edges[i], Modern_representation.colors[15], Modern_representation.colors[4]]]);
+					this.modern_pass_color(edge_to_paint.arrows[i], 15, 104); //Kompletnie przypadkowo są 2 strzały - tak sam, jak z łukami.
+				}
 			}
 		}
 		if (s[0] == 1){
 			var next_pos = s[2]+(1<<(s[1]-1));
 			this.modern_pass_color(this.buttons.rmq_table[s[1]][s[2]], 1, 0);
-			this.modern_pass_color(this.buttons.rmq_table[s[1]-1][s[2]], 13, 0);
+			this.modern_pass_color(this.buttons.rmq_table[s[1]-1][s[2]], this.presentation_utils.edge_colors[0], 0);
 
 			/// Część odpowiedzialna za klepanie edge'y w trakcie RMQ
 			if (s[2] == 0){
 				var limit_1 = Math.min(this.logic.path.length-1, (1<<(s[1]-1))-1);
 				var limit_2 = Math.min(this.logic.path.length-1, (1<<s[1])-1);
 				for (var i=0; i<limit_1; i++){
-					this.mark_edge(staat, this.buttons.edges_in_time[i], 13);
+					this.mark_edge(staat, this.buttons.edges_in_time[i], this.presentation_utils.edge_colors[0]);
 				}
 				for (var i=Math.max(limit_1+1, 0); i<limit_2; i++){
-					this.mark_edge(staat, this.buttons.edges_in_time[i], 14);
+					this.mark_edge(staat, this.buttons.edges_in_time[i], this.presentation_utils.edge_colors[1]);
 				}
-				if (limit_1 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limit_1], [13, 14]);
+				if (limit_1 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limit_1], [this.presentation_utils.edge_colors[0], this.presentation_utils.edge_colors[1]]);
 			}
 
 			else{
 				if (s[2] >= 1) this.mark_edge(staat, this.buttons.edges_in_time[s[2]-1], 104);
-				if (s[1]!=1 && s[2]+(1<<s[1])-2 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[s[2]+(1<<s[1])-2], 14);
+				if (s[1]!=1 && s[2]+(1<<s[1])-2 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[s[2]+(1<<s[1])-2], this.presentation_utils.edge_colors[1]);
 				var limiting_line = s[2]+(1<<(s[1]-1))-2;
-				if (s[1]!=1 && limiting_line < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limiting_line], 13);
-				if (limiting_line+1 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limiting_line+1], [13, 14]);
+				if (s[1]!=1 && limiting_line < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limiting_line], this.presentation_utils.edge_colors[0]);
+				if (limiting_line+1 < this.logic.path.length-1) this.mark_edge(staat, this.buttons.edges_in_time[limiting_line+1], [this.presentation_utils.edge_colors[0], this.presentation_utils.edge_colors[1]]);
 			}
 
 			if (next_pos < this.logic.path.length){
-				this.modern_pass_color(this.buttons.rmq_table[s[1]-1][next_pos], 14, 0);
+				this.modern_pass_color(this.buttons.rmq_table[s[1]-1][next_pos], this.presentation_utils.edge_colors[1], 0);
 
 				var vertex_1 = this.logic.rmq_table[s[1]-1][s[2]];
 				var vertex_2 = this.logic.rmq_table[s[1]-1][next_pos];
-				this.modern_pass_color(this.buttons.depth[vertex_1], 13, 0);
-				this.modern_pass_color(this.buttons.depth[vertex_2], 14, 0);
+				this.modern_pass_color(this.buttons.depth[vertex_1], this.presentation_utils.edge_colors[0], 0);
+				this.modern_pass_color(this.buttons.depth[vertex_2], this.presentation_utils.edge_colors[1], 0);
 			}
 		}
 	}

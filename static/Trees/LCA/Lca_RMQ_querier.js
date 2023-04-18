@@ -104,6 +104,8 @@ class Lca_RMQ_querier extends Algorithm{
 			this.modern_pass_color(this.buttons.times_1, 1);
 			this.modern_pass_color(this.buttons.times_2, 1);
 
+			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.x], 12]);
+			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.y], 12]);
 			this.modern_pass_color(this.parent_algorithm.buttons.time[this.logic.x], 14);
 			this.modern_pass_color(this.parent_algorithm.buttons.time[this.logic.y], 14);
 		}
@@ -113,31 +115,66 @@ class Lca_RMQ_querier extends Algorithm{
 			this.modern_pass_color(this.buttons.times_2, 14);
 		}
 		if (s[0] == 2){
-			this.modern_pass_color(this.buttons.layer, 12);
-			this.modern_pass_color(this.buttons.times_1, 14);
-			this.modern_pass_color(this.buttons.times_2, 13);
-
-			this.modern_pass_color(this.parent_algorithm.buttons.rmq_table[this.logic.layer][this.logic.time_1], 14);
-			this.modern_pass_color(this.parent_algorithm.buttons.rmq_table[this.logic.layer][this.logic.time_2-(1<<this.logic.layer)+1], 13);
-			this.modern_pass_color(this.parent_algorithm.buttons.time_indexes[this.logic.time_1], 14, 5);
-			this.modern_pass_color(this.parent_algorithm.buttons.time_indexes[this.logic.time_2-(1<<this.logic.layer)+1], 13, 5);
-			this.modern_pass_color(this.parent_algorithm.buttons.layer_indexes[this.logic.layer], 12, 5);
+			this.modern_pass_color(this.buttons.layer, 101);
+			this.modern_pass_color(this.buttons.times_1, 32);
+			this.modern_pass_color(this.buttons.times_2, 14);
+			
+			this.modern_pass_color(this.parent_algorithm.buttons.rmq_table[this.logic.layer][this.logic.time_1], 32);
+			this.modern_pass_color(this.parent_algorithm.buttons.rmq_table[this.logic.layer][this.logic.time_2-(1<<this.logic.layer)+1], 14);
+			this.modern_pass_color(this.parent_algorithm.buttons.time_indexes[this.logic.time_1], 32, 5);
+			this.modern_pass_color(this.parent_algorithm.buttons.time_indexes[this.logic.time_2-(1<<this.logic.layer)+1], 14, 5);
+			this.modern_pass_color(this.parent_algorithm.buttons.layer_indexes[this.logic.layer], 101, 5);
 			staat.push([0, this.buttons.sparse_1, 5]);
 			staat.push([0, this.buttons.sparse_2, 5]);
+
+			var limit_2 = this.logic.time_2-(1<<this.logic.layer)+1;
+			for (var i=this.logic.time_1; i<limit_2; i++){
+				this.parent_algorithm.mark_edge(staat, this.parent_algorithm.buttons.edges_in_time[i], 32);
+			}
+			for (var i=limit_2; i<this.logic.time_1+(1<<this.logic.layer)-1; i++){
+				this.parent_algorithm.mark_edge(staat, this.parent_algorithm.buttons.edges_in_time[i], [32, 14]);
+			}
+			for (var i=this.logic.time_1+(1<<this.logic.layer)-1; i<this.logic.time_2; i++){
+				this.parent_algorithm.mark_edge(staat, this.parent_algorithm.buttons.edges_in_time[i], 14);
+			}
 
 			this.modern_pass_color(this.buttons.v_1, 1);
 			this.modern_pass_color(this.buttons.v_2, 1);
 		}
+
 		if (s[0] == 3){
-			this.modern_pass_color(this.parent_algorithm.buttons.depth[this.logic.options[0]], 14);
-			this.modern_pass_color(this.parent_algorithm.buttons.depth[this.logic.options[1]], 13);
+			var limit_2 = this.logic.time_2-(1<<this.logic.layer)+1;
+			for (var i=this.logic.time_1; i<limit_2; i++){
+				this.parent_algorithm.mark_edge(staat, this.parent_algorithm.buttons.edges_in_time[i], 104);
+			}
+			for (var i=limit_2; i<this.logic.time_1+(1<<this.logic.layer)-1; i++){
+				this.parent_algorithm.mark_edge(staat, this.parent_algorithm.buttons.edges_in_time[i], 104);
+			}
+			for (var i=this.logic.time_1+(1<<this.logic.layer)-1; i<this.logic.time_2; i++){
+				this.parent_algorithm.mark_edge(staat, this.parent_algorithm.buttons.edges_in_time[i], 104);
+			}
+
+			this.modern_pass_color(this.parent_algorithm.buttons.depth[this.logic.options[0]], 13);
+			this.modern_pass_color(this.parent_algorithm.buttons.depth[this.logic.options[1]], 14);
 			staat.push([0, this.buttons.depth_name_1, 5]);
 			staat.push([0, this.buttons.depth_name_2, 5]);
 			this.modern_pass_color(this.buttons.depth_1, 1);
 			this.modern_pass_color(this.buttons.depth_2, 1);
 			this.modern_pass_color(this.buttons.lca, 1, 8);
-			if (this.logic.lca == this.logic.v2) this.modern_pass_color(this.buttons.v_1, 12);
-			else this.modern_pass_color(this.buttons.v_2, 12);
+
+			if (this.logic.lca == this.logic.options[1]){
+				this.modern_pass_color(this.buttons.v_2, 14);
+				staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.lca], 14]);
+			}
+			else{
+				this.modern_pass_color(this.buttons.v_1, 13);
+				staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.lca], 13]);
+			}
+		}
+
+		if (s[0] == 101){
+			if (this.logic.lca==this.logic.x || this.logic.lca==this.logic.y) staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.lca], [8, 12]]);
+			else staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.lca], 8]);
 		}
 	}
 
@@ -156,7 +193,7 @@ class Lca_RMQ_querier extends Algorithm{
 
 		if (s[0]==0) return `And so, our aim is to find lca(${this.logic.x}, ${this.logic.y}). First, for simplicity, a and b will get swapped if time(a) is higher than time(b).`;
 		if (s[0]==1) return `Now - in order to find lca(x, y), I want to find the vertex with lowest depth penetrated in dfs between finding x and finding y. In other words, my aim is to solve range minimum query for a range <time(x);time(y)>. As all I know is the answer to RMQ in form &lt; f;f+2<sup>k</sup>-1 &gt;, I want to divide interval <time(a);time(b)> into two (maybe overallping) intervals of certain width - such width W, that time(x)+W-1 &le; time(y) (otherwise I will include vertices I don't want to include) and time(x)+W+W-1 &ge; time(y) (otherwise I won't include all vertices on a path from x to y). So, I chose &lfloor; log<sub>2</sub>(time(y)-time(x)+1) &rfloor; as the layer (so W=2<sup>&lfloor; log<sub>2</sub>(time(y)-time(x)+1) &rfloor;</sup>) - which is equal to &lfloor; log<sub>2</sub>(${this.logic.time_2}-${this.logic.time_1}+1) &rfloor; = ${this.logic.layer}. Note that to find logarithm, we either use math library (which is slow) or use log2 values from previously created table (which is effectively O(1)).`;
-		if (s[0]==2) return `The result is a minimum on an array path either on an interval <time(x); time(x)+2<sup>${this.logic.layer}</sup>-1> or <time(y)-2<sup>${this.logic.layer}</sup>+1; time(y)>. Those values are equal to sparse<sub>${this.logic.layer}, ${this.logic.time_1}</sub>=${this.logic.options[0]} and sparse<sub>${this.logic.layer}, ${this.logic.time_2}-${1<<this.logic.layer}+1</sub>=${this.logic.options[1]}.`;
+		if (s[0]==2) return `The result is a minimum on an array path either on an interval &lt; time(x); time(x)+2<sup>${this.logic.layer}</sup>-1 &gt; or &lt; time(y)-2<sup>${this.logic.layer}</sup>+1; time(y) &gt;. Those values are equal to sparse<sub>${this.logic.layer}, ${this.logic.time_1}</sub>=${this.logic.options[0]} and sparse<sub>${this.logic.layer}, ${this.logic.time_2}-${1<<this.logic.layer}+1</sub>=${this.logic.options[1]}. Note, that both of those intervals coalesce into a path between vertices ${this.logic.x} and ${this.logic.y}, on which a vertex with lowest depth is lca(${this.logic.x}, ${this.logic.y}).`;
 		if (s[0]==3) return `Out of those two vertices, the lca(${this.logic.x}, ${this.logic.y}) is equal to the one with lower (or equal) depth - which is ${this.logic.lca}.`;
 		if (s[0]==101) return `And so, lca(${this.logic.x}, ${this.logic.y}) wa found, it is equal to ${this.logic.lca}.`;
 	}

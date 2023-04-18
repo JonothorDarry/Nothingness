@@ -28,7 +28,7 @@ class Modern_representation{
 		32:'#800080',
 		33:'#FF0080',
 
-		//Emptiness
+		//Emptiness (TODO: remove, 104 instead)
 		42:'rgba(255, 255, 255, 0.0)',
 
 		//Exponent brown, black-on-white
