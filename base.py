@@ -29,10 +29,12 @@ systems=[
         ['choice', 'Combinatorics/Choice.html', 'Choice', 'choice'],
         ['iep', 'Combinatorics/Iep.html', 'Inclusion Exclusion Principle', 'iep'],
         ['romance', 'Combinatorics/Unholy_romance.html', 'Number theory in combinatorics', 'unholy_romance'],
-        ['isomorphism', 'Trees/Tree_isomorphism.html', 'Tree Isomorphism', 'isomorphism'],
 
+        ['isomorphism', 'Trees/Tree_isomorphism.html', 'Tree Isomorphism', 'isomorphism'],
         ['treewalk', 'Trees/TreeBasics.html', 'Tree Walk', 'treewalk'],
         ['lca', 'Trees/Lca.html', 'Lowest Common Ancestor', 'lca'],
+        ['stl', 'Trees/SmallToLarge.html', 'Small to Large', 'stl'],
+
         ['shows', 'Temp/Shows.html', 'Shows', 'shows']
 ]
 systems=[Article(*x) for x in systems]

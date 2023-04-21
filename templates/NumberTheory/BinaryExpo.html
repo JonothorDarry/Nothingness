@@ -5,17 +5,17 @@
 
 <html lang="en">
 	<head>
-		<title>Binary Exponentation</title>
+		<title>Binary Exponentiation</title>
 		{{ headers.meta() }}
 	</head>
 	<body>
-		{{ headers.full_upper('Binary Exponentation', 'NumberTheory') }}
+		{{ headers.full_upper('Binary Exponentiation', 'NumberTheory') }}
 
 		<h2>Introduction</h2>
 		<p>This article shows quick method for solving equations in form \(a^b \equiv x \pmod m\) and how to use it in order to find \(k\)-th element of a linear recursive equation with constant coefficients.</p>
 
 		<h2>Problem I: solving \(a^b \equiv x \pmod m\)</h2>
-		<p>Suppose You have three numbers: \(0 &lt; a, b, m &le; 10^9+7\), and are asked to find \(x: a^b \equiv x \pmod m\). To solve this problem with algorithm different than brute force (multiply \(a\ b\) times modulo \(m\) - complexity \(O(b)\) - it can be assumed, that multiplication modulo \(m\) works in \(O(1)\)), one can use binary exponentation.</p>
+		<p>Suppose You have three numbers: \(0 &lt; a, b, m &le; 10^9+7\), and are asked to find \(x: a^b \equiv x \pmod m\). To solve this problem with algorithm different than brute force (multiply \(a\ b\) times modulo \(m\) - complexity \(O(b)\) - it can be assumed, that multiplication modulo \(m\) works in \(O(1)\)), one can use binary exponentiation.</p>
 		<h3>Solution in \(O(log(b))\)</h3>
 		<p>
 		\(a^b\) can be shown as: 
@@ -30,7 +30,7 @@
 		</p>
 
 
-		{{ algo.neo_algorithm(1, 'Binary Exponentation', '
+		{{ algo.neo_algorithm(1, 'Binary Exponentiation', '
 			<p>Input format: three numbers \(a, b, m\), such that \(x=a^b \pmod m\) has to be found.<br>
 			\(a, b, m\)
 			</p>
@@ -40,7 +40,7 @@
 		
 		}) }}
 		
-		<p>This animation shows, why method is called binary exponentation: if \(b\) is shown as \(b=2^{i_1}+2^{i_2}+...+2^{i_k}\), where \(\forall_{w,v} i_w \neq i_v\), then \(res=a^{2^{i_1}}*a^{2^{i_2}}*...*a^{2^{i_k}}\).
+		<p>This animation shows, why method is called binary exponentiation: if \(b\) is shown as \(b=2^{i_1}+2^{i_2}+...+2^{i_k}\), where \(\forall_{w,v} i_w \neq i_v\), then \(res=a^{2^{i_1}}*a^{2^{i_2}}*...*a^{2^{i_k}}\).
 		<h3>Further analysis</h3>
 		<p>The method above also allows multiplication modulo \(m\), but \(res=0\) on the beginning - for \(0\) is neutral element of addition. One can utilize this method to raise matrices to power, because matrix multiplication is associative (i.e \((A*B)*C=A*(B*C)\)). This allows raising square matrices to \(n\)-th power within \(O(k^3log(n))\) time complexity, where \(k\) is matrix size.</p>
 		<h2>Problem II: Finding \(n\)-th element of linear recursive equation of \(k\)-th degree</h2>
@@ -113,11 +113,11 @@
 		<h2>Summary</h2>
 		<ol>
 			<li>One can use equation \(a^b=(a^2)^{\lfloor \frac{b}{2} \rfloor}*a^{b \% 2}\) in order to calculate value \(a^b \equiv x \pmod m\) in \(O(\log(b))\)</li>
-			<li>One can notice, that binary exponentation may be used to power matrices of size \(k\) to the power of \(n\) in the same way in \(O(k^3\log(n))\)</li>
+			<li>One can notice, that binary exponentiation may be used to power matrices of size \(k\) to the power of \(n\) in the same way in \(O(k^3\log(n))\)</li>
 			<li>\(n\)-th elements of certain linear recurrence equations of \(k\)-th degree can be calculated in \(O(k^3\log(n))\). In order to solve it a map from one vector of solutions \([f_i, f_{i+1} \dots f_{i+n-1}]\) to next vector \([f_{i+1}, f_{i+2}, \dots f_{i+n}]\) may come in handy.</li>
 		</ol>
 		<h3>Problems</h3>
-		<p>Problems involving binary exponentation can be found literally everywhere, most interesting ones usually involve recursive sequence trick or number of paths in a graph of certain length.<br>
+		<p>Problems involving binary exponentiation can be found literally everywhere, most interesting ones usually involve recursive sequence trick or number of paths in a graph of certain length.<br>
 		<a href="https://codeforces.com/problemset/problem/226/C">Anniversary</a>, 
 		<a href="https://codeforces.com/problemset/problem/1182/E">Product Oriented Recurrence</a>, 
 		<a href="https://codeforces.com/problemset/problem/551/D">GukiZ and Binary Operations</a>, 

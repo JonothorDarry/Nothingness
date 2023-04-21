@@ -154,7 +154,7 @@ class Lca_RMQ_querier extends Algorithm{
 				this.parent_algorithm.mark_edge(staat, this.parent_algorithm.buttons.edges_in_time[i], 104);
 			}
 
-			this.modern_pass_color(this.parent_algorithm.buttons.depth[this.logic.options[0]], 13);
+			if (this.logic.options[0] != this.logic.options[1]) this.modern_pass_color(this.parent_algorithm.buttons.depth[this.logic.options[0]], 13);
 			this.modern_pass_color(this.parent_algorithm.buttons.depth[this.logic.options[1]], 14);
 			staat.push([0, this.buttons.depth_name_1, 5]);
 			staat.push([0, this.buttons.depth_name_2, 5]);

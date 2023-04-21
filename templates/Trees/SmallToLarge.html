@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% import 'headers.html' as headers %}
+{% import 'footers.html' as footers %}
+{% import 'algo.html' as algo %}
+
+<html lang="en">
+	<head>
+		<title>Small to Large - Algorithm visualizations</title>
+		{{ headers.meta() }}
+	</head>
+	<body>
+		{{ headers.full_upper('Small to Large', 'Trees') }}
+		<main>
+			<h2>Introduction</h2>
+			<p>In this article, a technique for solving problems needing aggregation of a large amount of data in a single vertex will be shown.</p>
+			<h2>Problem II: What is the most common color in a subtree?</h2>
+			<p>Let's say we are given a rooted tree of size \(n\), where \(n \le 3*10^6\). Each vertex v is assigned a color \(c(v)\). For each subtree, what is the most common color of a vertex within a subtree?</p>
+			<h3>Solution: path decomposition</h3>
+			<p>First, for a vertex in a rooted tree, we can divide vertices in the subtree of some vertex \(x\) (except itself) into two groups:</p>
+			<ol>
+				<li>Vertices lying below a child of \(x\) with the biggest subtree size.</li>
+				<li>Rest of vertices in its subtree.</li>
+			</ol>
+			<p>Note, that only the first group (descendants of a child with biggest subtree size) can have size bigger than \(\frac{|subtree(x)|}{2}\)</p>
+
+			<p>This allows to construct the following algorithm: for each vertex:</p>
+			<ol>
+				<li>Iterate over its children in order of ascending subtree sizes (or in any other order, as long, as the largest subtree is processed as the last).</li>
+				<li>For all the children except the last one - after processing them, discard the auxiliary results.</li>
+				<li>For the last children: the auxiliary result is retained by the parent, then all the information from the remaining subtrees is retained in the same way it was obtained. The result is obtained using auxiliary data.</li>
+			</ol>
+			<p>In case of this problem, "auxiliary data" can mean a table with counts of particular colors along with the color most often occuring in a subtree, changing whenever some color obtains a higher count. </p>
+
+			<p>Note, that each vertex vertex will be processed at most \(\log_2(n)+1\) times:</p>
+			<ul>
+				<li>Let's call the all the edges going from a vertex to its children except the child with the largest subtree 'light edges' and the reamining edges 'heavy edges'.</li>
+				<li>The vertex will be processed as many times, as there are light edges on the path from itself to the root plus one time (for a single processing related with going up the 'heavy edge').</li>
+				<li>If a vertex \(x\) is connected with a parent \(par(x)\) using the light edge, the size of the subtree of \(x\) is at least two times smaller than the size of the subtree of \((par(x)\) - because there is a child of \(par(x)\) with not smaller subtree than \(x\).</li>
+				<li>What follows, if a path from the root to a vertex \(x\) has \(k\) light edges, then the tree has not less than \(2^k\) vertices.</li>
+			</ul>
+			<p>Thus, there are at most \(\log_2(n)\) light edges between root and any vertex - and the vertex will be processed at most \(\log_2(n)+1\) times.</p>
+
+
+
+
+			<div id="problems"></div>
+			<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
+
+			<script type='module' src="{{url_for('static', filename='Trees/LCA/merger.js')}}"></script>
+			<form id="page" style="display:none"></form>
+		</main>
+		{{ footers.full_lower() }}
+	</body>
+</html>
+
+
+
