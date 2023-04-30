@@ -26,14 +26,20 @@ class Graph_utils{
 		if (ln_x == 0) angle=-Infinity;
 		else angle=ln_y/cval;
 
-		dv.style.transformOrigin="left";
+		dv.style.transformOrigin="top left";
 		if (ln_x == 0){
 			if (v1_pos.y < v2_pos.y) dv.style.transform=`rotate(${Math.PI/2}rad)`;
 			else dv.style.transform=`rotate(${-Math.PI/2}rad)`;
 		}
 		else if (ln_x<0) dv.style.transform=`rotate(${-Math.asin(angle)}rad)`;
 		else dv.style.transform=`rotate(${Math.asin(angle)-Math.PI}rad)`;
+
+		dv.style.transform += ` translate(0, -${stylistic.height/2}px)`;
 		return dv;
+	}
+
+	static change_edge_height(edge, height){
+		edge.style.transform = edge.style.transform.split('transl')[0] + `translate(0, -${height/2}px)`;
 	}
 
 	static button_creator(stylistic, numb=null, col=4){

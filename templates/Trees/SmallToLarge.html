@@ -39,6 +39,17 @@
 				<li>What follows, if a path from the root to a vertex \(x\) has \(k\) light edges, then the tree has not less than \(2^k\) vertices.</li>
 			</ul>
 			<p>Thus, there are at most \(\log_2(n)\) light edges between root and any vertex - and the vertex will be processed at most \(\log_2(n)+1\) times.</p>
+			{{ algo.neo_algorithm(1, 'Small to Large with path decomposition', '
+				<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree; \(c_i\) are colors where \(c_i\) denotes the color of the \(i\)-th vertex.<br>
+				\(n\)<br>
+				\(c_1, c_2, \dots, c_n\)<br>
+				\(a_1, b_1\)<br>
+				\(\dots\)<br>
+				\(a_{n-1}, b_{n-1}\)
+				</p>
+			'
+			, '8&#10;1 2 1 1 3 3 2 1&#10;1 2&#10;1 3&#10;3 4&#10;4 5&#10;3 6&#10;3 7&#10;7 8&#10;', {'input_type':'textarea',
+			'color_description':{} }) }}
 
 
 
@@ -46,7 +57,7 @@
 			<div id="problems"></div>
 			<button class="sender" id="taskButton" name="next" type="submit" formmethod="post" form="page" value="taskAdder" style="display:none;">Add Problem</button>
 
-			<script type='module' src="{{url_for('static', filename='Trees/LCA/merger.js')}}"></script>
+			<script type='module' src="{{url_for('static', filename='Trees/STL/merger.js')}}"></script>
 			<form id="page" style="display:none"></form>
 		</main>
 		{{ footers.full_lower() }}

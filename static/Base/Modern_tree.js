@@ -95,7 +95,6 @@ class Modern_tree{
 		var str=input, edges=[];
 		var n=str.get_next();
 		for (var i=1; i<n; i++) edges.push([str.get_next(), str.get_next()]);
-
 		return edges;
 	}
 

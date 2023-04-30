@@ -32,6 +32,10 @@ class ArrayUtils{
 		return value;
 	}
 
+	static back(value){
+		return ArrayUtils.get_elem(value, -1);
+	}
+
 	static revert(lst){
 		var rev_lst=[];
 		for (var i=lst.length-1; i>=0; i--) rev_lst.push(lst[i]);

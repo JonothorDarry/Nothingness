@@ -1,3 +1,9 @@
+import Partial from './Base/Partial.js';
+import Modern_tree from './Base/Modern_tree.js';
+import Modern_tree_presenter from './Base/Modern_tree_presenter.js';
+import Modern_representation from './Base/Modern_representation.js';
+import Graph_utils from './Base/Graph_utils.js';
+
 class Separat_tree_basic extends Partial{
 	_presentation_create_arrow(div, sgn){
 		var arrow = Modern_representation.button_creator('', {});
@@ -168,8 +174,85 @@ class Separat_tree_lca extends Partial{
 	}
 }
 
+
+class Separat_tree_stl extends Partial{
+	presentation(){
+		this.buttons = {};
+		this.place.style.width='max-content';
+		this.place.style.backgroundColor='#000000';
+		var radius=10;
+
+		var width=180, height=180;
+		Modern_representation.button_modifier(this.place, {'stylistic':{'general':{'position':'relative'}, 'px':{'width':width, 'height':height}}});
+		
+		var tree_show = new Modern_tree_presenter(this.logic.tree, {'div':this.place, 'width':width, 'height':height}, {
+			'vertex':{'width':radius, 'height':radius, 'radius':100, 'label':'none'},
+			'edge':{'height':2, 'backgroundColor':'#FFFFFF'},
+			'nonsense':this.stylistic
+		});
+
+		this.tree_presentation = tree_show;
+		this.buttons.vertexes = tree_show.buttons.vertexes;
+		this.buttons.edges = tree_show.buttons.edges;
+		for (var i=1; i<=this.logic.tree.n; i++) {
+			this.Painter(this.buttons.vertexes[i], 4);
+		}
+
+		var color_1 = '#0000FF', color_2 = '#FF0000';
+		this.buttons.vertexes[4].style.backgroundColor = color_1;
+		this.buttons.vertexes[5].style.backgroundColor = color_2;
+		this.buttons.vertexes[6].style.backgroundColor = color_1;
+		this.buttons.vertexes[3].style.backgroundColor = color_1;
+
+		var multirad = (radius-4)/2;
+		for (var x of [3, 4, 5, 6]){
+			var param = this.tree_presentation.parameters.vertexes[x];
+			var styling_filled = {'general':{'position':'absolute', 'backgroundColor':'#FFFFFF', 'left':`calc(${param.x*100}% - ${multirad}px)`, 'top':`calc(${param.y*100}% - ${multirad}px)`, 'zIndex':3}, 'px':{'width':2*multirad, 'height':2*multirad}, '%':{'borderRadius':100}};
+			this.place.appendChild(Modern_representation.button_creator(``, styling_filled));
+		}
+
+		var merge_point = 3;
+		var param = this.tree_presentation.parameters.vertexes[merge_point];
+		var top_dist = 10;
+		for (var i=1; i<=3; i++){
+			var styling_filled = {'general':{'position':'absolute', 'backgroundColor':color_1, 'left':`calc(${param.x*100}% + ${i*10}px)`, 'top':`calc(${param.y*100}% - ${top_dist}px)`}, 'px':{'width':radius, 'height':radius}, '%':{'borderRadius':100}};
+			var new_label = Modern_representation.button_creator(``, styling_filled);
+			this.place.appendChild(new_label);
+		}
+		var styling_filled = {'general':{'position':'absolute', 'backgroundColor':color_2, 'left':`calc(${param.x*100}% + 10px)`, 'top':`calc(${param.y*100}% + ${10-top_dist}px)`}, 'px':{'width':10, 'height':10}, '%':{'borderRadius':100}};
+		this.place.appendChild(Modern_representation.button_creator(``, styling_filled));
+
+		console.log(this.place.innerHTML);
+	}
+
+	read_data(){
+		this.logic.edges = [[1, 2], [1, 3], [3, 4], [3, 5], [5, 6]];
+	}
+
+	logical_box(){
+		this.logic.tree = new Modern_tree(this.logic.edges);
+	}
+
+	ShowReality(){
+		this.starter();
+		this.read_data();
+		this.logical_box();
+		this.presentation();
+	}
+
+	constructor(block){
+		super(block);
+		this.logic.edges = [[1, 2], [1, 3], [3, 4], [3, 5], [5, 6]];
+		this.logical_box();
+		this.presentation();
+	}
+}
+
 var feral3=Partial.ObjectParser(document.getElementById('Algo3'));
-var sk3=new Separat_tree_basic(feral3);
+var _3=new Separat_tree_basic(feral3);
 
 var feral4=Partial.ObjectParser(document.getElementById('Algo4'));
-var sk4=new Separat_tree_lca(feral4);
+var _4=new Separat_tree_lca(feral4);
+
+var feral5=Partial.ObjectParser(document.getElementById('Algo5'));
+var _5=new Separat_tree_stl(feral5);
