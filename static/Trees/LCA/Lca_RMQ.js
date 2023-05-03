@@ -287,6 +287,7 @@ class Lca_RMQ extends Algorithm{
 				}
 			}
 		}
+
 		if (s[0] == 1){
 			var next_pos = s[2]+(1<<(s[1]-1));
 			this.modern_pass_color(this.buttons.rmq_table[s[1]][s[2]], 1, 0);
@@ -315,12 +316,12 @@ class Lca_RMQ extends Algorithm{
 
 			if (next_pos < this.logic.path.length){
 				this.modern_pass_color(this.buttons.rmq_table[s[1]-1][next_pos], this.presentation_utils.edge_colors[1], 0);
-
-				var vertex_1 = this.logic.rmq_table[s[1]-1][s[2]];
 				var vertex_2 = this.logic.rmq_table[s[1]-1][next_pos];
-				this.modern_pass_color(this.buttons.depth[vertex_1], this.presentation_utils.edge_colors[0], 0);
 				this.modern_pass_color(this.buttons.depth[vertex_2], this.presentation_utils.edge_colors[1], 0);
 			}
+
+			var vertex_1 = this.logic.rmq_table[s[1]-1][s[2]];
+			if (next_pos >= this.logic.path.length || vertex_1 != vertex_2) this.modern_pass_color(this.buttons.depth[vertex_1], this.presentation_utils.edge_colors[0], 0);
 		}
 	}
 

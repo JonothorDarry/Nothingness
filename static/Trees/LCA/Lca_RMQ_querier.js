@@ -29,17 +29,17 @@ class Lca_RMQ_querier extends Algorithm{
 		var somewhat_wide = {'px':{'width':100}};
 		var round_style = {'%':{'borderRadius':100}};
 
-		grid.single_filler([0, 0], 'a', {'color':5});
+		grid.single_filler([0, 0], 'x', {'color':5});
 		this.buttons.x = grid.single_filler([0, 1], this.logic.x, {'stylistic':round_style});
-		grid.single_filler([0, 2], 'time(a)', {'color':5, 'stylistic':somewhat_wide});
+		grid.single_filler([0, 2], 'time(x)', {'color':5, 'stylistic':somewhat_wide});
 		this.buttons.times_1 = grid.single_filler([0, 3], this.logic.time_1);
 
-		grid.single_filler([1, 0], 'b', {'color':5});
+		grid.single_filler([1, 0], 'y', {'color':5});
 		this.buttons.y = grid.single_filler([1, 1], this.logic.y, {'stylistic':round_style});
-		grid.single_filler([1, 2], 'time(b)', {'color':5, 'stylistic':somewhat_wide});
+		grid.single_filler([1, 2], 'time(y)', {'color':5, 'stylistic':somewhat_wide});
 		this.buttons.times_2 = grid.single_filler([1, 3], this.logic.time_2);
 
-		grid.single_filler([2, 0], '⌊log<sub>2</sub>(time(b)-time(a)+1)⌋', {'color':5, 'stylistic':wide_style});
+		grid.single_filler([2, 0], '⌊log<sub>2</sub>(time(y)-time(x)+1)⌋', {'color':5, 'stylistic':wide_style});
 		this.buttons.layer = grid.single_filler([2, 1], this.logic.layer);
 
 		this.buttons.sparse_1 = grid.single_filler([4, 0], `sparse<sub>${this.logic.layer},${this.logic.time_1}</sub>`, {'stylistic':wide_style});
@@ -191,7 +191,7 @@ class Lca_RMQ_querier extends Algorithm{
 	StatementComprehension(){
 		var s=this.lees[this.state_nr];
 
-		if (s[0]==0) return `And so, our aim is to find lca(${this.logic.x}, ${this.logic.y}). First, for simplicity, a and b will get swapped if time(a) is higher than time(b).`;
+		if (s[0]==0) return `And so, our aim is to find lca(${this.logic.x}, ${this.logic.y}). First, for simplicity, x and y will get swapped if time(x) is higher than time(y).`;
 		if (s[0]==1) return `Now - in order to find lca(x, y), I want to find the vertex with lowest depth penetrated in dfs between finding x and finding y. In other words, my aim is to solve range minimum query for a range <time(x);time(y)>. As all I know is the answer to RMQ in form &lt; f;f+2<sup>k</sup>-1 &gt;, I want to divide interval <time(a);time(b)> into two (maybe overallping) intervals of certain width - such width W, that time(x)+W-1 &le; time(y) (otherwise I will include vertices I don't want to include) and time(x)+W+W-1 &ge; time(y) (otherwise I won't include all vertices on a path from x to y). So, I chose &lfloor; log<sub>2</sub>(time(y)-time(x)+1) &rfloor; as the layer (so W=2<sup>&lfloor; log<sub>2</sub>(time(y)-time(x)+1) &rfloor;</sup>) - which is equal to &lfloor; log<sub>2</sub>(${this.logic.time_2}-${this.logic.time_1}+1) &rfloor; = ${this.logic.layer}. Note that to find logarithm, we either use math library (which is slow) or use log2 values from previously created table (which is effectively O(1)).`;
 		if (s[0]==2) return `The result is a minimum on an array path either on an interval &lt; time(x); time(x)+2<sup>${this.logic.layer}</sup>-1 &gt; or &lt; time(y)-2<sup>${this.logic.layer}</sup>+1; time(y) &gt;. Those values are equal to sparse<sub>${this.logic.layer}, ${this.logic.time_1}</sub>=${this.logic.options[0]} and sparse<sub>${this.logic.layer}, ${this.logic.time_2}-${1<<this.logic.layer}+1</sub>=${this.logic.options[1]}. Note, that both of those intervals coalesce into a path between vertices ${this.logic.x} and ${this.logic.y}, on which a vertex with lowest depth is lca(${this.logic.x}, ${this.logic.y}).`;
 		if (s[0]==3) return `Out of those two vertices, the lca(${this.logic.x}, ${this.logic.y}) is equal to the one with lower (or equal) depth - which is ${this.logic.lca}.`;

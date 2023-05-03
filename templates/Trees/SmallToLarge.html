@@ -35,7 +35,7 @@
 			<ul>
 				<li>Let's call the all the edges going from a vertex to its children except the child with the largest subtree 'light edges' and the reamining edges 'heavy edges'.</li>
 				<li>The vertex will be processed as many times, as there are light edges on the path from itself to the root plus one time (for a single processing related with going up the 'heavy edge').</li>
-				<li>If a vertex \(x\) is connected with a parent \(par(x)\) using the light edge, the size of the subtree of \(x\) is at least two times smaller than the size of the subtree of \((par(x)\) - because there is a child of \(par(x)\) with not smaller subtree than \(x\).</li>
+				<li>If a vertex \(x\) is connected with a parent \(par(x)\) using the light edge, the size of the subtree of \(x\) is at least two times smaller than the size of the subtree of \(par(x)\) - because there is a child of \(par(x)\) with not smaller subtree than \(x\).</li>
 				<li>What follows, if a path from the root to a vertex \(x\) has \(k\) light edges, then the tree has not less than \(2^k\) vertices.</li>
 			</ul>
 			<p>Thus, there are at most \(\log_2(n)\) light edges between root and any vertex - and the vertex will be processed at most \(\log_2(n)+1\) times.</p>

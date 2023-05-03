@@ -57,7 +57,7 @@ class Lca_binary extends Algorithm{
 
 		for (var v=1; v<=this.logic.tree.n; v++){
 			for (var i=0; i<=degree; i++){
-				var kth_btn = this.presentation_append_companion(v, i+1, 3, `0`, 42);
+				var kth_btn = this.presentation_append_companion(v, i+1, 3, `0`, 104);
 				this.buttons.kth_queries[v][i] = kth_btn;
 
 				this.presentation_append_companion(v, i+1, 2, `&#x2191;<sub>${1<<i}</sub>`);

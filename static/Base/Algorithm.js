@@ -1,4 +1,5 @@
 import Representation_utils from './Representation_utils.js';
+import Modern_representation from './Modern_representation.js';
 import ArrayUtils from './ArrayUtils.js';
 
 class Algorithm{
@@ -251,6 +252,7 @@ class Algorithm{
 				elem[1].iterator -= 1;
 				if (elem[1].button) elem[1].button.innerHTML = elem[1].values[elem[1].iterator];
 			}
+			if (elem[0]==7) Modern_representation.style(elem[1], elem[2]);
 		}
 	}
 
@@ -271,7 +273,9 @@ class Algorithm{
 		var x;
 		for (var i=0; i<staat.length; i++){
 			x = staat[i];
-			if (x[0] == 0 && x.length == 3) staat[i] = [x[0], x[1], x[1]._color, x[2]];
+			if (x[0] == 0 && x.length == 3) staat[i] = [7, x[1], Modern_representation.get_old_style_parts(x[1], Modern_representation.color_styles[ArrayUtils.is_iterable(x[2])?(x[2][0]):x[2]]), Modern_representation.get_style_from_id(x[2])];
+			else if (x[0] == 0) staat[i] = [7, x[1], Modern_representation.get_style_from_id(x[2]), Modern_representation.get_style_from_id(x[3])];
+			else if (x[0] == 7 && x.length == 3) staat[i] = [x[0], x[1], Modern_representation.get_old_style_parts(x[1], x[2]), x[2]];
 		}
 	}
 
@@ -280,7 +284,7 @@ class Algorithm{
 		var x, i;
 		for (i=0;i<staat.length;i++){
 			x=staat[i];
-			if (x[0]==0) this.Painter(x[1], x[3]);
+			if (x[0]==0) this.Painter(x[1], x[3]); //Probably not used
 			if (x[0]==1) x[1].innerHTML=x[3];
 			if (x[0]==2) x[1].push(x[2]);
 			if (x[0]==3) this[x[1]]=x[3];
@@ -289,6 +293,7 @@ class Algorithm{
 				x[1].iterator += 1;
 				if (x[1].button) x[1].button.innerHTML = x[1].values[x[1].iterator];
 			}
+			if (x[0]==7) Modern_representation.style(x[1], x[3]);
 		}
 	}
 
@@ -299,8 +304,15 @@ class Algorithm{
 	}
 
 	modern_pass_color(btn, col_mid=1, col_after=0){
-		this.ephemeral.staat.push([0, btn, btn._color, col_mid]);
+		this.ephemeral.staat.push([0, btn, col_mid]);
 		this.ephemeral.passer.push([0, btn, col_mid, col_after]);
+	}
+
+	modern_pass_style(btn, style_mid=1, style_after=0){
+		if (! style_mid instanceof Object) style_mid = Modern_representation.color_styles[style_mid];
+		if (! style_after instanceof Object) style_after = Modern_representation.color_styles[style_after];
+		this.ephemeral.staat.push([7, btn, style_mid]);
+		this.ephemeral.passer.push([7, btn, style_mid, style_after]);
 	}
 
 	divsCreator(mode, number_of_rows, title_list, midian, elements=['divs', 'zdivs']){
@@ -371,6 +383,8 @@ class Algorithm{
 		}
 	}
 
-	Painter(btn, col=1, only_bg=0) {return Representation_utils.Painter(btn, col, only_bg);}
+	Painter(btn, col=1, only_bg=0) {
+		return Representation_utils.Painter(btn, col, only_bg);
+	}
 }
 export default Algorithm;

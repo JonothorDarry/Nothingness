@@ -18,7 +18,7 @@ class Graph_utils{
 		dv.style.top=`${v1_pos.y*100}%`;
 		dv.style.left=`${v1_pos.x*100}%`;
 
-		if (!('backgroundColor' in stylistic)) dv.style.backgroundColor="#000000";
+		if (!('backgroundColor' in stylistic)) Representation_utils.Painter(dv, 5);
 		else dv.style.backgroundColor=stylistic.backgroundColor;
 		dv.style.height=`${stylistic.height}px`;
 		if ('color' in stylistic) dv.style.backgroundColor=`${stylistic.color}`;

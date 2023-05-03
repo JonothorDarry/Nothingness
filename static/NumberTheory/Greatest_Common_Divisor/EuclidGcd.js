@@ -1,6 +1,7 @@
 import Algorithm from '../../Base/Algorithm.js';
 import ArrayUtils from '../../Base/ArrayUtils.js';
 import Representation_utils from '../../Base/Representation_utils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
 import Object_utils from '../../Base/Object_utils.js';
 import SuperEuclid from './SuperEuclid.js'
 
@@ -27,9 +28,9 @@ class EuclidGcd extends Algorithm{
 		this.buttons.a = [null].concat(grid.filler([[1, ln], 1], this.logic.a.slice(1), standard_stylistic));
 		this.buttons.b = [null].concat(grid.filler([[1, ln], 2], this.logic.b.slice(1), standard_stylistic));
 
-		this.Painter(this.buttons.a[1], 0);
-		this.Painter(this.buttons.b[1], 0);
-		this.Painter(this.buttons.index[1], 0);
+		Modern_representation.style(this.buttons.a[1], SuperEuclid.no_background_color_styles[0]);
+		Modern_representation.style(this.buttons.b[1], SuperEuclid.no_background_color_styles[0]);
+		Modern_representation.style(this.buttons.index[1], SuperEuclid.no_background_color_styles[0]);
 	}
 
 	palingnesia(){
@@ -66,16 +67,6 @@ class EuclidGcd extends Algorithm{
 
 	NextState(){
 		return SuperEuclid.NextState(this);
-	}
-
-	Painter(btn, col=1, only_bg=0){
-		if (typeof col === 'string' || col instanceof String){
-			btn.style.backgroundColor = col;
-			return;
-		}
-		var style_border=btn.style.border;
-		super.Painter(btn, col, only_bg);
-		btn.style.border=style_border;
 	}
 
 	StatementComprehension(){

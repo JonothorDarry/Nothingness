@@ -2,78 +2,63 @@ import ArrayUtils from './ArrayUtils.js'
 import Object_utils from './Object_utils.js'
 
 class Modern_representation{
+
+	static create_color_style(background, color='#FFFFFF'){
+		return {
+			'background': background,
+			'color': color,
+			'border': '0',
+			'borderColor': 'rgba(255, 255, 255, 0)',
+		}
+	}
+
+	static color_styles = {
+		0: Modern_representation.create_color_style('#440000'),
+
+		1: Modern_representation.create_color_style('#004400'),
+		2: Modern_representation.create_color_style('#FFFFFF', '#666666'),
+
+		4: Modern_representation.create_color_style('#FFFFFF'),
+		5: Modern_representation.create_color_style('#000000'),
+		6: Modern_representation.create_color_style('#888888'),
+		7: {'background':'#FFFFFF', 'color':'#666666', 'border':'1px solid', 'borderColor':'#888888'},
+		8: Modern_representation.create_color_style('#8A7400'),
+		10: Modern_representation.create_color_style('#0000FF'),
+		11: Modern_representation.create_color_style('#222200'),
+		12: Modern_representation.create_color_style('#FF3333'),
+
+		13: Modern_representation.create_color_style('#669900'),
+		14: Modern_representation.create_color_style('#00B359'),
+		15: Modern_representation.create_color_style('#E64C00'),
+
+		30: Modern_representation.create_color_style('#880000'),
+		31: Modern_representation.create_color_style('#008800'),
+		32: Modern_representation.create_color_style('#800080'),
+		33: Modern_representation.create_color_style('#FF0080'),
+
+		101: Modern_representation.create_color_style('#804000'),
+		102: Modern_representation.create_color_style('#FFFFFF', '#000000'),
+		104: Modern_representation.create_color_style('rgba(255, 255, 255, 0.0)', 'rgba(255, 255, 255, 0.0)'),
+	};
+
+	//Ancient: 2 operates alike 9 (prob not used anymore)
 	//0: red, 1:green, 2: white(gray), 3: dead white 5: black 6: gray 7: white(gray) with border 8: gold
 	//9: yellow(grey) 10: blue 11: dark gold
 	//Refactor this shit as soon, as possibru
-	static colors={
-		0:'#440000',
-		1:'#004400',
-		4:'#FFFFFF',
-		5:'#000000',
-		6:'#888888',
-		8:'#8A7400',
-		10:'#0000FF',
-		11:'#222200',
-		12:'#FF3333',
-		
-		//Colors for additional post-green
-		13:'#669900',
-		14:'#00B359',
-		//Colors for tmp information - post-orange
-		15:'#E64C00',
-
-		//moderate-red, moderate-green, violet, pinko
-		30:'#880000',
-		31:'#008800',
-		32:'#800080',
-		33:'#FF0080',
-
-		//Emptiness (TODO: remove, 104 instead)
-		42:'rgba(255, 255, 255, 0.0)',
-
-		//Exponent brown, black-on-white
-		101:'#804000',
-		102:'#FFFFFF',
-
-		//transparent
-		104:'rgba(255, 255, 255, 0.0)'
-	}
-
-	//Garbage, only there to avoid conflit - removal necessary, immediate effect
+	static colors = Object.fromEntries(Object.keys(Modern_representation.color_styles).map(e => [e, Modern_representation.color_styles[e].background]));
+	
+	//Garbage, only there to avoid conflit - removal necessary, immediate effect; removed olden; remove col==9
 	static Painter(btn, col=1, only_bg=0){
-		btn._color = col;
-
 		if ('upper' in btn){
 			Modern_representation.Painter(btn.upper, col, only_bg);
 			Modern_representation.Painter(btn.lower, col, only_bg);
 			return;
 		}
-		var olden;
-		if (only_bg==1) olden=btn.style.color;
-		if (col==0 || col==1 || col==4 || col==5 || col==6 || col==8 || col==10 || col==11 || col==12 || col==13 || col==14 || col==15 || col == 101) btn.style.color="#FFFFFF";
-		else if (col == 104) btn.style.color = Modern_representation.colors[104];
-		else if (col==102) btn.style.color = "#000000";
-		else btn.style.backgroundColor="#FFFFFF";
-
-		if (col==2 || col==7 || col==9) btn.style.color="#666666";
-		if (col==3) btn.style.color="#FFFFFF";
-
-		if (col in Modern_representation.colors){
-			btn.style.background=Modern_representation.colors[col];
+		if (ArrayUtils.is_iterable(col)){
+			Modern_representation.style(btn, Modern_representation.color_styles[col[0]]);
+			Modern_representation.style(btn, {'background':`linear-gradient(to right bottom, ${Modern_representation.colors[col[0]]} 50%, ${Modern_representation.colors[col[1]]} 50%)`});
 		}
-		else if (ArrayUtils.is_iterable(col)){
-			btn.style.background = `linear-gradient(to right bottom, ${Modern_representation.colors[col[0]]} 50%, ${Modern_representation.colors[col[1]]} 50%)`;						
-		}
-
-		if (col==7){
-			btn.style.border="1px solid";
-			btn.style.borderColor="#888888";
-		}
-		if (col == 42){
-			btn.style.color = `rgba(255, 255, 255, 0.0)`
-		}
-		//else btn.style.border="0px none";
-		if (only_bg==1) btn.style.color=olden;
+		else Modern_representation.style(btn, Modern_representation.color_styles[col]);
 	}
 
 	static button_creator(inner_html, stylistic={}){
@@ -144,6 +129,7 @@ class Modern_representation{
 		return element;
 	}
 
+	//Użyte w tree isomorphism - raczej do kosza
 	static fill_with_buttons_horizontal(style, place, names, color, ln=-1, creator=Modern_representation.button_creator, additional_args=null){
 		var single_name=false, single_color=false, btn_list=[], btn, cur_name, cur_color;
 		if (ArrayUtils.is_iterable(names)==false) single_name=true;
@@ -177,6 +163,31 @@ class Modern_representation{
 		}
 
 		return {'full_div':full_div , 'rows':rows};
+	}
+
+	static style(element, style){
+		if ('upper' in element){
+			Modern_representation.style(element.upper, style);
+			Modern_representation.style(element.lower, style);
+			return;
+		}
+		for (var x in style) element.style[x] = style[x];
+	}
+
+	static get_old_style_parts(element, style){
+		var old_style = {};
+		for (var x in style) old_style[x] = element.style[x];
+		return old_style;
+	}
+
+	//Powinno być structuredClone zamiast Object.assign(), ale nie przejdzie pod jestem
+	static get_style_from_id(styles){
+		if (ArrayUtils.is_iterable(styles)){
+			var res = Object.assign({}, Modern_representation.color_styles[styles[0]]);
+			res.background = `linear-gradient(to right bottom, ${Modern_representation.colors[styles[0]]} 50%, ${Modern_representation.colors[styles[1]]} 50%)`;
+			return res;
+		}
+		return Object.assign({}, Modern_representation.color_styles[styles]);
 	}
 }
 export default Modern_representation;

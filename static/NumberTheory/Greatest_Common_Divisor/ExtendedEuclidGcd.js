@@ -1,6 +1,7 @@
 import Algorithm from '../../Base/Algorithm.js';
 import ArrayUtils from '../../Base/ArrayUtils.js';
 import Representation_utils from '../../Base/Representation_utils.js';
+import Modern_representation from '../../Base/Modern_representation.js';
 import Object_utils from '../../Base/Object_utils.js';
 import SuperEuclid from './SuperEuclid.js'
 
@@ -37,8 +38,8 @@ class ExtendedEuclidGcd extends Algorithm{
 		var i=0;
 		for (var x of elements){
 			this.buttons[x[0]] = grid.filler([[1, ln+1], i], x[1], standard_stylistic);
-			this.Painter(this.buttons[x[0]][0], 0);
-			if (x[0]!='z') this.Painter(this.buttons[x[0]][1], 0);
+			Modern_representation.style(this.buttons[x[0]][0], SuperEuclid.no_background_color_styles[0]);
+			if (x[0]!='z') Modern_representation.style(this.buttons[x[0]][1], SuperEuclid.no_background_color_styles[0]);
 			i+=1;
 		}
 	}
@@ -80,43 +81,33 @@ class ExtendedEuclidGcd extends Algorithm{
 
 
 		if (s[0]==0 || s[0]==1){
-			this.pass_color(this.buttons.z[index-1]);
-			this.pass_color(this.buttons.a[index-1], 0, 14);
-			this.pass_color(this.buttons.b[index-1], 0, 14);
+			SuperEuclid.local_pass_style(this, this.buttons.z[index-1]);
+			SuperEuclid.local_pass_style(this, this.buttons.a[index-1], 14);
+			SuperEuclid.local_pass_style(this, this.buttons.b[index-1], 14);
 		}
 		if (s[0]==3){
-			this.pass_color(this.buttons.p[index-1], 0, 13);
-			this.pass_color(this.buttons.q[index-1], 0, 14);
+			SuperEuclid.local_pass_style(this, this.buttons.p[index-1], 13);
+			SuperEuclid.local_pass_style(this, this.buttons.q[index-1], 14);
+                        
+			SuperEuclid.local_pass_style(this, this.buttons.p[index-2], 13);
+			SuperEuclid.local_pass_style(this, this.buttons.q[index-2], 14);
+			SuperEuclid.local_pass_style(this, this.buttons.z[index-1], [13,14]);
 
-			this.pass_color(this.buttons.p[index-2], 0, 13);
-			this.pass_color(this.buttons.q[index-2], 0, 14);
-			this.pass_color(this.buttons.z[index-1], 0, [13,14]);
-
-			this.pass_color(this.buttons.p[index]);
-			this.pass_color(this.buttons.q[index]);
+			SuperEuclid.local_pass_style(this, this.buttons.p[index]);
+			SuperEuclid.local_pass_style(this, this.buttons.q[index]);
 		}
 		if( s[0]==100){
-			staat.push([0, this.buttons.b[this.logic.b.length-2], 0, 8]);
-			staat.push([0, this.buttons.p[this.logic.b.length-2], 0, 101]);
-			staat.push([0, this.buttons.a[1], 0, 101]);
+			staat.push([7, this.buttons.b[this.logic.b.length-2], SuperEuclid.no_background_color_styles[0], SuperEuclid.no_background_color_styles[8]]);
+			staat.push([7, this.buttons.p[this.logic.b.length-2], SuperEuclid.no_background_color_styles[0], SuperEuclid.no_background_color_styles[101]]);
+			staat.push([7, this.buttons.a[1], SuperEuclid.no_background_color_styles[0], SuperEuclid.no_background_color_styles[101]]);
 
-			staat.push([0, this.buttons.b[1], 0, 15]);
-			staat.push([0, this.buttons.q[this.logic.b.length-2], 0, 15]);
+			staat.push([7, this.buttons.b[1], SuperEuclid.no_background_color_styles[0], SuperEuclid.no_background_color_styles[15]]);
+			staat.push([7, this.buttons.q[this.logic.b.length-2], SuperEuclid.no_background_color_styles[0], SuperEuclid.no_background_color_styles[15]]);
 		}
 	}
 
 	NextState(){
 		return SuperEuclid.NextState(this);
-	}
-
-	Painter(btn, col=1, only_bg=0){
-		if (typeof col === 'string' || col instanceof String){
-			btn.style.backgroundColor = col;
-			return;
-		}
-		var style_border=btn.style.border;
-		super.Painter(btn, col, only_bg);
-		btn.style.border=style_border;
 	}
 
 	StatementComprehension(){
