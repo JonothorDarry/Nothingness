@@ -17,11 +17,10 @@ class ExtendedSieve extends Algorithm{
 
 	_presentation_button_creator(v){
 		var btn = this.doubleButtCreator(v, Representation_utils.button_creator);
-		Representation_utils.Painter(btn[0], 0);
+		Modern_representation.Painter(btn[0], 0);
 		btn[1].innerHTML = 'lpf(' + btn[1].innerHTML + ')';
-		for (var x of btn){
-			x.style.width='80px';
-		}
+
+		for (var x of btn) x.style.width='80px';
 		btn[0].style.border = '1px solid grey';
 		btn[0].style.verticalAlign = 'top';
 

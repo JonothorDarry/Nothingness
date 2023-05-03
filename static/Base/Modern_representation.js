@@ -63,7 +63,7 @@ class Modern_representation{
 
 	static button_creator(inner_html, stylistic={}){
 		var base={
-			'general':{'backgroundColor':'#FFFFFF', 
+			'general':{'background':'#FFFFFF', 
 				'color':'#FFFFFF',
 				'verticalAlign':'middle',
 				'textAlign':'center',
@@ -175,6 +175,9 @@ class Modern_representation{
 	}
 
 	static get_old_style_parts(element, style){
+		if ('upper' in element){ //relikty - usunąć (co, jeśli style a->b różne?)
+			return Modern_representation.get_old_style_parts(element.upper, style);
+		}
 		var old_style = {};
 		for (var x in style) old_style[x] = element.style[x];
 		return old_style;
