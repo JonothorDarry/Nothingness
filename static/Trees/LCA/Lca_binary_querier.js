@@ -240,10 +240,10 @@ class Lca_binary_querier extends Algorithm{
 
 			for (var i=0; i<bit; i++){
 				staat.push([0, this.parent_algorithm.buttons.kth_queries[par][i], 2]);
-				if (a!=par) passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 42]);
+				if (a!=par) passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 104]);
 			}
 
-			if (a != par) this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[a][bit], 14, 42);
+			if (a != par) this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[a][bit], 14, 104);
 			this.modern_pass_color(this.parent_algorithm.buttons.kth_queries[par][bit], 1, 2);
 
 			var empty = `rgba(255, 255, 255, 0.0)`;
@@ -253,7 +253,7 @@ class Lca_binary_querier extends Algorithm{
 
 			for (var i=bit+1; i<=this.parent_algorithm.logic.depth_lca; i++){
 				staat.push([0, this.parent_algorithm.buttons.kth_queries[par][i], 0]);
-				if (a!=par) passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 42]);
+				if (a!=par) passer.push([0, this.parent_algorithm.buttons.kth_queries[a][i], 104]);
 			}
 
 			staat.push([0, this.buttons.closer_vertices[opera[5]-1], 2]);
@@ -334,7 +334,7 @@ class Lca_binary_querier extends Algorithm{
 
 		if (s[0] == 100){ //Query finished
 			for (var i=0; i<=this.parent_algorithm.logic.depth_lca; i++){
-				staat.push([0, this.parent_algorithm.buttons.kth_queries[this.logic.res][i], 42]);
+				staat.push([0, this.parent_algorithm.buttons.kth_queries[this.logic.res][i], 104]);
 			}
 
 			staat.push([0, this.parent_algorithm.buttons.vertexes[this.logic.res], 8]);

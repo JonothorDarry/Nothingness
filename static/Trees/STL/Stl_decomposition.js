@@ -16,19 +16,19 @@ class Stl_decomposition extends Algorithm{
 		return maxson;
 	}
 
-	_logical_partial_dfs(a){
-		this.logic.steps.push(['P2 IN', a]);
-
+	_logical_partial_dfs(a, ultraparent){
+		var change = null;
 		this.logic.globals[this.logic.tree.colors[a]].push(ArrayUtils.back(this.logic.globals[this.logic.tree.colors[a]])+1);
 		ArrayUtils.back(this.logic.to_cleanse).push(this.logic.tree.colors[a]);
 		if (ArrayUtils.back(this.logic.globals[this.logic.tree.colors[a]]) > ArrayUtils.back(this.logic.globals[ArrayUtils.back(this.logic.max_globals)])){
+			change = ArrayUtils.back(this.logic.max_globals);
 			this.logic.max_globals.push(this.logic.tree.colors[a]);
 		}
+		this.logic.steps.push(['P2 IN', a, ultraparent, change, ArrayUtils.back(this.logic.to_cleanse).length-1]);
 
-		for (var x of this.logic.tree.kids[a]){
-			this._logical_partial_dfs(x);
-		}
-		this.logic.steps.push(['P2 OUT', a]);
+		for (var x of this.logic.tree.kids[a])
+			this._logical_partial_dfs(x, ultraparent);
+		this.logic.steps.push(['P2 OUT', a, ultraparent]);
 	}
 
 	_logical_base_dfs(a){
@@ -41,18 +41,22 @@ class Stl_decomposition extends Algorithm{
 		if (this.logic.tree.maxson[a] != -1) this._logical_base_dfs(this.logic.tree.maxson[a]);
 
 		for (var x of this.logic.tree.kids[a]){
-			if (x != this.logic.tree.maxson[a]) this._logical_partial_dfs(x);
+			if (x != this.logic.tree.maxson[a]) this._logical_partial_dfs(x, a);
 		}
 
+		var change = null;
 		this.logic.globals[this.logic.tree.colors[a]].push(ArrayUtils.back(this.logic.globals[this.logic.tree.colors[a]])+1);
 		ArrayUtils.back(this.logic.to_cleanse).push(this.logic.tree.colors[a]);
 		if (ArrayUtils.back(this.logic.globals[this.logic.tree.colors[a]]) > ArrayUtils.back(this.logic.globals[ArrayUtils.back(this.logic.max_globals)])){
+			change = ArrayUtils.back(this.logic.max_globals);
 			this.logic.max_globals.push(this.logic.tree.colors[a]);
 		}
 
 		this.logic.res[a] = ArrayUtils.back(this.logic.max_globals);
+		this.logic.steps.push(['P1 OUT', a, change, ArrayUtils.back(this.logic.to_cleanse).length-1]);
+
 		if (this.logic.tree.maxson[this.logic.tree.par[a]] != a){
-			this.logic.steps.push(['P1 OUT LIGHT', a]);
+			this.logic.steps.push(['P1 OUT LIGHT', a, this.logic.to_cleanse.length-1]);
 			for (var x of ArrayUtils.back(this.logic.to_cleanse)){
 				this.logic.globals[x].push(0);
 			}
@@ -86,50 +90,75 @@ class Stl_decomposition extends Algorithm{
 			return btn;
 	}
 
+	presentation_add_son(){
+		this.buttons.sons = [null];
+		for (var i=1; i<=this.logic.tree.n; i++){
+			var description = this.presentation_append_companion(i, -2, -1, 'sons', 104);
+			var son = this.presentation_append_companion(i, -1, -1, this.logic.tree.sons[i], 104);
+			this.buttons.sons.push({
+				'description': description, 
+				'son': son
+			});
+		}
+	}
+
 	presentation_add_color_base(){
 		this.buttons.colors = [null];
 		for (var i=1; i<=this.logic.tree.n; i++){
 			this.presentation_append_companion(i, 1, -1, 'col');
 			var colored = this.presentation_append_companion(i, 2, -1, '');
 			Modern_representation.button_modifier(colored, {'inner_html':this.logic.tree.colors[i], 'stylistic':{'general':{'backgroundColor':this.presentation_get_color(this.logic.tree.colors[i])}, '%':{'borderRadius':100}}});
-		}
-	}
 
-	presentation_add_son(){
-		this.buttons.colors = [null];
-		for (var i=1; i<=this.logic.tree.n; i++){
-			this.presentation_append_companion(i, -2, -1, 'sons');
-			this.presentation_append_companion(i, -1, -1, this.logic.tree.sons[i], 0);
+			var overlay = this.presentation_append_companion(i, 2, -1, '', 104);
+			Modern_representation.button_modifier(overlay, {'stylistic':{'general':{'zIndex':-1}}});
+			this.buttons.colors.push(overlay);
 		}
 	}
 
 	presentation_add_color_result(){
-		this.buttons.colors = [null];
+		this.buttons.results = [null];
 		for (var i=1; i<=this.logic.tree.n; i++){
-			this.presentation_append_companion(i, 1, 1, 'res');
-			var colored = this.presentation_append_companion(i, 2, 1, '');
-			Modern_representation.button_modifier(colored, {'inner_html':this.logic.res[i], 'stylistic':{'general':{'backgroundColor':this.presentation_get_color(this.logic.res[i])}, '%':{'borderRadius':100}}});
-			var overlay = this.presentation_append_companion(i, 2, 1, '');
+			var res = this.presentation_append_companion(i, 1, 1, 'res', 104);
+			var colored = this.presentation_append_companion(i, 2, 1, '', 104);
+			Modern_representation.button_modifier(colored, {'inner_html':this.logic.res[i], 'stylistic':{'%':{'borderRadius':100}}});
+			var overlay = this.presentation_append_companion(i, 2, 1, '', 104);
 			Modern_representation.button_modifier(overlay, {'stylistic':{'general':{'zIndex':-1}}});
-			Representation_utils.Painter(overlay, 8);
+
+			this.buttons.results.push({
+				'description': res, 
+				'color': colored,
+				'overlay': overlay
+			});
 		}
 	}
 
-	presentation_color_edge_to_maxson(){
-		var edge_height = 10;
+	presentation_color_decolor_edges(staat){
+		var post_edge_height = 10;
+		var past_edge_height = this._presentation.edge_height;
+
 		for (var i=1; i<=this.logic.tree.n; i++){
 			if (this.logic.tree.maxson[i] == -1) continue;
-			Modern_representation.button_modifier(this.buttons.edges[this.logic.tree.maxson[i]], {'stylistic':{'px':{'height':edge_height}}});
-			Representation_utils.Painter(this.buttons.edges[this.logic.tree.maxson[i]], 30);
-			Graph_utils.change_edge_height(this.buttons.edges[this.logic.tree.maxson[i]], edge_height);
+			staat.push([5, 
+				function(edge, prev_weight, next_weight){
+					Modern_representation.button_modifier(edge, {'stylistic':{'px':{'height':next_weight}}});
+					Graph_utils.change_edge_height(edge, next_weight);
+				},
+				function(edge, prev_weight, next_weight){
+					Modern_representation.button_modifier(edge, {'stylistic':{'px':{'height':prev_weight}}});
+					Graph_utils.change_edge_height(edge, prev_weight);
+				},
+				[this.buttons.edges[this.logic.tree.maxson[i]], past_edge_height, post_edge_height]]
+			);
 		}
 	}
 
 	_presentation_construct_globals(){
 		var rows=5;
 		var div_globalists = new Grid(rows, Math.max(this.logic.colors_mx+1, this.logic.tree.n+1));
-		div_globalists.filler([0, [1, this.logic.colors_mx]], ArrayUtils.steady(this.logic.colors_mx, 'Max'), {'color':5});
-		div_globalists.filler([2, [1, this.logic.colors_mx]], ArrayUtils.steady(this.logic.colors_mx, 0), {'color':0});
+		this.buttons.maxes = div_globalists.filler([0, [1, this.logic.colors_mx]], ArrayUtils.steady(this.logic.colors_mx, 'Max'), {'color':104});
+		Representation_utils.Painter(this.buttons.maxes[0], 5);
+
+		this.buttons.globals = div_globalists.filler([2, [1, this.logic.colors_mx]], ArrayUtils.steady(this.logic.colors_mx, 0), {'color':0});
 
 		for (var i=1; i<=this.logic.colors_mx; i++){
 			var btn = div_globalists.get(1, i);
@@ -141,16 +170,25 @@ class Stl_decomposition extends Algorithm{
 		for (var i=0; i<rows; i++){
 			Modern_representation.button_modifier(div_globalists.get(i, 0), {'stylistic':{'px':{'width':100}}});
 		}
+
+		this.buttons.to_cleanse = [];
+		for (var i=1; i<=this.logic.tree.n; i++){
+			var btn = div_globalists.get(4, i);
+			Modern_representation.button_modifier(btn, {'stylistic':{'%':{'borderRadius':100}, 'general':{'backgroundColor':104}}});
+			this.buttons.to_cleanse.push(btn);
+		}
+
 		return div_globalists;
 	}
 
 	_presentation_construct_tree(){
-		var width = 200*this.logic.tree.get_width(), height = 120*this.logic.tree.get_height();
+		this._presentation.edge_height = 2;
+		var width = 300*this.logic.tree.get_width(), height = 160*this.logic.tree.get_height();
 		var div_tree = Modern_representation.div_creator('', {'px':{'width':width, 'height':height}});
 		Modern_representation.button_modifier(div_tree, {'general':{'display':'inline-block'}});
 		var present_tree = new Modern_tree_presenter(this.logic.tree, {'div':div_tree, 'width':width, 'height':height}, {
 			'vertex':{'width':40, 'height':40, 'radius':100},
-			'edge':{'height':2},
+			'edge':{'height':this._presentation.edge_height},
 			'nonsense':this.stylistic
 		});
 		this.buttons.div_tree = div_tree;
@@ -161,7 +199,6 @@ class Stl_decomposition extends Algorithm{
 		this.presentation_add_color_base();
 		this.presentation_add_son();
 		this.presentation_add_color_result();
-		this.presentation_color_edge_to_maxson();
 
 		return div_tree;
 	}
@@ -186,9 +223,21 @@ class Stl_decomposition extends Algorithm{
 		this.place.appendChild(div_globalists.place.full_div);
 	}
 
+	statial(){
+		this._statial_binding('globals', this.logic.globals, [null, ...this.buttons.globals]);
+
+		var cleansing = ArrayUtils.steady(this.logic.tree.n+1, 0).map(e => []);
+		for (var i=0; i<this.logic.to_cleanse.length; i++){
+			for (var j=0; j<this.logic.to_cleanse[i].length; j++)
+				cleansing[j].push(this.logic.to_cleanse[i][j]);
+		}
+		this._statial_binding('to_cleanse', cleansing, [null, ...this.buttons.to_cleanse]);
+	}
+
 	palingenesia(){
 		this.logical_box();
 		this.presentation();
+		this.statial();
 	}
 
 	read_data(){
@@ -220,13 +269,145 @@ class Stl_decomposition extends Algorithm{
 
 	StateMaker(s){
 		var i, staat=this.ephemeral.staat, passer=this.ephemeral.passer;
+
+		if (s[0] == 0){
+			for (var i=1; i<=this.logic.tree.n; i++){
+				staat.push([0, this.buttons.sons[i].description, 5]);
+				this.pass_color(this.buttons.sons[i].son);
+			}
+		}
+		if (s[0] == 1){
+			for (var i=1; i<=this.logic.tree.n; i++){
+				if (this.logic.tree.maxson[i] == -1) continue;
+				staat.push([0, this.buttons.edges[this.logic.tree.maxson[i]], 30]);
+				this.presentation_color_decolor_edges(staat);
+			}
+		}
+
+		if (s[0] == 2){
+			var vertex = this.logic.steps[s[1]][1];
+			staat.push([0, this.buttons.vertexes[vertex], 15]);
+			if (vertex != 1) staat.push([0, this.buttons.vertexes[this.logic.tree.par[vertex]], 5]);
+		}
+
+		if (s[0] == 3){
+			var vertex = this.logic.steps[s[1]][1];
+			staat.push([0, this.buttons.vertexes[vertex], 7]);
+			if (vertex != 1) staat.push([0, this.buttons.vertexes[this.logic.tree.par[vertex]], 15]);
+		}
+
+		if (s[0] == 4){
+			var vertex = this.logic.steps[s[1]][1];
+			for (var i=this.logic.tree.pre[vertex]; i<this.logic.tree.pre[vertex]+this.logic.tree.sons[vertex]; i++)
+				staat.push([0, this.buttons.vertexes[this.logic.tree.apre[i]], 0]);
+			if (vertex != 1) staat.push([0, this.buttons.vertexes[this.logic.tree.par[vertex]], 15]);
+		}
+
+		if (s[0] == 5){
+			var for_cleansing = this.logic.to_cleanse[s[2]][s[3]];
+			staat.push([6, this.state.globals[for_cleansing]]);
+			this.modern_pass_color(this.buttons.globals[for_cleansing-1], 14);
+
+			staat.push([6, this.buttons.to_cleanse[s[3]]]);
+			staat.push([0, this.buttons.to_cleanse[s[3]], 104]);
+		}
+
+		if (s[0] == 6){
+			var step = this.logic.steps[s[1]];
+			var vertex = step[1];
+			var ultraparent = step[2];
+			var change = step[3];
+			var to_clear = step[4];
+
+			staat.push([6, this.state.globals[this.logic.tree.colors[vertex]]]);
+			staat.push([0, this.buttons.vertexes[vertex], 101]);
+			if (this.logic.tree.par[vertex] != ultraparent)
+				staat.push([0, this.buttons.vertexes[this.logic.tree.par[vertex]], 7]);
+
+			if (change != null){
+				staat.push([0, this.buttons.maxes[change], 104]);
+				this.modern_pass_color(this.buttons.maxes[this.logic.tree.colors[vertex]], 14, 5);
+			}
+
+			staat.push([7, this.buttons.to_cleanse[to_clear], {
+				'backgroundColor':this.presentation_get_color(this.logic.tree.colors[vertex]),
+				'color':'#FFFFFF'
+			}]);
+		}
+
+		if (s[0] == 7){
+			var ultraparent = this.logic.steps[s[1]][2];
+			var vertex = this.logic.steps[s[1]][1];
+			staat.push([0, this.buttons.vertexes[vertex], 7]);
+			if (this.logic.tree.par[vertex] != ultraparent)
+				staat.push([0, this.buttons.vertexes[this.logic.tree.par[vertex]], 101]);
+		}
+
+		if (s[0] == 8){
+			var step = this.logic.steps[s[1]];
+			var vertex = step[1];
+			var change = step[2];
+			var to_clear = step[3];
+
+			staat.push([6, this.state.globals[this.logic.tree.colors[vertex]]]);
+			this.modern_pass_color(this.buttons.globals[this.logic.tree.colors[vertex]-1], 14, 0);
+			if (change != null){
+				staat.push([0, this.buttons.maxes[change-1], 104]);
+				this.modern_pass_color(this.buttons.maxes[this.logic.tree.colors[vertex]-1], 14, 5);
+			}
+			staat.push([7, this.buttons.to_cleanse[to_clear], {
+				'backgroundColor':this.presentation_get_color(this.logic.tree.colors[vertex]),
+				'color':'#FFFFFF'
+			}]);
+		}
+
+		if (s[0] == 9){
+			var vertex = this.logic.steps[s[1]][1];
+
+			staat.push([0, this.buttons.results[vertex].description, 5]);
+			this.modern_pass_color(this.buttons.results[vertex].overlay, 14, 8);
+			staat.push([7, this.buttons.results[vertex].color, {
+				'backgroundColor':this._presentation.color_mapping[this.logic.tree.colors[vertex]],
+				'color':'#FFFFFF'
+			}]);
+		}
 	}
 
+	//0 - start, sons
+	//1 - defining maxson
+	//2 - Phase 1 IN - enter the vertex aiming at getting result in this vertex
+	//3 - Phase 1 OUT heavy - get out of the vertex preserving the result
+	//4 - Phase 1 OUT light - get out of the vertex discarding the result
+	//5 - Clearing the global result
+	//6 - Phase 2 IN - enter the vertex in order to pass the color for a result above
+	//7 - Phase 2 OUT - exit the vertex in order to pass the color for a result above
+	//8 - Phase 1 OUT I - Update globals with color within
+	//9 - Phase 1 OUT II - Set the result for a vertex
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
+		var mapping_steps = {
+			'P1 IN': 2,
+			'P1 OUT HEAVY': 3,
+			'P1 OUT LIGHT': 4,
+			'P2 IN': 6,
+			'P2 OUT': 7,
+			'P1 OUT': 8,
+		};
 
-		if (s[0]==0) return [100];
+		if (s[0]==0) return [1];
+		if (s[0]==1) return [2, 0];
+		if (s[0]==2 || s[0]==3 || s[0]==6 || s[0]==7 || (s[0]==5 && this.logic.to_cleanse[s[2]].length <= s[3]+1) || s[0]==9){
+			if (this.logic.steps.length <= s[1]+1) return [101]; //s[1]+2 dla innego efektu (hehe)
+			else {
+				var step = this.logic.steps[s[1]+1];
+				if (step[0] != 'P1 OUT LIGHT') return [mapping_steps[step[0]], s[1]+1];
+				else return [mapping_steps[step[0]], s[1]+1, step[2]];
+			}
+		}
+		if (s[0] == 4) return [5, s[1], s[2], 0];
+		if (s[0] == 5) return [5, s[1], s[2], s[3]+1];
+		if (s[0] == 8) return [9, s[1]];
 	}
 
 	StatementComprehension(){

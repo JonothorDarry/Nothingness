@@ -34,6 +34,8 @@ class SuperEuclid{
 		}
 		return logica;
 	}
+
+	static no_background_color_styles = Object.fromEntries(Object.keys(Modern_representation.color_styles).map(e => [e, {'background':Modern_representation.color_styles[e].background, 'color':Modern_representation.color_styles[e].color}]));
 	
 	//Generates random color
 	static _presentation_color_generator(beg=0, end=255){
@@ -88,7 +90,7 @@ class SuperEuclid{
 		for (i=v; i<range[1]; i+=div){
 			color=SuperEuclid._presentation_color_generator();
 			for (j=i; j<i+div; j++){
-				to_pass.push([buttons[j], 0, color, 0]);
+				to_pass.push([buttons[j], {'background':color}, 0]);
 			}
 		}
 		return to_pass;
@@ -153,37 +155,54 @@ class SuperEuclid{
 		return strr;
 	}
 
+	static local_pass_style(obj, btn, style_mid=1, style_after=0){
+		var change_nr_to_style = function(nr){
+			var style;
+			if (ArrayUtils.is_iterable(nr)){
+				style = Object.assign({}, SuperEuclid.no_background_color_styles[nr[0]]);
+				style.background = `linear-gradient(to right bottom, ${Modern_representation.colors[nr[0]]} 50%, ${Modern_representation.colors[nr[1]]} 50%)`
+			}
+			else style = SuperEuclid.no_background_color_styles[nr];
+			return style;
+		}
+
+		style_mid = change_nr_to_style(style_mid);
+		style_after = change_nr_to_style(style_after);
+
+		obj.modern_pass_style(btn, style_mid, style_after);
+	}
+
 	static StateMaker(obj, s){
 		var staat=[], i;
 		var staat=obj.ephemeral.staat, passer=obj.ephemeral.passer;
 		var index=s[1];
 
-		if (s[0]==0 || s[0]==1) obj.pass_color(obj.buttons.index[index]);
+		if (s[0]==0 || s[0]==1) SuperEuclid.local_pass_style(obj, obj.buttons.index[index]);
 
 		if (s[0]==2){
 			staat.push([1, obj.buttons.a[index], obj.logic.a[index], obj.logic.b[index]]);
 			staat.push([1, obj.buttons.b[index], obj.logic.b[index], obj.logic.a[index]]);
-			obj.pass_color(obj.buttons.a[index]);
-			obj.pass_color(obj.buttons.b[index]);
+			SuperEuclid.local_pass_style(obj, obj.buttons.a[index]);
+			SuperEuclid.local_pass_style(obj, obj.buttons.b[index]);
 
-			obj.pass_color(obj.buttons.a[index-1], 0, 14);
-			obj.pass_color(obj.buttons.b[index-1], 0, 14);
+			SuperEuclid.local_pass_style(obj, obj.buttons.a[index-1], 14);
+			SuperEuclid.local_pass_style(obj, obj.buttons.b[index-1], 14);
 		}
 
 		if (s[0]==3){
 			staat.push([1, obj.buttons.a[index], obj.logic.b[index], obj.logic.a[index]]);
 			staat.push([1, obj.buttons.b[index], obj.logic.a[index], obj.logic.b[index]]);
-			obj.pass_color(obj.buttons.a[index], 0);
-			obj.pass_color(obj.buttons.b[index], 0);
+			SuperEuclid.local_pass_style(obj, obj.buttons.a[index]);
+			SuperEuclid.local_pass_style(obj, obj.buttons.b[index]);
 		}
 		if( s[0]==100){
-			staat.push([0, obj.buttons.a[obj.logic.a.length-1], 0, 8]);
+			staat.push([7, obj.buttons.a[obj.logic.a.length-1], SuperEuclid.no_background_color_styles[8]]);
 		}
 
 		if (!obj.shower){
 			if (s[0]==0 || s[0]==1){
 				var to_color=SuperEuclid._presentation_color(obj.pass_color, obj.buttons.partial_a, [0, obj.logic.a[index-1]], obj.logic.b[index-1]);
-				for (var x of to_color) obj.pass_color(...x);
+				for (var x of to_color) obj.modern_pass_style(...x);
 			}
 			if (s[0]==2) staat.push([5, SuperEuclid._presentation_lower, SuperEuclid._presentation_lower_inverse, [obj.buttons.partial_a, [obj.logic.b[index], obj.logic.a[index-1]] ]]);
 			if (s[0]==3) staat.push([5, SuperEuclid._presentation_swap, SuperEuclid._presentation_unswap, [obj.buttons.partial_a, obj.buttons.partial_b, obj.logic.a[index], obj.logic.b[index]] ]);
