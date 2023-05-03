@@ -263,7 +263,6 @@ class Algorithm{
 		return Representation_utils.button_creator(this.stylistic, numb, col);
 	}
 
-
 	//Create Button
 	doubleButtCreator(v, fun){
 		return Representation_utils.double_button_creator(this.stylistic, v, fun);
@@ -313,12 +312,6 @@ class Algorithm{
 		if (! style_after instanceof Object) style_after = Modern_representation.color_styles[style_after];
 		this.ephemeral.staat.push([7, btn, style_mid]);
 		this.ephemeral.passer.push([7, btn, style_mid, style_after]);
-	}
-
-	divsCreator(mode, number_of_rows, title_list, midian, elements=['divs', 'zdivs']){
-		var lst=Representation_utils.proto_divsCreator(mode, number_of_rows, title_list, midian, this.place, this.stylistic);
-		this[elements[0]]=lst.divs;
-		this[elements[1]]=lst.zdivs;
 	}
 
 	modern_divsCreator(mode, number_of_rows, title_list, midian=null, place=this.place){
@@ -381,10 +374,6 @@ class Algorithm{
 			});
 			if (values[i].length > 0 && btn_list[i]!=null) btn_list[i].innerHTML = values[i][0];
 		}
-	}
-
-	Painter(btn, col=1, only_bg=0) {
-		return Representation_utils.Painter(btn, col, only_bg);
 	}
 }
 export default Algorithm;

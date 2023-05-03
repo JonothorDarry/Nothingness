@@ -1,5 +1,6 @@
 import Algorithm from '../../Base/Algorithm.js';
 import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
 import NTMath from '../../Base/NTMath.js';
 
 class SumNtt extends Algorithm{
@@ -49,12 +50,12 @@ class SumNtt extends Algorithm{
 				for (j=0; j<this.poly[ij][i].length; j++){
 					var double_butt=super.doubleButtCreator(null, super.buttCreator.bind(this));
 					if (ij==0){
-						super.Painter(double_butt[1], 101);
-						super.Painter(double_butt[2], 0);
+						Modern_representation.Painter(double_butt[1], 101);
+						Modern_representation.Painter(double_butt[2], 0);
 					}
 					else{
-						super.Painter(double_butt[1], 4);
-						super.Painter(double_butt[2], 4);
+						Modern_representation.Painter(double_butt[1], 4);
+						Modern_representation.Painter(double_butt[2], 4);
 					}
 					double_butt[0].style.height=`${square_size}px`;
 					double_butt[0].style.width=`${square_size}px`;
@@ -145,7 +146,8 @@ class SumNtt extends Algorithm{
 		var i, s=this.layers, titles=[];
 		for (i=0; i<s; i++) titles.push(`pol<sub>${i}</sub>`);
 		
-		super.divsCreator(5, s, titles);
+		var lst=Representation_utils.proto_divsCreator(5, s, titles, null, this.place, this.stylistic);
+		this['zdivs']=lst.zdivs;
 	}
 
 	StatementComprehension(){

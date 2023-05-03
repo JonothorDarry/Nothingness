@@ -156,7 +156,9 @@ class DoubleWalk extends Algorithm{ //Non-working example
 	_presentation_mark_marked(){
 		for (var i=1; i <= this.logic.tree.n; i++){
 			if (this.logic.is_marked[i] == 0) continue;
-			Modern_representation.button_modifier(this.buttons.vertexes[i], {'stylistic':{'general':{'borderWidth':'10px', 'borderStyle':'solid', 'borderColor':'#804000', 'left':`calc(${this.buttons.vertexes[i].style.left} - 10px)`}}});
+			var nearby_vertex = this.buttons.vertexes[i].cloneNode(true);
+			Modern_representation.button_modifier(nearby_vertex, {'stylistic':{'general':{'borderWidth':'10px', 'borderStyle':'solid', 'borderColor':'#804000', 'left':`calc(${nearby_vertex.style.left} - 10px)`, 'top':`calc(${nearby_vertex.style.top} - 10px)`, 'zIndex':-1}}});
+			this.buttons.div_tree.appendChild(nearby_vertex);
 		}
 	}
 
@@ -173,6 +175,7 @@ class DoubleWalk extends Algorithm{ //Non-working example
 		this.buttons.edges = present_tree.buttons.edges;
 		this.buttons.longest_distances = ArrayUtils.steady(this.logic.tree.n+1, 0).map(x => [null, null]);
 		this.buttons.furthest_vertex = ArrayUtils.steady(this.logic.tree.n+1, null);
+		this.buttons.div_tree = div_tree;
 
 		var platz, btn_far, btn_dist, i, j;
 		for (i=1; i<=this.logic.tree.n; i++){

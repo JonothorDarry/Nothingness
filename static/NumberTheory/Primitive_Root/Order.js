@@ -94,7 +94,7 @@ class Order extends Partial{
 			}
 			btn[i].style.display="inline-block";
 
-			if (lst[i]=='x') Representation_utils.Painter(btn[i], 3);
+			if (lst[i]=='x') Representation_utils.Painter(btn[i], 104);
 			dv.append(btn[i]);
 		}
 		//Tocjent
@@ -117,7 +117,7 @@ class Order extends Partial{
 			btn.push(this.buttCreator(lst[i]));
 			btn[i].style.position="relative";
 			btn[i].style.display="inline-block";
-			if (lst[i]=='x') Representation_utils.Painter(btn[i], 3);
+			if (lst[i]=='x') Representation_utils.Painter(btn[i], 104);
 			else Representation_utils.Painter(btn[i], 5);
 			dv.append(btn[i]);
 		}

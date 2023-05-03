@@ -2,6 +2,7 @@ import Algorithm from '../../Base/Algorithm.js';
 import ArrayUtils from '../../Base/ArrayUtils.js';
 import NTMath from '../../Base/NTMath.js';
 import Complex from '../../Base/Complex.js';
+import Modern_representation from '../../Base/Modern_representation.js';
 
 class Ntt extends Algorithm{
 	_pusher(arr, x, ntt){
@@ -217,7 +218,7 @@ class Ntt extends Algorithm{
 				this.zdivs[i].buttons.appendChild(btn);
 
 				this.btnlist[i][j].innerHTML=(i==0?j:(i==1?this.logic.a[j]:this.logic.b[j]));
-				this.Painter(this.btnlist[i][j], 0);
+				Modern_representation.Painter(this.btnlist[i][j], 0);
 			}
 		}
 	}
@@ -300,7 +301,7 @@ class Ntt extends Algorithm{
 						this.btnlist[i][j].innerHTML=value;
 					else 
 						this.btnlist[i][j].innerHTML=Math.round(value);
-					this.Painter(this.btnlist[i][j], 0);
+					Modern_representation.Painter(this.btnlist[i][j], 0);
 				}
 			}
 		}
@@ -352,7 +353,7 @@ class Ntt extends Algorithm{
 			var pos=mapp[2], seq_pos=mapp[3], real_seq=mapp[0], merger=mapp[1];
 			for (i=0;i<n;i++) {
 				this.show_number(this.btnlist[pos][i], real_seq[this.logic.butterfly[i]]);
-				this.pass_color(this.btnlist[pos][i], 4, 1, 20);
+				this.pass_color(this.btnlist[pos][i], 4, 1, this.decode(this.btnlist[pos][i]));
 				this.pass_color(this.btnlist[seq_pos][i], 0);
 			}
 		}
@@ -370,10 +371,10 @@ class Ntt extends Algorithm{
 			var pol_1=this.btnlist[level+pos-1][whole+part];
 			var w=((s[1]==2)?this.btnlist[this.place_mul+6][diff]:this.btnlist[4][diff]);
 
-			this.pass_color(cur_btn, 4, 1, 20);
+			this.pass_color(cur_btn, 4, 1, this.decode(cur_btn));
 			//These two change every two moves - 2d passer? previously if s[0]==6
-			this.pass_color(pol_0, 20, 13, 20);
-			this.pass_color(pol_1, 20, 14, 20);
+			this.pass_color(pol_0, this.decode(pol_0), 13, this.decode(pol_0));
+			this.pass_color(pol_1, this.decode(pol_1), 14, this.decode(pol_1));
 			this.pass_color(w, 0, 14, 0);
 
 			/*Show merge*/
@@ -420,13 +421,9 @@ class Ntt extends Algorithm{
 	}
 
 
-	Painter(btn, color){
-		if (color!=20) super.Painter(btn, color);
-		else{
-			if ('base_color' in btn)
-				super.Painter(btn, btn.base_color);
-			else super.Painter(btn, 0);
-		}
+	decode(btn){
+		if ('base_color' in btn) return btn.base_color;
+		return 0;
 	}
 
 	StatementComprehension(){
