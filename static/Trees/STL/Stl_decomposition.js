@@ -82,12 +82,14 @@ class Stl_decomposition extends Algorithm{
 	}
 
 	presentation_append_companion(vertex, x, y, name, color=5){
-			var platz = this.buttons.present_tree.get_place_for_companion_button(vertex, x, y);
-			var btn = Modern_representation.button_creator(name, {'general':{'position':'absolute', 'left':platz.left, 'top':platz.top}, 'px':{'width':20, 'height':20, 'font-size':9}});
-			Representation_utils.Painter(btn, color);
 
-			this.buttons.div_tree.appendChild(btn);
-			return btn;
+		var width_height = 30;
+		var platz = this.buttons.present_tree.get_place_for_companion_button(vertex, x, y, {'width':width_height, 'height':width_height});
+		var btn = Modern_representation.button_creator(name, {'general':{'position':'absolute', 'left':platz.left, 'top':platz.top}, 'px':{'width':width_height, 'height':width_height, 'font-size':11}});
+		Representation_utils.Painter(btn, color);
+
+		this.buttons.div_tree.appendChild(btn);
+		return btn;
 	}
 
 	presentation_add_son(){
@@ -107,7 +109,7 @@ class Stl_decomposition extends Algorithm{
 		for (var i=1; i<=this.logic.tree.n; i++){
 			this.presentation_append_companion(i, 1, -1, 'col');
 			var colored = this.presentation_append_companion(i, 2, -1, '');
-			Modern_representation.button_modifier(colored, {'inner_html':this.logic.tree.colors[i], 'stylistic':{'general':{'backgroundColor':this.presentation_get_color(this.logic.tree.colors[i])}, '%':{'borderRadius':100}}});
+			Modern_representation.button_modifier(colored, {'inner_html':this.logic.tree.colors[i], 'stylistic':{'general':{'background':this.presentation_get_color(this.logic.tree.colors[i])}, '%':{'borderRadius':100}}});
 
 			var overlay = this.presentation_append_companion(i, 2, -1, '', 104);
 			Modern_representation.button_modifier(overlay, {'stylistic':{'general':{'zIndex':-1}}});
@@ -160,9 +162,17 @@ class Stl_decomposition extends Algorithm{
 
 		this.buttons.globals = div_globalists.filler([2, [1, this.logic.colors_mx]], ArrayUtils.steady(this.logic.colors_mx, 0), {'color':0});
 
+		this.buttons.global_colors = [null];
 		for (var i=1; i<=this.logic.colors_mx; i++){
-			var btn = div_globalists.get(1, i);
-			Modern_representation.button_modifier(btn, {'inner_html':i, 'stylistic':{'%':{'borderRadius':100}, 'general':{'backgroundColor':this._presentation.color_mapping[i%7]}}});
+			var constraining_div = div_globalists.get(1, i);
+			Modern_representation.style(constraining_div, {'position':'relative'});
+
+			var btn = Modern_representation.button_creator(i, {'%':{'borderRadius':100}, 'general':{'background':this._presentation.color_mapping[i%7], 'position':'absolute', 'top':0, 'left':0}});
+			var overlay = Modern_representation.button_creator('', {'general':{'background':Modern_representation.colors[104], 'position':'absolute', 'top':0, 'left':0}});
+			constraining_div.appendChild(overlay);
+			constraining_div.appendChild(btn);
+
+			this.buttons.global_colors.push(overlay);
 		}
 		div_globalists.single_filler([1, 0], 'Color', {'color':5});
 		div_globalists.single_filler([2, 0], 'Occurences', {'color':5});
@@ -173,9 +183,15 @@ class Stl_decomposition extends Algorithm{
 
 		this.buttons.to_cleanse = [];
 		for (var i=1; i<=this.logic.tree.n; i++){
-			var btn = div_globalists.get(4, i);
-			Modern_representation.button_modifier(btn, {'stylistic':{'%':{'borderRadius':100}, 'general':{'backgroundColor':104}}});
-			this.buttons.to_cleanse.push(btn);
+			var constraining_div = div_globalists.get(4, i);
+
+			Modern_representation.style(constraining_div, {'position':'relative'});
+			var btn = Modern_representation.button_creator('', {'%':{'borderRadius':100}, 'general':{'background':Modern_representation.colors[104], 'position':'absolute', 'top':0, 'left':0}});
+			var overlay = Modern_representation.button_creator('', {'general':{'background':104, 'position':'absolute', 'top':0, 'left':0}});
+
+			constraining_div.appendChild(overlay);
+			constraining_div.appendChild(btn);
+			this.buttons.to_cleanse.push({'color':btn, 'overlay':overlay});
 		}
 
 		return div_globalists;
@@ -183,14 +199,15 @@ class Stl_decomposition extends Algorithm{
 
 	_presentation_construct_tree(){
 		this._presentation.edge_height = 2;
-		var width = 300*this.logic.tree.get_width(), height = 160*this.logic.tree.get_height();
+		var width = 400*this.logic.tree.get_width(), height = 240*this.logic.tree.get_height();
 		var div_tree = Modern_representation.div_creator('', {'px':{'width':width, 'height':height}});
 		Modern_representation.button_modifier(div_tree, {'general':{'display':'inline-block'}});
 		var present_tree = new Modern_tree_presenter(this.logic.tree, {'div':div_tree, 'width':width, 'height':height}, {
-			'vertex':{'width':40, 'height':40, 'radius':100},
+			'vertex':{'width':50, 'height':50, 'radius':100},
 			'edge':{'height':this._presentation.edge_height},
 			'nonsense':this.stylistic
 		});
+
 		this.buttons.div_tree = div_tree;
 		this.buttons.present_tree = present_tree;
 		this.buttons.edges = present_tree.buttons.edges;
@@ -206,13 +223,13 @@ class Stl_decomposition extends Algorithm{
 	presentation(){
 		this._presentation = {};
 		this._presentation.color_mapping = {
-			0:'#01798c',
-			1:'#fc5f05',
+			0:'#fc5f05',
+			1:'#001dfc',
 			2:'#0a8c01',
 			3:'#fc005c',
-			4:'#001dfc',
+			4:'#8c8501',
 			5:'#8c0101',
-			6:'#8c8501',
+			6:'#01798c',
 		};
 
 		this.buttons={};
@@ -231,7 +248,7 @@ class Stl_decomposition extends Algorithm{
 			for (var j=0; j<this.logic.to_cleanse[i].length; j++)
 				cleansing[j].push(this.logic.to_cleanse[i][j]);
 		}
-		this._statial_binding('to_cleanse', cleansing, [null, ...this.buttons.to_cleanse]);
+		this._statial_binding('to_cleanse', cleansing, this.buttons.to_cleanse.map(e => e.color));
 	}
 
 	palingenesia(){
@@ -306,10 +323,11 @@ class Stl_decomposition extends Algorithm{
 		if (s[0] == 5){
 			var for_cleansing = this.logic.to_cleanse[s[2]][s[3]];
 			staat.push([6, this.state.globals[for_cleansing]]);
-			this.modern_pass_color(this.buttons.globals[for_cleansing-1], 14);
+			this.modern_pass_color(this.buttons.globals[for_cleansing-1], 1);
 
-			staat.push([6, this.buttons.to_cleanse[s[3]]]);
-			staat.push([0, this.buttons.to_cleanse[s[3]], 104]);
+			staat.push([6, this.state.to_cleanse[s[3]]]);
+			staat.push([0, this.buttons.to_cleanse[s[3]].color, 104]);
+			this.modern_pass_color(this.buttons.to_cleanse[s[3]].overlay, 14, 104);
 		}
 
 		if (s[0] == 6){
@@ -324,13 +342,14 @@ class Stl_decomposition extends Algorithm{
 			if (this.logic.tree.par[vertex] != ultraparent)
 				staat.push([0, this.buttons.vertexes[this.logic.tree.par[vertex]], 7]);
 
+			this.modern_pass_color(this.buttons.globals[this.logic.tree.colors[vertex]-1], 1, 0);
 			if (change != null){
-				staat.push([0, this.buttons.maxes[change], 104]);
-				this.modern_pass_color(this.buttons.maxes[this.logic.tree.colors[vertex]], 14, 5);
+				staat.push([0, this.buttons.maxes[change-1], 104]);
+				this.modern_pass_color(this.buttons.maxes[this.logic.tree.colors[vertex]-1], 1, 5);
 			}
 
-			staat.push([7, this.buttons.to_cleanse[to_clear], {
-				'backgroundColor':this.presentation_get_color(this.logic.tree.colors[vertex]),
+			staat.push([7, this.buttons.to_cleanse[to_clear].color, {
+				'background':this.presentation_get_color(this.logic.tree.colors[vertex]),
 				'color':'#FFFFFF'
 			}]);
 		}
@@ -350,24 +369,27 @@ class Stl_decomposition extends Algorithm{
 			var to_clear = step[3];
 
 			staat.push([6, this.state.globals[this.logic.tree.colors[vertex]]]);
-			this.modern_pass_color(this.buttons.globals[this.logic.tree.colors[vertex]-1], 14, 0);
+			this.modern_pass_color(this.buttons.globals[this.logic.tree.colors[vertex]-1], 1, 0);
+			this.modern_pass_color(this.buttons.colors[vertex], 14, 104);
 			if (change != null){
 				staat.push([0, this.buttons.maxes[change-1], 104]);
-				this.modern_pass_color(this.buttons.maxes[this.logic.tree.colors[vertex]-1], 14, 5);
+				this.modern_pass_color(this.buttons.maxes[this.logic.tree.colors[vertex]-1], 1, 5);
 			}
-			staat.push([7, this.buttons.to_cleanse[to_clear], {
-				'backgroundColor':this.presentation_get_color(this.logic.tree.colors[vertex]),
+			staat.push([7, this.buttons.to_cleanse[to_clear].color, {
+				'background':this.presentation_get_color(this.logic.tree.colors[vertex]),
 				'color':'#FFFFFF'
 			}]);
+			this.modern_pass_color(this.buttons.to_cleanse[to_clear].overlay, 1, 104);
 		}
 
 		if (s[0] == 9){
 			var vertex = this.logic.steps[s[1]][1];
 
 			staat.push([0, this.buttons.results[vertex].description, 5]);
-			this.modern_pass_color(this.buttons.results[vertex].overlay, 14, 8);
+			this.modern_pass_color(this.buttons.results[vertex].overlay, 1, 8);
+			this.modern_pass_color(this.buttons.global_colors[this.logic.res[vertex]], 14, 104);
 			staat.push([7, this.buttons.results[vertex].color, {
-				'backgroundColor':this._presentation.color_mapping[this.logic.tree.colors[vertex]],
+				'background':this._presentation.color_mapping[this.logic.res[vertex]],
 				'color':'#FFFFFF'
 			}]);
 		}

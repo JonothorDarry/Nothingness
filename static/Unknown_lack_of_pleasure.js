@@ -61,7 +61,7 @@ class Separat_tree_basic extends Partial{
 		this.buttons.vertexes = tree_show.buttons.vertexes;
 		this.buttons.edges = tree_show.buttons.edges;
 		for (var i=1; i<=this.logic.tree.n; i++) {
-			this.Painter(this.buttons.vertexes[i], 4);
+			Modern_representation.Painter(this.buttons.vertexes[i], 4);
 		}
 
 
@@ -116,20 +116,20 @@ class Separat_tree_lca extends Partial{
 		this.buttons.vertexes = tree_show.buttons.vertexes;
 		this.buttons.edges = tree_show.buttons.edges;
 		for (var i=1; i<=this.logic.tree.n; i++) {
-			this.Painter(this.buttons.vertexes[i], 4);
+			Modern_representation.Painter(this.buttons.vertexes[i], 4);
 		}
 
 		var v1 = 6, v2 = 4, vlca = 3;
 		var param = this.tree_presentation.parameters.vertexes[v1];
-		var new_label = Modern_representation.button_creator(`a`, {'general':{'position':'absolute', 'backgroundColor':'transparent', 'color':'#FFFFFF', 'left':`calc(${param.x*100}% - 5px)`, 'top':`calc(${param.y*100}% - 20px)`}});
+		var new_label = Modern_representation.button_creator(`\\(a\\)`, {'general':{'position':'absolute', 'background':'transparent', 'color':'#FFFFFF', 'left':`calc(${param.x*100}% - 10px)`, 'top':`calc(${param.y*100}% - 20px)`}});
 		this.place.appendChild(new_label);
 
 		var param = this.tree_presentation.parameters.vertexes[v2];
-		var new_label = Modern_representation.button_creator(`b`, {'general':{'position':'absolute', 'backgroundColor':'transparent', 'color':'#FFFFFF', 'left':`calc(${param.x*100}% - 5px)`, 'top':`calc(${param.y*100}% - 20px)`}});
+		var new_label = Modern_representation.button_creator(`\\(b\\)`, {'general':{'position':'absolute', 'background':'transparent', 'color':'#FFFFFF', 'left':`calc(${param.x*100}% - 10px)`, 'top':`calc(${param.y*100}% - 20px)`}});
 		this.place.appendChild(new_label);
 
 		var param = this.tree_presentation.parameters.vertexes[vlca];
-		var new_label = Modern_representation.button_creator(`lca(a,b)`, {'general':{'position':'absolute', 'backgroundColor':'transparent', 'color':'#FFFFFF', 'left':`calc(${param.x*100}% - 55px)`, 'top':`calc(${param.y*100}% - 30px)`}});
+		var new_label = Modern_representation.button_creator(`\\(lca(a,b)\\)`, {'general':{'position':'absolute', 'background':'transparent', 'color':'#FFFFFF', 'left':`calc(${param.x*100}% - 50px)`, 'top':`calc(${param.y*100}% - 40px)`}});
 		this.place.appendChild(new_label);
 
 		//for (var x of [4, 5, 6]){ //for THICC edges
@@ -180,7 +180,7 @@ class Separat_tree_stl extends Partial{
 		this.buttons = {};
 		this.place.style.width='max-content';
 		this.place.style.backgroundColor='#000000';
-		var radius=10;
+		var radius=12;
 
 		var width=180, height=180;
 		Modern_representation.button_modifier(this.place, {'stylistic':{'general':{'position':'relative'}, 'px':{'width':width, 'height':height}}});
@@ -194,32 +194,29 @@ class Separat_tree_stl extends Partial{
 		this.tree_presentation = tree_show;
 		this.buttons.vertexes = tree_show.buttons.vertexes;
 		this.buttons.edges = tree_show.buttons.edges;
-		for (var i=1; i<=this.logic.tree.n; i++) {
-			this.Painter(this.buttons.vertexes[i], 4);
-		}
+		for (var i=1; i<=this.logic.tree.n; i++) Modern_representation.Painter(this.buttons.vertexes[i], 4);
 
-		var color_1 = '#0000FF', color_2 = '#FF0000';
-		this.buttons.vertexes[4].style.backgroundColor = color_1;
-		this.buttons.vertexes[5].style.backgroundColor = color_2;
-		this.buttons.vertexes[6].style.backgroundColor = color_1;
-		this.buttons.vertexes[3].style.backgroundColor = color_1;
+		var marked = [3, 4, 6];
+		var border_size = 2;
+		var multirad = (radius-2*border_size)/2;
+		console.log(radius, multirad, border_size);
+		for (var x of marked){
+			Modern_representation.Painter(this.buttons.vertexes[x], 104);
 
-		var multirad = (radius-4)/2;
-		for (var x of [3, 4, 5, 6]){
 			var param = this.tree_presentation.parameters.vertexes[x];
-			var styling_filled = {'general':{'position':'absolute', 'backgroundColor':'#FFFFFF', 'left':`calc(${param.x*100}% - ${multirad}px)`, 'top':`calc(${param.y*100}% - ${multirad}px)`, 'zIndex':3}, 'px':{'width':2*multirad, 'height':2*multirad}, '%':{'borderRadius':100}};
-			this.place.appendChild(Modern_representation.button_creator(``, styling_filled));
+			var styling_filled = {'general':{'position':'absolute', 'background':'rgba(255, 255, 255, 0)', 'left':`calc(${param.x*100}% - ${multirad}px)`, 'top':`calc(${param.y*100}% - ${multirad}px)`, 'zIndex':3, 'outline':`${border_size}px solid #FFFFFF`}, 'px':{'width':2*multirad, 'height':2*multirad}, '%':{'borderRadius':100}};
+			var falka = Modern_representation.button_creator(``, styling_filled);
+			this.place.appendChild(falka);
 		}
 
 		var merge_point = 3;
 		var param = this.tree_presentation.parameters.vertexes[merge_point];
-		var top_dist = 10;
 		for (var i=1; i<=3; i++){
-			var styling_filled = {'general':{'position':'absolute', 'backgroundColor':color_1, 'left':`calc(${param.x*100}% + ${i*10}px)`, 'top':`calc(${param.y*100}% - ${top_dist}px)`}, 'px':{'width':radius, 'height':radius}, '%':{'borderRadius':100}};
+			var styling_filled = {'general':{'position':'absolute', 'background':'rgba(255, 255, 255, 0)', 'left':`calc(${param.x*100}% + ${i*radius}px)`, 'top':`calc(${param.y*100}% - ${radius}px)`, 'outline':`${border_size}px solid #FFFFFF`}, 'px':{'width':2*multirad, 'height':2*multirad}, '%':{'borderRadius':100}};
 			var new_label = Modern_representation.button_creator(``, styling_filled);
 			this.place.appendChild(new_label);
 		}
-		var styling_filled = {'general':{'position':'absolute', 'backgroundColor':color_2, 'left':`calc(${param.x*100}% + 10px)`, 'top':`calc(${param.y*100}% + ${10-top_dist}px)`}, 'px':{'width':10, 'height':10}, '%':{'borderRadius':100}};
+		var styling_filled = {'general':{'position':'absolute', 'background':'#FFFFFF', 'left':`calc(${param.x*100}% + ${radius-border_size}px)`, 'top':`calc(${param.y*100}% - ${border_size}px)`}, 'px':{'width':radius, 'height':radius}, '%':{'borderRadius':100}};
 		this.place.appendChild(Modern_representation.button_creator(``, styling_filled));
 
 		console.log(this.place.innerHTML);

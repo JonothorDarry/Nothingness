@@ -40,7 +40,7 @@
 			</ul>
 			<p>Thus, there are at most \(\log_2(n)\) light edges between root and any vertex - and the vertex will be processed at most \(\log_2(n)+1\) times.</p>
 			{{ algo.neo_algorithm(1, 'Small to Large with path decomposition', '
-				<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree; \(c_i\) are colors where \(c_i\) denotes the color of the \(i\)-th vertex.<br>
+				<p>Input format: \(n\) is number of vertices, \(a_i, b_i\) denotes edge between \(a\) and \(b\). Vertexes need to be labeled from 1-n, there are \(n-1\) edges which need to denote a tree; \(c_i\) are colors where \(c_i\) denotes the color of the \(i\)-th vertex. The tree is rooted at the vertex labeled by 1.<br>
 				\(n\)<br>
 				\(c_1, c_2, \dots, c_n\)<br>
 				\(a_1, b_1\)<br>

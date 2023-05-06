@@ -1,4 +1,5 @@
 import Representation_utils from './Representation_utils.js';
+import Modern_representation from './Modern_representation.js';
 
 class Graph_utils{
 	//Positions+w/h of v1, v2; v1 below; general_params: h/w of an overarching div
@@ -48,7 +49,7 @@ class Graph_utils{
 		if (stylistic.vertex.label == 'none'){
 			butt.innerHTML='';
 		}
-
+		Modern_representation.style(butt, {'display':'flex', 'justifyContent':'center', 'alignItems':'center'}); //Terrible fix
 		butt.style.width=`${stylistic.vertex.width}px`
 		butt.style.height=`${stylistic.vertex.height}px`
 		butt.style.borderRadius=`${stylistic.vertex.radius}%`;

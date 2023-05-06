@@ -20,10 +20,10 @@ class Grid{
 		this.top_margin=params.top_margin;
 	}
 
-	//positions:[[a,b], c] or [a, [b,c]]; arr: array (iterable) to fill; Dict: color (default 4)
+	//positions:[[a,b], c] or [a, [b,c]]; arr: array (iterable) to fill; Dict: color (default 104)
 	filler(positions, arr, params){
 		var btn, results=[];
-		Object_utils.merge(params, {'color':4});
+		Object_utils.merge(params, {'color':104});
 
 		var is_row=false, to_update, elem;
 		if (ArrayUtils.is_iterable(positions[0])){
@@ -48,7 +48,7 @@ class Grid{
 	}
 
 	single_filler(position, value, params={}){
-		Object_utils.merge(params, {'color':4});
+		Object_utils.merge(params, {'color':104});
 		var btn=this.grid[position[0]+this.top_margin][position[1]+this.left_margin];
 		if (value!=null) btn.innerHTML=value;
 		Representation_utils.Painter(btn, params.color);

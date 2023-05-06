@@ -156,13 +156,13 @@ class Modern_tree_presenter{
 	//Assumption - homogeneous buttons
 	get_place_for_companion_button(vertex, x_axis, y_axis, button_properties={'width':20, 'height':20}){
 		var place={};
-		var full_radius=40; //Temp
+		var full_radius=this.style.vertex.width;
 		var half_radius=Math.floor(full_radius/2);
 
-		if (x_axis>0) place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${full_radius/Math.sqrt(2)+button_properties.width*(x_axis-1)-half_radius}px)`;
-		else place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${-full_radius-half_radius+full_radius/Math.sqrt(2)-button_properties.width*(-x_axis-1)}px)`;
+		if (x_axis>0) place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${half_radius/Math.sqrt(2)+button_properties.width*(x_axis-1)}px)`;
+		else place.left=`calc(${this.parameters.vertexes[vertex].x*100}% + ${-half_radius/Math.sqrt(2)-button_properties.width*(-x_axis)}px)`;
 
-		if (y_axis>0) place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${-half_radius/Math.sqrt(2)-button_properties.height*(y_axis-1)-half_radius}px)`;
+		if (y_axis>0) place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${-half_radius/Math.sqrt(2)-button_properties.height*(y_axis)}px)`;
 		else place.top=`calc(${this.parameters.vertexes[vertex].y*100}% + ${half_radius/Math.sqrt(2)+button_properties.height*(-y_axis-1)}px)`;
 		return place;
 	}
@@ -180,6 +180,7 @@ class Modern_tree_presenter{
 		if (used_fun == 'standard') this.calculate_position_vertexes();
 		else this._segtree_calculate_position_vertexes(place.height, 40);
 
+		this.style = style; //DANGER: does not include changes made during runtime (so better not to make changes - overlays, underlays, relays, closing-to-the-edges, ...)
 		this.height=place.height;
 		this.width=place.width;
 		this.place=place.div;
