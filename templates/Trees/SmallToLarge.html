@@ -14,7 +14,7 @@
 			<h2>Introduction</h2>
 			<p>In this article, a technique for solving problems needing aggregation of a large amount of data in a single vertex will be shown.</p>
 			<h2>Problem II: What is the most common color in a subtree?</h2>
-			<p>Let's say we are given a rooted tree of size \(n\), where \(n \le 3*10^6\). Each vertex v is assigned a color \(c(v)\). For each subtree, what is the most common color of a vertex within a subtree?</p>
+			<p>Let's say we are given a rooted tree of size \(n\), where \(n \le 3*10^6\). Each vertex v is assigned a color \(c(v)\). For each vertex, what is the most common color of a vertex within its subtree? In case there are many such colors, print any.</p>
 			<h3>Solution: path decomposition</h3>
 			<p>First, for a vertex in a rooted tree, we can divide vertices in the subtree of some vertex \(x\) (except itself) into two groups:</p>
 			<ol>
@@ -27,7 +27,7 @@
 			<ol>
 				<li>Iterate over its children in order of ascending subtree sizes (or in any other order, as long, as the largest subtree is processed as the last).</li>
 				<li>For all the children except the last one - after processing them, discard the auxiliary results.</li>
-				<li>For the last children: the auxiliary result is retained by the parent, then all the information from the remaining subtrees is retained in the same way it was obtained. The result is obtained using auxiliary data.</li>
+				<li>For the last child: the auxiliary result is retained by the parent, then all the information from the remaining subtrees is retained in some way. The result is obtained using auxiliary data.</li>
 			</ol>
 			<p>In case of this problem, "auxiliary data" can mean a table with counts of particular colors along with the color most often occuring in a subtree, changing whenever some color obtains a higher count. </p>
 
