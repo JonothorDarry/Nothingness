@@ -154,7 +154,7 @@ class Segtree_Counter extends Algorithm{
 		this.buttons.vertexes = tree_presentation.buttons.vertexes;
 		for (var i=1; i<2*this.logic.Cv; i++){
 			var platz = tree_presentation.get_place_for_companion_button(i, 1, 1);
-			var btn = Modern_representation.button_creator(i, {'general':{'position':'absolute', 'color':'#FFFFFF', 'backgroundColor':'#000000'}, 'px':{'width':20, 'height':20}});
+			var btn = Modern_representation.button_creator(i, {'general':{'position':'absolute', 'color':'#FFFFFF', 'background':'#000000'}, 'px':{'width':20, 'height':20}});
 			btn.style.left = platz.left;
 			btn.style.top = platz.top;
 			post_div.appendChild(btn);

@@ -60,7 +60,6 @@ class BinaryExpo extends Algorithm{
 		var margin_button = this.presentation_make_paint_append(``, {'general':{'position':'relative', 'verticalAlign':'middle', 'color':'#000000'}, 'px':{'height':40, 'width':60}}, full_div, 4);
 		var width_for_mod = Math.max(((this.logic.m > this.logic.a*this.logic.b) ? this.logic.m : this.logic.a*this.logic.b).toString().length*10, 40);
 
-		
 		var regular_power = Representation_utils.expo_style_button_creator(this.stylistic, {'base':this.logic.a, 'expo':this.logic.b});
 		full_div.appendChild(regular_power.base);
 		full_div.appendChild(regular_power.expo);

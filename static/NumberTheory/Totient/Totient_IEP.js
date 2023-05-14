@@ -52,7 +52,7 @@ class Totient_IEP extends Partial{
 		for (var i=0; i<factors.length; i++){
 			var prime = factors[i];
 
-			var button_factor = Modern_representation.button_creator(prime, {'general':{'backgroundColor':Modern_representation.colors[colors[this.logic.inverse_factors[prime]]], 'color':'#FFFFFF', 'bottom':0, 'left':0, 'position':'relative', 'verticalAlign':'top'}, 'px':{'height':this.presentation.radius, 'width':this.presentation.radius}, '%':{'borderRadius':100}});
+			var button_factor = Modern_representation.button_creator(prime, {'general':{'background':Modern_representation.colors[colors[this.logic.inverse_factors[prime]]], 'color':'#FFFFFF', 'bottom':0, 'left':0, 'position':'relative', 'verticalAlign':'top'}, 'px':{'height':this.presentation.radius, 'width':this.presentation.radius}, '%':{'borderRadius':100}});
 			buttons.push(button_factor);
 
 			div.appendChild(button_factor);
@@ -73,9 +73,9 @@ class Totient_IEP extends Partial{
 		var div_double = Modern_representation.div_creator('', {'general':{'border':'1px solid grey'}, 'px':{'height':height_full, 'width':width}});
 		var div_upper = Modern_representation.div_creator('', {'general':{'position':'absolute'}, 'px': {'height':height_small, 'width':width, 'top':0}});
 		var div_lower = Modern_representation.div_creator('', {'general':{'position':'absolute'}, 'px':{'height':height_huge, 'width':width, 'bottom':0}});
-		var button_upper = Modern_representation.button_creator(number, {'general':{'backgroundColor':Modern_representation.colors[0], 'color':'#FFFFFF', 'top':0, 'position':'relative', 'verticalAlign':'top'}, 'px':{'height':height_huge, 'width':width}});
+		var button_upper = Modern_representation.button_creator(number, {'general':{'background':Modern_representation.colors[0], 'color':'#FFFFFF', 'top':0, 'position':'relative', 'verticalAlign':'top'}, 'px':{'height':height_huge, 'width':width}});
 
-		if (this.logic.prime_divs[number].length == 0) Modern_representation.button_modifier(div_lower, {'stylistic':{'general':{'backgroundColor':Modern_representation.colors[0]}}});
+		if (this.logic.prime_divs[number].length == 0) Modern_representation.button_modifier(div_lower, {'stylistic':{'general':{'background':Modern_representation.colors[0]}}});
 		else Representation_utils.Painter(button_upper, 2);
 
 		this._presentation_fill_div_with_prime_factors(div_lower, this.logic.prime_divs[number]);
@@ -157,7 +157,7 @@ class Totient_IEP extends Partial{
 		for (var i=0; i<buttons_iep_values.length; i++){
 			var x = buttons_iep_values[i];
 			Modern_representation.button_modifier(x, general_button_style);
-			if (this.logic.power_sets[i].parity == 1) Modern_representation.button_modifier(x, {'stylistic':{'general':{'backgroundColor':Modern_representation.colors[31]}}});
+			if (this.logic.power_sets[i].parity == 1) Modern_representation.button_modifier(x, {'stylistic':{'general':{'background':Modern_representation.colors[31]}}});
 		}
 
 		var exprs = this.logic.power_sets.map(e => this._presentation_expression(e));
@@ -165,7 +165,7 @@ class Totient_IEP extends Partial{
 		for (var i=0; i<buttons_expressions.length; i++){
 			var x = buttons_expressions[i];
 			Modern_representation.button_modifier(x, general_button_style);
-			Modern_representation.button_modifier(x, {'stylistic':{'general':{'borderLeft':'1px solid white', 'backgroundColor':Modern_representation.colors[5]}, 'px':{'width':expr_width}}});
+			Modern_representation.button_modifier(x, {'stylistic':{'general':{'borderLeft':'1px solid white', 'background':Modern_representation.colors[5]}, 'px':{'width':expr_width}}});
 		}
 
 		grid.single_filler([simple_ln, 0], '', {'color':4, 'stylistic':{'px':{'width':80, 'height':40, 'lineHeight':40}}});

@@ -167,7 +167,7 @@ class Stl_decomposition extends Algorithm{
 
 	_presentation_construct_globals(){
 		var rows=3;
-		var div_globalists = new Grid(rows, Math.max(this.logic.colors_mx+1, this.logic.tree.n+1));
+		var div_globalists = new Grid(rows, this.logic.colors_mx+1);
 		this.buttons.maxes = div_globalists.filler([0, [1, this.logic.colors_mx]], ArrayUtils.steady(this.logic.colors_mx, 'Max'), {'color':104});
 		Representation_utils.Painter(this.buttons.maxes[0], 101);
 
@@ -198,7 +198,6 @@ class Stl_decomposition extends Algorithm{
 		this._presentation.edge_height = 2;
 		var width = 400*this.logic.tree.get_width(), height = 240*this.logic.tree.get_height();
 		var div_tree = Modern_representation.div_creator('', {'px':{'width':width, 'height':height}});
-		Modern_representation.button_modifier(div_tree, {'general':{'display':'inline-block'}});
 		var present_tree = new Modern_tree_presenter(this.logic.tree, {'div':div_tree, 'width':width, 'height':height}, {
 			'vertex':{'width':50, 'height':50, 'radius':100},
 			'edge':{'height':this._presentation.edge_height},
@@ -208,6 +207,7 @@ class Stl_decomposition extends Algorithm{
 		this.buttons.div_tree = div_tree;
 		this.buttons.present_tree = present_tree;
 		this.buttons.edges = present_tree.buttons.edges;
+		for (var x of this.buttons.edges.slice(2)) Modern_representation.style(x, {'zIndex':-3});
 		this.buttons.vertexes = present_tree.buttons.vertexes;
 
 		this.presentation_add_color_base();
@@ -233,6 +233,7 @@ class Stl_decomposition extends Algorithm{
 		this.buttons={};
 		var div_tree = this._presentation_construct_tree();
 		var div_globalists = this._presentation_construct_globals();
+		Modern_representation.style(div_globalists.place.full_div, {'display':'inline-block', 'verticalAlign':'top', 'position':'absolute'});
 
 		this.place.appendChild(div_tree);
 		this.place.appendChild(div_globalists.place.full_div);
@@ -391,7 +392,6 @@ class Stl_decomposition extends Algorithm{
 				else return [mapping_steps[step[0]], s[1]+1, step[2]];
 			}
 		}
-		//if (s[0] == 4) return [5, s[1], s[2], 0];
 		if (s[0] == 8) return [9, s[1]];
 	}
 

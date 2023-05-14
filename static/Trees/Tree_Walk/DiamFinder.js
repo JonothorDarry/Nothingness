@@ -115,7 +115,6 @@ class DiamFinder extends Algorithm{
 	presentation_create_tree(){
 		var width = 200*this.logic.tree.get_width(), height = 120*this.logic.tree.get_height();
 		var div_tree = Modern_representation.div_creator('', {'px':{'width':width, 'height':height}});
-		Modern_representation.button_modifier(div_tree, {'general':{'display':'inline-block'}});
 		var present_tree = new Modern_tree_presenter(this.logic.tree, {'div':div_tree, 'width':width, 'height':height}, {
 			'vertex':{'width':40, 'height':40, 'radius':100},
 			'edge':{'height':2},

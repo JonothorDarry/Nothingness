@@ -569,7 +569,7 @@ class Proot extends Algorithm{
 		}
 
 		if (s[0] == 6){
-			if (this.logic.post_expo_primitive_root % 2n == 0n) return `As the primitive root modulo ${this.logic.full_m/2n} is divisible by 2, then ${this.logic.post_expo_primitive_root} cannot be a primitive root modulo ${this.logic.full_m}, because it is not coprime to 2; but ${this.logic.post_expo_primitive_root} + ${this.logic.full_m}/2 = ${this.logic.final_primitive_root} can be, and is a primitive root.`;
+			if (this.logic.post_expo_primitive_root % 2n == 0n) return `As the primitive root modulo ${this.logic.full_m/2n} is divisible by 2, then ${this.logic.post_expo_primitive_root} cannot be a primitive root modulo ${this.logic.full_m}, because it is not coprime to 2; but ${this.logic.post_expo_primitive_root} + ${this.logic.full_m}/2 = ${this.logic.full_primitive_root} can be, and is a primitive root.`;
 			else return `As the primitive root modulo ${this.logic.full_m/2n} is not divisible by 2, then ${this.logic.post_expo_primitive_root} is a primitive root modulo ${this.logic.full_m}.`;
 		}
 
