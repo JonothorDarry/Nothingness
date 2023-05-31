@@ -281,6 +281,7 @@ class Muller extends Partial{
 		grid.filler([[1, 2], 2], ArrayUtils.steady(2, this.logic.summaric_amount.fermat_witnesses), {'color':this.present.colors.fermat_witness});
 		grid.filler([[2, 2], 1], ArrayUtils.steady(1, this.logic.summaric_amount.mr_witnesses), {'color':this.present.colors.mr_witness});
 		grid.filler([[3, 3], 4], ArrayUtils.steady(1, this.logic.summaric_amount.non_witnesses), {'color':this.present.colors.non_witness});
+		Modern_representation.style(grid.get(3, 3), {'border': 'white solid 1px'});
 
 		var tls=this.logic.summaric_amount;
 		var witnessy=[tls.non_coprime, 

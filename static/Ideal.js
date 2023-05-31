@@ -1,3 +1,9 @@
+import Algorithm from '../../Base/Algorithm.js';
+import Modern_representation from '../../Base/Modern_representation.js';
+import Representation_utils from '../../Base/Representation_utils.js';
+import ArrayUtils from '../../Base/ArrayUtils.js';
+import Grid from '../../Base/Grid.js';
+
 class XXXX extends Algorithm{
 	logical_box(){
 	}
@@ -51,3 +57,4 @@ class XXXX extends Algorithm{
 		if (s[0]==0) return `Whatever`;
 	}
 }
+export default XXXX;

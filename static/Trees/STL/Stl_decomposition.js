@@ -330,7 +330,7 @@ class Stl_decomposition extends Algorithm{
 				this.modern_pass_color(this.buttons.vertexes[x], 14, 7);
 				staat.push([6, this.state.globals[this.logic.tree.colors[x]]]);
 				this.modern_pass_color(this.buttons.globals[this.logic.tree.colors[x]-1], 14, 0);
-				this.modern_pass_color(this.buttons.pointers[vertex], 15, 104);
+				this.modern_pass_color(this.buttons.pointers[vertex], 101, 104);
 			}
 
 		}
@@ -371,6 +371,7 @@ class Stl_decomposition extends Algorithm{
 	//6 - Phase 2 - Get all colors in a subtree
 	//8 - Phase 1 OUT I - Update globals with color within
 	//9 - Phase 1 OUT II - Set the result for a vertex
+	//101 - End of chapter, all results known
 	NextState(){
 		var l=this.lees.length;
 		var s=this.lees[l-1];
