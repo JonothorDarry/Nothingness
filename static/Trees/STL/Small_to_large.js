@@ -163,7 +163,8 @@ class Small_to_large extends Algorithm{
 		this._presentation.colors_set = {
 			'barren':'rgba(179, 0, 0, 0.5)',
 			'change':'rgba(128, 255, 102, 0.5)',
-			'pointed':'rgba(255, 179, 25, 0.5)'
+			'pointed':'rgba(255, 179, 25, 0.5)',
+			'dead':'rgba(255, 255, 255, 0)'
 		}
 		this._presentation.colors_edge = {
 			'added':Modern_representation.colors[1],
@@ -227,9 +228,11 @@ class Small_to_large extends Algorithm{
 			var vertex = s[1];
 
 			this.modern_pass_style(this.buttons.edges[vertex], {'background':this._presentation.colors_edge.added}, {'background':this._presentation.colors_edge.barren});
+			staat.push([0, this.buttons.vertexes[vertex], 15]);
 			//staat.push([0, this.buttons.edges[vertex], 1]);
 			if (vertex < this.logic.tree.n){
-				staat.push([7, this.buttons.sets[vertex+1], {'background':this._presentation.colors_set.barren}]);
+				staat.push([0, this.buttons.vertexes[vertex+1], 0]);
+				staat.push([7, this.buttons.sets[vertex+1], {'background':this._presentation.colors_set.dead, 'border':'1px dashed', 'borderColor':'#888888'}]);
 				staat.push([7, this.buttons.sets[this.logic.tree.par[vertex+1]], {'background':this._presentation.colors_set.barren}]);
 			}
 
@@ -282,7 +285,8 @@ class Small_to_large extends Algorithm{
 		}
 
 		if (s[0] == 101){
-			staat.push([7, this.buttons.sets[2], {'background':this._presentation.colors_set.barren}]);
+			staat.push([0, this.buttons.vertexes[2], 0]);
+			staat.push([7, this.buttons.sets[2], {'background':this._presentation.colors_set.dead, 'border':'1px dashed', 'borderColor':'#888888'}]);
 			staat.push([7, this.buttons.sets[this.logic.tree.par[2]], {'background':this._presentation.colors_set.barren}]);
 			staat.push([0, this.buttons.results[this.logic.tree.n-1], 8]);
 		}
