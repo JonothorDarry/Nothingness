@@ -11,17 +11,17 @@
 	<body>
 		{{ headers.full_upper('Greatest Common Divisor', 'NumberTheory') }}
 		<h2>Introduction</h2>
-		<p>While simplest problems from number theory usually involve sieves, it seems easier to start describing number theory from the notion of greatest common divisor. How to calculate it rapidly for large numbers? How to find \(p,q\) solving equations in form \(px+qy=g\) for given \(x,y,g\)? To answer those question, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
+		<p>While the simplest problems from number theory usually involve sieves, it seems easier to start describing number theory from the notion of the greatest common divisor. How to calculate it rapidly for large numbers? How to find \(p,q\) solving equations in form \(px+qy=g\) for given \(x,y,g\)? To answer those question, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
 		<ol>
-			<li><b>Divisor</b> An integer \(d\) is a divisor of an integer \(x\) (which is often denoted by \(d|x\)), if and only if:<br>
+			<li><b>Divisor</b>: An integer \(d\) is a divisor of an integer \(x\) (which is often denoted by \(d|x\)), if and only if:<br>
 				$$ d|x \iff \exists_{k \in Z}dk=x $$
 				If \(d|x\), then \(x\) is divisible by \(d\).<br>
 			</li>
-			<li><b>Greatest common divisor (gcd)</b>: An integer \(g \in N^+\) is gcd of integers \(w, v\) if and only if:<br>
+			<li><b>Greatest common divisor (gcd)</b>: An integer \(g \in N^+\) is the gcd of integers \(w, v\) if and only if:<br>
 				$$ g=gcd(w, v) \iff g|w \land g|v \land !\exists_h (h|w \land h|v \land h \gt g) $$
 				In other words, if \(g\)=\(gcd(w, v)\), then \(g\) divides \(w\) and \(v\), and there is no greater integer \(h\) that divides both \(w\) and \(v\).<br>
 			</li>
-			<li><b>Least common multiple (lcm)</b>: An integer \(l \in N^+\) is lcm of integers \(w, v\) if and only if:<br>
+			<li><b>Least common multiple (lcm)</b>: An integer \(l \in N^+\) is the lcm of integers \(w, v\) if and only if:<br>
 				$$ l=lcm(w, v) \iff w|l \land v|l \land !\exists_h (w|h \land v|h \land h \lt l) $$
 			</li>
 			<li><b>Remainder from dividing</b> integer \(x\) by integer \(m \in N^+\), denoted later by \(x\%m\), is equal to:<br>
@@ -32,19 +32,19 @@
 				It's worth noting, that \(x \equiv x\%m \pmod m\).<br>
 			</li>
 		</ol>
-		<p>One crucial thing: it is assumed, that multiplication and addition occurs in \(O(1)\) unless stated otherwise (spurious assumption, but nonetheless an acceptable one given usually small constraints in number theory problems).</p>
+		<p>One crucial thing: it is assumed, that multiplication and addition occurs in \(O(1)\) unless stated otherwise (spurious assumption, but nonetheless an acceptable one given usually small constraints in discussed problems).</p>
 
 		<h2>Problem I: finding \(gcd(w,v)\)</h2>
 		<p>Let's say \(q (q \le 10^6)\) queries are given: what is the greatest common divisor of integers \(w\) and \(v\) where \(1 \le w, v \le n=10^{18}\)? First solution not being absolute brute force (checking all integers \(x \in \{ 2, 3, \dots \min(w,v)\}\) whether they're gcd - works in \(O(q*\min(w,v))\)) is discussed below:</p>
-		<h3>Solution I: using distribution of divisors in \(O(q\sqrt{\min(w,v)})\)</h3>
-		<h4>Distribution of all divisors of an integer and their upper estimate</h4>
+		<h3>Solution I: using the distribution of divisors in \(O(q\sqrt{\min(w,v)})\)</h3>
+		<h4>The distribution of all divisors of an integer and their upper estimate</h4>
 		<p>If \(d\) is a divisor of \(x\), where \(d,x \ge 1\), then \(d \le \sqrt{x}\) or \( \frac{x}{d} \le \sqrt{x}\); proof by contradiction: if \(d|x\), then there exists such integer \(b\), that \(bd=x\); if \(d \gt \sqrt{x} \) and \(b \gt \sqrt{x}\), then \( db \gt \sqrt{x}\sqrt{x}=x\), which finishes the proof. Furthermore, this shows, that for \(x \ge 1\):
 			$$ |\{d:d|x \land d \ge 1\}| \le 2\sqrt{x} $$
-		because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and \(d \le \sqrt{x} \lor k \le \sqrt{x}\).
+		because for each divisor \(d\) there is exactly one divisor \(k\) such that \(dk=x\), and either \(d \le \sqrt{x}\) or \(k \le \sqrt{x}\).
 		</p>
-		<h4>Solution using distribution</h4>
+		<h4>The solution using the distribution</h4>
 		<p>
-		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural integers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such integer. To find all divisors \(\{k: k|w\}\) one needs to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v \lor k|v\), and take maximum of those - this solution will work in \(O(q*\sqrt{\min(w,v)})\).
+		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural integers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such integer. To find all divisors \(\{k: k|w\}\) one needs to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v\) or \(k|v\), and take maximum of those - this solution will work in \(O(q\sqrt{\min(w,v)})\).
 		</p>
 
 		<h3>Viable solution: Euclidean algorithm in \(O(q\log(\min(w,v)))\)</h3>
