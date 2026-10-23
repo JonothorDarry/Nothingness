@@ -11,7 +11,7 @@
 	<body>
 		{{ headers.full_upper('Greatest Common Divisor', 'NumberTheory') }}
 		<h2>Introduction</h2>
-		<p>While the simplest problems from number theory usually involve sieves, it seems easier to start describing number theory from the notion of the greatest common divisor. How to calculate it rapidly for large numbers? How to find \(p,q\) solving equations in form \(px+qy=g\) for given \(x,y,g\)? To answer those question, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
+		<p>While the simplest problems from number theory usually involve sieves, it seems easier to start describing number theory from the notion of the greatest common divisor. How to calculate it rapidly for large numbers? How to find \(p,q\) solving equations in form \(px+qy=g\) for given \(x,y,g\)? To answer those questions, several definitions and notational nuissances shall be formulated (unless stated otherwise, all statements in this and next articles concern integers):
 		<ol>
 			<li><b>Divisor</b>: An integer \(d\) is a divisor of an integer \(x\) (which is often denoted by \(d|x\)), if and only if:<br>
 				$$ d|x \iff \exists_{k \in Z}dk=x $$
@@ -44,7 +44,7 @@
 		</p>
 		<h4>The solution using the distribution</h4>
 		<p>
-		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural integers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such integer. To find all divisors \(\{k: k|w\}\) one needs to check only divisors \(k \le \sqrt{w}\), and check, whether \(\frac{w}{k}|v\) or \(k|v\), and take maximum of those - this solution will work in \(O(q\sqrt{\min(w,v)})\).
+		Without loss of generality, let's assume that \(w \le v\). One can check all positive natural integers \(k \le w\) whether \(k|w\) and \(k|v\), and take largest such integer. To find all divisors \(\{k: k|w\}\) one needs to check only divisors \(k \le \sqrt{w}\), and check whether \(\frac{w}{k}|v\) or \(k|v\), and take maximum of those - this solution will work in \(O(q\sqrt{\min(w,v)})\).
 		</p>
 
 		<h3>Viable solution: Euclidean algorithm in \(O(q\log(\min(w,v)))\)</h3>
@@ -66,11 +66,14 @@
 			Thesis: for each \(i,\ gcd(a_i, b_i)\) is equal to gcd(\(w\), \(v\)).<br>
 			Proof by induction: For \(i=1\) \(gcd(a_i, b_i)=gcd(w, v)\), because \(a_1=w, b_1=v\). So: \(\exists_i gcd(a_i, b_i)=gcd(w, v)\). To finish proof is to show that for any \(i\) either \(gcd(a_i, b_i)=gcd(a_{i+1}, b_{i+1})\), or \(b_i=0\)<br>
 			What can be said about any divisor \(g\) dividing both \(a_i\) and \(b_i\)? If \(a_i\) is shown as \(sb_i +m\), where \(s \in Z\), then:
-			
 			$$ a_i = gk, b_i = gl$$
 			$$ a_i = sb_i+m $$
 			$$ a_i-sb_i = gk-sgl=g*(k-sl) = m $$
-			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\%b_i\) - and so, \(gcd(a_i, b_i)=gcd(a_i\%b_i, b_i)=gcd(b_i, a_i\%b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any integer divides \(0\), and so any integer that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of an integer \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Furthermore, it shows, that every divisor of both \(w\) and, \(v\) is also a divisor of \(gcd(w,v)\).
+			and so, any common divisor \(g\) dividing both \(a_i\), \(b_i\) has to divide \(a_i\%b_i\). Moving further, if \(h\) divides both \(a_i\%b_i\) and \(b_i\), then:
+			$$ a_i-sb_i  = hw, b_i = hv$$
+			$$ a_i-sb_i + sb_i = hw+shv = h(w+sv) $$
+			Thus, anything that divides both \(b_i\) and \(a_i\%b_i\) also divides \(a_i\).
+			And so, \(gcd(a_i, b_i)=gcd(a_i\%b_i, b_i)=gcd(b_i, a_i\%b_i)=gcd(a_{i+1}, b_{i+1})\). If \(b_i\) becomes equal to \(0\), then any integer divides \(0\), and so any integer that is divisor of both \(w\) and \(v\) must divide \(a_i\). The only thing left to do is finding greatest divisor of an integer \(a_i &gt; 0\) - which is equal to \(a_i\), which finishes the proof. Furthermore, it shows, that every divisor of both \(w\) and \(v\) is also a divisor of \(gcd(w,v)\).
 		</p>
 		<h4>Complexity proof</h4>
 		<p>
@@ -81,11 +84,11 @@
 			$$ \text{(1) } \frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} \gt \frac{a_i+b_i}{2b_i} \ge \frac{2b_i+b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2} $$
 
 			$$ \text{(2) } \frac{a_i+b_i}{a_{i+1}+b_{i+1}} = \frac{a_i+b_i}{b_i+a_i\%b_i} = \frac{a_i+b_i}{b_i+a_i-b_i} = \frac{a_i+b_i}{a_i} = 1+\frac{b_i}{a_i} \gt 1+\frac{b_i}{2b_i} = \frac{3b_i}{2b_i} = \frac{3}{2} $$
-			And so, maximum number of operations can be bounded by \(O(q*\log(\min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after first iteration \(b_2 \lt a_2 \le \min(w,v)\), and after \(k\) iterations sum \(a_{k+1}+b_{k+1}\) becomes lower at least \((\frac{3}{2})^{k-1}\) times than \(a_1+b_1\).
+			And so, maximum number of operations can be bounded by \(O(q*\log(\min(w, v)))\), because sum \(a_i+b_i\) is always greater than 0, after first iteration \(b_i \lt a_i \le \min(w,v)\), and after \(k\) iterations sum \(a_{k+1}+b_{k+1}\) becomes lower at least \((\frac{3}{2})^{k-1}\) times than \(a_1+b_1\).
 		</p>
 
 		<h4>Modulo operation preserves \(gcd\)</h4>
-		<p>While it comes straight from definition, it might be wise to emphasize certain propery of equivalence modulo; namely,
+		<p>While it comes straight from definition, it might be wise to emphasize certain property of equivalence modulo; namely,
 		$$ x \equiv y \pmod m \implies gcd(x, m) = gcd(y, m) $$
 		Why? because 
 		$$ gcd(x, m) = gcd(x-km, m) = gcd(y, m) $$
@@ -95,18 +98,18 @@
 		<h2>Problem II: finding \(x,y\), for which \(wx+vy=gcd(w,v)\)</h2>
 		<p>
 		Let's say that sole \(gcd(w,v)\) is not enough: You want to find such integers \(x, y\) that: \(wx+vy=gcd(w,v)\).
-		<h3>Solution: Extending euclidean algorithm</h3>
+		<h3>Solution: extending Euclidean algorithm</h3>
 		<p>One can use same mechanism to solve this problem, but also construct sequences \(p, q\), such that for each \(i\) following stands:
 			$$p_iw+q_iv=b_i$$
 			$$p_1=0, q_1=1 \implies wp_1+vq_1=v=b_1$$
 			$$ \text{ for \(i \gt 1\): } b_i = a_{i-1}\%b_{i-1} = a_{i-1}-\lfloor\frac{a_{i-1}}{b_{i-1}}\rfloor b_{i-1}$$
-			It is possble to show \(b_{i-1}\) as \(b_{i-1}=p_{i-1}w+q_{i-1}v\). But what with \(a_{i-1}\)? It's equal to \(b_{i-2}\), except when \(i=2\)... unless \(b_0=a_1=w\). Let also, for simplicity, \(z_i=\lfloor \frac{a_i}{b_i} \rfloor\). Then: <br>
+			It is possible to show \(b_{i-1}\) as \(b_{i-1}=p_{i-1}w+q_{i-1}v\). But what with \(a_{i-1}\)? It's equal to \(b_{i-2}\), except when \(i=2\)... unless \(b_0=a_1=w\). Let also, for simplicity, \(z_i=\lfloor \frac{a_i}{b_i} \rfloor\). Then: <br>
 			$$ p_0=1, q_0=0 \implies wp_0+vq_0=w=b_0 $$
 			$$ \text{for \(i \gt 1\): } b_{i+1} = a_i - \lfloor \frac{a_i}{b_i} \rfloor b_i = p_{i-1}w + q_{i-1}v - z_i(p_iw + q_iv)= w(p_{i-1} - z_ip_i)+ v(q_{i-1} - z_iq_i) $$
-			And so, \(p_{i+1}=p_{i-1}-z_ip_i\) and \(q_{i+1}=q_{i-1}-z_iq_i\). The existence of solution to this equation is called bezout's identity.
+			And so, \(p_{i+1}=p_{i-1}-z_ip_i\) and \(q_{i+1}=q_{i-1}-z_iq_i\). The existence of solution to this equation is called Bèzout's identity.
 		</p>
 		{{ algo.neo_algorithm(2, 'Extended Euclidean Algorithm', '
-			<p>Input format: Two positive integers \(w, v\), specifying values, for which extended euclid algorithm will be run.<br>
+			<p>Input format: Two positive integers \(w, v\), specifying values, for which extended Euclidean algorithm will be run.<br>
 			\(w, v\)
 			</p>
 		'
@@ -114,7 +117,7 @@
 			'color_description':{'standard':'', 'change':'', 'helper1':'', 'helper2':'', 'crucial':'\(gcd(w, v)\)', 'iterator':'\(q\) and \(v\), for which \(wp+vq=gcd(w,v)\)', 'exponent':'\(p\) and \(w\), for which \(wp+vq = gcd(w, v)\)'}, 
             }) }}
 
-			<h4>Proof concerning Extended Euclid overflow - estimation of \(p_i, q_i\)</h4>
+			<h4>Proof concerning extended Euclidean overflow - estimation of \(p_i, q_i\)</h4>
 			<p>Die-hard utilitarist may notice, that \(p_i, q_i\) may overflow regardless of value of \(gcd(w,v)\) - this concern will be addressed below.</p>
 			<p>First, one can see, that \(sgn(p_i) \neq sgn(p_{i+1})\) and \(sgn(q_i) \neq sgn(q_{i+1})\) - it is because:</p>
 			<ol>
@@ -122,13 +125,13 @@
 				<li>Proving lemma by induction, \(p_i=p_{i-2}-zp_{i-1}\) - \(z\) is positive (as it is equal to \(\lfloor \frac{b_{i-2}}{b_{i-1}} \rfloor\)) - so it does not change sign of \(p_{i-1}\), and as \(sgn(p_{i-1}) \neq sgn(p_{i-2})\), then:
 					<ul>
 						<li>If \(p_{i-2}\) is \(0\) - then \(p_{i-1}\) cannot be \(0\), and \(-zp_{i-1}\) have different sign than \(p_{i-1}\), so \(sgn(p_i)=sgn(-p_{i-1}) \neq 0\), which implies \(sgn(p_i) \neq sgn(p_{i-1})\)</li>
-						<li>If \(p_{i-2}\) is not zero, then \(-zp_{i-1}\) either is equal to \(0\) - or \(-zp_{i-1}\) have same sign as \(p_{i-2}\), in both cases, \(sgn(p_{i-2})=sgn(p_i) \neq sgn(p_{i-1})\)</li>
+						<li>If \(p_{i-2}\) is not zero, then \(-zp_{i-1}\) is either equal to \(0\), or \(-zp_{i-1}\) has the same sign as \(p_{i-2}\), in both cases, \(sgn(p_{i-2})=sgn(p_i) \neq sgn(p_{i-1})\)</li>
 					</ul>
 				</li>
 			</ol>
 			{% set z="\\lfloor \\frac{b_{i-1}}{b_i} \\rfloor " %}
 			{% set z2="\\lfloor \\frac{b_{i-2}}{b_{i-1}} \\rfloor " %}
-			<p>One can also notice, that \(|p_{i-1}b_i-p_ib_{i-1}|=v\), and also \(|q_{i-1}b_i-q_ib_{i-1}|=w\) - proof is same for both, so inductive step will be shown only for \(p_i\)</p>
+			<p>One can also notice, that \(|p_{i-1}b_i-p_ib_{i-1}|=v\), and also \(|q_{i-1}b_i-q_ib_{i-1}|=w\) - the inductive proof is same for both, so inductive step will be shown only for \(p_i\)</p>
 			<ol>
 				<li>\(|p_0b_1-p_1b_0|=|b_1-0|=v\), also \(|q_0b_1-q_1b_0|=|0-b_0|=w\)</li>
 				<li>\(|p_ib_{i+1}-p_{i+1}b_i|=|p_i(b_{i-1}-{{z}} b_i)-(p_{i-1}-{{z}} p_i)b_i|=|p_ib_{i-1}-{{z}} p_ib_i-p_{i-1}b_i+{{z}} p_ib_i|=|p_{i-1}b_i-p_ib_{i-1}|=v\)</li>
@@ -138,7 +141,7 @@
 				<li>Values of \(|p_i|, |q_i|\) for \(i \ge 3\) are not decreasing, as \(|p_i|=|p_{i-2}-{{z2}}p_{i-1}|=|p_{i-2}|+|{{z2}}p_{i-1}| \ge |p_{i-2}|+|p_{i-1}|\) and since \(i=3\) occurs \(a_{i-1}=b_{i-2} \ge b_{i-1}\)</li>
 				<li>In the last (\(k\)-th) iteration of the algorithm, \(b_k=0, b_{k-1}=gcd(w, v)\) - and so \(v=|p_{k-1}b_k-p_kb_{k-1}|=|p_kgcd(w, v)|\), and \(|p_k|=\frac{v}{gcd(v, w)}\). Also, \(w=|q_{k-1}b_k-q_kb_{k-1}|=|q_kgcd(w, v)|\) - and so, \(|q_k|=\frac{w}{gcd(w,v)}\)</li>
 			</ol>
-			<p>This shows, tha always \(|p_i| \le \frac{v}{gcd(v,w)}\) and \(|q_i| \le \frac{w}{gcd(v,w)}\), which gives upper estimate on sizes of \(p_i, q_i\).
+			<p>This shows, that \(|p_i| \le \frac{v}{gcd(v,w)}\) and \(|q_i| \le \frac{w}{gcd(v,w)}\) always hold, which gives upper estimate on sizes of \(p_i, q_i\).
 
 
 		<h3>Proof I - Solution with different \(g\)</h3>
@@ -172,7 +175,7 @@
 			<li>\(f \le lcm(v,w)\) - divisor of \(x\) must be lower or equal to \(x\) (if \(x\) is positive).</li>
 			<li>As \(v|lcm(v,w) \land w|lcm(v,w) \land w|wv \land v|wv\) , then, from \(gcd\) properties, \(v|f \land w|f\)</li>
 		</ol>
-		<p>So, if \(lcm(v, w) \nmid vw\), then \(gcd(lcm(v, w), vw)|vw\), it's divisible by both \(v, w\), and lower than \(lcm(v,w)\) - but it contradicts statement, that \(lcm(w, v)\) is lowest common mutiple of \(w, v\) - what follows, \(lcm(v,w)|vw\)</p>
+		<p>So, if \(lcm(v, w) \nmid vw\), then \(gcd(lcm(v, w), vw)|vw\), it's divisible by both \(v, w\), and lower than \(lcm(v,w)\) - but it contradicts statement, that \(lcm(w, v)\) is least common mutiple of \(w, v\) - what follows, \(lcm(v,w)|vw\)</p>
 		<p>
 		If \(s\) is shown as \(s=\frac{wv}{c}\), what can be said about \(c\)?</p>
 			<ol>
@@ -189,7 +192,7 @@
 		<p>
 		One can show the problem as:
 		$$ \exists_{y \in Z} ax+my=c $$
-		From Bezout's identity consequences, \(gcd(a, m)|c\) - otherwise, there are no solutions. If there are solutions however, then, from extended Euclidean algorithm, one can find such \(p, q \in Z\), such that:
+		From Bèzout's identity consequences, \(gcd(a, m)|c\) - otherwise, there are no solutions. If there are solutions however, then, from extended Euclidean algorithm, one can find such \(p, q \in Z\), such that:
 		$$ ap+mq=gcd(a, m)\ \ \  /// *\frac{c}{gcd(a, m)} $$
 		$$ ap\frac{c}{gcd(a, m)}+mq\frac{c}{gcd(a, m)}=c $$
 		and so, \(x=p\frac{c}{gcd(a, m)}\) solves this equation. The question arises, however: what are next solutions? if \(x\) solves this equation, for what \(r\): \(x+r\) solves this equation?
@@ -212,12 +215,12 @@
 		<h2>Summary</h2>
 		<ol>
 			<li>\((d|x \land d \ge 1 \land x \ge 1) \implies (d \le \sqrt{x} \lor \frac{x}{d} \le \sqrt{x})\). Also, \(|\{d: d|x \land d \ge 1 \land x \ge 1\}| \le 2\sqrt{x}\)</li>
-			<li>\(gcd(w, v)\) can be calculated in \(O(\log(\min(v,w)))\) with <b>Euclidean algortithm</b>, using fact, that \(gcd(w, v)=gcd(w\%v, v)\).</li>
-			<li>One can find pair \((x, y)\) solving equation \(wx+vy=gcd(w,v)\) also called <b>bezout's identity</b> using <b>extended Euclidean algorithm</b>. Also, for any \(p, q\) occurs \(gcd(w,v)|wp+vq\).</li>
+			<li>\(gcd(w, v)\) can be calculated in \(O(\log(\min(v,w)))\) with <b>Euclidean algorithm</b>, using fact, that \(gcd(w, v)=gcd(w\%v, v)\).</li>
+			<li>One can find pair \((x, y)\) solving equation \(wx+vy=gcd(w,v)\) also called <b>Bèzout's identity</b> using <b>extended Euclidean algorithm</b>. Also, for any \(p, q\) occurs \(gcd(w,v)|wp+vq\).</li>
 			<li>\(lcm(v, w)=\frac{vw}{gcd(v,w)}\)</li>
-			<li>If pair \((x,y)\) solves bezout's identity - \(wx+vy=gcd(w,v)\) - then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
-			<li>All integers \(x, y\) produced by extended Euclidean algorithm are not exceeding those given as input.</li>
-			<li>Equation \(ax \equiv c \pmod m\) has any solutions if and only if \(c|gcd(a,m)\). Solutions have form \(\frac{pc}{gcd(a, m)}+k\frac{lcm(a, m)}{a}\) for some integer \(k\), where \(ap+ml=gcd(a, m)\) for some integer \(l\).</li>
+			<li>If pair \((x,y)\) solves Bèzout's identity - \(wx+vy=gcd(w,v)\) - then for any \(k \in Z\) pair \((x+\frac{kv}{gcd(w,v)}, y-\frac{kw}{gcd(w,v)})\) also solves this equation, and there are no other solutions.</li>
+			<li>The absolute values of all integer byproducts \(p_i, q_i\) of the extended Euclidean algorithm are not exceeding those given as input.</li>
+			<li>Equation \(ax \equiv c \pmod m\) has any solutions if and only if \(gcd(a,m)|c\). Solutions have form \(\frac{pc}{gcd(a, m)}+k\frac{lcm(a, m)}{a}\) for some integer \(k\), where \(ap+ml=gcd(a, m)\) for some integer \(l\).</li>
 			<li>If \(x \equiv y \pmod m\), then \(gcd(x, m)=gcd(y, m)\)</li>
 			<li>If \(gcd(m, a)=1\), then integer \(p\) solving \(ap+mq=1\) is called <b>modular multiplicative inverse of \(a\) modulo \(m\)</b>, also \(ap \equiv 1 \pmod m\)</li>
 		</ol>
